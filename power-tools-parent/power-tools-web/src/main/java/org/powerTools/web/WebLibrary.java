@@ -23,10 +23,11 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.powerTools.engine.InstructionSet;
 import org.powerTools.engine.RunTime;
 
 
-public abstract class WebLibrary {
+public abstract class WebLibrary implements InstructionSet {
 	public enum IItemType {
 		cButton,
 		cCheckbox,
@@ -58,43 +59,15 @@ public abstract class WebLibrary {
 		cTag
 	}
 	
-//	public final static IValidator cItemTypeValidator;
-//	public final static IValidator mBrowserTypeValidator;
-//	public final static IValidator mNameValidator		= Validators.cDefaultValidator;
-//	public final static IValidator mFrameNameValidator	= Validators.cDefaultValidator;
-//	public final static IValidator mKeyTypeValidator;
-
 	public IBrowser mBrowser;
 
 	
-//	public final boolean addBrowser (String name, IBrowser browser) {
-//		if (mBrowserMap.containsKey(name)) {
-//			return false;
-//		} else {
-//			mBrowserMap.put(name, browser);
-//			return true;
-//		}
-//	}
-
-//	public final boolean selectBrowser (String name, IBrowser browser) {
-//		if (mBrowserMap.containsKey(name)) {
-//			return false;
-//		} else {
-//			mBrowserMap.put(name, browser);
-//			return true;
-//		}
-//	}
-//
-//	public final boolean removeBrowser (String name, IBrowser browser) {
-//		if (mBrowserMap.containsKey(name)) {
-//			return false;
-//		} else {
-//			mBrowserMap.put(name, browser);
-//			return true;
-//		}
-//	}
-
-
+	@Override
+	public String getName () {
+		return "web";
+	}
+	
+	
 	public static IItemType getItemType (String name) {
 		try {
 			return cItemTypesMap.get (name);
@@ -163,7 +136,7 @@ public abstract class WebLibrary {
 		return mBrowser.selectFrame (name);
 	}
 	
-	public final boolean SelectFrameByKeyValue (String key, String value) {
+	public final boolean SelectFrameWhere_Is_ (String key, String value) {
 		try {
 			return mBrowser.selectFrame (getKeyType (key), value);
 		} catch (IllegalArgumentException iae) {
@@ -188,7 +161,7 @@ public abstract class WebLibrary {
 				if (!"".equals (parentName)) {
 					parentItem = getItem (parentName);
 					if (parentItem == null) {
-						mRunTime.reportError ("the parent item is unknown");
+						mRunTime.reportError ("unknown parent item: " + parentName);
 						parentIsOk = false;
 					}
 				}
@@ -241,7 +214,7 @@ public abstract class WebLibrary {
 		return mBrowser.checkForText (text);
 	}
 
-	public final boolean CheckTextOf_Contains_ (String itemName, String expectedText) {
+	public final boolean CheckTextOfItem_Contains_ (String itemName, String expectedText) {
 		final Item item	= findItem (itemName);
 		if (item != null) {
 			final String actualText = mBrowser.getItemText (item);
@@ -256,7 +229,7 @@ public abstract class WebLibrary {
 		return false;
 	}
 	
-	public final boolean CheckTextOf_Is_ (String itemName, String expectedText) {
+	public final boolean CheckTextOfItem_Is_ (String itemName, String expectedText) {
 		final Item item	= findItem (itemName);
 		if (item != null) {
 			final String actualText = mBrowser.getItemText (item);
@@ -294,12 +267,12 @@ public abstract class WebLibrary {
 		return item != null && mBrowser.selectChoice (item);
 	}
 
-	public final boolean SelectOption_ (String selectItemName, String text) {
+	public final boolean SelectOptionIn_ByText_ (String selectItemName, String text) {
 		final Item item = findItem (selectItemName);
 		return item != null && mBrowser.selectChoice (item, text);
 	}
 
-	public final boolean Click_ (String itemName) {
+	public final boolean ClickItem_ (String itemName) {
 		final Item item = findItem (itemName);
 		return item != null && mBrowser.click (item);
 	}
@@ -313,7 +286,7 @@ public abstract class WebLibrary {
 		}
 	}
 	
-	public final boolean Click_AndWait (String itemName) {
+	public final boolean ClickItem_AndWait (String itemName) {
 		final Item item = findItem (itemName);
 		return item != null && mBrowser.clickAndWait (item);
 	}
@@ -332,7 +305,7 @@ public abstract class WebLibrary {
 		return item != null && mBrowser.mouseOver (item);
 	}
 	
-	public final boolean Type_Into_ (String text, String itemName) {
+	public final boolean Type_IntoItem_ (String text, String itemName) {
 		final Item item	= findItem (itemName);
 		return item != null && mBrowser.type (item, text);
 	}
@@ -385,7 +358,7 @@ public abstract class WebLibrary {
 		}
 	}
 	
-	public final boolean SetParameter_For_To_ (int parameterNr, String itemName, String value) {
+	public final boolean SetParameter_ForItem_To_ (int parameterNr, String itemName, String value) {
 		final Item item	= findItem (itemName);
 		return item != null && item.setParameterValue (parameterNr, value);
 	}
@@ -424,6 +397,7 @@ public abstract class WebLibrary {
 		final static String cButton			= "button";
 		final static String cCheckbox		= "checkbox";
 		final static String cCombobox		= "combobox";
+		final static String cFrame			= "frame";
 		final static String cImage			= "image";
 		final static String cLink			= "link";
 		final static String cListbox		= "listbox";
@@ -488,13 +462,13 @@ public abstract class WebLibrary {
 		cItemTypesMap.put (IItemTypeName.cButton,		IItemType.cButton);
 		cItemTypesMap.put (IItemTypeName.cCheckbox,		IItemType.cCheckbox);
 		cItemTypesMap.put (IItemTypeName.cCombobox,		IItemType.cCombobox);
+		cItemTypesMap.put (IItemTypeName.cFrame,		IItemType.cFrame);
 		cItemTypesMap.put (IItemTypeName.cImage,		IItemType.cImage);
 		cItemTypesMap.put (IItemTypeName.cLink,			IItemType.cLink);
 		cItemTypesMap.put (IItemTypeName.cListbox,		IItemType.cListbox);
 		cItemTypesMap.put (IItemTypeName.cListboxItem,	IItemType.cListboxItem);
 		cItemTypesMap.put (IItemTypeName.cRadioButton,	IItemType.cRadioButton);
 		cItemTypesMap.put (IItemTypeName.cText,			IItemType.cText);
-		//cItemTypesMap.put (IItemTypeName.cPasswordTypeText,	X.cPasswordType);
 		
 		cBrowserTypesMap = new HashMap<String, IBrowserType> ();
 		cBrowserTypesMap.put (IBrowserName.cFirefox,			IBrowserType.cFirefox);

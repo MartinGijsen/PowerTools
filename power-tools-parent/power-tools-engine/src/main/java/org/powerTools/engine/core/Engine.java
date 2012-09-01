@@ -20,7 +20,6 @@ package org.powerTools.engine.core;
 
 import org.powerTools.engine.ExecutionException;
 import org.powerTools.engine.expression.ExpressionEvaluator;
-import org.powerTools.engine.instructions.InstructionSet;
 import org.powerTools.engine.reports.TestRunResultPublisher;
 import org.powerTools.engine.sources.Procedure;
 import org.powerTools.engine.sources.ProcedureException;
@@ -33,14 +32,13 @@ import org.powerTools.engine.symbol.Scope;
  * 1) get a test line,
  * 2) evaluate its expressions,
  * 3) execute it.
- * 
+ * <BR/><BR/>
  * The engine obtains test lines from the test line source(s), one by one.
  * If a test source finds a procedure (i.e. a scripted instruction),
  * the engine adds it to the set of known procedures.
- *
- * The Instructions class provides the executor for each instruction
- * that can appear in a test line.
- * 
+ * <BR/><BR/>
+ * The Instructions class provides the executor for known instructions.
+ * <BR/><BR/>
  * Most of the test state is contained in the RunTime,
  * so that it can be accessed by (user defined) instruction sets.
  */
@@ -59,11 +57,6 @@ public abstract class Engine {
 		mInstructions	= new Instructions (runTime);
 		mPublisher		= TestRunResultPublisher.getInstance ();
 		mPublisher.start (runTime.getContext ().mStartTime);
-	}
-
-	@Deprecated
-	public final void addInstructionSet (InstructionSet instructionSet) {
-		mInstructions.addInstructionSet (instructionSet);
 	}
 
 

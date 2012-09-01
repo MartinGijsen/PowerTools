@@ -35,13 +35,13 @@ import org.powerTools.engine.sources.Procedure;
 /**
  * The Instructions contains all known instructions,
  * both scripted ones (i.e. procedures) and programmed ones.
- * 
+ * <BR/><BR/>
  * An instruction set for procedures is already available.
  * Any number of instruction sets can be added.
- * To find the executor for an instruction and ensure it is unique,
- * all instruction sets are asked for one.
- * 
+ * <BR/><BR/>
+ * An intruction name to search for can include the instruction set name.
  * An executor cache ensures that an instruction only has to be looked up once.
+ * <BR/><BR/>
  * It is emptied when an instruction set is added to avoid name conflicts.
  */
 final class Instructions {
@@ -57,7 +57,6 @@ final class Instructions {
 		addInstructionSet (mProcedures);
 	}
 
-	
 	void addInstructionSet (InstructionSet set) {
 		if (!mInstructionSets.containsKey (set.getName ())) {
 			mInstructionSets.put (set.getName (), set);
@@ -77,21 +76,27 @@ final class Instructions {
 	}
 
 	private Executor createExecutor (String instructionName) {
-		final String[] parts = instructionName.split ("\\.");
-		switch (parts.length) {
-		case 1:
+		int position = instructionName.lastIndexOf ('.');
+		if (position < 0) {
 			return findMethodAndCreateExecutor (instructionName);
-		case 2:
-			return createExecutor (parts[0], parts[1]);
-		default:
-			throw new ExecutionException ("an instruction name can only contain one period");
+		} else {
+			String instructionSetName	= instructionName.substring (0, position);
+			String realInstructionName	= instructionName.substring (position + 1);
+			return createExecutor (instructionSetName, realInstructionName);
 		}
 	}
 	
 	private Executor createExecutor (String instructionSetName, String instructionName) {
-		//InstructionSet instructionSet = mInstructionSets.get (instructionSetName);
-		//Executor executor = instructionSet.getExecutor (instructionName);
-		return null;
+		return getInstructionSet (instructionSetName).getExecutor (instructionName);
+	}
+
+	private InstructionSet getInstructionSet (String instructionSetName) {
+		InstructionSet instructionSet = mInstructionSets.get (instructionSetName);
+		if (instructionSet == null) {
+			throw new ExecutionException ("unknown instruction set: " + instructionSetName);
+		} else {
+			return instructionSet;
+		}
 	}
 	
 	private Executor findMethodAndCreateExecutor (String instructionName) {

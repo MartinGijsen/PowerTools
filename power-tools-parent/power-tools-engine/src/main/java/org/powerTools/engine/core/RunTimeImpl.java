@@ -32,6 +32,16 @@ import org.powerTools.engine.symbol.StringSequence;
 import org.powerTools.engine.symbol.Util;
 
 
+/**
+ * The runtime provides a full API for instructions (and engine logic) to
+ * 1) the test source stack, 2) reporting and 3) shared objects.
+ * <BR/><BR/>
+ * The test source stack is used for creating and for finding symbols.
+ * <BR/><BR/>
+ * Reporting concerns errors, warnings and info messages.
+ * <BR/><BR/>
+ * Shared objects are used to exchange information between instruction sets.
+ */
 public class RunTimeImpl implements RunTime, ProcedureRunner {
 	final TestSourceStack mSourceStack;
 

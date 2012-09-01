@@ -27,7 +27,7 @@ public final class InstructionSetFactory {
 		return new ClassInstructionSet (name, object);
 	}
 	
-	public static InstructionSet createRemoteInstructionSet (String name, String hostName, int portNr) {
-		return new RemoteInstructionSet (name, new Client (hostName, portNr));
-	}
+//	public static InstructionSet createRemoteInstructionSet (String name, String hostName, int portNr) {
+//		return new RemoteInstructionSet (name, new Client (hostName, portNr));
+//	}
 }

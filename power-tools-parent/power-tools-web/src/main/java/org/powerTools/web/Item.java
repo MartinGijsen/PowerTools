@@ -23,7 +23,7 @@ import org.powerTools.web.WebLibrary.IKeyType;
 
 
 public class Item {
-	Item (final String logicalName, final Item parent, final IItemType type, final IKeyType keyType, final String value) {
+	Item (String logicalName, Item parent, IItemType type, IKeyType keyType, String value) {
 		mLogicalName	= logicalName;
 		mParent			= parent;
 		mType			= type;
@@ -32,7 +32,7 @@ public class Item {
 	}
 
 	
-	boolean resetParameter (final int paramNr) {
+	boolean resetParameter (int paramNr) {
 		return false;
 	}
 	
@@ -40,7 +40,7 @@ public class Item {
 		return false;
 	}
 	
-	public boolean setParameterValue (final int position, final String value) {
+	public boolean setParameterValue (int position, String value) {
 		return false;
 	}
 

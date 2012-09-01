@@ -25,6 +25,7 @@ package org.powerTools.engine.instructions;
  */
 public interface InstructionSet {
 	String getName ();
+	
 	/**
 	 * retrieves an executor for an implemented instruction.
 	 * @return an executor for the instruction (if it is implemented once)

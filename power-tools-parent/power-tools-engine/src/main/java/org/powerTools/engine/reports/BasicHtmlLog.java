@@ -74,7 +74,7 @@ public abstract class BasicHtmlLog implements TestLineSubscriber, TestResultSubs
 	// the results
 	@Override
 	public void processStackTrace (String[] stackTraceLines) {
-		mWriter.println ("<TR><TD>stack trace:<BR/>");
+		mWriter.println ("<TR><TD colspan=\"10\">stack trace:<BR/>");
 		int nrOfElements = stackTraceLines.length;
 		for (int elementNr = 0; elementNr < nrOfElements; ++elementNr) {
 			mWriter.append (stackTraceLines[elementNr]).println ("<BR/>");

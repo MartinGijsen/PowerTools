@@ -25,6 +25,14 @@ import org.powerTools.engine.sources.XlsTestSource;
 import org.powerTools.engine.symbol.Scope;
 
 
+/**
+ * The Excel engine processes Excel files containing keywords
+ * (with an instruction in the first column, arguments in the rest).
+ * It reports to an HTML log.
+ * <BR/><BR/>
+ * Its main method can be used to execute any test that registers its own
+ * instruction sets using 'use instruction set'.
+ */
 public class ExcelEngine extends Engine {
 	public static void main (String[] args) {
 		if (args.length != 2) {
@@ -51,7 +59,7 @@ public class ExcelEngine extends Engine {
 
 	@Override
 	public final void run (String fileName) {
-		final TestSource source = XlsTestSource.createTestSource (fileName, Scope.getGlobalScope ());
+		TestSource source = XlsTestSource.createTestSource (fileName, Scope.getGlobalScope ());
 		mRunTime.mSourceStack.initAndPush (source);
 		run ();
 		mPublisher.finish ();

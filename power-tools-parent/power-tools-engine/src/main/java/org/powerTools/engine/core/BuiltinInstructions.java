@@ -18,18 +18,27 @@
 
 package org.powerTools.engine.core;
 
+import org.powerTools.engine.InstructionSet;
+
 
 /**
  * Makes built-in instructions available in the form with arguments mixed
- * with the instruction name. Example:
- * set <symbol name> to <value> -> Set_To_ (String name, String value)
+ * with the instruction name.
+ * <BR/><BR/>
+ * Example: set &lt;symbol name> to &lt;value> -> Set_To_ (String name, String value)
  */
-public final class BuiltinInstructions {
+public final class BuiltinInstructions implements InstructionSet {
 	private final BuiltinLogic mLogic;
 
 
 	private BuiltinInstructions (RunTimeImpl runTime, Instructions instructions) {
 		mLogic = new BuiltinLogic (runTime, instructions);
+	}
+	
+
+	@Override
+	public String getName () {
+		return BuiltinLogic.INSTRUCTION_SET_NAME;
 	}
 	
 	
@@ -42,8 +51,12 @@ public final class BuiltinInstructions {
 	}
 
 	
-	public boolean UseInstructionSet_ (String name) {
-		return mLogic.useInstructionSet (name);
+	public boolean UseInstructionSet_ (String className) {
+		return mLogic.useInstructionSet (className);
+	}
+
+	public boolean UseInstructionSet_As_ (String className, String name) {
+		return mLogic.useInstructionSet (name, className);
 	}
 
 	public boolean DefineNumberSequence_ (String name) {
@@ -96,6 +109,10 @@ public final class BuiltinInstructions {
 	
 	public boolean Evaluate_ (String value) {
 		return mLogic.evaluate (value);
+	}
+
+	public boolean Wait_Milliseconds (String nrOfMilliseconds) {
+		return mLogic.waitMilliseconds (nrOfMilliseconds);
 	}
 
 	public boolean Wait_Seconds (String nrOfSeconds) {

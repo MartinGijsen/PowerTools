@@ -24,9 +24,9 @@ import org.powerTools.engine.ExecutionException;
 
 
 /**
- * A ClassInstructionSet provides access to instructions that are implemented as Java methods.
- * Only CamelCase methods are considered as instruction implementations,
- * with underscores indicating where the parameters go.
+ * A ClassInstructionSet provides access to instructions that are implemented
+ * as Java methods. Only methods with CamelCase method names are considered as
+ * instruction implementations, with underscores indicating where the parameters go.
  * Example: boolean DefineVariable_As_ (String name, String value) { ... }
  * A method name is created from an instruction name by CamelCasing the words
  * and stringing them together.
@@ -49,8 +49,7 @@ public final class ClassInstructionSet implements InstructionSet {
 	
 	@Override
 	public Executor getExecutor (String instructionName) {
-		final String methodName	= getMethodName (instructionName);
-		final Method method		= getMethod (methodName);
+		Method method = getMethod (getMethodName (instructionName));
 		return method != null ? new MethodExecutor (mObject, method) : null;
 	}
 	
@@ -78,7 +77,7 @@ public final class ClassInstructionSet implements InstructionSet {
 	}
 	
 	private Method getMethod (String methodName) {
-	    for (Method method : mObject.getClass ().getDeclaredMethods ()) {
+	    for (Method method : mObject.getClass ().getMethods ()) {
 	    	if (method.getName ().equals (methodName)) {
 	    		return method;
 	    	}

@@ -63,7 +63,7 @@ public final class WebDriverKeywords {
 	}
 
 	public boolean SetItemParameter (String itemName, int parameterNr, String value) {
-		return mInstructions.SetParameter_For_To_ (parameterNr, itemName, value);
+		return mInstructions.SetParameter_ForItem_To_ (parameterNr, itemName, value);
 	}
 
 	public boolean SelectFrame (String name) {
@@ -91,11 +91,11 @@ public final class WebDriverKeywords {
 	}
 
 	public boolean CheckItemTextContains (String itemName, String expectedText) {
-		return mInstructions.CheckTextOf_Contains_ (itemName, expectedText);
+		return mInstructions.CheckTextOfItem_Contains_ (itemName, expectedText);
 	}
 	
 	public boolean CheckItemText (String itemName, String expectedText) {
-		return mInstructions.CheckTextOf_Is_ (itemName, expectedText);
+		return mInstructions.CheckTextOfItem_Is_ (itemName, expectedText);
 	}
 	
 	public boolean SelectLink (String itemName) {
@@ -114,12 +114,12 @@ public final class WebDriverKeywords {
 		return mInstructions.SelectOption_ (itemName);
 	}
 
-	public boolean SelectIn_OptionWithText (String selectItemName, String text) {
-		return mInstructions.SelectOption_ (selectItemName, text);
+	public boolean SelectOptionByText (String selectItemName, String text) {
+		return mInstructions.SelectOptionIn_ByText_ (selectItemName, text);
 	}
 
 	public boolean ClickItem (String itemName) {
-		return mInstructions.Click_ (itemName);
+		return mInstructions.ClickItem_ (itemName);
 	}
 
 	public boolean ClickItemByKeyValue (String keyTypeString, String value) {
@@ -127,7 +127,7 @@ public final class WebDriverKeywords {
 	}
 	
 	public boolean ClickAndWait (String itemName) {
-		return mInstructions.Click_AndWait (itemName);
+		return mInstructions.ClickItem_AndWait (itemName);
 	}
 
 	public boolean ClickItemByKeyValueAndWait (String keyTypeString, String value) {
@@ -139,7 +139,7 @@ public final class WebDriverKeywords {
 //	}
 	
 	public boolean TypeIntoItem (String itemName, String text) {
-		return mInstructions.Type_Into_ (text, itemName);
+		return mInstructions.Type_IntoItem_ (text, itemName);
 	}
 
 	public boolean TypeByKeyValue (String text, String keyTypeString, String value) {

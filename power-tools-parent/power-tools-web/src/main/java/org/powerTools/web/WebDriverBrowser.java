@@ -461,7 +461,7 @@ final class WebDriverBrowser implements IBrowser {
 	}
 	
 	private final class ItemFilledCondition implements ICondition {
-		ItemFilledCondition (final Item item) {
+		ItemFilledCondition (Item item) {
 			mItem = item;
 		}
 		

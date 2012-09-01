@@ -29,6 +29,8 @@ import fit.Parse;
 
 
 final class DataSource extends BaseTestSource {
+	private String mInstructionName;
+	
 	DataSource (Fixture fixture, Parse table, String logFilePath) {
 		super (Scope.getGlobalScope (), fixture, table.parts, logFilePath);
 	}
@@ -62,7 +64,7 @@ final class DataSource extends BaseTestSource {
 		}
 		mPublisher.publishEndOfTestLine ();
 		
-		mTestLine.setPart (0, instructionNameSb.toString ().trim ());
+		mInstructionName = instructionNameSb.toString ().trim ();
 	}
 	
 	private void fillDataTestLine () {
@@ -80,6 +82,7 @@ final class DataSource extends BaseTestSource {
 	public TestLineImpl getTestLine () {
 		while ((mRow = mRow.more) != null) {
 			fillDataTestLine ();
+			mTestLine.setPart (0, mInstructionName);
 			linkToLogFile (mRow.parts);
 			return mTestLine;
 		}

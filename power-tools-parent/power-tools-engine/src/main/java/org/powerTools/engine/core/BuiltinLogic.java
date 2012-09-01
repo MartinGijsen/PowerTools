@@ -22,15 +22,20 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
 import org.powerTools.engine.ExecutionException;
-import org.powerTools.engine.Symbol;
+import org.powerTools.engine.InstructionSet;
 import org.powerTools.engine.RunTime;
-import org.powerTools.engine.instructions.InstructionSet;
+import org.powerTools.engine.Symbol;
 import org.powerTools.engine.instructions.InstructionSetFactory;
 import org.powerTools.engine.symbol.Scope;
 import org.powerTools.engine.symbol.StringSequence;
 
 
+/**
+ * Implements the builtin actions that are available from a test.
+ */
 final class BuiltinLogic {
+	static final String INSTRUCTION_SET_NAME = "engine";
+
 	private static final int MILLIS_PER_SECOND		= 1000;
 	private static final int SECONDS_PER_MINUTE		= 60;
 	private static final int MAX_NR_OF_FIELD_NAMES	= 20;
@@ -49,56 +54,78 @@ final class BuiltinLogic {
 		}
 	}
 
+
 	void register (Object object) {
-		register ("engine", object);
+		register (INSTRUCTION_SET_NAME, object);
 	}
 	
-	void register (String name, Object object) {
-		InstructionSet instructionSet = InstructionSetFactory.createClassInstructionSet (name, object);
-		mInstructions.addInstructionSet (instructionSet);
+	boolean register (String name, Object object) {
+		mInstructions.addInstructionSet (InstructionSetFactory.createClassInstructionSet (name, object));
+		return true;
 	}
 
 
 	// instruction sets
-	boolean useInstructionSet (String name) {
-		register (name, getObject (name));
-		return true;
+	boolean useInstructionSet (String className) {
+		String name				= className;
+		Object instructionSet	= getObject (className);
+		if (instructionSet instanceof InstructionSet) {
+			name = ((InstructionSet) instructionSet).getName ();
+		}
+		return register (name, instructionSet);
 	}
 
-	private Object getObject (String name) {
+	boolean useInstructionSet (String name, String className) {
+		return register (name, getObject (className));
+	}
+
+	private Object getObject (String className) {
 		try {
-			Constructor<?> constructor = getConstructor (Class.forName (name));
-			if (constructor != null) {
+			Class<?> theClass = getClass (className);
+			try {
+				Constructor<?> constructor = theClass.getConstructor (new Class<?>[] { RunTime.class });
 				mRunTime.reportInfo ("using constructor with RunTime parameter");
 				return constructor.newInstance (mRunTime);
-			} else {
-				mRunTime.reportInfo ("using default constructor");
-				return Class.forName (name).newInstance ();
+			} catch (SecurityException e) {
+				;
+			} catch (NoSuchMethodException e) {
+				;
 			}
-		} catch (ClassNotFoundException cnfe) {
-			throw new ExecutionException (String.format ("corresponding class '%s' not found", name));
-		} catch (InstantiationException ie) {
-			throw new ExecutionException (ie.toString ());
+			mRunTime.reportInfo ("using default constructor");
+			return theClass.newInstance ();
 		} catch (InvocationTargetException ite) {
 			mRunTime.reportError (ite.toString ());
 			mRunTime.reportError (ite.getCause ().toString ());
 			return false;
-		} catch (IllegalAccessException iae) {
-			throw new ExecutionException (iae.toString ());
+		} catch (Exception e) {
+			throw new ExecutionException (e.toString ());
 		}
 	}
 
-	private Constructor<?> getConstructor (Class<?> aClass) {
-		final Constructor<?> constructors[] = aClass.getConstructors ();
-	    for (Constructor<?> constructor : constructors) {
-	    	final Class<?>[] parameterTypes = constructor.getParameterTypes(); 
-	    	if (parameterTypes.length == 1 && parameterTypes[0] == RunTime.class) {
-	    		return constructor;
-	    	}
-	    }
-	    
-	    return null;
+	private Class<?> getClass (String className) {
+		try {
+			return Class.forName (className);
+		} catch (ClassNotFoundException cnfe) {
+			throw new ExecutionException (String.format ("class '%s' not found on the class path", className));
+		}
 	}
+
+//	private Constructor<?> getConstructorWithRuntimeParameter (Class<?> aClass) {
+//		try {
+//			return aClass.getConstructor (new Class<?>[] { RunTime.class });
+//		} catch (Exception e) {
+//			return null;
+//		}
+////		Constructor<?> constructors[] = aClass.getConstructors ();
+////	    for (Constructor<?> constructor : constructors) {
+////	    	Class<?>[] parameterTypes = constructor.getParameterTypes(); 
+////	    	if (parameterTypes.length == 1 && parameterTypes[0] == RunTime.class) {
+////	    		return constructor;
+////	    	}
+////	    }
+////	    
+////	    return null;
+//	}
 
 	
 	// number and string sequences
@@ -168,22 +195,24 @@ final class BuiltinLogic {
 	}
 
 
+	boolean waitMilliseconds (String nrOfMilliseconds) {
+		return sleep (Long.parseLong (nrOfMilliseconds));
+	}
+
 	boolean waitSeconds (String nrOfSeconds) {
-		return sleep (Integer.parseInt (nrOfSeconds));
+		return sleep (Long.parseLong (nrOfSeconds) * MILLIS_PER_SECOND);
 	}
 
 	boolean waitMinutes (String nrOfMinutes) {
-		return sleep (Integer.parseInt (nrOfMinutes) * SECONDS_PER_MINUTE);
+		return sleep (Long.parseLong (nrOfMinutes) * SECONDS_PER_MINUTE * MILLIS_PER_SECOND);
 	}
 
-	private boolean sleep (int nrOfSeconds) {
+	private boolean sleep (long nrOfMilliseconds) {
 		try {
-			Thread.sleep (nrOfSeconds * MILLIS_PER_SECOND);
+			Thread.sleep (nrOfMilliseconds);
 			return true;
 		} catch (InterruptedException ie) {
 			throw new ExecutionException ("wait was interrupted");
-		} catch (NumberFormatException ie) {
-			throw new ExecutionException ("invalid number");
 		}
 	}
 	

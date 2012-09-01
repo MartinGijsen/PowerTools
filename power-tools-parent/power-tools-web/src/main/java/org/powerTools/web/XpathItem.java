@@ -22,18 +22,18 @@ import org.powerTools.web.WebLibrary.IItemType;
 
 
 final class XpathItem extends Item {
-	XpathItem (final String logicalName, final IItemType type, final String value) {
+	XpathItem (String logicalName, IItemType type, String value) {
 		this (logicalName, null, type, value);
 	}
 
-	XpathItem (final String logicalName, final Item parent, final IItemType type, final String xpath) {
+	XpathItem (String logicalName, Item parent, IItemType type, String xpath) {
 		super (logicalName, parent, type, WebLibrary.IKeyType.cXpath, xpath);
 		mSections = xpath.split (cParameterMarker);
 		mParameters = new String[mSections.length - 1];
 	}
 
 	
-	boolean resetParameter (final int paramNr) {
+	boolean resetParameter (int paramNr) {
 		mParameters[paramNr] = null;
 		return true;
 	}
@@ -45,7 +45,7 @@ final class XpathItem extends Item {
 		return true;
 	}
 
-	public boolean setParameterValue (final int position, final String value) {
+	public boolean setParameterValue (int position, String value) {
 		if (mParameters == null || position <= 0 || position > mParameters.length) {
 			return false;
 		} else {

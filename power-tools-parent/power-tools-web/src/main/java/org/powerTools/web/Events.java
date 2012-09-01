@@ -28,14 +28,14 @@ import org.powerTools.engine.RunTime;
 
 
 final class Events {
-	Events (final RunTime runTime) {
+	Events (RunTime runTime) {
 		mRunTime = runTime;
 
 		mEvents = new HashMap<String, Map<String, String>> ();
 	}
 
 
-	boolean addAttribute (final String eventName, final String attributeName, final String value) {
+	boolean addAttribute (String eventName, String attributeName, String value) {
 		Map<String, String> event = mEvents.get (eventName);
 		if (event == null && mEventNames.contains (eventName)) {
 			event = new HashMap<String, String> ();
@@ -55,7 +55,7 @@ final class Events {
 		return false;
 	}
 
-	boolean checkEvent (final Collection<HtmlRequest> requests, final String eventName) {
+	boolean checkEvent (Collection<HtmlRequest> requests, String eventName) {
 		final Map<String, String> event = mEvents.get (eventName);
 		if (event == null) {
 			mRunTime.reportError ("unknown event");
@@ -127,7 +127,7 @@ final class Events {
 	private final Map<String, Map<String, String>> mEvents;
 
 
-	private boolean checkAttributes (final Collection<HtmlRequest> requests, final Map<String, String> expectedAttributes) {
+	private boolean checkAttributes (Collection<HtmlRequest> requests, Map<String, String> expectedAttributes) {
 		final Set<String> attributeNames = expectedAttributes.keySet ();
 		mRunTime.reportInfo ("looking for: " + getParameters (expectedAttributes));
 		if (requests != null) {
@@ -152,7 +152,7 @@ final class Events {
 		return false;
 	}
 
-	private boolean attributeHasValue (final Map<String, String> attributes, final String attributeName, final String expectedValue) {
+	private boolean attributeHasValue (Map<String, String> attributes, String attributeName, String expectedValue) {
 		if (!attributes.containsKey (mAttributesMap.get (attributeName))) {
 			mRunTime.reportInfo ("attribute " + attributeName + " is not present");
 			return false;
@@ -178,7 +178,7 @@ final class Events {
 		}
 	}
 
-	private String getParameters (final Map<String, String> event) {
+	private String getParameters (Map<String, String> event) {
 		final StringBuffer sb = new StringBuffer ();
 		for (String attribute : event.keySet ()) {
 			sb.append (attribute).append ("='").append (event.get (attribute)).append ("' ");
@@ -186,7 +186,7 @@ final class Events {
 		return sb.toString ();
 	}
 
-	private String getParameters (final Set<String> attributeNames, final Map<String, String> parameters) {
+	private String getParameters (Set<String> attributeNames, Map<String, String> parameters) {
 		final StringBuffer sb = new StringBuffer ();
 		for (String attribute : attributeNames) {
 			sb.append (attribute).append ("='").append (parameters.get (mAttributesMap.get (attribute))).append ("' ");

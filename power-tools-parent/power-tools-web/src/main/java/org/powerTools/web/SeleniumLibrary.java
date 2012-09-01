@@ -24,7 +24,7 @@ import org.powerTools.engine.RunTime;
 
 
 public final class SeleniumLibrary extends WebLibrary {
-	public SeleniumLibrary (final RunTime runTime) {
+	public SeleniumLibrary (RunTime runTime) {
 		super (runTime);
 //		mEvents = new Events (runTime);
 		runTime.addSharedObject ("SeleniumLibrary", this);
@@ -32,7 +32,7 @@ public final class SeleniumLibrary extends WebLibrary {
 
 
 	// browser related instructions
-	public final boolean SetSeleniumServerPortTo_ (final int portNr) {
+	public final boolean SetSeleniumServerPortTo_ (int portNr) {
 		return ((SeleniumBrowser) mBrowser).setServerPort (portNr);
 	}
 
@@ -50,7 +50,7 @@ public final class SeleniumLibrary extends WebLibrary {
 		}
 	}
 
-	public final boolean OpenBrowser_At_ (final String typeString, final String url) {
+	public final boolean OpenBrowser_At_ (String typeString, String url) {
 		if (mBrowser != null) {
 			mRunTime.reportError ("browser is already open");
 			return false;
@@ -71,7 +71,7 @@ public final class SeleniumLibrary extends WebLibrary {
 //		return true;
 //	}
 
-//	public boolean SetXpathAdjusting (final String setting) {
+//	public boolean SetXpathAdjusting (String setting) {
 //		if (setting.equals("on")) {
 //			return EnableXpathAdjusting ();
 //		} else if (setting.equals("off")) {
@@ -99,11 +99,11 @@ public final class SeleniumLibrary extends WebLibrary {
 //		return true;
 //	}
 //
-//	public boolean Event_Attribute_Value_ (final String eventName, final String attributeName, final String value) {
+//	public boolean Event_Attribute_Value_ (String eventName, String attributeName, String value) {
 //		return mEvents.addAttribute (eventName, attributeName, value);
 //	}
 //	
-//	public boolean CheckForEvent_ (final String eventName) {
+//	public boolean CheckForEvent_ (String eventName) {
 //		return mEvents.checkEvent (mRequests, eventName);
 //	}
 //
