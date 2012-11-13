@@ -58,6 +58,10 @@ public final class BuiltinInstructions implements InstructionSet {
 	public boolean UseInstructionSet_As_ (String className, String name) {
 		return mLogic.useInstructionSet (name, className);
 	}
+	
+//	public boolean DefineAlias_For_ (String newInstructionName, String oldInstructionName) {
+//		return mLogic.defineAlias (newInstructionName, oldInstructionName);
+//	}
 
 	public boolean DefineNumberSequence_ (String name) {
 		return DefineNumberSequence_From_ (name, 1);
@@ -121,5 +125,13 @@ public final class BuiltinInstructions implements InstructionSet {
 
 	public boolean Wait_Minutes (String nrOfMinutes) {
 		return mLogic.waitMinutes (nrOfMinutes);
+	}
+	
+	public boolean Role_Username_Password_ (String role, String username, String password) {
+		return mLogic.declareRole (role, "", username, password);
+	}
+	
+	public boolean System_Role_Domain_Username_Password (String system, String role, String domain, String username, String password) {
+		return mLogic.declareRole (system, role, domain, username, password);
 	}
 }

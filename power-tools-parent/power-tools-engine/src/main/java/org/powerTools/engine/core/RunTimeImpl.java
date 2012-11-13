@@ -23,6 +23,7 @@ import java.util.Map;
 
 import org.powerTools.engine.Context;
 import org.powerTools.engine.Symbol;
+import org.powerTools.engine.Roles;
 import org.powerTools.engine.RunTime;
 import org.powerTools.engine.instructions.ProcedureRunner;
 import org.powerTools.engine.reports.TestRunResultPublisher;
@@ -47,6 +48,7 @@ public class RunTimeImpl implements RunTime, ProcedureRunner {
 
 	private final Context mContext;
 	private final TestRunResultPublisher mPublisher;
+	private final RolesImpl mRoles;
 	private final Map<String, Object> mSharedObjects;
 
 	
@@ -54,6 +56,7 @@ public class RunTimeImpl implements RunTime, ProcedureRunner {
 		mSourceStack	= new TestSourceStack ();
 		mContext		= context;
 		mPublisher 		= TestRunResultPublisher.getInstance ();
+		mRoles			= new RolesImpl (this);
 		mSharedObjects	= new HashMap<String, Object> ();
 	}
 
@@ -115,31 +118,10 @@ public class RunTimeImpl implements RunTime, ProcedureRunner {
 
 	
 	@Override
-	public Symbol createLocalConstant (String name, String value) {
-		return mSourceStack.getCurrentScope ().createConstant (name, value);
+	public Scope getGlobalScope () {
+		return Scope.getGlobalScope ();
 	}
-
-	@Override
-	public Symbol createLocalVariable (String name, String value) {
-		return mSourceStack.getCurrentScope ().createVariable (name, value);
-	}
-
-	@Override
-	public Symbol createLocalStructure (String name) {
-		return mSourceStack.getCurrentScope ().createStructure (name);
-	}
-
-	@Override
-	public Symbol createLocalNumberSequence (String name, int value) {
-		return mSourceStack.getCurrentScope ().createNumberSequence (name, value);
-	}
-
-	@Override
-	public StringSequence createLocalStringSequence (String name) {
-		return mSourceStack.getCurrentScope ().createStringSequence (name);
-	}
-
-
+	
 	@Override
 	public Symbol getSymbol (String name) {
 		return mSourceStack.getCurrentScope ().getSymbol (name);
@@ -170,5 +152,10 @@ public class RunTimeImpl implements RunTime, ProcedureRunner {
 	
 	public void run (TestSource source) {
 		mSourceStack.initAndPush (source);
+	}
+
+	@Override
+	public Roles getRoles () {
+		return mRoles;
 	}
 }

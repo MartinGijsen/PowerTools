@@ -158,7 +158,7 @@ final class SeleniumBrowser implements IBrowser {
 
 
 	@Override
-	public boolean selectFrame (String name) {
+	public boolean selectFrame (Item item) {
 		return false;
 	}
 
@@ -529,6 +529,18 @@ final class SeleniumBrowser implements IBrowser {
 	}
 
 	@Override
+	public boolean waitForItemVisible (Item item) {
+		mRunTime.reportError ("not implemented");
+		return false;
+	}
+
+	@Override
+	public boolean waitForItemVisible (Item item, int timeout) {
+		mRunTime.reportError ("not implemented");
+		return false;
+	}
+	
+	@Override
 	public boolean checkForText (String text) {
 		try {
 			if (browserIsOpen()) {
@@ -815,4 +827,9 @@ final class SeleniumBrowser implements IBrowser {
 		return 0;
 	}
 
+	
+	@Override
+	public Object getTestTool () {
+		return mSelenium;
+	}
 }

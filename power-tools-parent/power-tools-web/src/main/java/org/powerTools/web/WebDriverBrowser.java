@@ -71,27 +71,28 @@ final class WebDriverBrowser implements IBrowser {
 		case cInternetExplorer:
 			System.setProperty ("webdriver.ie.driver", "IEDriverServer.exe"); 
 			mDriver = new InternetExplorerDriver (); 
-			mDriver.get (url);
-			return true;
+			break;
 		case cChrome:
 			try {
 				System.setProperty ("webdriver.chrome.driver", "chromedriver.exe"); 
 				final ChromeDriverService chromeDriverService = ChromeDriverService.createDefaultService (); 
 				chromeDriverService.start ();
 				mDriver = new ChromeDriver (chromeDriverService); 
-				mDriver.get (url);
-				return true;
+				break;
 			} catch (IOException ioe) {
 				return false;
 			}
 		case cFirefox:
 			mDriver = new FirefoxDriver();
-			mDriver.get (url);
-			return true;
+			break;
 		default:
 			mRunTime.reportError ("unknown browser code: " + type);
 			return false;
 		}
+
+		mDriver.get (url);
+		mRunTime.addSharedObject ("WebDriver", mDriver);
+		return true;
 	}
 
 	@Override
@@ -129,8 +130,8 @@ final class WebDriverBrowser implements IBrowser {
 	}
 
 	@Override
-	public boolean selectFrame (String name) {
-		mDriver.switchTo ().frame (mDriver.findElement (By.id (name)));
+	public boolean selectFrame (Item item) {
+		mDriver.switchTo ().frame (mDriver.findElement (getLocator (item)));
 		return true;
 	}
 
@@ -172,6 +173,11 @@ final class WebDriverBrowser implements IBrowser {
 	@Override
 	public boolean itemExists (IKeyType keyType, String value) {
 		return hasOneElement (getLocator (keyType, value));
+	}
+
+	public boolean itemVisible (Item item) {
+		final WebElement element = findOneElement (item);
+		return element.isDisplayed ();
 	}
 
 	@Override
@@ -253,8 +259,8 @@ final class WebDriverBrowser implements IBrowser {
 
 	@Override
 	public boolean selectChoice (Item selectItem, String optionText) {
-		if (selectItem.mType != WebLibrary.IItemType.cListboxItem) {
-			mRunTime.reportError ("item is not a listbox item");
+		if (selectItem.mType != WebLibrary.IItemType.cListbox) {
+			mRunTime.reportError ("item is not a listbox");
 			return false;
 		} else {
 			Select listbox = new Select (mDriver.findElement (getLocator (selectItem)));
@@ -304,6 +310,16 @@ final class WebDriverBrowser implements IBrowser {
 		return waitForCondition (new ItemFilledCondition (item), timeout);
 	}
 
+	@Override
+	public boolean waitForItemVisible (Item item) {
+		return waitForItemVisible (item, mDefaultTimeout);
+	}
+
+	@Override
+	public boolean waitForItemVisible (Item item, int timeout) {
+		return waitForCondition (new ItemVisibleCondition (item), timeout);
+	}
+	
 	@Override
 	public boolean checkForText (String text) {
 		final WebElement element = findOneElement (WebLibrary.IKeyType.cTag, "body");
@@ -485,6 +501,18 @@ final class WebDriverBrowser implements IBrowser {
 		private Item mItem;
 	}
 
+	private final class ItemVisibleCondition implements ICondition {
+		ItemVisibleCondition (Item item) {
+			mItem = item;
+		}
+		
+		public boolean isSatisfied () {
+			return itemVisible (mItem);
+		}
+		
+		private Item mItem;
+	}
+
 	private final class TextPresentCondition implements ICondition {
 		TextPresentCondition (String text) {
 			mText = text;
@@ -503,5 +531,10 @@ final class WebDriverBrowser implements IBrowser {
 		final List<WebElement> list = mDriver.findElements(locator);
 		mRunTime.reportInfo ("the count is : " + list.size());
 		return list.size();
+	}
+	
+	@Override
+	public Object getTestTool () {
+		return mDriver;
 	}
 }

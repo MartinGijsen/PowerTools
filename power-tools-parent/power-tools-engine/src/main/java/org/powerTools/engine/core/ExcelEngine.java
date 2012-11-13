@@ -22,6 +22,7 @@ import org.powerTools.engine.Context;
 import org.powerTools.engine.reports.ReportFactory;
 import org.powerTools.engine.sources.TestSource;
 import org.powerTools.engine.sources.XlsTestSource;
+import org.powerTools.engine.sources.XlsxTestSource;
 import org.powerTools.engine.symbol.Scope;
 
 
@@ -42,7 +43,7 @@ public class ExcelEngine extends Engine {
 		}
 	}
 
-	
+
 	public ExcelEngine (String resultsDirectory) {
 		this (new RunTimeImpl (new Context (resultsDirectory)));
 	}
@@ -59,7 +60,14 @@ public class ExcelEngine extends Engine {
 
 	@Override
 	public final void run (String fileName) {
-		TestSource source = XlsTestSource.createTestSource (fileName, Scope.getGlobalScope ());
+		TestSource source;
+		if (fileName.endsWith (".xls")) {
+			source = XlsTestSource.createTestSource (fileName, Scope.getGlobalScope ());
+		} else if (fileName.endsWith (".xlsx")) {
+			source = XlsxTestSource.createTestSource (fileName, Scope.getGlobalScope ());
+		} else {
+			return;
+		}
 		mRunTime.mSourceStack.initAndPush (source);
 		run ();
 		mPublisher.finish ();

@@ -31,8 +31,6 @@ import fit.Parse;
 
 
 final class InstructionSource extends BaseTestSource {
-	private static final String OUTPUT_PARAMETER_PREFIX = "out ";
-	
 	private final List<String> mParameterNames;
 
 	private Procedure mProcedure;
@@ -79,16 +77,8 @@ final class InstructionSource extends BaseTestSource {
 
 		mProcedure = new Procedure (instructionName);
 
-		addParametersToProcedure ();
-	}
-	
-	private void addParametersToProcedure () {
 		for (String parameterName : mParameterNames) {
-			boolean isOutputParameter = parameterName.startsWith (OUTPUT_PARAMETER_PREFIX);
-			if (isOutputParameter) {
-				parameterName = parameterName.substring (OUTPUT_PARAMETER_PREFIX.length ()).trim ();
-			}
-			mProcedure.addParameter (parameterName, isOutputParameter);
+			mProcedure.addParameter (parameterName, OUTPUT_PARAMETER_PREFIX);
 		}
 	}
 	

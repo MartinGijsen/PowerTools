@@ -26,6 +26,8 @@ options {
 
 tokens {
 	UnaryMinus;
+	DatePlus;
+	DateMinus;
 }
 
 @lexer::header {
@@ -55,22 +57,42 @@ notExpr
 
 booleanExpr
 	:	comparableExpression
-		(	'='^   comparableExpression
-		|	'<>'^  comparableExpression
-		|	'<'^   comparableExpression
-		|	'<='^  comparableExpression
-		|	'>'^   comparableExpression
-		|	'>='^  comparableExpression
+		(	(	'='^
+			|	'<>'^
+			|	'<'^
+			|	'<='^
+			|	'>'^
+			|	'>='^
+			)
+			comparableExpression
 		)?
 	;
 
 comparableExpression
 	:	(term '++') => stringExpr
+	|	dateExpr
 	|	addExpr
 	;
 
 stringExpr
 	:	term ('++'^ term)+
+	;
+
+dateExpr
+	:	day (dateOperator^ NumberLiteral period)*
+	;
+
+dateOperator
+	:	'+' -> DatePlus
+	|	'-' -> DateMinus
+	;
+	
+day
+	:	'yesterday' | 'today' | 'tomorrow'
+	;
+
+period
+	:	'days' | 'weeks' | 'months' | 'years'
 	;
 
 addExpr

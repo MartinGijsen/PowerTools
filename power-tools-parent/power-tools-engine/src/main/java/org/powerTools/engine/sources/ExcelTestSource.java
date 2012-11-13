@@ -19,6 +19,8 @@
 package org.powerTools.engine.sources;
 
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -32,6 +34,9 @@ abstract class ExcelTestSource extends TestSource {
 	public final String mFileName;
 	public final String mSheetName;
 
+	private final static String DEFINE_PROCEDURE_INSTRUCTION	= "define instruction";
+	private final static String END_PROCEDURE_INSTRUCTION		= "end instruction";
+	
 	private final Iterator<Row> mRowIter;
 
 	
@@ -77,7 +82,9 @@ abstract class ExcelTestSource extends TestSource {
 					mTestLine.setPart (cellNr, getValue (row.getCell (cellNr)).trim ());
 				}
 	
-				if (!mTestLine.isEmpty ()) {
+				if (mTestLine.getPart(0).equals (DEFINE_PROCEDURE_INSTRUCTION)) {
+					processProcedureDefinition ();
+				} else if (!mTestLine.isEmpty ()) {
 					return mTestLine;
 				}
 			}
@@ -86,6 +93,67 @@ abstract class ExcelTestSource extends TestSource {
 		return null;
 	}
 
+	private void processProcedureDefinition () {
+		Procedure procedure = processProcedureHeader ();
+		processProcedureBody (procedure);
+		if (procedure != null) {
+			throw new ProcedureException (procedure);
+		}
+	}
+	
+	private Procedure processProcedureHeader () {
+		mPublisher.publishTestLine (mTestLine);
+		final int nrOfParts = mTestLine.getNrOfParts ();
+		if (nrOfParts < 2 || mTestLine.getPart (1).isEmpty ()) {
+			mPublisher.publishError ("missing instruction name");
+			mPublisher.publishEndOfTestLine ();
+			return null;
+		} else {
+			final Procedure procedure = new Procedure (mTestLine.getPart (1));
+			for (int partNr = 2; partNr < nrOfParts; ++partNr) {
+				procedure.addParameter (mTestLine.getPart (partNr), OUTPUT_PARAMETER_PREFIX);
+			}
+			mPublisher.publishEndOfTestLine ();
+			return procedure;
+		}
+	}
+	
+	private void processProcedureBody (Procedure procedure) {
+		List<String> parts = new LinkedList<String> ();
+		while (readNextLine (parts)) {
+			mTestLine.setParts (parts);
+			mPublisher.publishTestLine (mTestLine);
+			if (parts.get (0).equals (END_PROCEDURE_INSTRUCTION)) {
+				mPublisher.publishEndOfTestLine ();
+				return;
+			} else if (procedure != null) {
+				procedure.addInstruction (parts);
+			}
+			mPublisher.publishEndOfTestLine ();
+			parts = new LinkedList<String> ();
+		}
+		throw new ExecutionException ("instruction incomplete at end of sheet");
+	}
+
+	private boolean readNextLine (List<String> parts) {
+		while (mRowIter.hasNext ()) {
+			final Row row		= mRowIter.next ();
+			final int nrOfParts	= getNrOfParts (row);
+
+			if (nrOfParts > 0) {
+				for (int cellNr = 0; cellNr < nrOfParts; ++cellNr) {
+					parts.add (cellNr, getValue (row.getCell (cellNr)).trim ());
+				}
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	private void processInstructionHeader () {
+		final int nrOfParts = mTestLine.getNrOfParts ();
+		
+	}
 
 	protected static Names createNamesFromFileName (String sourceName) {
 		int separatorPosition = sourceName.indexOf ('@');
@@ -110,7 +178,7 @@ abstract class ExcelTestSource extends TestSource {
 		int nrOfParts = row.getLastCellNum ();
 
 		while (nrOfParts > 0) {
-			Cell cell = row.getCell (nrOfParts - 1);
+			final Cell cell = row.getCell (nrOfParts - 1);
 			if (cell != null && !cell.toString ().isEmpty ()) {
 				break;
 			} else {

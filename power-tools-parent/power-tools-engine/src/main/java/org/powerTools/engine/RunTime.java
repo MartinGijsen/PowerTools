@@ -18,6 +18,9 @@
 
 package org.powerTools.engine;
 
+import org.powerTools.engine.Roles;
+import org.powerTools.engine.symbol.Scope;
+
 
 /**
  * The runtime provides all engine functionality that an instruction may need.
@@ -40,14 +43,13 @@ public interface RunTime {
 	void reportValue      (String expression, String value);
 	void reportInfo       (String message);
 
-	Symbol createLocalConstant (String name, String value);
-	Symbol createLocalVariable (String name, String value);
-	Symbol createLocalStructure (String name);
-	Symbol createLocalNumberSequence (String name, int value);
-	Symbol createLocalStringSequence (String name);
+	Scope getGlobalScope ();
+	Scope getCurrentScope ();
 
 	Symbol getSymbol (String name);
 	void setValue (String name, String value);
 	void copyStructure (String target, String source);
 	void clearStructure (String name);
+	
+	Roles getRoles ();
 }

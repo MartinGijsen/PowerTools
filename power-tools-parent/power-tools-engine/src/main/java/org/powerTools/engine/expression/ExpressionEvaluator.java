@@ -30,7 +30,6 @@ import org.powerTools.engine.symbol.Scope;
 /**
  * The ExpressionEvaluator first parses the expression, creating an Abstract Syntax Tree.
  * This AST is then evaluated by a tree walker (also a kind of parser).
- * Parser, lexer and tree walker are generated from grammars by the ANTLR parser generator.
  */
 public final class ExpressionEvaluator {
 	private static final ExpressionLexer mLexer   = new ExpressionLexer ();
@@ -50,6 +49,8 @@ public final class ExpressionEvaluator {
 			final ExpressionTreeWalker walker = new ExpressionTreeWalker (new CommonTreeNodeStream (tree));
 			return walker.main (scope).toString ();
 		} catch (RecognitionException re) {
+			throw new ExecutionException ("invalid expression: " + expression);
+		} catch (NullPointerException npe) {
 			throw new ExecutionException ("invalid expression: " + expression);
 		}
 	}

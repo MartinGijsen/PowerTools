@@ -43,6 +43,7 @@ final class BuiltinLogic {
 	private final RunTimeImpl mRunTime;
 	private final Instructions mInstructions;
 	private final String[] mFieldNames;
+	private final RolesImpl mRoles;
 
 
 	BuiltinLogic (RunTimeImpl runTime, Instructions instructions) {
@@ -52,6 +53,7 @@ final class BuiltinLogic {
 		for (int fieldNameNr = 0; fieldNameNr < MAX_NR_OF_FIELD_NAMES; ++fieldNameNr) {
 			mFieldNames[fieldNameNr] = "";
 		}
+		mRoles = new RolesImpl (runTime);
 	}
 
 
@@ -128,14 +130,31 @@ final class BuiltinLogic {
 //	}
 
 	
+//	boolean defineAlias (String newInstructionName, String oldInstructionName) {
+//		if (containsInstructionSet (newInstructionName)) {
+//			throw new ExecutionException ("instruction set not allowed in alias name");
+//		} else if (mInstructions.getExecutor (newInstructionName) != null) {
+//			throw new ExecutionException ("alias already exists");
+//		} else {
+//			final Executor instructionExecutor = mInstructions.getExecutor (oldInstructionName);
+//			;
+//			return mInstructions.createAlias (newInstructionName, oldInstructionName);
+//		}
+//	}
+	
+	private boolean containsInstructionSet (String name) {
+		return name.contains (".");
+	}
+
+
 	// number and string sequences
 	boolean defineNumberSequence (String name, int initialValue) {
-		mRunTime.createLocalNumberSequence (name, initialValue);
+		mRunTime.getCurrentScope ().createNumberSequence (name, initialValue);
 		return true;
 	}
 	
 	boolean defineStringSequence (String name) {
-		mRunTime.createLocalStringSequence (name);
+		mRunTime.getCurrentScope ().createStringSequence (name);
 		return true;
 	}
 
@@ -152,12 +171,12 @@ final class BuiltinLogic {
 
 	// constants, variable and structures
 	boolean defineConstant (String name, String value) {
-		mRunTime.createLocalConstant (name, value);
+		mRunTime.getCurrentScope ().createConstant (name, value);
 		return true;
 	}
 
 	boolean defineVariable (String name, String value) {
-		mRunTime.createLocalVariable (name, value);
+		mRunTime.getCurrentScope ().createVariable (name, value);
 		return true;
 	}
 
@@ -167,7 +186,7 @@ final class BuiltinLogic {
 	}
 
 	boolean defineStructure (String name) {
-		mRunTime.createLocalStructure (name);
+		mRunTime.getCurrentScope ().createStructure (name);
 		return true;
 	}
 
@@ -280,8 +299,18 @@ final class BuiltinLogic {
 		}
 	}
 
-	boolean RunSheet (String sheetName) {
+	boolean runSheet (String sheetName) {
 		mRunTime.mSourceStack.run (sheetName);
+		return true;
+	}
+	
+	boolean declareRole (String role, String domain, String username, String password) {
+		mRunTime.getRoles ().addRole (role, domain, username, password);
+		return true;
+	}
+	
+	boolean declareRole (String system, String role, String domain, String username, String password) {
+		mRunTime.getRoles ().addRole (system, role, domain, username, password);
 		return true;
 	}
 }

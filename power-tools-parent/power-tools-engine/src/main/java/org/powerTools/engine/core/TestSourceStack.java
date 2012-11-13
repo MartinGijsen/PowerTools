@@ -18,6 +18,7 @@
 
 package org.powerTools.engine.core;
 
+import java.util.EmptyStackException;
 import java.util.Stack;
 
 import org.powerTools.engine.sources.TestLineImpl;
@@ -39,7 +40,11 @@ final class TestSourceStack {
 
 
 	Scope getCurrentScope () {
-		return mSourceStack.peek ().getScope ();
+		try {
+			return mSourceStack.peek ().getScope ();
+		} catch (EmptyStackException ese) {
+			return Scope.getGlobalScope ();
+		}
 	}
 
 

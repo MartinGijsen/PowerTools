@@ -41,9 +41,15 @@ public final class Procedure {
 	}
 	
 	
-	public void addParameter (String name, boolean isOutput) {
+	public void addParameter (String name, String outputPrefix) {
+		String realName			= name;
+		final boolean isOutput	= name.startsWith (outputPrefix);
+		if (isOutput) {
+			realName = name.substring (outputPrefix.length ()).trim ();
+		}
+
 		for (Parameter parameter : mParameters) {
-			if (parameter.mName.equalsIgnoreCase (name)) {
+			if (parameter.mName.equalsIgnoreCase (realName)) {
 				throw new ExecutionException (String.format ("duplicate parameter name '%s'", parameter.mName));
 			}
 		}

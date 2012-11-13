@@ -29,13 +29,13 @@ public final class StringValue extends Value {
 	static final StringValue cFalseStringValue	= new StringValue (FALSE_STRING);	
 
 	
-	public StringValue (final String text) {
+	public StringValue (String text) {
 		mText = text;
 	}
 	
 	
 	@Override
-	public Value or (final Value v) {
+	public Value or (Value v) {
 		v.toBoolean ("or");
 		if (toBoolean ("or")) {
 			return this;
@@ -45,7 +45,7 @@ public final class StringValue extends Value {
 	}
 	
 	@Override
-	public Value and (final Value v) {
+	public Value and (Value v) {
 		v.toBoolean ("and");
 		if (!toBoolean ("and")) {
 			return this;
@@ -60,17 +60,17 @@ public final class StringValue extends Value {
 	}
 	
 	@Override
-	public Value equal (final Value v) {
+	public Value equal (Value v) {
 		return mText.equals (v.toStringValue ().mText) ? StringValue.cTrueStringValue : StringValue.cFalseStringValue;
 	}
 	
 	@Override
-	public Value unequal (final Value v) {
+	public Value unequal (Value v) {
 		return mText.equals (v.toStringValue ().mText) ? StringValue.cFalseStringValue : StringValue.cTrueStringValue;
 	}
 	
 	@Override
-	public Value concatenate (final Value v) {
+	public Value concatenate (Value v) {
 		mText += v.toStringValue ().mText;
 		return this;
 	}
@@ -92,12 +92,18 @@ public final class StringValue extends Value {
 	}
 	
 	@Override
+	public DateValue toDateValue () {
+		throwException ("cannot make date from string");
+		return null;
+	}
+
+	@Override
 	public String toString () {
 		return mText;
 	}
 	
 	@Override
-	public boolean toBoolean (final String operator) {
+	public boolean toBoolean (String operator) {
 		if (mText.equals (TRUE_STRING)) {
 			return true;
 		} else if (!mText.equals (FALSE_STRING)) {

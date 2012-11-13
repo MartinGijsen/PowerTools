@@ -16,27 +16,16 @@
  *	along with the PowerTools engine. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.powerTools.web;
-
-import org.powerTools.engine.RunTime;
-import org.openqa.selenium.WebDriver;
+package org.powerTools.engine;
 
 
-public final class WebDriverLibrary extends WebLibrary {
-	public WebDriverLibrary (RunTime runTime) {
-		super (runTime);
-//		mEvents = new Events (runTime);
-		runTime.addSharedObject ("WebDriverLibrary", this);
-	}
-
-
-	public boolean OpenBrowser_At_ (String typeString, String url) {
-		if (mBrowser != null) {
-			mRunTime.reportError ("browser is already open");
-			return false;
-		} else {
-			mBrowser = new WebDriverBrowser (mRunTime);
-			return mBrowser.open (getBrowserType (typeString), completeUrl (url));
-		}
-	}
+public interface Roles {
+	public void addRole (String role, String domain, String username, String password);
+	public void addRole (String system, String role, String domain, String username, String password);
+	public String getDomain (String role);
+	public String getDomain (String system, String role);
+	public String getUsername (String role);
+	public String getUsername (String system, String role);
+	public String getPassword (String role);
+	public String getPassword (String system, String role);
 }

@@ -27,6 +27,8 @@ options {
 @header {
 package org.powerTools.engine.expression;
 
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.regex.Pattern;
 
 import org.powerTools.engine.symbol.Scope;
@@ -86,25 +88,23 @@ expr returns [Value v]
 			final String name = $i.getText ();
 			v = createValue (mScope.getSymbol (name).getValue (name));
 		}
-/*			final String name = $i.getText ();
-			final Symbol symbol = mScope.getSymbol (name);
-			final Structure structuredSymbol = symbol.getStructure ();
-			if (structuredSymbol == null) {
-				v = createValue (symbol.getSimpleSymbol ().getValue ());
-			} else {
-				String value = structuredSymbol.getValue (name.split ("\\."));
-				if (value == null) {
-					throw new EngineException (String.format ("symbol '%s' does not exist", name));
-				} else {
-					v = createValue (value);
-				}
-			}
+	|	'yesterday' {
+			Calendar calendar = GregorianCalendar.getInstance ();
+			calendar.add (Calendar.DATE, -1);
+			v = new DateValue (calendar);
 		}
-*/
+	|	'today' {
+			v = new DateValue (GregorianCalendar.getInstance ());
+		}
+	|	'tomorrow' {
+			Calendar calendar = GregorianCalendar.getInstance ();
+			calendar.add (Calendar.DATE, 1);
+			v = new DateValue (calendar);
+		}
+	|	^(DatePlus day=expr nr=NumberLiteral (p='days' | p='weeks' | p='months' | p='years')) {
+			v = ((DateValue) $day.v).add ($nr.getText (), $p.getText ());
+		}
+	|	^(DateMinus day=expr nr=NumberLiteral (p='days' | p='weeks' | p='months' | p='years')) {
+			v = ((DateValue) $day.v).add ("-" + $nr.getText (), $p.getText ());
+		}
 	;
-/*	|	'yesterday'		{ Calendar calendar = GregorianCalendar.getInstance ();
-					  calendar.add (Calendar.DATE, -1);
-					}
-	|	'today'
-	|	'tomorrow'
-*/

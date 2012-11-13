@@ -23,65 +23,65 @@ public final class RealValue extends Value {
 	private double mValue;
 
 	
-	public RealValue (final double value) {
+	public RealValue (double value) {
 		mValue = value;
 	}
 	
-	public RealValue (final String value) {
+	public RealValue (String value) {
 		mValue = Double.parseDouble (value);
 	}
 	
 	
 	@Override
-	public Value equal (final Value v) {
+	public Value equal (Value v) {
 		return mValue == v.toRealValue ().mValue ? StringValue.cTrueStringValue : StringValue.cFalseStringValue;
 	}
 	
 	@Override
-	public Value unequal (final Value v) {
+	public Value unequal (Value v) {
 		return mValue == v.toRealValue ().mValue ? StringValue.cFalseStringValue : StringValue.cTrueStringValue;
 	}
 	
 	@Override
-	public Value lessThan (final Value v) {
+	public Value lessThan (Value v) {
 		return mValue < v.toRealValue ().mValue ? StringValue.cTrueStringValue : StringValue.cFalseStringValue;
 	}
 	
 	@Override
-	public Value lessOrEqual (final Value v) {
+	public Value lessOrEqual (Value v) {
 		return mValue <= v.toRealValue ().mValue ? StringValue.cTrueStringValue : StringValue.cFalseStringValue;
 	}
 	
 	@Override
-	public Value greaterThan (final Value v) {
+	public Value greaterThan (Value v) {
 		return mValue > v.toRealValue ().mValue ? StringValue.cTrueStringValue : StringValue.cFalseStringValue;
 	}
 	
 	@Override
-	public Value greaterOrEqual (final Value v) {
+	public Value greaterOrEqual (Value v) {
 		return mValue >= v.toRealValue ().mValue ? StringValue.cTrueStringValue : StringValue.cFalseStringValue;
 	}
 	
 	@Override
-	public Value add (final Value v) {
+	public Value add (Value v) {
 		mValue += v.toRealValue ().mValue;
 		return this;
 	}
 	
 	@Override
-	public Value subtract (final Value v) {
+	public Value subtract (Value v) {
 		mValue -= v.toRealValue ().mValue;
 		return this;
 	}
 	
 	@Override
-	public Value multiply (final Value v) {
+	public Value multiply (Value v) {
 		mValue *= v.toRealValue ().mValue;
 		return this;
 	}
 	
 	@Override
-	public Value divide (final Value v) {
+	public Value divide (Value v) {
 		mValue /= v.toRealValue ().mValue;
 		return this;
 	}
@@ -96,6 +96,12 @@ public final class RealValue extends Value {
 	@Override
 	public StringValue toStringValue () {
 		return new StringValue (Double.toString (mValue));
+	}
+
+	@Override
+	public DateValue toDateValue () {
+		throwException ("cannot make date from real number");
+		return null;
 	}
 
 	@Override

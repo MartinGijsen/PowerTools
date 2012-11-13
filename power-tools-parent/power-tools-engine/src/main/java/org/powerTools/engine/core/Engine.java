@@ -106,8 +106,8 @@ public abstract class Engine {
 	}
 	
 	private void evaluateExpressions () {
-		final Scope scope = mRunTime.mSourceStack.getCurrentScope ();
-		final int nrOfParts = mTestLine.getNrOfParts ();
+		final Scope scope	= mRunTime.mSourceStack.getCurrentScope ();
+		final int nrOfParts	= mTestLine.getNrOfParts ();
 		for (int partNr = 0; partNr < nrOfParts; ++partNr) {
 			final String part = mTestLine.getPart (partNr);
 			if (part.startsWith (EXPRESSION_PREFIX)) {

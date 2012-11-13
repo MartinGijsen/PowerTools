@@ -53,9 +53,10 @@ final class MethodExecutor implements Executor {
 		}
 	}
 
-	private void checkNrOfArguments (TestLine testLine, int maxNrOfArguments) {
-		if (testLine.getNrOfParts () - 1 > maxNrOfArguments) {
-			throw new ExecutionException ("too many arguments");
+	private void checkNrOfArguments (TestLine testLine, int maxNrOfArgs) {
+		final int actualNrOfArgs = testLine.getNrOfParts () - 1;
+		if (actualNrOfArgs > maxNrOfArgs) {
+			throw new ExecutionException (String.format ("instruction %s expects %d arguments but receives %d", testLine.getPart (0), maxNrOfArgs, actualNrOfArgs));
 		}
 	}
 	

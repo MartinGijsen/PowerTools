@@ -47,8 +47,9 @@ public abstract class Value {
 	public abstract StringValue toStringValue ();
 	public abstract RealValue toRealValue ();
 	public abstract IntegerValue toIntegerValue ();
+	public abstract DateValue toDateValue ();
 	public abstract String toString ();
-	
+
 	
 	protected void throwException (String message) {
 		throw new ExecutionException (message);

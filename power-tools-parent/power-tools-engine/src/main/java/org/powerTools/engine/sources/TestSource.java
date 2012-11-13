@@ -27,6 +27,8 @@ import org.powerTools.engine.symbol.Scope;
  * A TestSource contains instructions and provides them one by one.
  */
 public abstract class TestSource {
+	protected static final String OUTPUT_PARAMETER_PREFIX = "out ";
+
 	protected final TestRunResultPublisher	mPublisher;
 	protected final Scope					mScope;
 	

@@ -23,27 +23,27 @@ public final class IntegerValue extends Value {
 	private long mValue;
 
 	
-	public IntegerValue (final int value) {
+	public IntegerValue (int value) {
 		mValue = value;
 	}
 	
-	public IntegerValue (final String value) {
+	public IntegerValue (String value) {
 		mValue = Long.parseLong (value);
 	}
 
 	
 	@Override
-	public Value equal (final Value v) {
+	public Value equal (Value v) {
 		return mValue == v.toIntegerValue ().mValue ? StringValue.cTrueStringValue : StringValue.cFalseStringValue;
 	}
 	
 	@Override
-	public Value unequal (final Value v) {
+	public Value unequal (Value v) {
 		return mValue == v.toIntegerValue ().mValue ? StringValue.cFalseStringValue : StringValue.cTrueStringValue;
 	}
 	
 	@Override
-	public Value lessThan (final Value v) {
+	public Value lessThan (Value v) {
 		if (v instanceof IntegerValue) {
 			return mValue < v.toIntegerValue ().mValue ? StringValue.cTrueStringValue : StringValue.cFalseStringValue;
 		} else {
@@ -52,7 +52,7 @@ public final class IntegerValue extends Value {
 	}
 	
 	@Override
-	public Value lessOrEqual (final Value v) {
+	public Value lessOrEqual (Value v) {
 		if (v instanceof IntegerValue) {
 			return mValue <= v.toIntegerValue ().mValue ? StringValue.cTrueStringValue : StringValue.cFalseStringValue;
 		} else {
@@ -61,7 +61,7 @@ public final class IntegerValue extends Value {
 	}
 	
 	@Override
-	public Value greaterThan (final Value v) {
+	public Value greaterThan (Value v) {
 		if (v instanceof IntegerValue) {
 			return mValue > v.toIntegerValue ().mValue ? StringValue.cTrueStringValue : StringValue.cFalseStringValue;
 		} else {
@@ -70,7 +70,7 @@ public final class IntegerValue extends Value {
 	}
 	
 	@Override
-	public Value greaterOrEqual (final Value v) {
+	public Value greaterOrEqual (Value v) {
 		if (v instanceof IntegerValue) {
 			return mValue >= v.toIntegerValue ().mValue ? StringValue.cTrueStringValue : StringValue.cFalseStringValue;
 		} else {
@@ -79,7 +79,7 @@ public final class IntegerValue extends Value {
 	}
 	
 	@Override
-	public Value add (final Value v) {
+	public Value add (Value v) {
 		if (v instanceof IntegerValue) {
 			mValue += v.toIntegerValue ().mValue;
 			return this;
@@ -89,7 +89,7 @@ public final class IntegerValue extends Value {
 	}
 	
 	@Override
-	public Value subtract (final Value v) {
+	public Value subtract (Value v) {
 		if (v instanceof IntegerValue) {
 			mValue -= v.toIntegerValue ().mValue;
 			return this;
@@ -99,7 +99,7 @@ public final class IntegerValue extends Value {
 	}
 	
 	@Override
-	public Value multiply (final Value v) {
+	public Value multiply (Value v) {
 		if (v instanceof IntegerValue) {
 			mValue *= v.toIntegerValue ().mValue;
 			return this;
@@ -109,7 +109,7 @@ public final class IntegerValue extends Value {
 	}
 	
 	@Override
-	public Value divide (final Value v) {
+	public Value divide (Value v) {
 		return this.toRealValue ().divide (v);
 	}
 	
@@ -123,6 +123,12 @@ public final class IntegerValue extends Value {
 	@Override
 	public StringValue toStringValue () {
 		return new StringValue (Long.toString (mValue));
+	}
+
+	@Override
+	public DateValue toDateValue () {
+		throwException ("cannot make date from integer number");
+		return null;
 	}
 
 	@Override

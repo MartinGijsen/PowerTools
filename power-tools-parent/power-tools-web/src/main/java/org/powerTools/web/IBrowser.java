@@ -45,7 +45,7 @@ public interface IBrowser {
 
 	String getPageTitle ();	
 
-	boolean selectFrame (String name);
+	boolean selectFrame (Item item);
 	boolean selectFrame (IKeyType keyType, String value);
 	boolean selectDefaultFrame ();
 	
@@ -83,6 +83,9 @@ public interface IBrowser {
 	boolean waitForItemFilled (Item item);
 	boolean waitForItemFilled (Item item, int timeout);
 
+	boolean waitForItemVisible (Item item);
+	boolean waitForItemVisible (Item item, int timeout);
+
 	boolean checkForText (String text);
 	String getItemText (Item item);
 	String getItemText (IKeyType key, String value);
@@ -91,4 +94,7 @@ public interface IBrowser {
 	void clearNetworkTraffic ();
 
 	int getCount(Item item);
+	
+	@Deprecated
+	Object getTestTool ();
 }

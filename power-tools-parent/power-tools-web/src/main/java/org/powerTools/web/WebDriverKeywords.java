@@ -19,6 +19,7 @@
 package org.powerTools.web;
 
 import org.powerTools.engine.RunTime;
+import org.openqa.selenium.WebDriver;
 
 
 public final class WebDriverKeywords {
@@ -67,7 +68,7 @@ public final class WebDriverKeywords {
 	}
 
 	public boolean SelectFrame (String name) {
-		return mInstructions.SelectFrame (name);
+		return mInstructions.SelectFrame_ (name);
 	}
 
 //	public boolean CheckPageTitleContains (String expectedTitle) {
@@ -158,6 +159,10 @@ public final class WebDriverKeywords {
 		return mInstructions.WaitForItem_Filled (itemName);
 	}
 	
+	public boolean WaitForItemVisible (String itemName) {
+		return mInstructions.WaitForItem_Visible (itemName);
+	}
+	
 	public boolean CheckItemIsPresent (String itemName) {
 		return mInstructions.CheckItem_IsPresent (itemName);
 	}
@@ -181,4 +186,8 @@ public final class WebDriverKeywords {
 //	public boolean CheckForEvent (String eventName) {
 //		return mInstructions.CheckForEvent_ (eventName);
 //	}
+
+	public Object getTesttool () {
+		return mInstructions.getTesttool ();
+	}
 }

@@ -120,6 +120,10 @@ public final class BuiltinKeywords implements InstructionSet {
 	}
 
 	public boolean RunSheet (String sheetName) {
-		return mLogic.RunSheet (sheetName);
+		return mLogic.runSheet (sheetName);
+	}
+	
+	public boolean DeclareRole (String role, String domain, String username, String password) {
+		return mLogic.declareRole (role, domain, username, password);
 	}
 }
