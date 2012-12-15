@@ -51,10 +51,10 @@ public final class FitNesseEngine extends Engine {
 	
 	private boolean createLog () {
 		try {
-			final Context context = mRunTime.getContext ();
-			final File file = new File ("FitNesseRoot/" + context.mFullLogFilePath);
+			final Context context	= mRunTime.getContext ();
+			final File file			= new File ("FitNesseRoot/" + context.mFullLogFilePath);
 			file.getParentFile ().mkdirs ();
-			final HtmlLog log				= new HtmlLog (new PrintWriter (new FileWriter (file)), context.mLogFileName);
+			final HtmlLog log						= new HtmlLog (new PrintWriter (new FileWriter (file)), context.mLogFileName);
 			final TestRunResultPublisher publisher	= TestRunResultPublisher.getInstance ();
 			publisher.subscribeToTestLines (log);
 			publisher.subscribeToTestResults (log);

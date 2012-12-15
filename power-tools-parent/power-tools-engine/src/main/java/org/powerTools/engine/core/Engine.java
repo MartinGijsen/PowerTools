@@ -23,6 +23,7 @@ import org.powerTools.engine.expression.ExpressionEvaluator;
 import org.powerTools.engine.reports.TestRunResultPublisher;
 import org.powerTools.engine.sources.Procedure;
 import org.powerTools.engine.sources.ProcedureException;
+import org.powerTools.engine.sources.TestSource;
 import org.powerTools.engine.sources.TestLineImpl;
 import org.powerTools.engine.symbol.Scope;
 
@@ -64,6 +65,11 @@ public abstract class Engine {
 		throw new RuntimeException ("not supported by this engine");
 	}
 
+	protected final void run (TestSource source) {
+		mRunTime.mSourceStack.initAndPush (source);
+		run ();
+		mPublisher.finish ();
+	}
 
 	protected final void run () {
 		while (getTestLine ()) {
