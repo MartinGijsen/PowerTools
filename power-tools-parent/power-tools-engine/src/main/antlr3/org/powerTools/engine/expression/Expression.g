@@ -117,12 +117,15 @@ term
 	|	'('! expr ')'!
 	;
 
+StringLiteral
+	:	(	'"' (~('"'))* '"'
+		|	'\'' (~('\''))* '\''
+		|	('\u201c'|'\u201d') (~('\u201c'|'\u201d'))* ('\u201c'|'\u201d')
+		) {
+			String text = getText ();
+			setText (text.substring (1, text.length () - 1));
+		};
 Spaces:				(' ')+ { skip(); };
-StringLiteral:		(	'"' (~('"'))* '"'
-			|	('\u201c'|'\u201d') (~('\u201c'|'\u201d'))* ('\u201c'|'\u201d')
-			|	'\'' (~('\''))* '\''
-			)
-			{ setText (getText ().substring (1, getText ().length () - 1)); };
 fragment Identifier:	Alpha (Alpha | Digit | '_')*;
 IdentifierPlus:		Identifier ('.' (NumberLiteral | Identifier) )*;
 fragment Alpha:		'a'..'z'|'A'..'Z';

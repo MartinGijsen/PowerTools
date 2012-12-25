@@ -117,7 +117,7 @@ public abstract class Engine {
 		for (int partNr = 0; partNr < nrOfParts; ++partNr) {
 			final String part = mTestLine.getPart (partNr);
 			if (part.startsWith (EXPRESSION_PREFIX)) {
-				mTestLine.setPart (partNr, ExpressionEvaluator.evaluate (part.substring (1), scope));
+				mTestLine.setEvaluatedPart (partNr, ExpressionEvaluator.evaluate (part.substring (1), scope));
 			}
 		}
 	}

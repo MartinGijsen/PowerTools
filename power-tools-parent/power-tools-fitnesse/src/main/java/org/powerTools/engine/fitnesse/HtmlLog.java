@@ -49,14 +49,23 @@ final class HtmlLog extends BasicHtmlLog {
 	@Override
 	public void processTestLine (TestLine testLine) {
 		final int nrOfParts = testLine.getNrOfParts ();
-		for (int argNr = 0; argNr < nrOfParts - 1; ++argNr) {
-			mWriter.format ("<TD>%s</TD>", testLine.getPart (argNr));
+		for (int partNr = 0; partNr < nrOfParts - 1; ++partNr) {
+			mWriter.format ("<TD>%s</TD>", getCell (testLine, partNr));
 		}
 		mWriter.append ("<TD colspan=\"10\">");
 		if (mLevel == 0) {
 			mWriter.format ("<A id=\"id%d\">", ++mLastId);
 		}
-		mWriter.append (testLine.getPart (nrOfParts - 1)).println ("</TD></TR>");
+		mWriter.append (getCell (testLine, nrOfParts - 1)).println ("</TD></TR>");
+	}
+	
+	private String getCell (TestLine testLine, int partNr) {
+		String originalPart = testLine.getOriginalPart (partNr);
+		if (originalPart == null) {
+			return testLine.getPart (partNr);
+		} else {
+			return originalPart + "<HR/>" + testLine.getPart (partNr);
+		}
 	}
 
 	@Override

@@ -280,7 +280,12 @@ public abstract class WebLibrary implements InstructionSet {
 
 	public final boolean SelectOptionIn_ByText_ (String selectItemName, String text) {
 		final Item item = findItem (selectItemName);
-		return item != null && mBrowser.selectChoice (item, text);
+		return item != null && mBrowser.selectChoiceByText (item, text);
+	}
+
+	public final boolean SelectOptionIn_ByPartialText_ (String selectItemName, String text) {
+		final Item item = findItem (selectItemName);
+		return item != null && mBrowser.selectChoiceByPartialText (item, text);
 	}
 
 	public final boolean ClickItem_ (String itemName) {

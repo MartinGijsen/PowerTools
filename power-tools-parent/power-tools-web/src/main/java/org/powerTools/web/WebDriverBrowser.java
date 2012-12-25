@@ -258,7 +258,7 @@ final class WebDriverBrowser implements IBrowser {
 	}
 
 	@Override
-	public boolean selectChoice (Item selectItem, String optionText) {
+	public boolean selectChoiceByText (Item selectItem, String optionText) {
 		if (selectItem.mType != WebLibrary.IItemType.cListbox) {
 			mRunTime.reportError ("item is not a listbox");
 			return false;
@@ -269,6 +269,30 @@ final class WebDriverBrowser implements IBrowser {
 		}
 	}
 
+	@Override
+	public boolean selectChoiceByPartialText (Item selectItem, String optionText) {
+		if (selectItem.mType != WebLibrary.IItemType.cListbox) {
+			mRunTime.reportError ("item is not a listbox");
+			return false;
+		} else {
+			Select listbox = new Select (mDriver.findElement (getLocator (selectItem)));
+	        List<WebElement> choices = listbox.getOptions ();
+	        WebElement theOne = null;
+			for (WebElement option : choices) {
+				if (!option.getText ().contains (optionText)) {
+					;
+				} else if (theOne == null) {
+					theOne = option;
+				} else {
+					mRunTime.reportError (String.format ("partial text '%s' is not unique (part of '%s' and '%s')", optionText, theOne.getText (), option.getText ()));
+					return false;
+				}
+			}
+			theOne.click ();
+			return true;
+		}
+	}
+	
 	@Override
 	public boolean mouseOver (Item item) {
 		final WebElement element = findOneElement (item);

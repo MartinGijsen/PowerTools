@@ -36,7 +36,12 @@ public class KeywordsHtmlLog extends BasicHtmlLog {
 		mWriter.append ("<TR>");
 		final int nrOfParts = testLine.getNrOfParts ();
 		for (int argNr = 0; argNr < nrOfParts - 1; ++argNr) {
-			mWriter.format("<TD>%s</TD>", testLine.getPart (argNr));
+			final String originalPart = testLine.getOriginalPart (argNr);
+			if (originalPart != null) {
+				mWriter.format("<TD>%s<HR/>%s</TD>", originalPart, testLine.getPart (argNr));
+			} else {
+				mWriter.format("<TD>%s</TD>", testLine.getPart (argNr));
+			}
 		}
 		mWriter.append ("<TD colspan=\"10\">");
 		if (mLevel == 0) {

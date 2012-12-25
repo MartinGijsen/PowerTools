@@ -27,6 +27,7 @@ package org.powerTools.engine;
  */
 public interface TestLine {
 	int getNrOfParts ();
+	String getOriginalPart (int partNr);
 	String getPart (int partNr);
 	boolean isEmpty ();
 }

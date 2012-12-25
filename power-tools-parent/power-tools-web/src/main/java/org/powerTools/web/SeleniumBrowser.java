@@ -423,7 +423,7 @@ final class SeleniumBrowser implements IBrowser {
 	}
 	
 	@Override
-	public boolean selectChoice (Item item, String text) {
+	public boolean selectChoiceByText (Item item, String text) {
 		try {
 			if (browserIsOpen()) {
 				mSelenium.select (getLocator (item), "label=" + text);
@@ -432,6 +432,12 @@ final class SeleniumBrowser implements IBrowser {
 		} catch (SeleniumException se) {
 			reportSeleniumException (se);
 		}
+		return false;
+	}
+
+	@Override
+	public boolean selectChoiceByPartialText (Item item, String text) {
+		mRunTime.reportError ("not implemented");
 		return false;
 	}
 

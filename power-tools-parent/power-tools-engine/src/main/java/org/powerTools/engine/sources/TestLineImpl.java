@@ -27,6 +27,7 @@ import org.powerTools.engine.TestLine;
 public final class TestLineImpl implements TestLine {
 	private int mNrOfParts;
 	private String[] mParts;
+	private String[] mOriginalParts;
 
 
 	public TestLineImpl () {
@@ -37,8 +38,9 @@ public final class TestLineImpl implements TestLine {
 	public void setParts (List<String> list) {
 		mNrOfParts = list.size ();
 		if (mNrOfParts != 0) {
-			mParts = new String[mNrOfParts];
-	
+			mParts			= new String[mNrOfParts];
+			mOriginalParts	= new String[mNrOfParts];
+
 			int partNr = 0;
 			final Iterator<String> iter = list.iterator ();
 			while (iter.hasNext ()) {
@@ -64,6 +66,16 @@ public final class TestLineImpl implements TestLine {
 		}
 	}
 
+	public boolean setEvaluatedPart (int partNr, String value) {
+		try {
+			mOriginalParts[partNr]	= mParts[partNr];
+			mParts[partNr]			= value;
+			return true;
+		} catch (IndexOutOfBoundsException ioobe) {
+			return false;
+		}
+	}
+
 	@Override
 	public int getNrOfParts () {
 		return mNrOfParts;
@@ -72,6 +84,11 @@ public final class TestLineImpl implements TestLine {
 	@Override
 	public String getPart (int partNr) {
 		return (partNr < 0 || partNr >= mNrOfParts) ? "" : mParts[partNr];
+	}
+
+	@Override
+	public String getOriginalPart (int partNr) {
+		return (partNr < 0 || partNr >= mNrOfParts) ? null : mOriginalParts[partNr];
 	}
 
 	@Override
