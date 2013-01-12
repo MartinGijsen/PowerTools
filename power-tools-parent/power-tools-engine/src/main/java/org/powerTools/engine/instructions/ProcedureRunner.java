@@ -23,6 +23,6 @@ import org.powerTools.engine.symbol.Scope;
 
 
 public interface ProcedureRunner {
-	void run (TestSource source);
+	void invokeSource (TestSource source);
 	Scope getCurrentScope ();
 }

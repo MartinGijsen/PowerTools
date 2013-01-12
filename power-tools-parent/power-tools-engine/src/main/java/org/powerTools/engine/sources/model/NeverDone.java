@@ -19,20 +19,18 @@
 package org.powerTools.engine.sources.model;
 
 
-final class Edge {
-	final Node mSource;
-	final Node mTarget;
+final class NeverDone extends DoneCondition {
+	NeverDone () {
+		super ();
+	}
+	
+	@Override
+	void markEdge (Edge edge) {
+		;
+	}
 
-	String	mLabel;
-	String	mCondition;
-	String	mAction;
-	int		mWeight;
-
-
-	Edge (Node source, Node target) {
-		mSource		= source;
-		mTarget 	= target;
-		mCondition	= "";
-		mAction		= "";
+	@Override
+	void check () {
+		;
 	}
 }

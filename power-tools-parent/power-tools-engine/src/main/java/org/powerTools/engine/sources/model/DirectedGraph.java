@@ -26,7 +26,7 @@ import java.util.Set;
 import java.util.HashSet;
 
 
-final class DirectedGraph<T> {
+final class DirectedGraph {
 	Map<String, Node> mNodes;
 	Map<Node, Set<Edge>> mEdges;
 	
@@ -38,7 +38,7 @@ final class DirectedGraph<T> {
 	
 	Node addNode (String name) {
 		if (mNodes.containsKey (name)) {
-			throw new RuntimeException ("node name not unique");
+			throw new RuntimeException (String.format ("node name %s not unique", name));
 		} else {
 			Node node = new Node (name);
 			mNodes.put (name, node);
@@ -67,11 +67,11 @@ final class DirectedGraph<T> {
 		}
 		return root;
 	}
-	
+
 	Edge addEdge (String sourceName, String targetName) {
 		return addEdge (getNode (sourceName), getNode (targetName));
 	}
-	
+
 	Edge addEdge (Node source, Node target) {
 		Set<Edge> edges = mEdges.get (source);
 		if (edges == null) {

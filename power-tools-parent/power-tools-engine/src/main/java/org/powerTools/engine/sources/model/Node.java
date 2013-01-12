@@ -23,7 +23,7 @@ final class Node {
 	final String mName;
 	
 	String mLabel;
-	String mData;
+	String mAction;
 	
 
 	Node (String name) {
@@ -32,6 +32,6 @@ final class Node {
 		}
 		mName	= name;
 		mLabel	= "";
-		mData	= "";
+		mAction	= "";
 	}
 }

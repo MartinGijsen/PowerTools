@@ -19,7 +19,7 @@
 package org.powerTools.engine.expression;
 
 
-public final class StringValue extends Value {
+final class StringValue extends Value {
 	private static final String TRUE_STRING		= "true";
 	private static final String FALSE_STRING	= "false";
 

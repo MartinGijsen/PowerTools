@@ -19,7 +19,7 @@
 package org.powerTools.engine.expression;
 
 
-public interface IValue {
+interface IValue {
 	IValue add (IValue value);
 	IValue subtract (IValue value);
 	IValue multiply (IValue value);

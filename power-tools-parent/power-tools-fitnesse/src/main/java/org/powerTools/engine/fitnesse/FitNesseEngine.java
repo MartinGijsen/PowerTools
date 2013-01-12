@@ -71,7 +71,7 @@ public final class FitNesseEngine extends Engine {
 	public void run (InstructionFixture fixture, Parse table) {
 		final InstructionSource source = new InstructionSource (fixture, table, mRunTime.getContext ().mFullLogFilePath);
 		mFitNesseReporter.setSource (source);
-		mRunTime.run (source);
+		mRunTime.invokeSource (source);
 		addProcedure (source.getProcedure ());
 		run ();
 	}
@@ -86,7 +86,7 @@ public final class FitNesseEngine extends Engine {
 
 	private void run (BaseTestSource source) {
 		mFitNesseReporter.setSource (source);
-		mRunTime.run (source);
+		mRunTime.invokeSource (source);
 		run ();
 	}
 }

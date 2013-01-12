@@ -28,18 +28,22 @@ import java.util.Set;
 /*
  * This edge selector uses 1000 as the fixed total weight for all edges.
  * The outgoing edges together must weigh 1000 if all edges have weights specified.
- * Edges without a weight receive the same weight:
- * weight = remaining weight / nr of edges without a weight.
+ * Edges without a weight weigh: remaining weight / nr of edges without a weight.
  */
 final class WeightedEdgeSelector implements EdgeSelectionStrategy {
+	WeightedEdgeSelector () {
+		super ();
+	}
+	
 	public Edge selectEdge (Model model) {
-		final Set<Edge> edges = model.mGraph.getEdges (model.mCurrentNode);
+		final Node currentNode = model.getCurrentNode ();
+		final Set<Edge> edges = model.getGraph ().getEdges (currentNode);
 		if (!edges.isEmpty ()) {
 			return selectEdge (edges);
-		} else if (model.mCurrentNode.mLabel.equals (Model.END_NODE_LABEL)) {
-			throw new Model.DoneException ();
+//		} else if (model.mCurrentNode.mLabel.equals (Model.END_NODE_LABEL)) {
+//			throw new Model.DoneException ();
 		} else {
-			throw new RuntimeException (String.format ("no edges out of node %s", model.mCurrentNode.mName));
+			throw new RuntimeException (String.format ("no edges out of node %s", currentNode.mName));
 		}
 	}
 	

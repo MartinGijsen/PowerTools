@@ -38,7 +38,8 @@ final class GraphMLParser extends DefaultHandler {
 	private final static String EDGE_SOURCE_ATTRIBUTE_NAME	= "source";
 	private final static String EDGE_TARGET_ATTRIBUTE_NAME	= "target";
 	private final static String NODE_DESCRIPTION_KEY_NAME	= "d5";
-	private final static String EDGE_DESCRIPTION_KEY_NAME	= "d9";
+	private final static String EDGE_CONDITION_KEY_NAME		= "d8";
+	private final static String EDGE_ACTION_KEY_NAME		= "d9";
 
 	private final DirectedGraph mGraph;
 	private final Stack<Element> mElementStack;
@@ -121,22 +122,23 @@ final class GraphMLParser extends DefaultHandler {
 
 	@Override
 	public void endElement (String uri, String name, String qName) {
+		final String text = mElementStack.peek ().mText.trim ();
 		if ("data".equals (name)) {
 			if (NODE_DESCRIPTION_KEY_NAME.equals (mKeyName)) {
-				mLastNode.mData = mElementStack.peek ().mText;
-			} else if (EDGE_DESCRIPTION_KEY_NAME.equals (mKeyName)) {
-				mLastEdge.mData = mElementStack.peek ().mText;
+				mLastNode.mAction = text;
+			} else if (EDGE_CONDITION_KEY_NAME.equals (mKeyName)) {
+				mLastEdge.mCondition = text;
+			} else if (EDGE_ACTION_KEY_NAME.equals (mKeyName)) {
+				mLastEdge.mAction = text;
 			}
 			mKeyName = null;
 		} else if ("NodeLabel".equals (name)) {
-			final String label = mElementStack.peek ().mText.trim ();
-			if (!"".equals (label)) {
-				mLastNode.mLabel = label;
+			if (!"".equals (text)) {
+				mLastNode.mLabel = text;
 			}
 		} else if ("EdgeLabel".equals (name)) {
-			final String label = mElementStack.peek ().mText.trim ();
-			if (!"".equals (label)) {
-				mLastEdge.mLabel = label;
+			if (!"".equals (text)) {
+				mLastEdge.mLabel = text;
 			}
 		}
 		mElementStack.pop ();

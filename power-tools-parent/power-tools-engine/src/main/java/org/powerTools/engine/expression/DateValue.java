@@ -22,7 +22,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 
-public final class DateValue extends Value {
+final class DateValue extends Value {
 	private static SimpleDateFormat mFormat = new SimpleDateFormat ("dd-MM-yyyy");
 	
 	private Calendar mDate;

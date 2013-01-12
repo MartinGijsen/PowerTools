@@ -25,8 +25,10 @@ import org.powerTools.engine.Context;
 import org.powerTools.engine.Symbol;
 import org.powerTools.engine.Roles;
 import org.powerTools.engine.RunTime;
+import org.powerTools.engine.expression.ExpressionEvaluator;
 import org.powerTools.engine.instructions.ProcedureRunner;
 import org.powerTools.engine.reports.TestRunResultPublisher;
+import org.powerTools.engine.sources.TestLineImpl;
 import org.powerTools.engine.sources.TestSource;
 import org.powerTools.engine.symbol.Scope;
 import org.powerTools.engine.symbol.StringSequence;
@@ -34,16 +36,18 @@ import org.powerTools.engine.symbol.Util;
 
 
 /**
- * The runtime provides a full API for instructions (and engine logic) to
- * 1) the test source stack, 2) reporting and 3) shared objects.
+ * The runtime provides a full API for instructions (and engine logic) to access
+ * 1) the test source stack, 2) reporting, 3) roles and 4) shared objects.
  * <BR/><BR/>
- * The test source stack is used for creating and for finding symbols.
+ * The test source stack is used for creating and finding symbols.
  * <BR/><BR/>
  * Reporting concerns errors, warnings and info messages.
  * <BR/><BR/>
+ * Roles represent combinations of user names and passwords in a test environment.
+ * <BR/><BR/>
  * Shared objects are used to exchange information between instruction sets.
  */
-public class RunTimeImpl implements RunTime, ProcedureRunner {
+public final class RunTimeImpl implements RunTime, ProcedureRunner {
 	final TestSourceStack mSourceStack;
 
 	private final Context mContext;
@@ -51,7 +55,7 @@ public class RunTimeImpl implements RunTime, ProcedureRunner {
 	private final RolesImpl mRoles;
 	private final Map<String, Object> mSharedObjects;
 
-	
+
 	public RunTimeImpl (Context context) {
 		mSourceStack	= new TestSourceStack ();
 		mContext		= context;
@@ -149,9 +153,20 @@ public class RunTimeImpl implements RunTime, ProcedureRunner {
 	public Scope getCurrentScope () {
 		return mSourceStack.getCurrentScope ();
 	}
-	
-	public void run (TestSource source) {
+
+	public void invokeSource (TestSource source) {
 		mSourceStack.initAndPush (source);
+	}
+
+	public void evaluateExpressions (TestLineImpl testLine) {
+		final Scope scope	= getCurrentScope ();
+		final int nrOfParts	= testLine.getNrOfParts ();
+		for (int partNr = 0; partNr < nrOfParts; ++partNr) {
+			final String part = testLine.getPart (partNr);
+			if (part.startsWith ("?")) {
+				testLine.setEvaluatedPart (partNr, ExpressionEvaluator.evaluate (part, scope));
+			}
+		}
 	}
 
 	@Override

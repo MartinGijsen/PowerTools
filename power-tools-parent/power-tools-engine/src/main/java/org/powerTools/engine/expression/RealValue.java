@@ -19,7 +19,7 @@
 package org.powerTools.engine.expression;
 
 
-public final class RealValue extends Value {
+final class RealValue extends Value {
 	private double mValue;
 
 	

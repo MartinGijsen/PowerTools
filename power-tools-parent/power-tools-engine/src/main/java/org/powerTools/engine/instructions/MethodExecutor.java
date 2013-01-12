@@ -128,10 +128,11 @@ final class MethodExecutor implements Executor {
 		} catch (IllegalAccessException iae) {
 			throw new ExecutionException ("illegal access exception: " + iae.getCause ().toString ());
 		} catch (InvocationTargetException ite) {
-			if (ite.getCause () instanceof ExecutionException) {
-				throw (ExecutionException) ite.getCause ();
+			final Throwable cause = ite.getCause ();
+			if (cause instanceof ExecutionException) {
+				throw (ExecutionException) cause;
 			} else {
-				throw new ExecutionException ("instruction exception: " + ite.getCause ().toString (), ite.getCause ().getStackTrace ());
+				throw new ExecutionException ("instruction exception: " + cause.toString (), cause.getStackTrace ());
 			}
 		}
 	}
@@ -145,7 +146,7 @@ final class MethodExecutor implements Executor {
 			return true;
 		} else {
 			mMethod.invoke (mObject, mArguments);
-			throw new ExecutionException ("instruction has invalid return type (must be boolean or void)");
+			throw new ExecutionException ("method has invalid return type (must be boolean or void)");
 		}
 	}
 }

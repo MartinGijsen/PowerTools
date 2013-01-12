@@ -68,7 +68,7 @@ public class ExcelEngine extends Engine {
 		} else {
 			return;
 		}
-		mRunTime.mSourceStack.initAndPush (source);
+		mRunTime.invokeSource (source);
 		run ();
 		mPublisher.finish ();
 	}

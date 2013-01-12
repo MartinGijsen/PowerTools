@@ -19,20 +19,25 @@
 package org.powerTools.engine.sources.model;
 
 
-final class Edge {
-	final Node mSource;
-	final Node mTarget;
+final class DoneWhenInEndNode extends DoneCondition {
+	private boolean mDone;
+	
+	DoneWhenInEndNode () {
+		super ();
+		mDone = false;
+	}
+	
+	@Override
+	void markEdge (Edge edge) {
+		if (edge.mTarget.mLabel.equals (Model.END_NODE_LABEL)) {
+			mDone = true;
+		}
+	}
 
-	String	mLabel;
-	String	mCondition;
-	String	mAction;
-	int		mWeight;
-
-
-	Edge (Node source, Node target) {
-		mSource		= source;
-		mTarget 	= target;
-		mCondition	= "";
-		mAction		= "";
+	@Override
+	void check () {
+		if (mDone) {
+			throw new DoneException ();
+		}
 	}
 }

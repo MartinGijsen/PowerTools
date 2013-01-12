@@ -19,13 +19,11 @@
 package org.powerTools.engine.core;
 
 import org.powerTools.engine.ExecutionException;
-import org.powerTools.engine.expression.ExpressionEvaluator;
 import org.powerTools.engine.reports.TestRunResultPublisher;
 import org.powerTools.engine.sources.Procedure;
 import org.powerTools.engine.sources.ProcedureException;
 import org.powerTools.engine.sources.TestSource;
 import org.powerTools.engine.sources.TestLineImpl;
-import org.powerTools.engine.symbol.Scope;
 
 
 /**
@@ -50,7 +48,7 @@ public abstract class Engine {
 
 	protected TestLineImpl mTestLine;
 
-	private static final String EXPRESSION_PREFIX = "?";
+	//private static final String EXPRESSION_PREFIX = "?";
 
 
 	protected Engine (RunTimeImpl runTime) {
@@ -66,7 +64,7 @@ public abstract class Engine {
 	}
 
 	protected final void run (TestSource source) {
-		mRunTime.mSourceStack.initAndPush (source);
+		mRunTime.invokeSource (source);
 		run ();
 		mPublisher.finish ();
 	}
@@ -101,7 +99,7 @@ public abstract class Engine {
 	
 	protected final boolean evaluateTestLine () {
 		try {
-			evaluateExpressions ();
+			mRunTime.evaluateExpressions (mTestLine);
 			return true;
 		} catch (ExecutionException ee) {
 			mPublisher.publishTestLine (mTestLine);
@@ -111,16 +109,16 @@ public abstract class Engine {
 		}
 	}
 	
-	private void evaluateExpressions () {
-		final Scope scope	= mRunTime.mSourceStack.getCurrentScope ();
-		final int nrOfParts	= mTestLine.getNrOfParts ();
-		for (int partNr = 0; partNr < nrOfParts; ++partNr) {
-			final String part = mTestLine.getPart (partNr);
-			if (part.startsWith (EXPRESSION_PREFIX)) {
-				mTestLine.setEvaluatedPart (partNr, ExpressionEvaluator.evaluate (part.substring (1), scope));
-			}
-		}
-	}
+//	private void evaluateExpressions () {
+//		final Scope scope	= mRunTime.getCurrentScope ();
+//		final int nrOfParts	= mTestLine.getNrOfParts ();
+//		for (int partNr = 0; partNr < nrOfParts; ++partNr) {
+//			final String part = mTestLine.getPart (partNr);
+//			if (part.startsWith (EXPRESSION_PREFIX)) {
+//				mTestLine.setEvaluatedPart (partNr, ExpressionEvaluator.evaluate (part, scope));
+//			}
+//		}
+//	}
 
 	private boolean isAnInstruction () {
 		return !mTestLine.getPart (0).isEmpty ();

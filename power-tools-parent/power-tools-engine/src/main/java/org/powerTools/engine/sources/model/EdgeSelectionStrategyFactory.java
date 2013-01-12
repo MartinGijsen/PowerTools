@@ -18,16 +18,23 @@
 
 package org.powerTools.engine.sources.model;
 
+import org.powerTools.engine.core.RunTimeImpl;
 
-public class EdgeSelectionStrategyFactory {
-	public static EdgeSelectionStrategy createRandomEdgeSelector () {
-		return new RandomEdgeSelector ();
-	}
 
-	public static EdgeSelectionStrategy createWeightedEdgeSelector () {
-		return new WeightedEdgeSelector ();
-	}
-	
-	
+final class EdgeSelectionStrategyFactory {
+	private final static String RANDOM_EDGE_STRATEGY	= "random";
+	private final static String WEIGHTED_EDGE_STRATEGY	= "weighted";
+
+
 	private EdgeSelectionStrategyFactory () { }
+
+	static EdgeSelectionStrategy create (String selector, RunTimeImpl runTime) {
+		if (RANDOM_EDGE_STRATEGY.equals (selector)) {
+			return new RandomEdgeSelector (runTime);
+		} else if (WEIGHTED_EDGE_STRATEGY.equals (selector)) {
+			return new WeightedEdgeSelector ();
+		} else {
+			throw new RuntimeException (String.format ("unknown edge selection strategy: %s", selector));
+		}
+	}
 }

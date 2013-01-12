@@ -35,7 +35,7 @@ public abstract class TestSource {
 	protected TestLineImpl mTestLine;
 
 	
-	protected TestSource (final Scope scope) {
+	protected TestSource (Scope scope) {
 		mScope		= scope; 
 		mPublisher 	= TestRunResultPublisher.getInstance ();
 		mTestLine 	= new TestLineImpl ();

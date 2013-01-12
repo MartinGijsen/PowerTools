@@ -19,20 +19,22 @@
 package org.powerTools.engine.sources.model;
 
 
-final class Edge {
-	final Node mSource;
-	final Node mTarget;
-
-	String	mLabel;
-	String	mCondition;
-	String	mAction;
-	int		mWeight;
-
-
-	Edge (Node source, Node target) {
-		mSource		= source;
-		mTarget 	= target;
-		mCondition	= "";
-		mAction		= "";
+/*
+ * Determines when the model has been processed
+ */
+abstract class DoneCondition {
+	final static class DoneException extends RuntimeException {
+		DoneException () {
+			super ();
+		}
 	}
+
+
+	protected DoneCondition () {
+		super ();
+	}
+	
+	abstract void markEdge (Edge edge);
+	
+	abstract void check ();
 }

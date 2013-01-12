@@ -18,21 +18,31 @@
 
 package org.powerTools.engine.sources.model;
 
-
-final class Edge {
-	final Node mSource;
-	final Node mTarget;
-
-	String	mLabel;
-	String	mCondition;
-	String	mAction;
-	int		mWeight;
+import java.util.HashSet;
+import java.util.Set;
 
 
-	Edge (Node source, Node target) {
-		mSource		= source;
-		mTarget 	= target;
-		mCondition	= "";
-		mAction		= "";
+final class DoneWhenAllNodesSeen extends DoneCondition {
+	private boolean mDone;
+	private Set<Node> mUnseenNodes;
+
+	DoneWhenAllNodesSeen (DirectedGraph graph) {
+		super ();
+		mDone			= false;
+		mUnseenNodes	= new HashSet<Node> (graph.mNodes.values ());
+		mUnseenNodes.remove (graph.getRoot ());
+	}
+	
+	@Override
+	void markEdge (Edge edge) {
+		mUnseenNodes.remove (edge.mTarget);
+		mDone = mUnseenNodes.isEmpty ();
+	}
+
+	@Override
+	void check () {
+		if (mDone) {
+			throw new DoneException ();
+		}
 	}
 }

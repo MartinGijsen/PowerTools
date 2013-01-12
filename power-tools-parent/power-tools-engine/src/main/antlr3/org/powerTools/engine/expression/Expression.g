@@ -38,9 +38,11 @@ package org.powerTools.engine.expression;
 package org.powerTools.engine.expression;
 }
 
-root:	
-	expr
-	EOF!;
+root
+	:	'?'!
+		expr
+		EOF!
+	;
 	
 expr
 	:	andExpr ('or'^ expr)?

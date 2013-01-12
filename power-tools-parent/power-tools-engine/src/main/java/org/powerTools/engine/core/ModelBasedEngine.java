@@ -20,7 +20,6 @@ package org.powerTools.engine.core;
 
 import org.powerTools.engine.Context;
 import org.powerTools.engine.reports.ReportFactory;
-import org.powerTools.engine.sources.model.EdgeSelectionStrategyFactory;
 import org.powerTools.engine.sources.model.ModelTestSource;
 import org.powerTools.engine.symbol.Scope;
 
@@ -31,10 +30,15 @@ import org.powerTools.engine.symbol.Scope;
  */
 public class ModelBasedEngine extends Engine {
 	public static void main (String[] args) {
-		if (args.length != 2) {
-			System.err.println ("Please specify a directory and a file");
-		} else {
+		switch (args.length) {
+		case 2:
 			new ModelBasedEngine (args[0]).run (args[1]);
+			break;
+		case 4:
+			new ModelBasedEngine (args[0]).run (args[1], args[2], args[3]);
+			break;
+		default:
+			System.err.println ("Please specify a directory, file, selection strategy and stop condition");
 		}
 	}
 
@@ -55,6 +59,10 @@ public class ModelBasedEngine extends Engine {
 
 	@Override
 	public final void run (String fileName) {
-		run (new ModelTestSource (fileName, EdgeSelectionStrategyFactory.createRandomEdgeSelector (), Scope.getGlobalScope ()));
+		run (new ModelTestSource (fileName, "random", "never", Scope.getGlobalScope (), mRunTime));
+	}
+
+	public final void run (String fileName, String selector, String condition) {
+		run (new ModelTestSource (fileName, selector, condition, Scope.getGlobalScope (), mRunTime));
 	}
 }

@@ -72,8 +72,8 @@ abstract class ExcelTestSource extends TestSource {
 	@Override
 	public final TestLineImpl getTestLine () {
 		while (mRowIter.hasNext ()) {
-			final Row row = mRowIter.next ();
-			final int nrOfParts = getNrOfParts (row);
+			final Row row		= mRowIter.next ();
+			final int nrOfParts	= getNrOfParts (row);
 
 			if (nrOfParts > 0) {
 				mTestLine.createParts (nrOfParts);

@@ -23,24 +23,59 @@ import java.lang.RuntimeException;
 import java.util.Iterator;
 import java.util.Random;
 import java.util.Set;
+import java.util.HashSet;
+
+import org.powerTools.engine.core.RunTimeImpl;
+import org.powerTools.engine.expression.ExpressionEvaluator;
+import org.powerTools.engine.symbol.Scope;
 
 
 final class RandomEdgeSelector implements EdgeSelectionStrategy {
+	private final static Random mRandom = new Random ();
+
+	private RunTimeImpl mRunTime;
+	
+	
+	RandomEdgeSelector (RunTimeImpl runTime) {
+		super ();
+		mRunTime = runTime;
+	}
+
+	@Override
 	public Edge selectEdge (Model model) {
-		final Set<Edge> edges = model.mGraph.getEdges (model.mCurrentNode);
-		if (!edges.isEmpty ()) {
-			Random random = new Random ();
-			Edge edge = null;
-			final Iterator<Edge> iter = edges.iterator ();
-			int number = random.nextInt (edges.size ());
-			for (int counter = 0; counter <= number; ++counter) {
-				edge = iter.next ();
+		final DirectedGraph graph		= model.getGraph ();
+		final Set<Edge> remainingEdges	= new HashSet<Edge> (graph.getEdges (model.getCurrentNode ()));
+		while (!remainingEdges.isEmpty ()) {
+			final Edge edge = removeRandomEdge (remainingEdges);
+			if ("".equals (edge.mCondition) || returnsTrue (edge.mCondition)) {
+				return edge;
 			}
-			return edge;
-		} else if (model.mCurrentNode.mLabel.equals (Model.END_NODE_LABEL)) {
-			throw new Model.DoneException ();
-		} else {
-			throw new RuntimeException (String.format ("no edges out of node %s", model.mCurrentNode.mName));
 		}
+
+		final Node currentNode = model.getCurrentNode ();
+		if (currentNode.mLabel.equals (Model.END_NODE_LABEL)) {
+			// TODO prepare at the start
+			return graph.addEdge (currentNode, model.getStartNode ());
+		} else {
+			// TODO check at the start (remove exception?)
+			throw new RuntimeException (String.format ("no edges out of node %s", currentNode.mName));
+		}
+	}
+
+	private Edge removeRandomEdge (Set<Edge> remainingEdges) {
+		Edge edge					= null;
+		final Iterator<Edge> iter	= remainingEdges.iterator ();
+		final int number			= mRandom.nextInt (remainingEdges.size ());
+		for (int counter = 0; counter <= number; ++counter) {
+			edge = iter.next ();
+		}
+		iter.remove ();
+		return edge;
+	}
+
+	private boolean returnsTrue (String condition) {
+		final Scope currentScope = mRunTime.getCurrentScope ();
+		final String value = ExpressionEvaluator.evaluate (condition, currentScope);
+		return value.equals ("true");
 	}
 }

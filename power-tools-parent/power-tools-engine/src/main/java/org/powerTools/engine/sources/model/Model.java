@@ -20,46 +20,59 @@ package org.powerTools.engine.sources.model;
 
 import java.util.Set;
 
+import org.powerTools.engine.core.RunTimeImpl;
+import org.powerTools.engine.reports.TestRunResultPublisher;
+
 
 final class Model {
 	final static String START_NODE_LABEL	= "start";
 	final static String END_NODE_LABEL		= "end";
 	
-	DirectedGraph<String> mGraph;
-	Node mCurrentNode;
+	private final String					mFileName;
+	private final EdgeSelectionStrategy		mSelector;
+	private final DoneCondition				mDoneCondition;
+	private final TestRunResultPublisher	mPublisher;
 
-	private final String mFileName;
-	private final EdgeSelectionStrategy mStrategy;
-
-	private Node mRoot;
-
-
-	final static class DoneException extends RuntimeException {
-		DoneException () {
-			super ();
-		}
-	}
+	private DirectedGraph					mGraph;
+	private Node							mStartNode;
+	private Node							mCurrentNode;
 
 
-	Model (String fileName, EdgeSelectionStrategy strategy) {
-		mFileName = fileName;
-		mStrategy = strategy;
+	Model (String fileName, String selector, String doneCondition, RunTimeImpl runTime) {
+		mFileName	= fileName;
+		mSelector	= EdgeSelectionStrategyFactory.create (selector, runTime);
+		mPublisher	= TestRunResultPublisher.getInstance ();
+
+		DoneCondition tmpCondition = null;
 		try {
-			GraphMLParser parser	= new GraphMLParser ();
-			mGraph					= parser.parse (fileName);
+			mGraph			= new GraphMLParser ().parse (fileName);
+			mStartNode		= mGraph.getRoot ();
+			mCurrentNode	= mStartNode;
+			tmpCondition	= DoneConditionFactory.create (doneCondition, mGraph);
 		} catch (Exception e) {
 			;
 		}
+		mDoneCondition = tmpCondition;
 	}
 
-	void initialize () {
-		mRoot			= mGraph.getRoot ();
-		mCurrentNode	= mRoot;
+	DirectedGraph getGraph () {
+		return mGraph;
 	}
-
+	
+	Node getStartNode () {
+		return mStartNode;
+	}
+	
+	Node getCurrentNode () {
+		return mCurrentNode;
+	}
+	
 	Edge getNextEdge () {
-		Edge edge		= mStrategy.selectEdge (this);
+		mDoneCondition.check ();
+		Edge edge		= mSelector.selectEdge (this);
 		mCurrentNode	= edge.mTarget;
+		mDoneCondition.markEdge (edge);
+		mPublisher.publishCommentLine (String.format("next edge: %s -> %s", edge.mSource.mName, edge.mTarget.mName));
 		return edge;
 	}
 }

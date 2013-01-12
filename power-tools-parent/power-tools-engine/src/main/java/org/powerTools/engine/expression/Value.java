@@ -21,7 +21,7 @@ package org.powerTools.engine.expression;
 import org.powerTools.engine.ExecutionException;
 
 
-public abstract class Value {
+abstract class Value {
 	private static final String INVALID_OPERAND_MESSAGE = "invalid operand(s) for '%s'";
 
 	public Value or (Value v)				{ return throwOperandException ("or"); }

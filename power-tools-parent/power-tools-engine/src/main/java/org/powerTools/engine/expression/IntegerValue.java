@@ -19,7 +19,7 @@
 package org.powerTools.engine.expression;
 
 
-public final class IntegerValue extends Value {
+final class IntegerValue extends Value {
 	private long mValue;
 
 	
