@@ -23,27 +23,33 @@ import java.util.Set;
 
 
 final class DoneWhenAllEdgesSeen extends DoneCondition {
-	private boolean mDone;
+	final static String NAME = "all edges";
+
+	private final static String DESCRIPTION = "stop when all edges have been traversed";
+
 	private Set<Edge> mUnseenEdges;
 
 	DoneWhenAllEdgesSeen (DirectedGraph graph) {
 		super ();
-		mDone			= false;
-		mUnseenEdges	= new HashSet<Edge> ();
+		mUnseenEdges = new HashSet<Edge> ();
 		for (Set<Edge> edges : graph.mEdges.values ()) {
 			mUnseenEdges.addAll (edges);
 		}
 	}
 	
 	@Override
+	String getDescription () {
+		return DESCRIPTION;
+	}
+
+	@Override
 	void markEdge (Edge edge) {
 		mUnseenEdges.remove (edge);
-		mDone = mUnseenEdges.isEmpty ();
 	}
 
 	@Override
 	void check () {
-		if (mDone) {
+		if (mUnseenEdges.isEmpty ()) {
 			throw new DoneException ();
 		}
 	}

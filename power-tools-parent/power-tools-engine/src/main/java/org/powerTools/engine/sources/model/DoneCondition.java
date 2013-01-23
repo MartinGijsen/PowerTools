@@ -34,7 +34,7 @@ abstract class DoneCondition {
 		super ();
 	}
 	
+	abstract String getDescription ();
 	abstract void markEdge (Edge edge);
-	
 	abstract void check ();
 }

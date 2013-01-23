@@ -31,7 +31,10 @@ import org.powerTools.engine.symbol.Scope;
 
 
 final class RandomEdgeSelector implements EdgeSelectionStrategy {
-	private final static Random mRandom = new Random ();
+	final static String NAME = "random";
+
+	private final static String DESCRIPTION	= "select a random outgoing edge";
+	private final static Random mRandom		= new Random ();
 
 	private RunTimeImpl mRunTime;
 	
@@ -39,6 +42,11 @@ final class RandomEdgeSelector implements EdgeSelectionStrategy {
 	RandomEdgeSelector (RunTimeImpl runTime) {
 		super ();
 		mRunTime = runTime;
+	}
+
+	@Override
+	public String getDescription () {
+		return NAME + " (" + DESCRIPTION + ")";
 	}
 
 	@Override
@@ -74,8 +82,7 @@ final class RandomEdgeSelector implements EdgeSelectionStrategy {
 	}
 
 	private boolean returnsTrue (String condition) {
-		final Scope currentScope = mRunTime.getCurrentScope ();
-		final String value = ExpressionEvaluator.evaluate (condition, currentScope);
+		String value = ExpressionEvaluator.evaluate (condition, mRunTime.getCurrentScope ());
 		return value.equals ("true");
 	}
 }

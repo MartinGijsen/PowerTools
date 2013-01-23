@@ -59,7 +59,7 @@ public class ModelBasedEngine extends Engine {
 
 	@Override
 	public final void run (String fileName) {
-		run (new ModelTestSource (fileName, "random", "never", Scope.getGlobalScope (), mRunTime));
+		run (new ModelTestSource (fileName, "random", "all edges", Scope.getGlobalScope (), mRunTime));
 	}
 
 	public final void run (String fileName, String selector, String condition) {

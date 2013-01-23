@@ -20,5 +20,6 @@ package org.powerTools.engine.sources.model;
 
 
 interface EdgeSelectionStrategy {
+	String getDescription ();
 	Edge selectEdge (Model model);
 }

@@ -31,10 +31,21 @@ import java.util.Set;
  * Edges without a weight weigh: remaining weight / nr of edges without a weight.
  */
 final class WeightedEdgeSelector implements EdgeSelectionStrategy {
+	final static String NAME = "weighted";
+
+	private final static String DESCRIPTION = "a higher weight outgoing edge is more likely to be selected";
+
+
 	WeightedEdgeSelector () {
 		super ();
 	}
 	
+	@Override
+	public String getDescription() {
+		return NAME + " (" + DESCRIPTION + ")";
+	}
+
+	@Override
 	public Edge selectEdge (Model model) {
 		final Node currentNode = model.getCurrentNode ();
 		final Set<Edge> edges = model.getGraph ().getEdges (currentNode);

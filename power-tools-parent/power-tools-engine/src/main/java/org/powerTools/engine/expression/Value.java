@@ -22,7 +22,10 @@ import org.powerTools.engine.ExecutionException;
 
 
 abstract class Value {
-	private static final String INVALID_OPERAND_MESSAGE = "invalid operand(s) for '%s'";
+	private static final String INVALID_OPERAND_MESSAGE		= "invalid operand(s) for '%s'";
+	private static final String INVALID_CONVERSION_MESSAGE	= "cannot convert %s to %s";
+	
+	public abstract String getType ();
 
 	public Value or (Value v)				{ return throwOperandException ("or"); }
 	public Value and (Value v)				{ return throwOperandException ("and"); }
@@ -35,28 +38,32 @@ abstract class Value {
 	public Value lessOrEqual (Value v)		{ return throwOperandException ("<="); }
 	public Value greaterThan (Value v)		{ return throwOperandException (">"); }
 	public Value greaterOrEqual (Value v)	{ return throwOperandException (">="); }
+	
 	public Value add (Value v)				{ return throwOperandException ("+"); }
 	public Value subtract (Value v)			{ return throwOperandException ("-"); }
 	public Value multiply (Value v)			{ return throwOperandException ("*"); }
 	public Value divide (Value v)			{ return throwOperandException ("/"); }
-	public Value concatenate (Value v)		{ return throwOperandException ("++"); }
 	public Value negate ()					{ return throwOperandException ("-"); }
 
-	public boolean toBoolean (String operator)	{ throw new ExecutionException (String.format (INVALID_OPERAND_MESSAGE, operator)); }
+	public Value concatenate (Value v)		{ return throwOperandException ("++"); }
 
 	public abstract StringValue toStringValue ();
-	public abstract RealValue toRealValue ();
-	public abstract IntegerValue toIntegerValue ();
-	public abstract DateValue toDateValue ();
-	public abstract String toString ();
+	public RealValue toRealValue ()			{ throwConversionException (getType (), "real number");		return null; }
+	public IntegerValue toIntegerValue ()	{ throwConversionException (getType (), "integer number");	return null; }
+	public BooleanValue toBooleanValue ()	{ throwConversionException (getType (), "boolean");			return null; }
+	public DateValue toDateValue ()			{ throwConversionException (getType (), "date");			return null; }
 
 	
 	protected void throwException (String message) {
 		throw new ExecutionException (message);
 	}
 	
-	private Value throwOperandException (String operator) {
+	protected Value throwOperandException (String operator) {
 		throwException (String.format (INVALID_OPERAND_MESSAGE, operator));
 		return null;
+	}
+
+	protected void throwConversionException (String sourceType, String targetType) {
+		throwException (String.format (INVALID_CONVERSION_MESSAGE, sourceType, targetType));
 	}
 }

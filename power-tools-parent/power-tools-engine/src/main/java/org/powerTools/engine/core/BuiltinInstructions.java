@@ -131,7 +131,26 @@ public final class BuiltinInstructions implements InstructionSet {
 		return mLogic.declareRole (role, "", username, password);
 	}
 	
-	public boolean System_Role_Domain_Username_Password (String system, String role, String domain, String username, String password) {
+	public boolean System_Role_Domain_Username_Password_ (String system, String role, String domain, String username, String password) {
 		return mLogic.declareRole (system, role, domain, username, password);
+	}
+	
+	public boolean Check_Is_ (String value1, String value2) {
+		return value1.equals (value2);
+	}
+
+	public boolean Check_Contains_ (String value1, String value2) {
+		return value1.indexOf (value2) >= 0;
+	}
+
+	public boolean Check_IsWithin_Of_ (String value1String, String marginString, String value2String) {
+		final double value1	= Double.parseDouble (value1String);
+		final double margin	= Double.parseDouble (marginString);
+		final double value2	= Double.parseDouble (value2String);
+		return value1 >= value2 - margin && value1 <= value2 + margin;
+	}
+
+	public boolean Check_IsNotWithin_Of_ (String value1String, String marginString, String value2String) {
+		return !Check_IsWithin_Of_ (value1String, marginString, value2String);
 	}
 }

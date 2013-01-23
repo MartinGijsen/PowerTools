@@ -20,13 +20,7 @@ package org.powerTools.engine.expression;
 
 
 final class StringValue extends Value {
-	private static final String TRUE_STRING		= "true";
-	private static final String FALSE_STRING	= "false";
-
 	private String mText;
-
-	static final StringValue cTrueStringValue	= new StringValue (TRUE_STRING);
-	static final StringValue cFalseStringValue	= new StringValue (FALSE_STRING);	
 
 	
 	public StringValue (String text) {
@@ -35,38 +29,19 @@ final class StringValue extends Value {
 	
 	
 	@Override
-	public Value or (Value v) {
-		v.toBoolean ("or");
-		if (toBoolean ("or")) {
-			return this;
-		} else {
-			return v;
-		}
+	public String getType () {
+		return "string";
 	}
-	
-	@Override
-	public Value and (Value v) {
-		v.toBoolean ("and");
-		if (!toBoolean ("and")) {
-			return this;
-		} else {
-			return v;
-		}
-	}
-	
-	@Override
-	public Value not () {
-		return toBoolean ("not") ? cFalseStringValue : cTrueStringValue;
-	}
+
 	
 	@Override
 	public Value equal (Value v) {
-		return mText.equals (v.toStringValue ().mText) ? StringValue.cTrueStringValue : StringValue.cFalseStringValue;
+		return new BooleanValue (mText.equals (v.toStringValue ().mText));
 	}
 	
 	@Override
 	public Value unequal (Value v) {
-		return mText.equals (v.toStringValue ().mText) ? StringValue.cFalseStringValue : StringValue.cTrueStringValue;
+		return new BooleanValue (!mText.equals (v.toStringValue ().mText));
 	}
 	
 	@Override
@@ -92,23 +67,12 @@ final class StringValue extends Value {
 	}
 	
 	@Override
-	public DateValue toDateValue () {
-		throwException ("cannot make date from string");
-		return null;
-	}
-
-	@Override
 	public String toString () {
 		return mText;
 	}
 	
 	@Override
-	public boolean toBoolean (String operator) {
-		if (mText.equals (TRUE_STRING)) {
-			return true;
-		} else if (!mText.equals (FALSE_STRING)) {
-			throwException ("invalid operand(s) for '" + operator + "'");
-		}
-		return false;
+	public BooleanValue toBooleanValue () {
+		return new BooleanValue (mText);
 	}
 }

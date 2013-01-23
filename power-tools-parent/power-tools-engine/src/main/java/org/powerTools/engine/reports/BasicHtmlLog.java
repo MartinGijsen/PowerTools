@@ -28,7 +28,7 @@ public abstract class BasicHtmlLog implements TestLineSubscriber, TestResultSubs
 	protected int mLevel;
 	protected int mLastId;
 
-	
+
 	public BasicHtmlLog (PrintWriter writer, String title) {
 		mLevel	= 0;
 		mLastId	= 0;

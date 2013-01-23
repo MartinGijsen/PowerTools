@@ -20,10 +20,20 @@ package org.powerTools.engine.sources.model;
 
 
 final class NeverDone extends DoneCondition {
+	final static String NAME = "never";
+
+	private final static String DESCRIPTION = "never stop";
+
+	
 	NeverDone () {
 		super ();
 	}
 	
+	@Override
+	String getDescription () {
+		return DESCRIPTION;
+	}
+
 	@Override
 	void markEdge (Edge edge) {
 		;

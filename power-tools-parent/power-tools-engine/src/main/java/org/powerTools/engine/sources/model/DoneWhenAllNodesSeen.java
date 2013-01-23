@@ -23,6 +23,10 @@ import java.util.Set;
 
 
 final class DoneWhenAllNodesSeen extends DoneCondition {
+	final static String NAME = "all nodes";
+	
+	private final static String DESCRIPTION = "stop when all nodes have been traversed";
+
 	private boolean mDone;
 	private Set<Node> mUnseenNodes;
 
@@ -33,6 +37,11 @@ final class DoneWhenAllNodesSeen extends DoneCondition {
 		mUnseenNodes.remove (graph.getRoot ());
 	}
 	
+	@Override
+	String getDescription () {
+		return DESCRIPTION;
+	}
+
 	@Override
 	void markEdge (Edge edge) {
 		mUnseenNodes.remove (edge.mTarget);

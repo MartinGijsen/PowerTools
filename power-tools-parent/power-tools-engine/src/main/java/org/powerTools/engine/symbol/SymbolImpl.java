@@ -34,9 +34,9 @@ abstract class SymbolImpl implements Symbol {
 
 	protected SymbolImpl (String name, Scope scope) {
 		if (name.isEmpty ()) {
-			throw new ExecutionException ("empty symbol name");
+			throw new ExecutionException ("empty name");
 		} else if (!mNamePattern.matcher (name).matches ()) {
-			throw new ExecutionException ("invalid symbol name");
+			throw new ExecutionException ("invalid name: " + name);
 		} else {
 			mName	= name;
 			mScope	= scope;

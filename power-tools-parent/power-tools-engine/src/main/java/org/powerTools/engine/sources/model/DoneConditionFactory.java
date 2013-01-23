@@ -20,22 +20,16 @@ package org.powerTools.engine.sources.model;
 
 
 final class DoneConditionFactory {
-	private final static String NEVER_DONE_CONDITION	= "never";
-	private final static String ALL_EDGES_CONDITION		= "all edges";
-	private final static String ALL_NODES_CONDITION		= "all nodes";
-	private final static String END_NODE_CONDITION		= "end node";
-
-
 	private DoneConditionFactory () { }
 
 	static DoneCondition create (String conditionName, DirectedGraph graph) {
-		if (NEVER_DONE_CONDITION.equals (conditionName)) {
+		if (NeverDone.NAME.equals (conditionName)) {
 			return new NeverDone ();
-		} else if (ALL_EDGES_CONDITION.equals (conditionName)) {
+		} else if (DoneWhenAllEdgesSeen.NAME.equals (conditionName)) {
 			return new DoneWhenAllEdgesSeen (graph);
-		} else if (ALL_NODES_CONDITION.equals (conditionName)) {
+		} else if (DoneWhenAllNodesSeen.NAME.equals (conditionName)) {
 			return new DoneWhenAllNodesSeen (graph);
-		} else if (END_NODE_CONDITION.equals (conditionName)) {
+		} else if (DoneWhenInEndNode.NAME.equals (conditionName)) {
 			return new DoneWhenInEndNode ();
 		} else {
 			throw new RuntimeException (String.format ("unknown condition: %s", conditionName));

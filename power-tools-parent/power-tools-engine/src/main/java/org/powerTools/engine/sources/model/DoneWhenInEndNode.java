@@ -20,13 +20,23 @@ package org.powerTools.engine.sources.model;
 
 
 final class DoneWhenInEndNode extends DoneCondition {
+	final static String NAME = "end node";
+
+	private final static String DESCRIPTION = "stop when reaching an end node";
+
 	private boolean mDone;
+
 	
 	DoneWhenInEndNode () {
 		super ();
 		mDone = false;
 	}
 	
+	@Override
+	String getDescription () {
+		return DESCRIPTION;
+	}
+
 	@Override
 	void markEdge (Edge edge) {
 		if (edge.mTarget.mLabel.equals (Model.END_NODE_LABEL)) {

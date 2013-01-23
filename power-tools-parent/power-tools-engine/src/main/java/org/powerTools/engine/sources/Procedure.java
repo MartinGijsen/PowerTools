@@ -29,6 +29,11 @@ import org.powerTools.engine.symbol.Scope;
 
 // A Procedure is a scripted instruction.
 public final class Procedure {
+	private final String mName;
+	private final List<Parameter> mParameters;
+	private final List<List<String>> mInstructions;
+	
+
 	public Procedure (String name) {
 		mName 			= name;
 		mParameters		= new ArrayList<Parameter> ();
@@ -54,7 +59,7 @@ public final class Procedure {
 			}
 		}
 
-		mParameters.add (new Parameter (name, isOutput));
+		mParameters.add (new Parameter (realName, isOutput));
 	}
 	
 	public void addInstruction (List<String> instruction) {
@@ -90,10 +95,6 @@ public final class Procedure {
 			mIsOutput	= isOutput;
 		}
 	}
-	
-	private final String mName;
-	private final List<Parameter> mParameters;
-	private final List<List<String>> mInstructions;
 	
 	private void checkNrOfArguments (int nrOfArguments) {
 		final int nrOfParameters = mParameters.size ();

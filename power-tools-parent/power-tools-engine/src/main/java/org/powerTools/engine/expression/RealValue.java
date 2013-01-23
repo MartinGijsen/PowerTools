@@ -33,33 +33,39 @@ final class RealValue extends Value {
 	
 	
 	@Override
+	public String getType () {
+		return "real number";
+	}
+
+	
+	@Override
 	public Value equal (Value v) {
-		return mValue == v.toRealValue ().mValue ? StringValue.cTrueStringValue : StringValue.cFalseStringValue;
+		return new BooleanValue (mValue == v.toRealValue ().mValue);
 	}
 	
 	@Override
 	public Value unequal (Value v) {
-		return mValue == v.toRealValue ().mValue ? StringValue.cFalseStringValue : StringValue.cTrueStringValue;
+		return new BooleanValue (mValue == v.toRealValue ().mValue);
 	}
 	
 	@Override
 	public Value lessThan (Value v) {
-		return mValue < v.toRealValue ().mValue ? StringValue.cTrueStringValue : StringValue.cFalseStringValue;
+		return new BooleanValue (mValue < v.toRealValue ().mValue);
 	}
 	
 	@Override
 	public Value lessOrEqual (Value v) {
-		return mValue <= v.toRealValue ().mValue ? StringValue.cTrueStringValue : StringValue.cFalseStringValue;
+		return new BooleanValue (mValue <= v.toRealValue ().mValue);
 	}
 	
 	@Override
 	public Value greaterThan (Value v) {
-		return mValue > v.toRealValue ().mValue ? StringValue.cTrueStringValue : StringValue.cFalseStringValue;
+		return new BooleanValue (mValue > v.toRealValue ().mValue);
 	}
 	
 	@Override
 	public Value greaterOrEqual (Value v) {
-		return mValue >= v.toRealValue ().mValue ? StringValue.cTrueStringValue : StringValue.cFalseStringValue;
+		return new BooleanValue (mValue >= v.toRealValue ().mValue);
 	}
 	
 	@Override
@@ -99,24 +105,12 @@ final class RealValue extends Value {
 	}
 
 	@Override
-	public DateValue toDateValue () {
-		throwException ("cannot make date from real number");
-		return null;
-	}
-
-	@Override
 	public RealValue toRealValue () {
 		return this;
 	}
 
 	@Override
-	public IntegerValue toIntegerValue () {
-		throwException ("cannot make integer number from real number");
-		return null;
-	}
-	
-	@Override
 	public String toString () {
 		return Double.toString (mValue);
 	}
-} 
+}

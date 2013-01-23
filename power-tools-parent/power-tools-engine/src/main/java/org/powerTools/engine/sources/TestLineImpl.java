@@ -18,8 +18,6 @@
 
 package org.powerTools.engine.sources;
 
-import java.util.Iterator;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.powerTools.engine.TestLine;
@@ -34,35 +32,7 @@ public final class TestLineImpl implements TestLine {
 	public TestLineImpl () {
 		mNrOfParts = 0;
 	}
-	
 
-	public void parseQuotedInstruction (String instruction) {
-		setParts (getParts (instruction));
-	}
-	
-	private List<String> getParts (String instruction) {
-		final String[] partsArray	= instruction.split ("\"");
-		final List<String> parts	= new ArrayList<String> ();		
-
-		parts.add (getInstructionName (partsArray));
-
-		for (int partNr = 1; partNr < partsArray.length; partNr += 2) {
-			parts.add (partsArray[partNr]);
-		}
-		
-		return parts;
-	}
-	
-	private String getInstructionName (String[] parts) {
-		String instructionName = parts[0];
-		for (int partNr = 2; partNr < parts.length; partNr += 2) {
-			instructionName += " _ " + parts[partNr];
-		}
-		if (parts.length % 2 == 0) {
-			instructionName += " _";
-		}
-		return instructionName;
-	}
 
 	public void setParts (List<String> list) {
 		mNrOfParts = list.size ();
@@ -71,16 +41,16 @@ public final class TestLineImpl implements TestLine {
 			mOriginalParts	= new String[mNrOfParts];
 
 			int partNr = 0;
-			final Iterator<String> iter = list.iterator ();
-			while (iter.hasNext ()) {
-				setPart (partNr++, iter.next ());
+			for (String part : list) {
+				setPart (partNr++, part);
 			}
 		}
 	}
 	
 	public void createParts (int nrOfParts) {
-		mNrOfParts	= nrOfParts;
-		mParts		= new String[nrOfParts];
+		mNrOfParts		= nrOfParts;
+		mParts			= new String[nrOfParts];
+		mOriginalParts	= new String[nrOfParts];
 		for (int partNr = 0; partNr < nrOfParts; ++partNr) {
 			mParts[partNr] = "";
 		}

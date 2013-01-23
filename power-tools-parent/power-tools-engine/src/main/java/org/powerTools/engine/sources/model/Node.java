@@ -34,4 +34,12 @@ final class Node {
 		mLabel	= "";
 		mAction	= "";
 	}
+	
+	String getDescription () {
+		if (mLabel.isEmpty ()) {
+			return mName;
+		} else {
+			return mLabel + " (" + mName + ")";
+		}
+	}
 }

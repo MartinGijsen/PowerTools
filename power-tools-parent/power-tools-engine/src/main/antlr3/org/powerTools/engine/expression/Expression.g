@@ -19,8 +19,8 @@
 grammar Expression;
 
 options {
-	k		= 1;
-	output		= AST;
+	k				= 1;
+	output			= AST;
 	ASTLabelType	= CommonTree;
 }
 

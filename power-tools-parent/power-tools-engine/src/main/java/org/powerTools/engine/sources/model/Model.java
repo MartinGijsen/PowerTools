@@ -18,8 +18,13 @@
 
 package org.powerTools.engine.sources.model;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Set;
 
+import org.xml.sax.SAXException;
+
+import org.powerTools.engine.ExecutionException;
 import org.powerTools.engine.core.RunTimeImpl;
 import org.powerTools.engine.reports.TestRunResultPublisher;
 
@@ -32,47 +37,53 @@ final class Model {
 	private final EdgeSelectionStrategy		mSelector;
 	private final DoneCondition				mDoneCondition;
 	private final TestRunResultPublisher	mPublisher;
-
-	private DirectedGraph					mGraph;
-	private Node							mStartNode;
-	private Node							mCurrentNode;
+	private final DirectedGraph				mGraph;
+	private final Node						mStartNode;
+	
+	private Node mCurrentNode;
 
 
 	Model (String fileName, String selector, String doneCondition, RunTimeImpl runTime) {
-		mFileName	= fileName;
-		mSelector	= EdgeSelectionStrategyFactory.create (selector, runTime);
-		mPublisher	= TestRunResultPublisher.getInstance ();
-
-		DoneCondition tmpCondition = null;
 		try {
+			mFileName		= fileName;
+			mPublisher		= TestRunResultPublisher.getInstance ();
+			mSelector		= EdgeSelectionStrategyFactory.create (selector, runTime);
+			mPublisher.publishCommentLine ("edge selection: " + mSelector.getDescription ());
+
 			mGraph			= new GraphMLParser ().parse (fileName);
+			mDoneCondition	= DoneConditionFactory.create (doneCondition, mGraph);
+			mPublisher.publishCommentLine ("stop condition: " + mDoneCondition.getDescription ());
+
 			mStartNode		= mGraph.getRoot ();
 			mCurrentNode	= mStartNode;
-			tmpCondition	= DoneConditionFactory.create (doneCondition, mGraph);
-		} catch (Exception e) {
-			;
+			mPublisher.publishCommentLine ("start node: " + mStartNode.getDescription ());
+		} catch (SAXException se) {
+			throw new ExecutionException ("SAX exception");
+		} catch (FileNotFoundException fnfe) {
+			throw new ExecutionException ("file not found: " + fileName);
+		} catch (IOException ioe) {
+			throw new ExecutionException ("IO exception");
 		}
-		mDoneCondition = tmpCondition;
 	}
 
 	DirectedGraph getGraph () {
 		return mGraph;
 	}
-	
+
 	Node getStartNode () {
 		return mStartNode;
 	}
-	
+
 	Node getCurrentNode () {
 		return mCurrentNode;
 	}
-	
+
 	Edge getNextEdge () {
 		mDoneCondition.check ();
 		Edge edge		= mSelector.selectEdge (this);
 		mCurrentNode	= edge.mTarget;
-		mDoneCondition.markEdge (edge);
-		mPublisher.publishCommentLine (String.format("next edge: %s -> %s", edge.mSource.mName, edge.mTarget.mName));
+		mDoneCondition.markEdge (edge);		
+		mPublisher.publishCommentLine ("next node: " + edge.mTarget.getDescription ());
 		return edge;
 	}
 }

@@ -30,16 +30,16 @@ final class SequenceItem extends Item {
 	private Boolean mNumbersOnly;
 	
 	
-	SequenceItem (final String name, final Item parent) {
+	SequenceItem (String name, Item parent) {
 		super (name, parent);
 		mChildren = new HashMap<String, Item> ();
 	}
 
 	
-	void add (final String name, final Item newItem) {
+	void add (String name, Item newItem) {
 		final Item oldItem = mChildren.get (name);
 		if (oldItem != null) {
-			throw new ExecutionException ("item already exists");
+			throw new ExecutionException ("structure field already exists");
 		} else {
 			final Boolean isNumber = Character.isDigit (name.charAt (0));
 			if (mNumbersOnly == null) {
@@ -55,18 +55,18 @@ final class SequenceItem extends Item {
 
 	
 	@Override
-	Item getChild (final String name) {
+	Item getChild (String name) {
 		final Item child = mChildren.get (name);
 		if (child != null) {
 			return child;
 		} else {
-			throw new ExecutionException ("does not exist");
+			throw new ExecutionException ("structure field does not exist");
 		}
 	}
 
 	@Override
 	String getValue () {
-		throw new ExecutionException ("this item has no value");
+		throw new ExecutionException ("structure field has no value");
 	}
 	
 	@Override
@@ -76,9 +76,12 @@ final class SequenceItem extends Item {
 
 	@Override
 	LeafItem createLeaf (String[] names, int positionToCreate) {
-		final String nextName = names[positionToCreate];
+		String nextName = "";
 		try {
+			nextName = names[positionToCreate];
 			return getChild (nextName).createLeaf (names, positionToCreate + 1);
+		} catch (IndexOutOfBoundsException ioobe) {
+			throw new ExecutionException ("cannot assign to a structure, only to a structure field");
 		} catch (ExecutionException ee) {
 			if (positionToCreate + 1 == names.length) {
 				LeafItem leaf = new LeafItem (names[positionToCreate], this);

@@ -33,19 +33,25 @@ final class IntegerValue extends Value {
 
 	
 	@Override
+	public String getType () {
+		return "integer number";
+	}
+
+	
+	@Override
 	public Value equal (Value v) {
-		return mValue == v.toIntegerValue ().mValue ? StringValue.cTrueStringValue : StringValue.cFalseStringValue;
+		return new BooleanValue (mValue == v.toIntegerValue ().mValue);
 	}
 	
 	@Override
 	public Value unequal (Value v) {
-		return mValue == v.toIntegerValue ().mValue ? StringValue.cFalseStringValue : StringValue.cTrueStringValue;
+		return new BooleanValue (mValue != v.toIntegerValue ().mValue);
 	}
 	
 	@Override
 	public Value lessThan (Value v) {
 		if (v instanceof IntegerValue) {
-			return mValue < v.toIntegerValue ().mValue ? StringValue.cTrueStringValue : StringValue.cFalseStringValue;
+			return new BooleanValue (mValue < v.toIntegerValue ().mValue);
 		} else {
 			return this.toRealValue ().lessThan (v);
 		}
@@ -54,7 +60,7 @@ final class IntegerValue extends Value {
 	@Override
 	public Value lessOrEqual (Value v) {
 		if (v instanceof IntegerValue) {
-			return mValue <= v.toIntegerValue ().mValue ? StringValue.cTrueStringValue : StringValue.cFalseStringValue;
+			return new BooleanValue (mValue <= v.toIntegerValue ().mValue);
 		} else {
 			return this.toRealValue ().lessOrEqual (v);
 		}
@@ -63,7 +69,7 @@ final class IntegerValue extends Value {
 	@Override
 	public Value greaterThan (Value v) {
 		if (v instanceof IntegerValue) {
-			return mValue > v.toIntegerValue ().mValue ? StringValue.cTrueStringValue : StringValue.cFalseStringValue;
+			return new BooleanValue (mValue > v.toIntegerValue ().mValue);
 		} else {
 			return this.toRealValue ().greaterThan (v);
 		}
@@ -72,7 +78,7 @@ final class IntegerValue extends Value {
 	@Override
 	public Value greaterOrEqual (Value v) {
 		if (v instanceof IntegerValue) {
-			return mValue >= v.toIntegerValue ().mValue ? StringValue.cTrueStringValue : StringValue.cFalseStringValue;
+			return new BooleanValue (mValue >= v.toIntegerValue ().mValue);
 		} else {
 			return this.toRealValue ().greaterOrEqual (v);
 		}
@@ -83,8 +89,10 @@ final class IntegerValue extends Value {
 		if (v instanceof IntegerValue) {
 			mValue += v.toIntegerValue ().mValue;
 			return this;
-		} else {
+		} else if (v instanceof RealValue) {
 			return this.toRealValue ().add (v);
+		} else {
+			return super.add (v);
 		}
 	}
 	
@@ -93,8 +101,10 @@ final class IntegerValue extends Value {
 		if (v instanceof IntegerValue) {
 			mValue -= v.toIntegerValue ().mValue;
 			return this;
-		} else {
+		} else if (v instanceof RealValue) {
 			return this.toRealValue ().subtract(v);
+		} else {
+			return super.subtract (v);
 		}
 	}
 	
@@ -103,8 +113,10 @@ final class IntegerValue extends Value {
 		if (v instanceof IntegerValue) {
 			mValue *= v.toIntegerValue ().mValue;
 			return this;
-		} else {
+		} else if (v instanceof RealValue) {
 			return this.toRealValue ().multiply (v.toRealValue ());
+		} else {
+			return super.multiply (v);
 		}
 	}
 	
@@ -123,12 +135,6 @@ final class IntegerValue extends Value {
 	@Override
 	public StringValue toStringValue () {
 		return new StringValue (Long.toString (mValue));
-	}
-
-	@Override
-	public DateValue toDateValue () {
-		throwException ("cannot make date from integer number");
-		return null;
 	}
 
 	@Override

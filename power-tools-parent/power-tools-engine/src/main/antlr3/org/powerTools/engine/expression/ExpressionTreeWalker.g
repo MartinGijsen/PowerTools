@@ -73,8 +73,8 @@ expr returns [Value v]
 	|	^('*' e1=expr e2=expr)	{ v = $e1.v.multiply ($e2.v); }
 	|	^('/' e1=expr e2=expr)	{ v = $e1.v.divide ($e2.v); }
 	|	^(UnaryMinus t=expr)	{ v = $t.v.negate (); }
-	|	'true'					{ v = StringValue.cTrueStringValue; }
-	|	'false'					{ v = StringValue.cFalseStringValue; }
+	|	'true'					{ v = BooleanValue.cTrueStringValue; }
+	|	'false'					{ v = BooleanValue.cFalseStringValue; }
 	|	s=StringLiteral			{ v = new StringValue ($s.getText ()); }
 	|	n=NumberLiteral			{
 			final String text = $n.getText ();

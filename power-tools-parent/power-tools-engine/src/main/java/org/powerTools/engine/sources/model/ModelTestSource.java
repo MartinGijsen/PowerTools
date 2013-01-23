@@ -18,6 +18,9 @@
 
 package org.powerTools.engine.sources.model;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import org.powerTools.engine.core.RunTimeImpl;
 import org.powerTools.engine.sources.TestLineImpl;
 import org.powerTools.engine.sources.TestSource;
@@ -52,35 +55,34 @@ public class ModelTestSource extends TestSource {
 			do {
 				instruction = mModel.getNextEdge ().mAction;
 			} while ("".equals (instruction));
-			//mTestLine.setParts (getParts (instruction));
-			mTestLine.parseQuotedInstruction (instruction);
+			mTestLine.setParts (getParts (instruction));
 			return mTestLine;
 		} catch (DoneCondition.DoneException e) {
 			return null;
 		}
 	}
 
-//	private List<String> getParts (String instruction) {
-//		final String[] partsArray	= instruction.split ("\"");
-//		final List<String> parts	= new LinkedList<String> ();		
-//
-//		parts.add (getInstructionName (partsArray));
-//
-//		for (int partNr = 1; partNr < partsArray.length; partNr += 2) {
-//			parts.add (partsArray[partNr]);
-//		}
-//		
-//		return parts;
-//	}
-//	
-//	private String getInstructionName (String[] parts) {
-//		String instructionName = parts[0];
-//		for (int partNr = 2; partNr < parts.length; partNr += 2) {
-//			instructionName += " _ " + parts[partNr];
-//		}
-//		if (parts.length % 2 == 0) {
-//			instructionName += " _";
-//		}
-//		return instructionName;
-//	}
+	private List<String> getParts (String instruction) {
+		final String[] partsArray	= instruction.split ("\"");
+		final List<String> parts	= new LinkedList<String> ();		
+
+		parts.add (getInstructionName (partsArray));
+
+		for (int partNr = 1; partNr < partsArray.length; partNr += 2) {
+			parts.add (partsArray[partNr]);
+		}
+		
+		return parts;
+	}
+	
+	private String getInstructionName (String[] parts) {
+		String instructionName = parts[0];
+		for (int partNr = 2; partNr < parts.length; partNr += 2) {
+			instructionName += " _ " + parts[partNr];
+		}
+		if (parts.length % 2 == 0) {
+			instructionName += " _";
+		}
+		return instructionName;
+	}
 }

@@ -34,13 +34,19 @@ final class DateValue extends Value {
 	
 	
 	@Override
+	public String getType () {
+		return "date";
+	}
+
+	
+	@Override
 	public Value equal (Value v) {
-		return mDate.equals (v.toDateValue ().mDate) ? StringValue.cTrueStringValue : StringValue.cFalseStringValue;
+		return new BooleanValue (mDate.equals (v.toDateValue ().mDate));
 	}
 	
 	@Override
 	public Value unequal (Value v) {
-		return mDate.equals (v.toDateValue ().mDate) ? StringValue.cFalseStringValue : StringValue.cTrueStringValue;
+		return new BooleanValue (mDate.equals (v.toDateValue ().mDate));
 	}
 	
 	Value add (String number, String period) {
@@ -56,18 +62,6 @@ final class DateValue extends Value {
 		return this;
 	}
 	
-	@Override
-	public IntegerValue toIntegerValue () {
-		throwException ("cannot make integer number from date");
-		return null;
-	}
-
-	@Override
-	public RealValue toRealValue () {
-		throwException ("cannot make real number from date");
-		return null;
-	}
-
 	@Override
 	public StringValue toStringValue () {
 		throwException ("cannot make string from date");
