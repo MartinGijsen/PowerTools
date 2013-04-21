@@ -31,6 +31,14 @@ public final class Edge {
 		this.attributes	= new Attributes ();
 	}
 
+	public Node getSource () {
+		return this.source;
+	}
+	
+	public Node getTarget () {
+		return this.target;
+	}
+	
 	public void setStyle (Style style) {
 		this.attributes.style = style;
 	}

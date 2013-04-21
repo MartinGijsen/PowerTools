@@ -32,39 +32,79 @@ public final class Node {
 		this.attributes	= new Attributes ();
 	}
 
+	public String getName () {
+		return this.name;
+	}
+	
 	public void setLabel (String label) {
 		this.attributes.label = label;
+	}
+
+	public String getLabel () {
+		return this.attributes.label;
 	}
 
 	public void setShape (Shape shape) {
 		this.attributes.shape = shape;
 	}
 
+	public Shape getShape () {
+		return this.attributes.shape;
+	}
+	
 	public void setStyle (Style style) {
 		this.attributes.style = style;
 	}
 
+	public Style getStyle () {
+		return this.attributes.style;
+	}
+	
 	public void setLineColour (Colour colour) {
 		this.attributes.lineColour = colour;
 	}
 
+	public Colour getLineColour () {
+		return this.attributes.lineColour;
+	}
+	
 	public void setLineWidth (int width) {
 		this.attributes.lineWidth = Integer.toString (width);
+	}
+
+	public int getWidth () {
+		return Integer.parseInt (this.attributes.lineWidth);
 	}
 
 	public void setFillColour (Colour colour) {
 		this.attributes.fillColour = colour;
 	}
 
+	public Colour getFillColour () {
+		return this.attributes.fillColour;
+	}
+
 	public void setTextColour (Colour colour) {
 		this.attributes.textColour = colour;
+	}
+
+	public Colour getTextColour () {
+		return this.attributes.textColour;
 	}
 
 	public void setFontName (String fontName) {
 		this.attributes.fontName = fontName;
 	}
 
+	public String getFontName () {
+		return this.attributes.fontName;
+	}
+
 	public void setFontSize (int fontSize) {
 		this.attributes.fontSize = Integer.toString (fontSize);
+	}
+
+	public int getFontSize () {
+		return Integer.parseInt (this.attributes.fontSize);
 	}
 }

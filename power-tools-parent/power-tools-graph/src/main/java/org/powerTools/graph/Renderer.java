@@ -20,6 +20,7 @@ package org.powerTools.graph;
 
 
 public interface Renderer {
+	void setCleanup (boolean value);
 	void setDefaultType (String type);
 	void write (String filename, DirectedGraph graph);
 	void write (String filename, String type, DirectedGraph graph);

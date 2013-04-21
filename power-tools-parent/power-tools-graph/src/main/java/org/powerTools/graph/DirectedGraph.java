@@ -20,6 +20,7 @@ package org.powerTools.graph;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -54,6 +55,7 @@ public final class DirectedGraph {
 		this.attributes				= new Attributes ();
 		this.defaultNodeAttributes	= new Attributes ();
 	}
+
 	
 	public void setConcentrateEdges (boolean value) {
 		this.concentrateEdges = value;
@@ -211,23 +213,20 @@ public final class DirectedGraph {
 		}
 	}
 
-	public Cluster addCluster () {
-		return addCluster ("");
-	}
-
 	public Cluster addCluster (String label) {
-		//if (this.clusters.containsKey (name)) {
-		//	throw new GraphException (String.format ("cluster name %s not unique", name));
-		//} else {
-			final Cluster cluster = new Cluster (label);
-			this.clusters.add (cluster);
-			return cluster;
-		//}
+		final Cluster cluster = new Cluster (label);
+		this.clusters.add (cluster);
+		return cluster;
 	}
 
-//	public Cluster getCluster (String name) {
-//		return this.clusters.get (name);
-//	}
+	public Cluster getCluster (String label) {
+		for (Cluster cluster : this.clusters) {
+			if (cluster.label.equals (label)) {
+				return cluster;
+			}
+		}
+		return null;
+	}
 	
 	public Rank addRank (String name, RankType type) {
 		if (this.ranks.containsKey (name)) {
@@ -241,5 +240,9 @@ public final class DirectedGraph {
 
 	public Rank getRank (String name) {
 		return this.ranks.get (name);
+	}
+	
+	public Iterator<Node> nodeIterator () {
+		return this.nodes.values ().iterator ();
 	}
 }

@@ -32,15 +32,22 @@ public final class GraphViz implements Renderer {
 	private File file;
 	private PrintWriter writer;
 	private String defaultType;
+	private boolean doCleanup;
 	
 	
-	public GraphViz (String path) {
+	public GraphViz (String path) {	
 		this (path, DEFAULT_DEFAULT_TYPE);
 	}
 
 	public GraphViz (String path, String defaultType) {
 		this.path			= path;
 		this.defaultType	= defaultType;
+		this.doCleanup		= true;
+	}
+
+	@Override
+	public void setCleanup (boolean value) {
+		this.doCleanup = value;
 	}
 
 	@Override
@@ -84,9 +91,9 @@ public final class GraphViz implements Renderer {
 			this.file	= File.createTempFile ("PowerTools", ".dot");
 			this.writer	= new PrintWriter (new FileOutputStream (this.file));
 			this.writer.println ("digraph G {");
-			if (graph.distanceBetweenRanks > 0) {
-				writeGraphAttribute ("ranksep", Integer.toString (graph.distanceBetweenRanks));
-			}
+//			if (graph.distanceBetweenRanks > 0) {
+//				writeGraphAttribute ("ranksep", Integer.toString (graph.distanceBetweenRanks));
+//			}
 			if (graph.concentrateEdges) {
 				writeGraphAttribute ("concentrate", "true");
 			}
@@ -166,6 +173,9 @@ public final class GraphViz implements Renderer {
 
 	private void writeNodes (DirectedGraph graph) {
 		for (Node node : graph.nodes.values ()) {
+			if (!node.attributes.label.isEmpty ()) {
+				writeNodeAttribute (node, "label", node.attributes.label);
+			}
 			if (node.attributes.shape != Shape.DEFAULT) {
 				writeNodeAttribute (node, "shape", node.attributes.shape.toString ());
 			}
@@ -295,7 +305,9 @@ public final class GraphViz implements Renderer {
 			String command = String.format ("\"%s/%s\" -Tpng -o %s.%s.%s %s", path, tool, filename, tool, type, this.file.getPath ());
 //			System.out.println (command);
 			Runtime.getRuntime ().exec (command).waitFor ();
-//			this.file.delete ();
+			if (this.doCleanup) {
+				this.file.delete ();
+			}
 		} catch (IOException ioe) {
 			throw new GraphException ("failed to generate picture");
 		} catch (InterruptedException ie) {
