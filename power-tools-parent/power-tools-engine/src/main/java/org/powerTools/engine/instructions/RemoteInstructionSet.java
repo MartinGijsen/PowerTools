@@ -45,26 +45,28 @@ final class RemoteInstructionSet implements InstructionSet {
 	}
 	
 	@Override
+	public void setup () {
+		mMethodNames = mExecutor.getMethodNames ();
+		if (mMethodNames == null) {
+			throw new ExecutionException ("");
+		}
+	}
+
+	@Override
 	public Executor getExecutor (String instructionName) {
-		initialize ();
 		if (implementsInstruction (instructionName)) {
 			return mExecutor;
 		} else {
 			return null;
 		}
 	}
-	
-	
-	private void initialize () {
-		if (mMethodNames == null) {
-			mMethodNames = mExecutor.getMethodNames ();
-			if (mMethodNames == null) {
-				throw new ExecutionException ("");
-			}
-		}
-	}
-	
+		
 	private boolean implementsInstruction (String instructionName) {
 		return mMethodNames.contains (instructionName);
+	}
+
+	@Override
+	public void cleanup () {
+		;
 	}
 }

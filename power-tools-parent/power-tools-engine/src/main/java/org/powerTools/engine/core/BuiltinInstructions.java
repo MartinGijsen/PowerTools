@@ -41,6 +41,16 @@ public final class BuiltinInstructions implements InstructionSet {
 		return BuiltinLogic.INSTRUCTION_SET_NAME;
 	}
 	
+	@Override
+	public void setup () {
+		;
+	}
+	
+	@Override
+	public void cleanup () {
+		;
+	}
+	
 	
 	public static void register (RunTimeImpl runTime, Instructions instructions) {
 		new BuiltinInstructions (runTime, instructions).register ();

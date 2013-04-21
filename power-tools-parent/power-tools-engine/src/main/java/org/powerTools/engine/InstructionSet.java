@@ -19,8 +19,11 @@
 package org.powerTools.engine;
 
 /**
- * Interface for an instruction set that wants to select its own name.
+ * Interface for an instruction set that wants to select its own name
+ * or have a setup or cleanup method called by the engine.
  */
 public interface InstructionSet {
 	String getName ();
+	void setup ();
+	void cleanup ();
 }

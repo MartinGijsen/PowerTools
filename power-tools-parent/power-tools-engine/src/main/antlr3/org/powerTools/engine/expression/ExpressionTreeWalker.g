@@ -37,7 +37,7 @@ import org.powerTools.engine.symbol.Scope;
 @members {
 	// TODO use from elsewhere
 	private final static Pattern cIntegerPattern	= Pattern.compile ("\\d+");
-	private final static Pattern cRealPattern	= Pattern.compile ("\\d+\\.\\d+");
+	private final static Pattern cRealPattern		= Pattern.compile ("\\d+\\.\\d+");
 
 	private Scope mScope;
 	
@@ -76,15 +76,8 @@ expr returns [Value v]
 	|	'true'					{ v = BooleanValue.cTrueStringValue; }
 	|	'false'					{ v = BooleanValue.cFalseStringValue; }
 	|	s=StringLiteral			{ v = new StringValue ($s.getText ()); }
-	|	n=NumberLiteral			{
-			final String text = $n.getText ();
-			if (!text.contains (".")) {
-				v = new IntegerValue (Integer.parseInt (text)); 
-			} else {
-				v = new RealValue (Double.parseDouble (text)); 
-			}
-		}
-	|	i=IdentifierPlus	{
+	|	n=NumberLiteral			{ v = createValue ($n.getText ()); }
+	|	i=IdentifierPlus {
 			final String name = $i.getText ();
 			v = createValue (mScope.getSymbol (name).getValue (name));
 		}
@@ -101,10 +94,10 @@ expr returns [Value v]
 			calendar.add (Calendar.DATE, 1);
 			v = new DateValue (calendar);
 		}
-	|	^(DatePlus day=expr nr=NumberLiteral (p='days' | p='weeks' | p='months' | p='years')) {
-			v = ((DateValue) $day.v).add ($nr.getText (), $p.getText ());
+	|	^(DatePlus day=expr e=expr (p='days' | p='weeks' | p='months' | p='years')) {
+			v = ((DateValue) $day.v).add ($e.v.toString (), $p.getText ());
 		}
-	|	^(DateMinus day=expr nr=NumberLiteral (p='days' | p='weeks' | p='months' | p='years')) {
-			v = ((DateValue) $day.v).add ("-" + $nr.getText (), $p.getText ());
+	|	^(DateMinus day=expr e=expr (p='days' | p='weeks' | p='months' | p='years')) {
+			v = ((DateValue) $day.v).add ("-" + $e.v.toString (), $p.getText ());
 		}
 	;

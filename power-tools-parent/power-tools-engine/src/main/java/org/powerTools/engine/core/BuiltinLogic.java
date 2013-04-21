@@ -57,7 +57,7 @@ final class BuiltinLogic {
 	}
 
 
-	void register (Object object) {
+	protected void register (Object object) {
 		register (INSTRUCTION_SET_NAME, object);
 	}
 	

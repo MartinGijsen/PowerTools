@@ -41,6 +41,16 @@ public final class BuiltinKeywords implements InstructionSet {
 		return BuiltinLogic.INSTRUCTION_SET_NAME;
 	}
 	
+	@Override
+	public void setup () {
+		;
+	}
+	
+	@Override
+	public void cleanup () {
+		;
+	}
+	
 	
 	static void register (RunTimeImpl runTime, Instructions instructions) {
 		new BuiltinKeywords (runTime, instructions).register ();

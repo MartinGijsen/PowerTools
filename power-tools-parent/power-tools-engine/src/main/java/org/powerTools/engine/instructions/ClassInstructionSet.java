@@ -18,6 +18,7 @@
 
 package org.powerTools.engine.instructions;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import org.powerTools.engine.ExecutionException;
@@ -31,7 +32,7 @@ import org.powerTools.engine.ExecutionException;
  * A method name is created from an instruction name by CamelCasing the words
  * and stringing them together.
  */
-public final class ClassInstructionSet implements InstructionSet {
+final class ClassInstructionSet implements InstructionSet {
 	private final String mName;
 	private final Object mObject;
 	
@@ -47,6 +48,13 @@ public final class ClassInstructionSet implements InstructionSet {
 		return mName;
 	}
 	
+	@Override
+	public void setup () {
+		if (mObject instanceof org.powerTools.engine.InstructionSet) {
+			((org.powerTools.engine.InstructionSet) mObject).setup ();
+		}
+	}
+
 	@Override
 	public Executor getExecutor (String instructionName) {
 		Method method = getMethod (getMethodName (instructionName));
@@ -84,5 +92,12 @@ public final class ClassInstructionSet implements InstructionSet {
 	    }
 	    
 	    return null;
+	}
+
+	@Override
+	public void cleanup () {
+		if (mObject instanceof org.powerTools.engine.InstructionSet) {
+			((org.powerTools.engine.InstructionSet) mObject).setup ();
+		}
 	}
 }

@@ -48,8 +48,6 @@ public abstract class Engine {
 
 	protected TestLineImpl mTestLine;
 
-	//private static final String EXPRESSION_PREFIX = "?";
-
 
 	protected Engine (RunTimeImpl runTime) {
 		mRunTime		= runTime;
@@ -66,6 +64,7 @@ public abstract class Engine {
 	protected final void run (TestSource source) {
 		mRunTime.invokeSource (source);
 		run ();
+		mInstructions.cleanup ();
 		mPublisher.finish ();
 	}
 
@@ -109,17 +108,6 @@ public abstract class Engine {
 		}
 	}
 	
-//	private void evaluateExpressions () {
-//		final Scope scope	= mRunTime.getCurrentScope ();
-//		final int nrOfParts	= mTestLine.getNrOfParts ();
-//		for (int partNr = 0; partNr < nrOfParts; ++partNr) {
-//			final String part = mTestLine.getPart (partNr);
-//			if (part.startsWith (EXPRESSION_PREFIX)) {
-//				mTestLine.setEvaluatedPart (partNr, ExpressionEvaluator.evaluate (part, scope));
-//			}
-//		}
-//	}
-
 	private boolean isAnInstruction () {
 		return !mTestLine.getPart (0).isEmpty ();
 	}

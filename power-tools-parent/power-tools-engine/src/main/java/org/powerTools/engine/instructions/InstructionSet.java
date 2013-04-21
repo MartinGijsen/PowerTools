@@ -24,11 +24,19 @@ package org.powerTools.engine.instructions;
  * It retrieves an executor for an implemented instruction.
  */
 public interface InstructionSet {
-	String getName ();
-	
 	/**
-	 * retrieves an executor for an implemented instruction.
-	 * @return an executor for the instruction (if it is implemented once)
+	 * the name of the instruction set
+	 * @return the instruction set name
+	 */
+	String getName ();
+
+	void setup ();
+
+	/**
+	 * retrieves an executor for an instruction (if is implemented once)
+	 * @return an executor for the instruction (if is implemented once)
 	 */
 	Executor getExecutor (String instructionName);
+	
+	void cleanup ();
 }

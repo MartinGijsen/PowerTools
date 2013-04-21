@@ -81,7 +81,7 @@ stringExpr
 	;
 
 dateExpr
-	:	day (dateOperator^ NumberLiteral period)*
+	:	day (dateOperator^ addExpr period)*
 	;
 
 dateOperator

@@ -28,6 +28,8 @@ import org.powerTools.engine.sources.Procedure;
  * The Procedures class is used to collect scripted instructions.
  */
 public final class Procedures implements InstructionSet {
+	private static final String INVALID_INSTRUCTION_SET_NAME = "something that will not match an instruction set name";
+
 	private final Map<String, Procedure> mProcedures;
 	private final ProcedureRunner mRunner;
 
@@ -44,12 +46,22 @@ public final class Procedures implements InstructionSet {
 	
 	@Override
 	public String getName () {
-		return "something that will not match an instruction set name";
+		return INVALID_INSTRUCTION_SET_NAME;
 	}
 	
+	@Override
+	public void setup () {
+		;
+	}
+
 	@Override
 	public Executor getExecutor (String instructionName) {
 		Procedure procedure = mProcedures.get (instructionName);
 		return procedure != null ? new ProcedureExecutor (procedure, mRunner) : null;
+	}
+
+	@Override
+	public void cleanup () {
+		;
 	}
 }

@@ -60,6 +60,7 @@ final class Instructions {
 	void addInstructionSet (InstructionSet set) {
 		if (!mInstructionSets.containsKey (set.getName ())) {
 			mInstructionSets.put (set.getName (), set);
+			set.setup ();
 			mExecutorCache.clear ();
 		} else {
 			throw new ExecutionException ("an instruction set with this name already exists");
@@ -128,5 +129,11 @@ final class Instructions {
 			}
 		}
 		return methodNames;
+	}
+	
+	void cleanup () {
+		for (InstructionSet instructionSet : mInstructionSets.values ()) {
+			instructionSet.cleanup ();
+		}
 	}
 }

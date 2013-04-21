@@ -20,15 +20,15 @@ package org.powerTools.engine.expression;
 
 
 final class IntegerValue extends Value {
-	private long mValue;
+	private int  mValue;
 
-	
+
 	public IntegerValue (int value) {
 		mValue = value;
 	}
 	
 	public IntegerValue (String value) {
-		mValue = Long.parseLong (value);
+		mValue = Integer.parseInt (value);
 	}
 
 	
@@ -134,7 +134,7 @@ final class IntegerValue extends Value {
 	
 	@Override
 	public StringValue toStringValue () {
-		return new StringValue (Long.toString (mValue));
+		return new StringValue (Integer.toString (mValue));
 	}
 
 	@Override
@@ -149,6 +149,6 @@ final class IntegerValue extends Value {
 	
 	@Override
 	public String toString () {
-		return Long.toString (mValue);
+		return Integer.toString (mValue);
 	}
 }

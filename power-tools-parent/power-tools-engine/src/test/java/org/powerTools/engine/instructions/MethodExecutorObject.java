@@ -1,5 +1,6 @@
 package org.powerTools.engine.instructions;
 
+import java.util.Calendar;
 import java.util.Date;
 
 
@@ -41,6 +42,14 @@ final class MethodExecutorObject {
 	}
 
 	boolean dateParameterMethod (Date d) {
+		return true;
+	}
+
+	boolean calendarParameterMethod (Calendar c) {
+		return true;
+	}
+
+	boolean objectParameterMethod (Object o) {
 		return true;
 	}
 }

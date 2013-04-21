@@ -107,11 +107,12 @@ final class GraphMLParser extends DefaultHandler {
 				|| "SmartNodeLabelModelParameter".equals (name)
 				|| "SmartEdgeLabelModelParameter".equals (name)
 				|| "Shape".equals (name)
+				|| "Point".equals (name)
 				|| "SmartEdgeLabelModel".equals (name)
 				|| "LabelModel".equals (name)) {
 			;
 		} else {
-			System.out.println ("Start element: " + qName);
+			System.out.println ("unsupported element: " + qName);
 		}
 	}
 
