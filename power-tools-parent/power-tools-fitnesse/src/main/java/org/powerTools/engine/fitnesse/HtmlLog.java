@@ -60,12 +60,9 @@ final class HtmlLog extends BasicHtmlLog {
 	}
 	
 	private String getCell (TestLine testLine, int partNr) {
-		String originalPart = testLine.getOriginalPart (partNr);
-		if (originalPart == null) {
-			return testLine.getPart (partNr);
-		} else {
-			return originalPart + "<HR/>" + testLine.getPart (partNr);
-		}
+		String originalPart	= testLine.getOriginalPart (partNr);
+		String firstHalf	= originalPart == null ? "" : originalPart + "<HR/>";
+		return firstHalf + testLine.getPart (partNr);
 	}
 
 	@Override
