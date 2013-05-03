@@ -19,18 +19,24 @@
 package org.powerTools.web;
 
 import java.io.IOException;
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.OutputType;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeDriverService;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.remote.Augmenter;
 import org.openqa.selenium.support.ui.Select;
 import org.powerTools.engine.ExecutionException;
 import org.powerTools.engine.RunTime;
@@ -39,7 +45,7 @@ import org.powerTools.web.WebLibrary.IItemType;
 import org.powerTools.web.WebLibrary.IKeyType;
 
 
-final class WebDriverBrowser implements IBrowser {
+class WebDriverBrowser implements IBrowser {
 	public WebDriverBrowser (RunTime runTime) {
 		mRunTime = runTime;
 	}
@@ -52,12 +58,12 @@ final class WebDriverBrowser implements IBrowser {
 	
 	@Override
 	public int getDefaultTimeoutAsInteger () {
-		return mDefaultTimeout;
+		return mDefaultTimeoutInSeconds;
 	}
 	
 	@Override
 	public String getDefaultTimeoutAsString () {
-		return Integer.toString (mDefaultTimeout);
+		return Integer.toString (mDefaultTimeoutInSeconds);
 	}
 	
 //	@Override
@@ -149,14 +155,12 @@ final class WebDriverBrowser implements IBrowser {
 
 	@Override
 	public boolean type (Item item, String text) {
-		final WebElement element = findOneElement (item);
-		return element == null ? false : type (element, text);
+		return type (waitForUniqueElement (getLocator (item)), text);
 	}
 
 	@Override
 	public boolean type (IKeyType keyType, String value, String text) {
-		final WebElement element = findOneElement (keyType, value);
-		return element == null ? false : type (element, text);
+		return type (waitForUniqueElement (getLocator (keyType, value)), text);
 	}
 
 	@Override
@@ -167,34 +171,35 @@ final class WebDriverBrowser implements IBrowser {
 
 	@Override
 	public boolean itemExists (Item item) {
-		return hasOneElement (getLocator (item));
+		return getUniqueElement (getLocator (item)) != null;
 	}
 
 	@Override
 	public boolean itemExists (IKeyType keyType, String value) {
-		return hasOneElement (getLocator (keyType, value));
+		return getUniqueElement (getLocator (keyType, value)) != null;
 	}
 
 	public boolean itemVisible (Item item) {
-		final WebElement element = findOneElement (item);
-		return element.isDisplayed ();
+		return getUniqueElement (getLocator (item)).isDisplayed ();
+	}
+
+	public boolean itemEnabled (Item item) {
+		return getUniqueElement (getLocator (item)).isEnabled ();
 	}
 
 	@Override
 	public int countItems (Item item) {
-		return findElements (getLocator (item)).size ();
+		return mDriver.findElements (getLocator (item)).size ();
 	}
 	
 	@Override
 	public boolean click (Item item) {
-		final WebElement element = findOneElement (item);
-		return element == null ? false : click (element);
+		return click (waitForUniqueElement (getLocator (item)));
 	}
 
 	@Override
 	public boolean click (IKeyType keyType, String value) {
-		final WebElement element = findOneElement (keyType, value);
-		return element == null ? false : click (element);
+		return click (waitForUniqueElement (getLocator (keyType, value)));
 	}
 
 	@Override
@@ -275,9 +280,9 @@ final class WebDriverBrowser implements IBrowser {
 			mRunTime.reportError ("item is not a listbox");
 			return false;
 		} else {
-			Select listbox = new Select (mDriver.findElement (getLocator (selectItem)));
-	        List<WebElement> choices = listbox.getOptions ();
-	        WebElement theOne = null;
+			Select listbox				= new Select (mDriver.findElement (getLocator (selectItem)));
+	        List<WebElement> choices	= listbox.getOptions ();
+	        WebElement theOne			= null;
 			for (WebElement option : choices) {
 				if (!option.getText ().contains (optionText)) {
 					;
@@ -295,77 +300,130 @@ final class WebDriverBrowser implements IBrowser {
 	
 	@Override
 	public boolean mouseOver (Item item) {
-		final WebElement element = findOneElement (item);
-		if (element == null) {
-			return false;
-		} else {
-			new Actions (mDriver).moveToElement (element).build ().perform ();
-			return true;
-		}
+		final WebElement element = waitForUniqueElement (getLocator (item));
+		new Actions (mDriver).moveToElement (element).build ().perform ();
+		return true;
 	}
 
 	@Override
-	public boolean waitForText (String text) {
-		return waitForText (text, mDefaultTimeout);
+	public boolean waitUntilTextIsPresent (String text) {
+		return waitUntilTextIsPresent (text, mDefaultTimeoutInSeconds);
 	}
 
 	@Override
-	public boolean waitForText (String text, int timeout) {
+	public boolean waitUntilTextIsPresent (String text, int timeout) {
 		return waitForCondition (new TextPresentCondition (text), timeout);
 	}
 
 	@Override
-	public boolean waitForItem (Item item) {
-		return waitForItem (item, mDefaultTimeout);
+	public boolean waitUntilTextIsNotPresent (String text) {
+		return waitUntilTextIsNotPresent (text, mDefaultTimeoutInSeconds);
 	}
 
 	@Override
-	public boolean waitForItem (Item item, int timeout) {
-		return waitForCondition (new ItemPresentCondition (item), timeout);
+	public boolean waitUntilTextIsNotPresent (String text, int timeout) {
+		return waitForCondition (new TextNotPresentCondition (text), timeout);
 	}
 
 	@Override
-	public boolean waitForItemFilled (Item item) {
-		return waitForItemFilled (item, mDefaultTimeout);
+	public boolean waitUntilItemIsPresent (Item item) {
+		return waitUntilItemIsPresent (item, mDefaultTimeoutInSeconds);
 	}
 
 	@Override
-	public boolean waitForItemFilled (Item item, int timeout) {
-		return waitForCondition (new ItemFilledCondition (item), timeout);
+	public boolean waitUntilItemIsPresent (Item item, int timeout) {
+		return waitForCondition (new ItemPresentCondition (getLocator (item)), timeout);
 	}
 
 	@Override
-	public boolean waitForItemVisible (Item item) {
-		return waitForItemVisible (item, mDefaultTimeout);
+	public boolean waitUntilItemIsNotPresent (Item item) {
+		return waitUntilItemIsNotPresent (item, mDefaultTimeoutInSeconds);
 	}
 
 	@Override
-	public boolean waitForItemVisible (Item item, int timeout) {
-		return waitForCondition (new ItemVisibleCondition (item), timeout);
+	public boolean waitUntilItemIsNotPresent (Item item, int timeout) {
+		return waitForCondition (new ItemNotPresentCondition (getLocator (item)), timeout);
+	}
+
+	@Override
+	public boolean waitUntilItemIsFilled (Item item) {
+		return waitUntilItemIsFilled (item, mDefaultTimeoutInSeconds);
+	}
+
+	@Override
+	public boolean waitUntilItemIsFilled (Item item, int timeout) {
+		return waitForCondition (new ItemNotEmptyCondition (getLocator (item)), timeout);
+	}
+
+	@Override
+	public boolean waitUntilItemIsEmpty (Item item) {
+		return waitUntilItemIsEmpty (item, mDefaultTimeoutInSeconds);
+	}
+
+	@Override
+	public boolean waitUntilItemIsEmpty (Item item, int timeout) {
+		return waitForCondition (new ItemEmptyCondition (getLocator (item)), timeout);
+	}
+
+	@Override
+	public boolean waitUntilItemIsVisible (Item item) {
+		return waitUntilItemIsVisible (item, mDefaultTimeoutInSeconds);
+	}
+
+	@Override
+	public boolean waitUntilItemIsVisible (Item item, int timeout) {
+		return waitForCondition (new ItemVisibleCondition (getLocator (item)), timeout);
 	}
 	
 	@Override
+	public boolean waitUntilItemIsNotVisible (Item item) {
+		return waitUntilItemIsNotVisible (item, mDefaultTimeoutInSeconds);
+	}
+
+	@Override
+	public boolean waitUntilItemIsNotVisible (Item item, int timeout) {
+		return waitForCondition (new ItemNotVisibleCondition (getLocator (item)), timeout);
+	}
+	
+	@Override
+	public boolean waitUntilItemIsEnabled (Item item) {
+		return waitUntilItemIsEnabled (item, mDefaultTimeoutInSeconds);
+	}
+
+	@Override
+	public boolean waitUntilItemIsEnabled (Item item, int timeout) {
+		return waitForCondition (new ItemEnabledCondition (getLocator (item)), timeout);
+	}
+
+	@Override
+	public boolean waitUntilItemIsDisabled (Item item) {
+		return waitUntilItemIsDisabled (item, mDefaultTimeoutInSeconds);
+	}
+
+	@Override
+	public boolean waitUntilItemIsDisabled (Item item, int timeout) {
+		return waitForCondition (new ItemDisabledCondition (getLocator (item)), timeout);
+	}
+
+	@Override
 	public boolean checkForText (String text) {
-		final WebElement element = findOneElement (WebLibrary.IKeyType.cTag, "body");
+		final WebElement element = getUniqueElement (getLocator (WebLibrary.IKeyType.cTag, "body"));
 		return element == null ? false : element.getText ().contains (text);
 	}
 
 	@Override
 	public String getItemText (Item item) {
-		final WebElement element = findOneElement (item);
-		return element == null ? null : element.getText ();
+		return waitForUniqueElement (getLocator (item)).getText ();
 	}
 
 	@Override
 	public String getItemText (IKeyType keyType, String value) {
-		final WebElement element = findOneElement (keyType, value);
-		return element == null ? null : element.getText ();
+		return waitForUniqueElement (getLocator (keyType, value)).getText ();
 	}
 
 	@Override
 	public boolean close () {
 		mDriver.close ();
-		mDriver.quit ();
 		mDriver = null;
 		return true;
 	}
@@ -382,47 +440,83 @@ final class WebDriverBrowser implements IBrowser {
 		getNetworkTraffic ();
 	}
 
-	
-	// private members
-	private final static int cOneSecondTimeout	= 1000;
 
-	private final RunTime mRunTime;
-
-	private int mDefaultTimeout = 30000;
-	private WebDriver mDriver;
-
-
-	private WebElement findOneElement (Item item) {
-		final By locator = getLocator (item);
-		return locator == null ? null : findOneElement (locator);
-	}
-
-	private WebElement findOneElement (IKeyType keyType, String value) {
-		final By locator = getLocator (keyType, value);
-		return locator == null ? null : findOneElement (locator);
-	}
-
-	private WebElement findOneElement (By locator) {
-		final List<WebElement> list = mDriver.findElements (locator);
-		switch (list.size ()) {
-		case 0:
-			mRunTime.reportError ("no matching item found");
-			return null;
-		case 1:
-			return list.get (0);
-		default:
-			mRunTime.reportError ("multiple matching items found");
-			return null;	
+	@Override
+	public void cleanup () {
+		if (mDriver != null) {
+			close ();
 		}
 	}
 
-	private boolean hasOneElement (By locator) {
-		//mRunTime.reportInfo ("the size of the locator is  " + mDriver.findElements (locator).size ());
-		return mDriver.findElements (locator).size () == 1;
+	
+	@Override
+	public boolean makeScreenshot (String path) {
+		try {
+			TakesScreenshot augmentedDriver	= (TakesScreenshot) new Augmenter ().augment (mDriver);
+			File screenshot					= augmentedDriver.getScreenshotAs (OutputType.FILE);
+			Files.copy (Paths.get (screenshot.getPath ()), Paths.get (path));
+			return true;
+		} catch (IOException ioe) {
+			throw new ExecutionException ("could not copy screenshot file");
+		}
 	}
 
-	private List<WebElement> findElements (By locator) {
-		return mDriver.findElements (locator);
+
+	// protected members
+	protected final static int cOneSecondTimeout = 1000;
+
+	protected final RunTime mRunTime;
+
+	protected int mDefaultTimeoutInSeconds = 30;
+	protected WebDriver mDriver;
+
+
+	// private members
+//	private WebElement findOneElement (Item item) {
+//		return findOneElement (getLocator (item));
+//	}
+//
+//	private WebElement findOneElement (IKeyType keyType, String value) {
+//		return findOneElement (getLocator (keyType, value));
+//	}
+//
+//	private WebElement findOneElement (By locator) {
+//		final List<WebElement> list = mDriver.findElements (locator);
+//		switch (list.size ()) {
+//		case 0:
+//			mRunTime.reportError ("no matching item found");
+//			return null;
+//		case 1:
+//			return list.get (0);
+//		default:
+//			mRunTime.reportError ("multiple matching items found");
+//			return null;	
+//		}
+//	}
+
+	private WebElement getUniqueElement (By locator) {
+		final List<WebElement> list = mDriver.findElements (locator);
+		switch (list.size ()) {
+		case 0:
+			throw new ExecutionException ("no matching item found");
+		case 1:
+			return list.get (0);
+		default:
+			throw new ExecutionException ("multiple matching items found");
+		}
+	}
+
+	private WebElement waitForUniqueElement (By locator) {
+		return waitForUniqueElement (locator, mDefaultTimeoutInSeconds);
+	}
+	
+	private WebElement waitForUniqueElement (By locator, int timeout) {
+		ItemPresentCondition condition = new ItemPresentCondition (locator);
+		if (waitForCondition (condition, timeout)) {
+			return condition.mElement;
+		} else {
+			return null;
+		}
 	}
 
 	private By getLocator (Item item) {
@@ -472,16 +566,11 @@ final class WebDriverBrowser implements IBrowser {
 	}
 
 	private boolean click (By locator) {
-		final WebElement element = findOneElement (locator);
-		if (element != null) {
-			element.click ();
-			return true;
-		} else {
-			return false;
-		}
+		getUniqueElement (locator).click ();
+		return true;
 	}
 	
-	private boolean waitForCondition (ICondition condition, int timeout) {
+	private boolean waitForCondition (Condition condition, int timeout) {
 		for (int nrOfSeconds = 0; nrOfSeconds < timeout; ++nrOfSeconds) {
 			try {
 				if (condition.isSatisfied ()) {
@@ -496,57 +585,132 @@ final class WebDriverBrowser implements IBrowser {
 	}
 	
 	
-	private interface ICondition {
+	private interface Condition {
 		boolean isSatisfied ();
 	}
 	
-	private final class ItemFilledCondition implements ICondition {
-		ItemFilledCondition (Item item) {
-			mItem = item;
-		}
-		
-		public boolean isSatisfied () {
-			final WebElement element = findOneElement (mItem);
-			return element != null && !element.getText ().isEmpty ();
-		}
-		
-		private Item mItem;
-	}
-
-	private final class ItemPresentCondition implements ICondition {
-		ItemPresentCondition (Item item) {
-			mItem = item;
-		}
-		
-		public boolean isSatisfied () {
-			return itemExists (mItem);
-		}
-		
-		private Item mItem;
-	}
-
-	private final class ItemVisibleCondition implements ICondition {
-		ItemVisibleCondition (Item item) {
-			mItem = item;
-		}
-		
-		public boolean isSatisfied () {
-			return itemVisible (mItem);
-		}
-		
-		private Item mItem;
-	}
-
-	private final class TextPresentCondition implements ICondition {
+	private final class TextPresentCondition implements Condition {
 		TextPresentCondition (String text) {
 			mText = text;
 		}
 		
+		@Override
 		public boolean isSatisfied () {
 			return checkForText (mText);
 		}
 		
 		private String mText;
+	}
+
+	private final class TextNotPresentCondition implements Condition {
+		TextNotPresentCondition (String text) {
+			mText = text;
+		}
+		
+		@Override
+		public boolean isSatisfied () {
+			return !checkForText (mText);
+		}
+		
+		private String mText;
+	}
+
+	private abstract class ItemCondition implements Condition {
+		protected ItemCondition (By locator) {
+			mLocator = locator;
+		}
+		
+		protected By mLocator;
+	}
+	
+	private final class ItemNotEmptyCondition extends ItemCondition {
+		ItemNotEmptyCondition (By locator) {
+			super (locator);
+		}
+		
+		@Override
+		public boolean isSatisfied () {
+			return !getUniqueElement (mLocator).getText ().isEmpty ();
+		}
+	}
+
+	private final class ItemEmptyCondition extends ItemCondition {
+		ItemEmptyCondition (By locator) {
+			super (locator);
+		}
+		
+		@Override
+		public boolean isSatisfied () {
+			return getUniqueElement (mLocator).getText ().isEmpty ();
+		}
+	}
+
+	private final class ItemPresentCondition extends ItemCondition {
+		ItemPresentCondition (By locator) {
+			super (locator);
+		}
+		
+		@Override
+		public boolean isSatisfied () {
+			return mDriver.findElements (mLocator).size () == 1;
+		}
+		
+		WebElement mElement;
+	}
+
+	private final class ItemNotPresentCondition extends ItemCondition {
+		ItemNotPresentCondition (By locator) {
+			super (locator);
+		}
+		
+		@Override
+		public boolean isSatisfied () {
+			return mDriver.findElements (mLocator).size () == 0;
+		}
+	}
+
+	private final class ItemVisibleCondition extends ItemCondition {
+		ItemVisibleCondition (By locator) {
+			super (locator);
+		}
+		
+		@Override
+		public boolean isSatisfied () {
+			return getUniqueElement (mLocator).isDisplayed ();
+		}
+	}
+
+	private final class ItemNotVisibleCondition extends ItemCondition {
+		ItemNotVisibleCondition (By locator) {
+			super (locator);
+		}
+		
+		@Override
+		public boolean isSatisfied () {
+			return !getUniqueElement (mLocator).isDisplayed ();
+		}
+	}
+
+	private final class ItemEnabledCondition extends ItemCondition {
+		ItemEnabledCondition (By locator) {
+			super (locator);
+		}
+		
+		@Override
+		public boolean isSatisfied () {
+			return getUniqueElement (mLocator).isEnabled ();
+		}
+	}
+
+	private final class ItemDisabledCondition extends ItemCondition {
+		ItemDisabledCondition (By locator) {
+			super (locator);
+		}
+		
+		@Override
+		public boolean isSatisfied () {
+			return !getUniqueElement (mLocator).isEnabled ();
+		}
 	}
 
 	@Override

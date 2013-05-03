@@ -28,7 +28,7 @@ import org.powerTools.engine.RunTime;
 
 
 public abstract class WebLibrary implements InstructionSet {
-	public enum IItemType {
+	enum IItemType {
 		cButton,
 		cCheckbox,
 		cCombobox,
@@ -41,13 +41,13 @@ public abstract class WebLibrary implements InstructionSet {
 		cText
 	}
 
-	public enum IBrowserType {
+	enum IBrowserType {
 		cFirefox,
 		cInternetExplorer,
 		cChrome
 	}
 	
-	public enum IKeyType {
+	enum IKeyType {
 		cDom,
 		cId,
 		cIndex,
@@ -68,6 +68,16 @@ public abstract class WebLibrary implements InstructionSet {
 	@Override
 	public String getName () {
 		return "web";
+	}
+	
+	@Override
+	public final void setup () {
+		;
+	}
+	
+	@Override
+	public final void cleanup () {
+		mBrowser.cleanup ();
 	}
 	
 	
@@ -118,9 +128,6 @@ public abstract class WebLibrary implements InstructionSet {
 		return mBrowser.openUrl (completeUrl (url));
 	}
 	
-	protected final String completeUrl (String url) {
-		return url.startsWith ("http") ? url : "http:" + url;
-	}
 	public final boolean RefreshPage () {
 		return mBrowser.refreshPage ();
 	}
@@ -138,29 +145,6 @@ public abstract class WebLibrary implements InstructionSet {
 	}
 
 
-	public final boolean SelectFrame_ (String itemName) {
-		final Item item	= findItem (itemName);
-		if (item != null) {
-			return mBrowser.selectFrame (item);
-		} else {
-			return false;
-		}
-	}
-	
-	public final boolean SelectFrameWhere_Is_ (String key, String value) {
-		try {
-			return mBrowser.selectFrame (getKeyType (key), value);
-		} catch (IllegalArgumentException iae) {
-			mRunTime.reportError (iae.getMessage ());
-			return false;
-		}
-	}
-	
-	public final boolean SelectDefaultFrame () {
-		return mBrowser.selectDefaultFrame ();
-	}
-	
-	
 	// item declarations
 	public final boolean Name_ParentName_Type_Key_Value_ (String name, String parentName, String type, String keyTypeString, String value) {
 		if ("".equals (name) || "".equals (type) || "".equals (keyTypeString) ||"".equals (value)) {
@@ -186,7 +170,7 @@ public abstract class WebLibrary implements InstructionSet {
 				}
 
 				if (mItemMap.containsKey (item.mLogicalName)) {
-					mRunTime.reportError ("duplicate item name");
+					mRunTime.reportError ("duplicate item name: " + item.mLogicalName);
 					return false;
 				} else {
 					mItemMap.put (item.mLogicalName, item);
@@ -199,24 +183,53 @@ public abstract class WebLibrary implements InstructionSet {
 		return false;
 	}
 
+	public final boolean SetParameter_ForItem_To_ (int parameterNr, String itemName, String value) {
+		final Item item	= findItem (itemName);
+		return item != null && item.setParameterValue (parameterNr, value);
+	}
 
-	// operations on items
-	public final boolean CheckPageTitleContains_ (String expectedTitle) {
-		final String actualTitle = mBrowser.getPageTitle ();
-		if (actualTitle.indexOf (expectedTitle) >= 0) {
-			return true;
+
+	// operations on frames
+	public final boolean SelectFrame_ (String itemName) {
+		final Item item	= findItem (itemName);
+		if (item != null) {
+			return mBrowser.selectFrame (item);
 		} else {
-			mRunTime.reportError ("title is '" + actualTitle + "'");
 			return false;
 		}
 	}
-
+	
+	public final boolean SelectFrameWhere_Is_ (String key, String value) {
+		try {
+			return mBrowser.selectFrame (getKeyType (key), value);
+		} catch (IllegalArgumentException iae) {
+			mRunTime.reportError (iae.getMessage ());
+			return false;
+		}
+	}
+	
+	public final boolean SelectDefaultFrame () {
+		return mBrowser.selectDefaultFrame ();
+	}
+	
+	
+	// operations on items
 	public final boolean CheckPageTitleIs_ (String expectedTitle) {
 		final String actualTitle = mBrowser.getPageTitle ();
 		if (actualTitle.equals (expectedTitle)) {
 			return true;
 		} else {
-			mRunTime.reportError ("title is '" + actualTitle + "'");
+			mRunTime.reportValueError ("page title", actualTitle, expectedTitle);
+			return false;
+		}
+	}
+
+	public final boolean CheckPageTitleContains_ (String expectedTitle) {
+		final String actualTitle = mBrowser.getPageTitle ();
+		if (actualTitle.indexOf (expectedTitle) >= 0) {
+			return true;
+		} else {
+			mRunTime.reportError ("page title is '" + actualTitle + "'");
 			return false;
 		}
 	}
@@ -225,6 +238,66 @@ public abstract class WebLibrary implements InstructionSet {
 		return mBrowser.checkForText (text);
 	}
 
+	public final boolean CheckItem_IsEmpty (String itemName) {
+		final Item item	= findItem (itemName);
+		if (item != null) {
+			final String actualText = mBrowser.getItemText (item);
+			if (actualText == null) {
+				//mPublisher.publishError ("item not found on this page or not unique");
+			} else if (!actualText.isEmpty ()) {
+				mRunTime.reportValueError ("item " + itemName, actualText, "<empty>");
+			} else {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public final boolean CheckItem_IsNotEmpty (String itemName) {
+		final Item item	= findItem (itemName);
+		if (item != null) {
+			final String actualText = mBrowser.getItemText (item);
+			if (actualText == null) {
+				//mPublisher.publishError ("item not found on this page or not unique");
+			} else if (actualText.isEmpty ()) {
+				mRunTime.reportError ("item " + itemName + " is empty");
+			} else {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public final boolean CheckTextOfItem_Is_ (String itemName, String expectedText) {
+		final Item item	= findItem (itemName);
+		if (item != null) {
+			final String actualText = mBrowser.getItemText (item);
+			if (actualText == null) {
+				//mPublisher.publishError ("item not found on this page or not unique");
+			} else if (!actualText.equals (expectedText)) {
+				mRunTime.reportValueError ("item " + itemName, actualText, expectedText);
+			} else {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public final boolean CheckTextOfItem_IsNot_ (String itemName, String unexpectedText) {
+		final Item item	= findItem (itemName);
+		if (item != null) {
+			final String actualText = mBrowser.getItemText (item);
+			if (actualText == null) {
+				//mPublisher.publishError ("item not found on this page or not unique");
+			} else if (actualText.equals (unexpectedText)) {
+				mRunTime.reportError ("actual text is '" + actualText + "'");
+			} else {
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	public final boolean CheckTextOfItem_Contains_ (String itemName, String expectedText) {
 		final Item item	= findItem (itemName);
 		if (item != null) {
@@ -240,14 +313,14 @@ public abstract class WebLibrary implements InstructionSet {
 		return false;
 	}
 	
-	public final boolean CheckTextOfItem_Is_ (String itemName, String expectedText) {
+	public final boolean CheckTextOfItem_DoesNotContain_ (String itemName, String unexpectedText) {
 		final Item item	= findItem (itemName);
 		if (item != null) {
 			final String actualText = mBrowser.getItemText (item);
 			if (actualText == null) {
 				//mPublisher.publishError ("item not found on this page or not unique");
-			} else if (!actualText.equals (expectedText)) {
-				mRunTime.reportError ("actual text is '" + actualText + "'");
+			} else if (actualText.indexOf (unexpectedText) >= 0) {
+				mRunTime.reportError ("unexpected text '" + unexpectedText + "' found in actual text '" + actualText + "'");
 			} else {
 				return true;
 			}
@@ -336,22 +409,57 @@ public abstract class WebLibrary implements InstructionSet {
 	}
 
 	public final boolean WaitForText_ (String text) {
-		return mBrowser.waitForText (text);
+		return WaitUntilText_IsPresent (text);
+	}
+
+	public final boolean WaitUntilText_IsPresent (String text) {
+		return mBrowser.waitUntilTextIsPresent (text);
+	}
+
+	public final boolean WaitUntilText_IsNotPresent (String text) {
+		return mBrowser.waitUntilTextIsNotPresent (text);
 	}
 
 	public final boolean WaitForItem_ (String itemName) {
+		return WaitUntilItem_IsPresent (itemName);
+	}
+	
+	public final boolean WaitUntilItem_IsPresent (String itemName) {
 		final Item item	= findItem (itemName);
-		return item != null && mBrowser.waitForItem (item);
+		return item != null && mBrowser.waitUntilItemIsPresent (item);
+	}
+	
+	public final boolean WaitUntilItem_IsNotPresent (String itemName) {
+		final Item item	= findItem (itemName);
+		return item != null && mBrowser.waitUntilItemIsNotPresent (item);
 	}
 	
 	public final boolean WaitForItem_Filled (String itemName) {
+		return WaitUntilItem_IsFilled (itemName);
+	}
+	
+	public final boolean WaitUntilItem_IsFilled (String itemName) {
 		final Item item	= findItem (itemName);
-		return item != null && mBrowser.waitForItemFilled (item);
+		return item != null && mBrowser.waitUntilItemIsFilled (item);
+	}
+	
+	public final boolean WaitUntilItem_IsEmpty (String itemName) {
+		final Item item	= findItem (itemName);
+		return item != null && mBrowser.waitUntilItemIsEmpty (item);
 	}
 	
 	public final boolean WaitForItem_Visible (String itemName) {
+		return WaitUntilItem_IsVisible (itemName);
+	}
+	
+	public final boolean WaitUntilItem_IsVisible (String itemName) {
 		final Item item	= findItem (itemName);
-		return item != null && mBrowser.waitForItemVisible (item);
+		return item != null && mBrowser.waitUntilItemIsVisible (item);
+	}
+	
+	public final boolean WaitUntilItem_IsNotVisible (String itemName) {
+		final Item item	= findItem (itemName);
+		return item != null && mBrowser.waitUntilItemIsNotVisible (item);
 	}
 	
 	public final boolean CheckItem_IsPresent (String itemName) {
@@ -363,7 +471,13 @@ public abstract class WebLibrary implements InstructionSet {
 		final Item item	= findItem (itemName);
 		return item != null && !mBrowser.itemExists (item);
 	}
+
 	
+	public final boolean CheckThat_Items_ArePresent (String itemName, int count) {
+		final Item item = findItem (itemName);
+		return item != null && mBrowser.getCount (item) >= count;
+	}
+
 	public final boolean CheckAtLeast_Items_ArePresent (int expectedNrOfItems, String itemName) {
 		final Item item	= findItem (itemName);
 		if (item != null) {
@@ -379,12 +493,12 @@ public abstract class WebLibrary implements InstructionSet {
 		}
 	}
 	
-	public final boolean SetParameter_ForItem_To_ (int parameterNr, String itemName, String value) {
-		final Item item	= findItem (itemName);
-		return item != null && item.setParameterValue (parameterNr, value);
+	public final boolean MakeScreenshot () {
+		String path	= mRunTime.getContext ().mResultsDirectory + "/screenshot" + ++mLastScreenshotNr;
+		return mBrowser.makeScreenshot (path);
 	}
-
-
+	
+/*
 	public final boolean ClearEvents () {
 		mBrowser.clearNetworkTraffic ();
 		mRequests = null;
@@ -409,12 +523,16 @@ public abstract class WebLibrary implements InstructionSet {
 	public final boolean CheckForEvent_ (String eventName) {
 		return mEvents.checkEvent (mRequests, eventName);
 	}
-	
-//	public final boolean putItem_Into_ (String itemName, String variableName) {
-//		final Item item			= findItem (itemName);
-//		final String text		= mBrowser.getItemText (item);
-//		final Symbol variable	= mRunTime.getSymbol (variableName);
-//	}
+*/
+	public final boolean PutItem_In_ (String itemName, String variableName) {
+		final Item item = findItem (itemName);
+		if (item != null) {
+			mRunTime.setValue (variableName, mBrowser.getItemText (item));
+			return true;
+		} else {
+			return false;
+		}
+	}
 
 
 	// protected members
@@ -455,18 +573,25 @@ public abstract class WebLibrary implements InstructionSet {
 	}
 
 	protected final RunTime mRunTime;
-	protected final Events mEvents;
-	protected Collection<HtmlRequest> mRequests;
+	//protected final Events mEvents;
+	//protected final Collection<HtmlRequest> mRequests;
+
+	protected int mLastScreenshotNr;
 
 
 	protected WebLibrary (RunTime runTime) {
-		mRunTime	= runTime;
-		mItemMap	= new HashMap<String, Item> ();
-		//mBrowserMap	= new HashMap<String, IBrowser> ();
-		mEvents		= new Events (runTime);
+		mRunTime			= runTime;
+		mLastScreenshotNr	= 0;
+		mItemMap			= new HashMap<String, Item> ();
+		//mBrowserMap		= new HashMap<String, IBrowser> ();
+		//mEvents			= new Events (runTime);
 	}
 
 	
+	protected final String completeUrl (String url) {
+		return url.startsWith ("http") ? url : "http:" + url;
+	}
+
 	protected Item findItem (String name) {
 		final Item item = getItem (name);
 		if (item == null) {
@@ -513,18 +638,5 @@ public abstract class WebLibrary implements InstructionSet {
 		cKeyTypesMap.put (IKeyTypeName.cXpath,	IKeyType.cXpath);
 		cKeyTypesMap.put (IKeyTypeName.cCss,	IKeyType.cCss);
 		cKeyTypesMap.put (IKeyTypeName.cTag,	IKeyType.cTag);
-	}
-	
-		
-//It is used in Package testing to count the no of items present under the Specialities section
-	public final boolean CheckThat_ItemCountIs_(String itemName,
-			final int count) {
-		final Item item = findItem(itemName);
-	
-		if (mBrowser.getCount(item) >= count) {
-			return true;
-		} else {
-			return false;
-		}
 	}
 }

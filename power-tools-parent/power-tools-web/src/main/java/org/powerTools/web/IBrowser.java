@@ -75,17 +75,30 @@ public interface IBrowser {
 	
 	boolean mouseOver (Item item);
 	
-	boolean waitForText (String text);
-	boolean waitForText (String text, int timeout);
+	boolean waitUntilTextIsPresent (String text);
+	boolean waitUntilTextIsPresent (String text, int timeout);
+	boolean waitUntilTextIsNotPresent (String text);
+	boolean waitUntilTextIsNotPresent (String text, int timeout);
 
-	boolean waitForItem (Item item);
-	boolean waitForItem (Item item, int timeout);
+	boolean waitUntilItemIsPresent (Item item);
+	boolean waitUntilItemIsPresent (Item item, int timeout);
+	boolean waitUntilItemIsNotPresent (Item item);
+	boolean waitUntilItemIsNotPresent (Item item, int timeout);
 
-	boolean waitForItemFilled (Item item);
-	boolean waitForItemFilled (Item item, int timeout);
+	boolean waitUntilItemIsFilled (Item item);
+	boolean waitUntilItemIsFilled (Item item, int timeout);
+	boolean waitUntilItemIsEmpty (Item item);
+	boolean waitUntilItemIsEmpty (Item item, int timeout);
 
-	boolean waitForItemVisible (Item item);
-	boolean waitForItemVisible (Item item, int timeout);
+	boolean waitUntilItemIsVisible (Item item);
+	boolean waitUntilItemIsVisible (Item item, int timeout);
+	boolean waitUntilItemIsNotVisible (Item item);
+	boolean waitUntilItemIsNotVisible (Item item, int timeout);
+
+	boolean waitUntilItemIsEnabled (Item item);
+	boolean waitUntilItemIsEnabled (Item item, int timeout);
+	boolean waitUntilItemIsDisabled (Item item);
+	boolean waitUntilItemIsDisabled (Item item, int timeout);
 
 	boolean checkForText (String text);
 	String getItemText (Item item);
@@ -96,6 +109,10 @@ public interface IBrowser {
 
 	int getCount(Item item);
 	
+	boolean makeScreenshot (String path);
+
+	void cleanup ();
+
 	@Deprecated
 	Object getTestTool ();
 }

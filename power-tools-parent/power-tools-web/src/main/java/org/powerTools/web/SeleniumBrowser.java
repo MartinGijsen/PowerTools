@@ -113,7 +113,7 @@ final class SeleniumBrowser implements IBrowser {
 		try {
 			if (browserIsOpen()) {
 				mSelenium.close ();
-				mSelenium.stop (); 
+				mSelenium = null;
 //				mSelenium.shutDownSeleniumServer ();
 //				if (mServer != null) {
 //					try {
@@ -131,6 +131,14 @@ final class SeleniumBrowser implements IBrowser {
 		return false;
 	}
 
+	@Override
+	public void cleanup () {
+		if (mSelenium != null) {
+			close ();
+		}
+		mSelenium.stop ();
+	}
+	
 	@Override
 	public boolean openUrl (String url) {
 		try {
@@ -455,12 +463,12 @@ final class SeleniumBrowser implements IBrowser {
 	}
 	
 	@Override
-	public boolean waitForText (String text) {
-		return waitForText (text, mDefaultTimeout);
+	public boolean waitUntilTextIsPresent (String text) {
+		return waitUntilTextIsPresent (text, mDefaultTimeout);
 	}
 
 	@Override
-	public boolean waitForText (String text, int timeout) {
+	public boolean waitUntilTextIsPresent (String text, int timeout) {
 		if (browserIsOpen()) {
 			for (int nrOfSeconds = 0; nrOfSeconds < timeout; nrOfSeconds++) {
 				try {
@@ -481,12 +489,24 @@ final class SeleniumBrowser implements IBrowser {
 	}
 
 	@Override
-	public boolean waitForItem (Item item) {
-		return waitForItem (item, mDefaultTimeout);
+	public boolean waitUntilTextIsNotPresent (String text) {
+		mRunTime.reportError ("not implemented");
+		return false;
+	}
+
+	@Override
+	public boolean waitUntilTextIsNotPresent (String text, int timeout) {
+		mRunTime.reportError ("not implemented");
+		return false;
 	}
 	
 	@Override
-	public boolean waitForItem (Item item, int timeout) {
+	public boolean waitUntilItemIsPresent (Item item) {
+		return waitUntilItemIsPresent (item, mDefaultTimeout);
+	}
+	
+	@Override
+	public boolean waitUntilItemIsPresent (Item item, int timeout) {
 		if (browserIsOpen()) {
 			for (int nrOfSeconds = 0; nrOfSeconds < timeout; nrOfSeconds++) {
 				try {
@@ -507,12 +527,24 @@ final class SeleniumBrowser implements IBrowser {
 	}
 
 	@Override
-	public boolean waitForItemFilled (Item item) {
-		return waitForItemFilled (item, mDefaultTimeout);
+	public boolean waitUntilItemIsNotPresent (Item item) {
+		mRunTime.reportError ("not implemented");
+		return false;
+	}
+
+	@Override
+	public boolean waitUntilItemIsNotPresent (Item item, int timeout) {
+		mRunTime.reportError ("not implemented");
+		return false;
 	}
 	
 	@Override
-	public boolean waitForItemFilled (Item item, int timeout) {
+	public boolean waitUntilItemIsFilled (Item item) {
+		return waitUntilItemIsFilled (item, mDefaultTimeout);
+	}
+	
+	@Override
+	public boolean waitUntilItemIsFilled (Item item, int timeout) {
 		if (browserIsOpen()) {
 			for (int nrOfSeconds = 0; nrOfSeconds < timeout; ++nrOfSeconds) {
 				try {
@@ -535,13 +567,61 @@ final class SeleniumBrowser implements IBrowser {
 	}
 
 	@Override
-	public boolean waitForItemVisible (Item item) {
+	public boolean waitUntilItemIsEmpty (Item item) {
 		mRunTime.reportError ("not implemented");
 		return false;
 	}
 
 	@Override
-	public boolean waitForItemVisible (Item item, int timeout) {
+	public boolean waitUntilItemIsEmpty (Item item, int timeout) {
+		mRunTime.reportError ("not implemented");
+		return false;
+	}
+	
+	@Override
+	public boolean waitUntilItemIsVisible (Item item) {
+		mRunTime.reportError ("not implemented");
+		return false;
+	}
+
+	@Override
+	public boolean waitUntilItemIsVisible (Item item, int timeout) {
+		mRunTime.reportError ("not implemented");
+		return false;
+	}
+	
+	@Override
+	public boolean waitUntilItemIsNotVisible (Item item) {
+		mRunTime.reportError ("not implemented");
+		return false;
+	}
+
+	@Override
+	public boolean waitUntilItemIsNotVisible (Item item, int timeout) {
+		mRunTime.reportError ("not implemented");
+		return false;
+	}
+	
+	@Override
+	public boolean waitUntilItemIsDisabled (Item item) {
+		mRunTime.reportError ("not implemented");
+		return false;
+	}
+
+	@Override
+	public boolean waitUntilItemIsDisabled (Item item, int timeout) {
+		mRunTime.reportError ("not implemented");
+		return false;
+	}
+	
+	@Override
+	public boolean waitUntilItemIsEnabled (Item item) {
+		mRunTime.reportError ("not implemented");
+		return false;
+	}
+
+	@Override
+	public boolean waitUntilItemIsEnabled (Item item, int timeout) {
 		mRunTime.reportError ("not implemented");
 		return false;
 	}
@@ -592,6 +672,13 @@ final class SeleniumBrowser implements IBrowser {
 		}
 		return null;
 	}
+
+	@Override
+	public boolean makeScreenshot (String path) {
+		mRunTime.reportError ("not implemented");
+		return false;
+	}
+
 
 	@Override
 	public Collection<HtmlRequest> getNetworkTraffic () {

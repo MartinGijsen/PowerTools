@@ -19,10 +19,12 @@
 package org.powerTools.web;
 
 import org.powerTools.engine.RunTime;
+import org.powerTools.engine.InstructionSet;
+
 import org.openqa.selenium.WebDriver;
 
 
-public final class WebDriverKeywords {
+public final class WebDriverKeywords implements InstructionSet {
 	private WebDriverLibrary mInstructions;
 	
 	public WebDriverKeywords (RunTime runTime) {
@@ -30,6 +32,26 @@ public final class WebDriverKeywords {
 		runTime.addSharedObject ("WebDriverKeywords", this);
 	}
 	
+	
+	@Override
+	public String getName () {
+		return mInstructions.getName ();
+	}
+
+	@Override
+	public void setup () {
+		mInstructions.setup ();
+	}
+
+	@Override
+	public void cleanup () {
+		mInstructions.cleanup ();
+	}
+
+	public Object getTesttool () {
+		return mInstructions.getTesttool ();
+	}
+
 	
 	public boolean OpenBrowser (String typeString, String url) {
 		return mInstructions.OpenBrowser_At_ (typeString, url);
@@ -71,32 +93,40 @@ public final class WebDriverKeywords {
 		return mInstructions.SelectFrame_ (name);
 	}
 
-//	public boolean CheckPageTitleContains (String expectedTitle) {
-//		return mInstructions.CheckPageTitleContains_ (expectedTitle);
-//	}
+	public boolean SelectFrameByKeyValue (String key, String value) {
+		return mInstructions.SelectFrameWhere_Is_ (key, value);
+	}
 
 	public boolean SelectDefaultFrame () {
 		return mInstructions.SelectDefaultFrame ();
-	}
-
-	public boolean CheckPageTitleContains (String expectedTitle) {
-		return mInstructions.CheckPageTitleContains_ (expectedTitle);
 	}
 
 	public boolean CheckPageTitle (String expectedTitle) {
 		return mInstructions.CheckPageTitleIs_ (expectedTitle);
 	}
 
+	public boolean CheckPageTitleContains (String expectedTitle) {
+		return mInstructions.CheckPageTitleContains_ (expectedTitle);
+	}
+
 	public boolean CheckForText (String text) {
 		return mInstructions.CheckForText_ (text);
 	}
 
-	public boolean CheckItemTextContains (String itemName, String expectedText) {
-		return mInstructions.CheckTextOfItem_Contains_ (itemName, expectedText);
+	public boolean CheckItemIsEmpty (String itemName) {
+		return mInstructions.CheckItem_IsEmpty (itemName);
+	}
+	
+	public boolean CheckItemIsNotEmpty (String itemName) {
+		return mInstructions.CheckItem_IsNotEmpty (itemName);
 	}
 	
 	public boolean CheckItemText (String itemName, String expectedText) {
 		return mInstructions.CheckTextOfItem_Is_ (itemName, expectedText);
+	}
+	
+	public boolean CheckItemTextContains (String itemName, String expectedText) {
+		return mInstructions.CheckTextOfItem_Contains_ (itemName, expectedText);
 	}
 	
 	public boolean SelectLink (String itemName) {
@@ -169,25 +199,5 @@ public final class WebDriverKeywords {
 	
 	public boolean CheckItemIsNotPresent (String itemName) {
 		return mInstructions.CheckItem_IsNotPresent (itemName);
-	}
-	
-//	public boolean ClearEvents () {
-//		return mInstructions.ClearEvents ();
-//	}
-//
-//	public boolean DeclareEvent (String eventName, String attributeName, String value) {
-//		return mInstructions.Event_Attribute_Value_ (eventName, attributeName, value);
-//	}
-//	
-//	public boolean SelectEvents () {
-//		return mInstructions.SelectEvents ();
-//	}
-//
-//	public boolean CheckForEvent (String eventName) {
-//		return mInstructions.CheckForEvent_ (eventName);
-//	}
-
-	public Object getTesttool () {
-		return mInstructions.getTesttool ();
 	}
 }
