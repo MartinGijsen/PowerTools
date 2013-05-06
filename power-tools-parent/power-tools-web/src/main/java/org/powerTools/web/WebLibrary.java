@@ -462,6 +462,16 @@ public abstract class WebLibrary implements InstructionSet {
 		return item != null && mBrowser.waitUntilItemIsNotVisible (item);
 	}
 	
+	public final boolean WaitUntilItem_IsEnabled (String itemName) {
+		final Item item	= findItem (itemName);
+		return item != null && mBrowser.waitUntilItemIsEnabled (item);
+	}
+	
+	public final boolean WaitUntilItem_IsDisabled (String itemName) {
+		final Item item	= findItem (itemName);
+		return item != null && mBrowser.waitUntilItemIsDisabled (item);
+	}
+	
 	public final boolean CheckItem_IsPresent (String itemName) {
 		final Item item	= findItem (itemName);
 		return item != null && mBrowser.itemExists (item);

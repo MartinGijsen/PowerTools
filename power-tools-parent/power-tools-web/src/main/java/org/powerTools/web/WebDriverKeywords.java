@@ -125,7 +125,7 @@ public final class WebDriverKeywords implements InstructionSet {
 		return mInstructions.CheckTextOfItem_Is_ (itemName, expectedText);
 	}
 	
-	public boolean CheckItemTextContains (String itemName, String expectedText) {
+	public boolean CheckPartialItemText (String itemName, String expectedText) {
 		return mInstructions.CheckTextOfItem_Contains_ (itemName, expectedText);
 	}
 	
@@ -173,24 +173,64 @@ public final class WebDriverKeywords implements InstructionSet {
 		return mInstructions.Type_IntoItem_ (text, itemName);
 	}
 
-	public boolean TypeByKeyValue (String text, String keyTypeString, String value) {
+	public boolean TypeIntoItemByKeyValue (String text, String keyTypeString, String value) {
 		return mInstructions.Type_IntoItemWhere_Is_ (text, keyTypeString, value);
 	}
 
 	public boolean WaitForText (String text) {
-		return mInstructions.WaitForText_ (text);
+		return WaitUntilTextIsPresent (text);
+	}
+
+	public boolean WaitUntilTextIsPresent (String text) {
+		return mInstructions.WaitUntilText_IsPresent (text);
+	}
+
+	public boolean WaitUntilTextIsNotPresent (String text) {
+		return mInstructions.WaitUntilText_IsNotPresent (text);
 	}
 
 	public boolean WaitForItem (String itemName) {
-		return mInstructions.WaitForItem_ (itemName);
+		return WaitUntilItemIsPresent (itemName);
+	}
+	
+	public boolean WaitUntilItemIsPresent (String itemName) {
+		return mInstructions.WaitUntilItem_IsPresent (itemName);
+	}
+	
+	public boolean WaitUntilItemIsNotPresent (String itemName) {
+		return mInstructions.WaitUntilItem_IsNotPresent (itemName);
 	}
 	
 	public boolean WaitForItemFilled (String itemName) {
-		return mInstructions.WaitForItem_Filled (itemName);
+		return WaitUntilItemIsFilled (itemName);
+	}
+	
+	public boolean WaitUntilItemIsFilled (String itemName) {
+		return mInstructions.WaitUntilItem_IsFilled (itemName);
+	}
+	
+	public boolean WaitUntilItemIsEmpty (String itemName) {
+		return mInstructions.WaitUntilItem_IsEmpty (itemName);
 	}
 	
 	public boolean WaitForItemVisible (String itemName) {
-		return mInstructions.WaitForItem_Visible (itemName);
+		return WaitUntilItemIsVisible (itemName);
+	}
+	
+	public boolean WaitUntilItemIsVisible (String itemName) {
+		return mInstructions.WaitUntilItem_IsVisible (itemName);
+	}
+	
+	public boolean WaitUntilItemIsNotVisible (String itemName) {
+		return mInstructions.WaitUntilItem_IsNotVisible (itemName);
+	}
+	
+	public boolean WaitUntilItemIsEnabled (String itemName) {
+		return mInstructions.WaitUntilItem_IsEnabled (itemName);
+	}
+	
+	public boolean WaitUntilItemIsDisabled (String itemName) {
+		return mInstructions.WaitUntilItem_IsDisabled (itemName);
 	}
 	
 	public boolean CheckItemIsPresent (String itemName) {
