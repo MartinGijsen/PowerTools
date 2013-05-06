@@ -8,6 +8,10 @@
 	</parent>
 	<artifactId>power-tools-web</artifactId>
 
+	<properties>
+		<selenium.version>2.32.0</selenium.version>
+	</properties>
+
 	<dependencies>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
@@ -17,7 +21,7 @@
 		<dependency>
 			<groupId>org.seleniumhq.selenium</groupId>
 			<artifactId>selenium-server</artifactId>
-			<version>2.25.0</version>
+			<version>${selenium.version}</version>
 		</dependency>
 	</dependencies>
 </project>
