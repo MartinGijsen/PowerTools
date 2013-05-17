@@ -106,7 +106,7 @@ mulExpr
 	;
 
 unaryExpr
-	:	'-' term -> ^(UnaryMinus term)
+	:	'-' unaryExpr -> ^(UnaryMinus unaryExpr)
 	|	term
 	;
 
