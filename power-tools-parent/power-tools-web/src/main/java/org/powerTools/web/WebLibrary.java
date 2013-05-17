@@ -82,25 +82,28 @@ public abstract class WebLibrary implements InstructionSet {
 	
 	
 	public static IItemType getItemType (String name) {
-		try {
-			return cItemTypesMap.get (name);
-		} catch (NullPointerException npe) {
+		IItemType itemType = cItemTypesMap.get (name);
+		if (itemType != null) {
+			return itemType;
+		} else {
 			throw new IllegalArgumentException ("unknown item type: " + name);
 		}
 	}
 
 	public static IBrowserType getBrowserType (String name) {
-		try {
-			return cBrowserTypesMap.get (name.toLowerCase ());
-		} catch (NullPointerException npe) {
+		IBrowserType browserType = cBrowserTypesMap.get (name.toLowerCase ());
+		if (browserType != null) {
+			return browserType;
+		} else {
 			throw new IllegalArgumentException ("unknown browser type: " + name);
 		}
 	}
 
 	public static IKeyType getKeyType (String name) {
-		try {
-			return cKeyTypesMap.get (name);
-		} catch (NullPointerException npe) {
+		IKeyType keyType = cKeyTypesMap.get (name);
+		if (keyType != null) {
+			return keyType;
+		} else {
 			throw new IllegalArgumentException ("unknown key type: " + name);
 		}
 	}
