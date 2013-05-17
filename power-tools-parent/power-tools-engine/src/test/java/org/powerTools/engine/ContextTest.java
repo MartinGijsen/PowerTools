@@ -16,7 +16,7 @@
 *	along with the PowerTools engine. If not, see <http://www.gnu.org/licenses/>.
 */
 
-package org.powerTools.engine.engine;
+package org.powerTools.engine;
 
 import static org.junit.Assert.assertEquals;
 
@@ -26,7 +26,6 @@ import java.util.GregorianCalendar;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.powerTools.engine.Context;
 
 
 public class ContextTest {
