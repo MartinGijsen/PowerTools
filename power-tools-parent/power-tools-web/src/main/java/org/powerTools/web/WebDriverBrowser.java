@@ -423,7 +423,7 @@ class WebDriverBrowser implements IBrowser {
 
 	@Override
 	public boolean close () {
-		mDriver.close ();
+		mDriver.quit ();
 		mDriver = null;
 		return true;
 	}
