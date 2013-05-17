@@ -652,7 +652,13 @@ class WebDriverBrowser implements IBrowser {
 		
 		@Override
 		public boolean isSatisfied () {
-			return mDriver.findElements (mLocator).size () == 1;
+			List<WebElement> list = mDriver.findElements (mLocator);
+			if (list.size () == 1) {
+				mElement = list.get (0);
+				return true;
+			} else {
+				return false;
+			}
 		}
 		
 		WebElement mElement;
