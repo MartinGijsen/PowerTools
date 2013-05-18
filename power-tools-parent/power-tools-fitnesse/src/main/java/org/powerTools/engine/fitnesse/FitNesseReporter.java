@@ -25,11 +25,13 @@ import org.powerTools.engine.reports.TestResultSubscriber;
 
 final class FitNesseReporter implements TestResultSubscriber {
 	private BaseTestSource mSource;
+	private int mLevel;
 	private boolean mAnyErrors;
 
 	
 	FitNesseReporter () {
-		mAnyErrors = false;
+		mLevel		= 0;
+		mAnyErrors	= false;
 	}
 
 
@@ -56,8 +58,10 @@ final class FitNesseReporter implements TestResultSubscriber {
 
 	@Override
 	public void processEndOfTestLine() {
-		mSource.processFinished (mAnyErrors);
-		mAnyErrors = false;
+		if (mLevel == 0) {
+			mSource.processFinished (mAnyErrors);
+			mAnyErrors = false;
+		}
 	}
 
 
@@ -68,9 +72,14 @@ final class FitNesseReporter implements TestResultSubscriber {
 	public void finish (Date dateTime) { }
 
 	@Override
-	public void processIncreaseLevel () { }
+	public void processIncreaseLevel () {
+		++mLevel;
+	}
+	
 	@Override
-	public void processDecreaseLevel () { }
+	public void processDecreaseLevel () {
+		--mLevel;
+	}
 
 	@Override
 	public void processInfo (String message) { }
