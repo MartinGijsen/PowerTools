@@ -143,8 +143,12 @@ public abstract class WebLibrary implements InstructionSet {
 
 	
 	// configuration instructions
-	public final boolean SetDefaultTimeoutTo_ (int timeout) {
-		return mBrowser.setDefaultTimeout (timeout);
+	public final boolean SetShortDefaultTimeoutTo_ (int timeout) {
+		return mBrowser.setShortDefaultTimeout (timeout);
+	}
+
+	public final boolean SetLongDefaultTimeoutTo_ (int timeout) {
+		return mBrowser.setLongDefaultTimeout (timeout);
 	}
 
 

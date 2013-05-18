@@ -77,8 +77,12 @@ public final class WebDriverKeywords implements InstructionSet {
 		return mInstructions.CloseBrowser ();
 	}
 
-	public boolean SetDefaultTimeout (int timeout) {
-		return mInstructions.SetDefaultTimeoutTo_ (timeout);
+	public boolean SetShortDefaultTimeout (int timeout) {
+		return mInstructions.SetShortDefaultTimeoutTo_ (timeout);
+	}
+
+	public boolean SetLongDefaultTimeout (int timeout) {
+		return mInstructions.SetLongDefaultTimeoutTo_ (timeout);
 	}
 
 	public boolean DeclareItem (String name, String parentName, String type, String keyTypeString, String value) {

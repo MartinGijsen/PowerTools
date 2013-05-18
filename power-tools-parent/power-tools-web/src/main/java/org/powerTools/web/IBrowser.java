@@ -30,9 +30,12 @@ public interface IBrowser {
 		String cMultipleElementsErrorMsg	= "multiple elements found named ";
 	}
 	
-	boolean setDefaultTimeout (int timeout);
-	int getDefaultTimeoutAsInteger ();
-	String getDefaultTimeoutAsString ();
+	boolean setShortDefaultTimeout (int timeout);
+	boolean setLongDefaultTimeout (int timeout);
+	int getShortDefaultTimeoutAsInteger ();
+	int getLongDefaultTimeoutAsInteger ();
+	String getShortDefaultTimeoutAsString ();
+	String getLongDefaultTimeoutAsString ();
 	
 	boolean open (IBrowserType type, String url);
 	boolean close ();

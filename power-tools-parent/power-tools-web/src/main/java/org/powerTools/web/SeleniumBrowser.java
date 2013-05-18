@@ -37,8 +37,14 @@ final class SeleniumBrowser implements IBrowser {
 	}
 
 
+	public boolean setServerPort (int portNr) {
+		mServerPortNr = portNr;
+		return true;
+	}
+
+
 	@Override
-	public boolean setDefaultTimeout (int timeout) {
+	public boolean setShortDefaultTimeout (int timeout) {
 		if (timeout < 0) {
 			mRunTime.reportError ("negative number");
 		} else {
@@ -51,19 +57,28 @@ final class SeleniumBrowser implements IBrowser {
 		return false;
 	}
 
-	public boolean setServerPort (int portNr) {
-		mServerPortNr = portNr;
-		return true;
+	@Override
+	public boolean setLongDefaultTimeout (int timeout) {
+		return setShortDefaultTimeout (timeout);
 	}
-
 	
 	@Override
-	public int getDefaultTimeoutAsInteger () {
+	public int getShortDefaultTimeoutAsInteger () {
 		return mDefaultTimeout;
 	}
 
 	@Override
-	public String getDefaultTimeoutAsString () {
+	public int getLongDefaultTimeoutAsInteger () {
+		return mDefaultTimeout;
+	}
+
+	@Override
+	public String getShortDefaultTimeoutAsString () {
+		return Integer.toString (mDefaultTimeout);
+	}
+
+	@Override
+	public String getLongDefaultTimeoutAsString () {
 		return Integer.toString (mDefaultTimeout);
 	}
 
@@ -144,7 +159,7 @@ final class SeleniumBrowser implements IBrowser {
 		try {
 			if (browserIsOpen()) {
 				mSelenium.open (url);
-				waitForPageToLoad (getDefaultTimeoutAsString ());
+				waitForPageToLoad (getLongDefaultTimeoutAsString ());
 				return true;
 			}
 		} catch (SeleniumException se) {
@@ -325,7 +340,7 @@ final class SeleniumBrowser implements IBrowser {
 			case cXpath:
 			case cValue:
 				if (browserIsOpen () && clickIfPresent (getLocator (keyType, value))) {
-					waitForPageToLoad (getDefaultTimeoutAsString ());
+					waitForPageToLoad (getLongDefaultTimeoutAsString ());
 					return true;
 				}
 				break;
@@ -368,7 +383,7 @@ final class SeleniumBrowser implements IBrowser {
 			case cText:
 			case cXpath:
 				if (browserIsOpen () && clickIfPresent (getLocator (item))) {
-					waitForPageToLoad (getDefaultTimeoutAsString ());
+					waitForPageToLoad (getLongDefaultTimeoutAsString ());
 					return true;
 				}
 				break;
@@ -387,7 +402,7 @@ final class SeleniumBrowser implements IBrowser {
 			if (browserIsOpen ()) {
 				//mSelenium.click ("link=" + text);
 				mSelenium.click ("xpath=//a[contains(text()," + quoteText (text) + ")]");
-				waitForPageToLoad (getDefaultTimeoutAsString ());
+				waitForPageToLoad (getLongDefaultTimeoutAsString ());
 				return true;
 			}
 		} catch (SeleniumException se) {
@@ -401,7 +416,7 @@ final class SeleniumBrowser implements IBrowser {
 		try {
 			if (browserIsOpen()) {
 				mSelenium.click (getLocator (WebLibrary.IItemType.cButton, keyType, value));
-				waitForPageToLoad (getDefaultTimeoutAsString ());
+				waitForPageToLoad (getLongDefaultTimeoutAsString ());
 				return true;
 			}
 		} catch (SeleniumException se) {

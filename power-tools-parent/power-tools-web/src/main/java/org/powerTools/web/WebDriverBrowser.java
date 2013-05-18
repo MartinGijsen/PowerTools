@@ -52,18 +52,35 @@ class WebDriverBrowser implements IBrowser {
 
 
 	@Override
-	public boolean setDefaultTimeout (int timeout) {
-		return false;
+	public boolean setShortDefaultTimeout (int timeout) {
+		mShortDefaultTimeoutInSeconds = timeout;
+		return true;
 	}
 	
 	@Override
-	public int getDefaultTimeoutAsInteger () {
-		return mDefaultTimeoutInSeconds;
+	public boolean setLongDefaultTimeout (int timeout) {
+		mLongDefaultTimeoutInSeconds = timeout;
+		return true;
 	}
 	
 	@Override
-	public String getDefaultTimeoutAsString () {
-		return Integer.toString (mDefaultTimeoutInSeconds);
+	public int getShortDefaultTimeoutAsInteger () {
+		return mShortDefaultTimeoutInSeconds;
+	}
+	
+	@Override
+	public int getLongDefaultTimeoutAsInteger () {
+		return mLongDefaultTimeoutInSeconds;
+	}
+	
+	@Override
+	public String getShortDefaultTimeoutAsString () {
+		return Integer.toString (mShortDefaultTimeoutInSeconds);
+	}
+	
+	@Override
+	public String getLongDefaultTimeoutAsString () {
+		return Integer.toString (mLongDefaultTimeoutInSeconds);
 	}
 	
 //	@Override
@@ -307,7 +324,7 @@ class WebDriverBrowser implements IBrowser {
 
 	@Override
 	public boolean waitUntilTextIsPresent (String text) {
-		return waitUntilTextIsPresent (text, mDefaultTimeoutInSeconds);
+		return waitUntilTextIsPresent (text, mShortDefaultTimeoutInSeconds);
 	}
 
 	@Override
@@ -317,7 +334,7 @@ class WebDriverBrowser implements IBrowser {
 
 	@Override
 	public boolean waitUntilTextIsNotPresent (String text) {
-		return waitUntilTextIsNotPresent (text, mDefaultTimeoutInSeconds);
+		return waitUntilTextIsNotPresent (text, mShortDefaultTimeoutInSeconds);
 	}
 
 	@Override
@@ -327,7 +344,7 @@ class WebDriverBrowser implements IBrowser {
 
 	@Override
 	public boolean waitUntilItemIsPresent (Item item) {
-		return waitUntilItemIsPresent (item, mDefaultTimeoutInSeconds);
+		return waitUntilItemIsPresent (item, mShortDefaultTimeoutInSeconds);
 	}
 
 	@Override
@@ -337,7 +354,7 @@ class WebDriverBrowser implements IBrowser {
 
 	@Override
 	public boolean waitUntilItemIsNotPresent (Item item) {
-		return waitUntilItemIsNotPresent (item, mDefaultTimeoutInSeconds);
+		return waitUntilItemIsNotPresent (item, mShortDefaultTimeoutInSeconds);
 	}
 
 	@Override
@@ -347,7 +364,7 @@ class WebDriverBrowser implements IBrowser {
 
 	@Override
 	public boolean waitUntilItemIsFilled (Item item) {
-		return waitUntilItemIsFilled (item, mDefaultTimeoutInSeconds);
+		return waitUntilItemIsFilled (item, mShortDefaultTimeoutInSeconds);
 	}
 
 	@Override
@@ -357,7 +374,7 @@ class WebDriverBrowser implements IBrowser {
 
 	@Override
 	public boolean waitUntilItemIsEmpty (Item item) {
-		return waitUntilItemIsEmpty (item, mDefaultTimeoutInSeconds);
+		return waitUntilItemIsEmpty (item, mShortDefaultTimeoutInSeconds);
 	}
 
 	@Override
@@ -367,7 +384,7 @@ class WebDriverBrowser implements IBrowser {
 
 	@Override
 	public boolean waitUntilItemIsVisible (Item item) {
-		return waitUntilItemIsVisible (item, mDefaultTimeoutInSeconds);
+		return waitUntilItemIsVisible (item, mShortDefaultTimeoutInSeconds);
 	}
 
 	@Override
@@ -377,7 +394,7 @@ class WebDriverBrowser implements IBrowser {
 	
 	@Override
 	public boolean waitUntilItemIsNotVisible (Item item) {
-		return waitUntilItemIsNotVisible (item, mDefaultTimeoutInSeconds);
+		return waitUntilItemIsNotVisible (item, mShortDefaultTimeoutInSeconds);
 	}
 
 	@Override
@@ -387,7 +404,7 @@ class WebDriverBrowser implements IBrowser {
 	
 	@Override
 	public boolean waitUntilItemIsEnabled (Item item) {
-		return waitUntilItemIsEnabled (item, mDefaultTimeoutInSeconds);
+		return waitUntilItemIsEnabled (item, mShortDefaultTimeoutInSeconds);
 	}
 
 	@Override
@@ -397,7 +414,7 @@ class WebDriverBrowser implements IBrowser {
 
 	@Override
 	public boolean waitUntilItemIsDisabled (Item item) {
-		return waitUntilItemIsDisabled (item, mDefaultTimeoutInSeconds);
+		return waitUntilItemIsDisabled (item, mShortDefaultTimeoutInSeconds);
 	}
 
 	@Override
@@ -467,7 +484,8 @@ class WebDriverBrowser implements IBrowser {
 
 	protected final RunTime mRunTime;
 
-	protected int mDefaultTimeoutInSeconds = 30;
+	protected int mShortDefaultTimeoutInSeconds	= 10;
+	protected int mLongDefaultTimeoutInSeconds	= 30;
 	protected WebDriver mDriver;
 
 
@@ -507,7 +525,7 @@ class WebDriverBrowser implements IBrowser {
 	}
 
 	private WebElement waitForUniqueElement (By locator) {
-		return waitForUniqueElement (locator, mDefaultTimeoutInSeconds);
+		return waitForUniqueElement (locator, mShortDefaultTimeoutInSeconds);
 	}
 	
 	private WebElement waitForUniqueElement (By locator, int timeout) {
@@ -515,7 +533,7 @@ class WebDriverBrowser implements IBrowser {
 		if (waitForCondition (condition, timeout)) {
 			return condition.mElement;
 		} else {
-			return null;
+			throw new ExecutionException ("timeout expired");
 		}
 	}
 
