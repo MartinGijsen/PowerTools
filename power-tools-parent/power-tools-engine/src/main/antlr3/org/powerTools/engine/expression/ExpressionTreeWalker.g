@@ -36,8 +36,8 @@ import org.powerTools.engine.symbol.Scope;
 
 @members {
 	// TODO use from elsewhere
-	private final static Pattern cIntegerPattern	= Pattern.compile ("\\d+");
-	private final static Pattern cRealPattern		= Pattern.compile ("\\d+\\.\\d+");
+	private final static Pattern cIntegerPattern	= Pattern.compile ("-?\\d+");
+	private final static Pattern cRealPattern		= Pattern.compile ("-?\\d+\\.\\d+");
 
 	private Scope mScope;
 	
@@ -72,7 +72,7 @@ expr returns [Value v]
 	|	^('+' e1=expr e2=expr)	{ v = $e1.v.add ($e2.v); }
 	|	^('*' e1=expr e2=expr)	{ v = $e1.v.multiply ($e2.v); }
 	|	^('/' e1=expr e2=expr)	{ v = $e1.v.divide ($e2.v); }
-	|	^(UnaryMinus t=expr)	{ v = $t.v.negate (); }
+	|	^(UnaryMinus e=expr)	{ v = $e.v.negate (); }
 	|	'true'					{ v = BooleanValue.cTrueStringValue; }
 	|	'false'					{ v = BooleanValue.cFalseStringValue; }
 	|	s=StringLiteral			{ v = new StringValue ($s.getText ()); }

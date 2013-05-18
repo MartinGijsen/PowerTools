@@ -21,6 +21,8 @@ package org.powerTools.engine.reports;
 import java.io.PrintWriter;
 import java.util.Date;
 
+import org.powerTools.engine.TestLine;
+
 
 public abstract class BasicHtmlLog implements TestLineSubscriber, TestResultSubscriber {
 	protected final PrintWriter mWriter;
@@ -49,6 +51,13 @@ public abstract class BasicHtmlLog implements TestLineSubscriber, TestResultSubs
 	public void start (Date dateTime) { }
 	@Override
 	public void finish (Date dateTime) { }
+
+	
+	protected final String getCell (TestLine testLine, int partNr) {
+		String originalPart	= testLine.getOriginalPart (partNr);
+		String firstHalf	= originalPart == null ? "" : originalPart + "<HR/>";
+		return firstHalf + testLine.getPart (partNr);
+	}
 
 
 	// the input

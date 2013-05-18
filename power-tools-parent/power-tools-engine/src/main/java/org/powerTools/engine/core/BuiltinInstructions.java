@@ -145,37 +145,37 @@ public final class BuiltinInstructions implements InstructionSet {
 		return mLogic.declareRole (system, role, domain, username, password);
 	}
 	
-	public boolean Check_ (boolean value) {
+	public boolean CheckThat_ (boolean value) {
 		return value;
 	}
 	
-	public boolean Check_Contains_ (String value1, String value2) {
+	public boolean CheckThat_Contains_ (String value1, String value2) {
 		return value1.indexOf (value2) >= 0;
 	}
 
-	public boolean Check_DoesNotContain_ (String value1, String value2) {
-		return !Check_Contains_ (value1, value2);
+	public boolean CheckThat_DoesNotContain_ (String value1, String value2) {
+		return !CheckThat_Contains_ (value1, value2);
 	}
 
-	public boolean Check_IsWithin_Of_ (String value1String, String marginString, String value2String) {
+	public boolean CheckThat_IsWithin_Of_ (String value1String, String marginString, String value2String) {
 		final double value1	= Double.parseDouble (value1String);
 		final double margin	= Double.parseDouble (marginString);
 		final double value2	= Double.parseDouble (value2String);
 		return value1 >= value2 - margin && value1 <= value2 + margin;
 	}
 
-	public boolean Check_IsNotWithin_Of_ (String value1String, String marginString, String value2String) {
-		return !Check_IsWithin_Of_ (value1String, marginString, value2String);
+	public boolean CheckThat_IsNotWithin_Of_ (String value1String, String marginString, String value2String) {
+		return !CheckThat_IsWithin_Of_ (value1String, marginString, value2String);
 	}
 	
-	public boolean Check_IsBetween_And_ (String valueString, String lowerBoundString, String upperBoundString) {
+	public boolean CheckThat_IsBetween_And_ (String valueString, String lowerBoundString, String upperBoundString) {
 		final double value		= Double.parseDouble (valueString);
 		final double lowerBound	= Double.parseDouble (lowerBoundString);
 		final double upperBound	= Double.parseDouble (upperBoundString);
 		return value >= lowerBound && value <= upperBound;
 	}
 
-	public boolean Check_IsNotBetween_And_ (String valueString, String lowerBoundString, String upperBoundString) {
-		return !Check_IsBetween_And_ (valueString, lowerBoundString, upperBoundString);
+	public boolean CheckThat_IsNotBetween_And_ (String valueString, String lowerBoundString, String upperBoundString) {
+		return !CheckThat_IsBetween_And_ (valueString, lowerBoundString, upperBoundString);
 	}
 }

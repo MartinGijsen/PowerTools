@@ -59,12 +59,6 @@ final class HtmlLog extends BasicHtmlLog {
 		mWriter.append (getCell (testLine, nrOfParts - 1)).println ("</TD></TR>");
 	}
 	
-	private String getCell (TestLine testLine, int partNr) {
-		String originalPart	= testLine.getOriginalPart (partNr);
-		String firstHalf	= originalPart == null ? "" : originalPart + "<HR/>";
-		return firstHalf + testLine.getPart (partNr);
-	}
-
 	@Override
 	public void processCommentLine (String testLine) {
 		mWriter.format ("<TR><TD></TD><TD colspan=\"10\">%s</TD></TR>", testLine).println ();
