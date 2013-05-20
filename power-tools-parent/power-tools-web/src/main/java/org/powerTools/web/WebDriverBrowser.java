@@ -46,6 +46,9 @@ import org.powerTools.web.WebLibrary.IKeyType;
 
 
 class WebDriverBrowser implements IBrowser {
+	private final String CHROMEDRIVER_LOG_FILENAME = "chromedriver.log";
+	
+	
 	public WebDriverBrowser (RunTime runTime) {
 		mRunTime = runTime;
 	}
@@ -119,10 +122,11 @@ class WebDriverBrowser implements IBrowser {
 			ChromeDriverService service = new ChromeDriverService.Builder ()
 											.usingDriverExecutable (new File ("chromedriver.exe"))
 											.usingAnyFreePort ()
-											.withLogFile (new File (logDirectory + "chromedriver.log"))
+											.withLogFile (new File (logDirectory + CHROMEDRIVER_LOG_FILENAME))
 											.build ();
 			service.start ();
 			mDriver = new ChromeDriver (service); 
+			mRunTime.reportLink (CHROMEDRIVER_LOG_FILENAME);
 			return true;
 		} catch (IOException ioe) {
 			return false;

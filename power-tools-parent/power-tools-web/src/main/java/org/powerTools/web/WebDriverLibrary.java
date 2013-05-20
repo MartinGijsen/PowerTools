@@ -35,7 +35,7 @@ public final class WebDriverLibrary extends WebLibrary {
 			throw new ExecutionException ("browser is already open");
 		} else {
 			mBrowser = new WebDriverBrowser (mRunTime);
-			return mBrowser.open (getBrowserType (typeString), completeUrl (url), ".");//mRunTime.getContext ().mResultsDirectory);
+			return mBrowser.open (getBrowserType (typeString), completeUrl (url), mRunTime.getContext ().mResultsDirectory);
 		}
 	}
 }
