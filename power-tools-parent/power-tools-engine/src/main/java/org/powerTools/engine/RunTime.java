@@ -24,33 +24,128 @@ import org.powerTools.engine.symbol.Scope;
 
 /**
  * The runtime provides all engine functionality that an instruction may need.
- * It supports reporting errors and other execution information,
- * creating symbols in the current scope and getting and setting symbols.
+ * It supports reporting errors and other execution information and
+ * getting the local and global scope for getting and setting symbols.
  * <BR/>
  * It also allows an instruction (set) to create or get a shared object,
  * so data or logic can be shared between instruction sets.
  */
 public interface RunTime {
+	/**
+	 * Returns the Context that describes the context in which a test runs,
+	 * including the start time, the results directory and the log file path.
+	 * @return	the context for the test run
+	 */
 	Context getContext ();
+
 	
-	boolean addSharedObject	(String name, Object object);
-	Object getSharedObject	(String name);
+	/**
+	 * Reports an incorrect value error message to the log (and any interested report(s))
+	 * @param	expression	the expression being considered
+	 * @param	actualValue	the actual value
+	 * @param	expextedValue	the expected value
+	 */
+	void reportValueError (String expression, String actualValue, String expectedValue);
 
-	void reportValueError	(String expression, String actualValue, String expectedValue);
-	void reportError		(String message);
-	void reportStackTrace	(Exception e);
-	void reportWarning		(String message);
-	void reportValue		(String expression, String value);
-	void reportInfo			(String message);
-	void reportLink			(String url);
+	/**
+	 * Reports an error message to the log (and any interested report(s))
+	 * @param	message	the message to report
+	 */
+	void reportError (String message);
 
-	Scope getGlobalScope	();
-	Scope getCurrentScope	();
+	/**
+	 * Reports an exception stack trace to the log (and any interested report(s))
+	 * @param	e	the exception to report the stack trace of
+	 */
+	void reportStackTrace (Exception e);
 
-	Symbol getSymbol	(String name);
-	void setValue		(String name, String value);
-	void copyStructure	(String target, String source);
+	/**
+	 * Reports an warning message to the log (and any interested report(s))
+	 * @param	message	the message to report
+	 */
+	void reportWarning (String message);
+
+	/**
+	 * Reports a value to the log (and any interested report(s))
+	 * @param	expression	the expression being considered
+	 * @param	value	the value of the expression
+	 */
+	void reportValue (String expression, String value);
+
+	/**
+	 * Reports an info message to the log (and any interested report(s))
+	 * @param	message	the message to report
+	 */
+	void reportInfo (String message);
+
+	/**
+	 * Reports a URL in an info message to the log (and any interested report(s))
+	 * so that it can be rendered in a clickable way
+	 * @param	url	the URL to report
+	 */
+	void reportLink (String url);
+
+	
+	/**
+	 * Returns the global scope for getting and setting global symbols
+	 * @return	the global scope
+	 */
+	Scope getGlobalScope ();
+
+	/**
+	 * Returns the current local scope for getting and setting symbols
+	 * @return	the current local scope
+	 */
+	Scope getCurrentScope ();
+
+	
+	/**
+	 * Returns the first symbol found with the specified name,
+	 * starting to look in the local scope
+	 * @param	name	the symbol name
+	 * @return	the first symbol with the specified name
+	 */
+	Symbol getSymbol (String name);
+
+	/**
+	 * Sets the value of a symbol to the specified value
+	 * @param	name	the name of the symbol to set
+	 * @param	value	the value to set the symbol to
+	 */
+	void setValue (String name, String value);
+
+	/**
+	 * Copies all fields of a (sub)structure to another (sub)structure
+	 * @param	target	the name of the (sub)structure to set
+	 * @param	source	the name of the (sub)structure to copy from
+	 */
+	void copyStructure (String target, String source);
+
+	/**
+	 * Clears a (sub)structure of all fields
+	 * @param	name	the name of the (sub)structure to clear
+	 */
 	void clearStructure (String name);
+
 	
+	/**
+	 * Returns the roles object that contains registered user names and passwords
+	 * @return	the roles object
+	 */
 	Roles getRoles ();
+	
+
+	/**
+	 * Makes an object available to other instruction sets
+	 * @param	name	the name of the object
+	 * @param	object	the object to share
+	 */
+	boolean addSharedObject (String name, Object object);
+
+	/**
+	 * Returns an object available to other instruction sets
+	 * @param	name	the name of the object to get
+	 * @return	the specified shared object
+	 */
+	Object getSharedObject (String name);
 }
