@@ -60,26 +60,6 @@ public abstract class BasicHtmlLog implements TestLineSubscriber, TestResultSubs
 	}
 
 
-	// the input
-//	@Override
-//	public void processCommentLine (String testLine) {
-//		mWriter.format ("<TR><TD></TD><TD colspan=\"10\">%s</TD></TR>", testLine).println ();
-//	}
-
-//	@Override
-//	public void processCommentLine (ITestLine testLine) {
-//		mWriter.append ("<TR><TD></TD>");
-//		final int nrOfParts = testLine.getNrOfParts ();
-//		for (int partNr = 1; partNr < nrOfParts - 1; ++partNr) {
-//			mWriter.format ("<TD>%s</TD>", testLine.getEvaluatedPart (partNr));
-//		}
-//		mWriter.format ("<TD colspan=\"10\">%s</TD></TR>", testLine.getEvaluatedPart (nrOfParts - 1)).println ();
-//	}
-
-//	@Override
-//	public void processEndOfSection () { }
-
-
 	// the results
 	@Override
 	public void processStackTrace (String[] stackTraceLines) {
@@ -107,6 +87,11 @@ public abstract class BasicHtmlLog implements TestLineSubscriber, TestResultSubs
 	}
 
 	@Override
+	public void processLink (String url) {
+		mWriter.format ("<TR><TD colspan=\"10\">url: <A href=\"%s\">%s</A></TD></TR>", url, url).println ();
+	}
+
+	@Override
 	public void processIncreaseLevel () {
 		++mLevel;
 		mWriter.println ("<TR><TD colspan=\"10\"><BR/><TABLE border=\"1\" cellspacing=\"0\">");
@@ -117,10 +102,4 @@ public abstract class BasicHtmlLog implements TestLineSubscriber, TestResultSubs
 		--mLevel;
 		mWriter.println ("</TABLE><BR/></TD></TR>");
 	}
-	
-//	@Override
-//	public void processEndOfTestLine () {
-//		mWriter.println ("</TABLE><BR/>");
-//		mWriter.flush ();
-//	}
 }

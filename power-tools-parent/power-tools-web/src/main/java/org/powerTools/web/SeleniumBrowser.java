@@ -87,7 +87,7 @@ final class SeleniumBrowser implements IBrowser {
 //	}
 
 	@Override
-	public boolean open (IBrowserType type, String url) {
+	public boolean open (IBrowserType type, String url, String logDirectory) {
 //		mIsInternetExplorer = false;
 
 		switch (type) {

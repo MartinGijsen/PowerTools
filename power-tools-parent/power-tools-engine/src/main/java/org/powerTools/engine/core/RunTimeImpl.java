@@ -119,6 +119,11 @@ public final class RunTimeImpl implements RunTime, ProcedureRunner {
 	public void reportInfo (String message) {
 		mPublisher.publishInfo (message);
 	}
+	
+	@Override
+	public void reportLink (String url) {
+		mPublisher.publishLink (url);
+	}
 
 	
 	@Override

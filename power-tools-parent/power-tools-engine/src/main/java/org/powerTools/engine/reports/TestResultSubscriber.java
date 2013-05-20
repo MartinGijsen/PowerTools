@@ -21,9 +21,10 @@ package org.powerTools.engine.reports;
 
 public interface TestResultSubscriber extends TestSubscriber {
 	void processStackTrace (String[] stackTraceLines);
-	void processError (String message);
-	void processWarning (String message);
-	void processInfo (String message);
+	void processError	(String message);
+	void processWarning	(String message);
+	void processInfo	(String message);
+	void processLink	(String message);
 	void processEndOfTestLine ();
 	
 	void processIncreaseLevel ();

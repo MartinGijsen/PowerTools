@@ -28,6 +28,7 @@ import java.util.GregorianCalendar;
  */
 public class Context {
 	public final Date mStartTime;
+	public final String mResultsBaseDirectory;
 	public final String mResultsDirectory;
 	public final String mLogFileName;
 	public final String mFullLogFilePath;
@@ -35,22 +36,23 @@ public class Context {
 	protected static final SimpleDateFormat mDateFormat = new SimpleDateFormat ("yyyy.MM.dd-HH.mm.ss");
 
 	
-	public Context (String resultsDirectory) {
-		this (GregorianCalendar.getInstance ().getTime (), resultsDirectory);
+	public Context (String resultsBaseDirectory) {
+		this (GregorianCalendar.getInstance ().getTime (), resultsBaseDirectory);
 	}
 
-	public Context (Date startTime, String resultsDirectory) {
-		this (startTime, resultsDirectory, "log" + mDateFormat.format (startTime) + ".html");
+	public Context (Date startTime, String resultsBaseDirectory) {
+		this (startTime, resultsBaseDirectory, "log.html");
 	}
 
-	public Context (String resultsDirectory, String logFileName) {
-		this (GregorianCalendar.getInstance ().getTime (), resultsDirectory, logFileName);
+	public Context (String resultsBaseDirectory, String logFileName) {
+		this (GregorianCalendar.getInstance ().getTime (), resultsBaseDirectory, logFileName);
 	}
 	
-	public Context (Date startTime, String resultsDirectory, String logFileName) {
-		mStartTime			= startTime;
-		mResultsDirectory	= resultsDirectory;
-		mLogFileName		= logFileName;
-		mFullLogFilePath	= resultsDirectory + '/' + logFileName;
+	public Context (Date startTime, String resultsBaseDirectory, String logFileName) {
+		mStartTime				= startTime;
+		mResultsBaseDirectory	= resultsBaseDirectory;
+		mResultsDirectory		= resultsBaseDirectory + mDateFormat.format (startTime) + "/";
+		mLogFileName			= logFileName;
+		mFullLogFilePath		= mResultsDirectory + logFileName;
 	}
 }

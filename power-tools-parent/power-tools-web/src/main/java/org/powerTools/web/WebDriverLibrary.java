@@ -18,6 +18,7 @@
 
 package org.powerTools.web;
 
+import org.powerTools.engine.ExecutionException;
 import org.powerTools.engine.RunTime;
 import org.openqa.selenium.WebDriver;
 
@@ -25,18 +26,16 @@ import org.openqa.selenium.WebDriver;
 public final class WebDriverLibrary extends WebLibrary {
 	public WebDriverLibrary (RunTime runTime) {
 		super (runTime);
-//		mEvents = new Events (runTime);
 		runTime.addSharedObject ("WebDriverLibrary", this);
 	}
 
 
 	public boolean OpenBrowser_At_ (String typeString, String url) {
 		if (mBrowser != null) {
-			mRunTime.reportError ("browser is already open");
-			return false;
+			throw new ExecutionException ("browser is already open");
 		} else {
 			mBrowser = new WebDriverBrowser (mRunTime);
-			return mBrowser.open (getBrowserType (typeString), completeUrl (url));
+			return mBrowser.open (getBrowserType (typeString), completeUrl (url), ".");//mRunTime.getContext ().mResultsDirectory);
 		}
 	}
 }

@@ -33,22 +33,23 @@ import org.powerTools.engine.symbol.Scope;
 public interface RunTime {
 	Context getContext ();
 	
-	boolean addSharedObject (String name, Object object);
-	Object getSharedObject (String name);
+	boolean addSharedObject	(String name, Object object);
+	Object getSharedObject	(String name);
 
-	void reportValueError (String expression, String actualValue, String expectedValue);
-	void reportError      (String message);
-	void reportStackTrace (Exception e);
-	void reportWarning    (String message);
-	void reportValue      (String expression, String value);
-	void reportInfo       (String message);
+	void reportValueError	(String expression, String actualValue, String expectedValue);
+	void reportError		(String message);
+	void reportStackTrace	(Exception e);
+	void reportWarning		(String message);
+	void reportValue		(String expression, String value);
+	void reportInfo			(String message);
+	void reportLink			(String url);
 
-	Scope getGlobalScope ();
-	Scope getCurrentScope ();
+	Scope getGlobalScope	();
+	Scope getCurrentScope	();
 
-	Symbol getSymbol (String name);
-	void setValue (String name, String value);
-	void copyStructure (String target, String source);
+	Symbol getSymbol	(String name);
+	void setValue		(String name, String value);
+	void copyStructure	(String target, String source);
 	void clearStructure (String name);
 	
 	Roles getRoles ();

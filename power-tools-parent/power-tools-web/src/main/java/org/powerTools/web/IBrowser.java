@@ -37,7 +37,7 @@ public interface IBrowser {
 	String getShortDefaultTimeoutAsString ();
 	String getLongDefaultTimeoutAsString ();
 	
-	boolean open (IBrowserType type, String url);
+	boolean open (IBrowserType type, String url, String logDirectory);
 	boolean close ();
 	boolean maximize ();
 	boolean minimize ();

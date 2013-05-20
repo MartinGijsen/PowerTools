@@ -33,13 +33,15 @@ import fit.Parse;
 
 
 public final class FitNesseEngine extends Engine {
+	final static String ROOT_DIRECTORY = "FitNesseRoot/";
+	
 	private static final FitNesseEngine mTheOne = new FitNesseEngine ();
 	
 	private final FitNesseReporter mFitNesseReporter;
 	
 
 	private FitNesseEngine () {
-		super (new RunTimeImpl (new Context ("files/testResults/")));
+		super (new RunTimeImpl (new Context (ROOT_DIRECTORY + "files/testResults/")));
 
 		//ReportFactory.createConsole ();
 		createLog ();
@@ -52,7 +54,7 @@ public final class FitNesseEngine extends Engine {
 	private boolean createLog () {
 		try {
 			final Context context	= mRunTime.getContext ();
-			final File file			= new File ("FitNesseRoot/" + context.mFullLogFilePath);
+			final File file			= new File (context.mFullLogFilePath);
 			file.getParentFile ().mkdirs ();
 			final HtmlLog log						= new HtmlLog (new PrintWriter (new FileWriter (file)), context.mLogFileName);
 			final TestRunResultPublisher publisher	= TestRunResultPublisher.getInstance ();

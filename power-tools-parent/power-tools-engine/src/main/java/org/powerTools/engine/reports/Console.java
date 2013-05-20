@@ -100,6 +100,11 @@ final class Console implements TestLineSubscriber, TestResultSubscriber {
 	}
 
 	@Override
+	public void processLink (String url) {
+		mStream.println ("info: url=" + url);
+	}
+
+	@Override
 	public void processEndSection () {
 		mStream.println ();
 	}

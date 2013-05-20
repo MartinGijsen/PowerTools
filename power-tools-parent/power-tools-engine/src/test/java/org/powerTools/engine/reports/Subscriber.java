@@ -14,6 +14,7 @@ final class Subscriber implements TestCaseSubscriber, TestLineSubscriber, TestRe
 		PROCESS_ERROR,
 		PROCESS_WARNING,
 		PROCESS_INFO,
+		PROCESS_LINK,
 		PROCESS_END_OF_TESTLINE,
 		PROCESS_INCREASE_LEVEL,
 		PROCESS_DECREASE_LEVEL,
@@ -66,6 +67,11 @@ final class Subscriber implements TestCaseSubscriber, TestLineSubscriber, TestRe
 	@Override
 	public void processInfo(String message) {
 		mLastMethod = Method.PROCESS_INFO;
+	}
+
+	@Override
+	public void processLink(String url) {
+		mLastMethod = Method.PROCESS_LINK;
 	}
 
 	@Override

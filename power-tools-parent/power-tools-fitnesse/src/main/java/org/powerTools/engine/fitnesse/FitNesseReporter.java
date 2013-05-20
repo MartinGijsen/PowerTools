@@ -84,5 +84,7 @@ final class FitNesseReporter implements TestResultSubscriber {
 	@Override
 	public void processInfo (String message) { }
 	@Override
+	public void processLink (String url) { }
+	@Override
 	public void processWarning (String warning) { }
 }

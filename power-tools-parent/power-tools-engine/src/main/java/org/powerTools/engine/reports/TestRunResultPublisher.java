@@ -140,6 +140,12 @@ public final class TestRunResultPublisher {
 		}
 	}
 
+	public void publishLink (String url) {
+		for (TestResultSubscriber subscriber : mTestResultSubscribers) {
+			subscriber.processLink (url);
+		}
+	}
+
 	public void publishEndOfTestLine () {
 		for (TestResultSubscriber subscriber : mTestResultSubscribers) {
 			subscriber.processEndOfTestLine ();

@@ -41,7 +41,8 @@ abstract class BaseTestSource extends TestSource {
 		super (scope);
 		mFixture		= fixture;
 		mRow			= row;
-		mLogFilePath	= logFilePath;
+		String rootDir	= FitNesseEngine.ROOT_DIRECTORY;
+		mLogFilePath	= logFilePath.startsWith (rootDir) ? logFilePath.substring (rootDir.length ()) : logFilePath;
 	}
 
 	

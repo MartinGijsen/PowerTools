@@ -89,22 +89,17 @@ class WebDriverBrowser implements IBrowser {
 //	}
 
 	@Override
-	public boolean open (IBrowserType type, String url) {
+	public boolean open (IBrowserType type, String url, String logDirectory) {
 		switch (type) {
 		case cInternetExplorer:
 			System.setProperty ("webdriver.ie.driver", "IEDriverServer.exe"); 
 			mDriver = new InternetExplorerDriver (); 
 			break;
 		case cChrome:
-			try {
-				System.setProperty ("webdriver.chrome.driver", "chromedriver.exe"); 
-				final ChromeDriverService chromeDriverService = ChromeDriverService.createDefaultService (); 
-				chromeDriverService.start ();
-				mDriver = new ChromeDriver (chromeDriverService); 
-				break;
-			} catch (IOException ioe) {
+			if (!startChrome (logDirectory)) {
 				return false;
 			}
+			break;
 		case cFirefox:
 			mDriver = new FirefoxDriver();
 			break;
@@ -116,6 +111,22 @@ class WebDriverBrowser implements IBrowser {
 		mDriver.get (url);
 		mRunTime.addSharedObject ("WebDriver", mDriver);
 		return true;
+	}
+
+	private boolean startChrome (String logDirectory) {
+		try {
+			System.setProperty ("webdriver.chrome.driver", "chromedriver.exe"); 
+			ChromeDriverService service = new ChromeDriverService.Builder ()
+											.usingDriverExecutable (new File ("chromedriver.exe"))
+											.usingAnyFreePort ()
+											.withLogFile (new File (logDirectory + "chromedriver.log"))
+											.build ();
+			service.start ();
+			mDriver = new ChromeDriver (service); 
+			return true;
+		} catch (IOException ioe) {
+			return false;
+		}
 	}
 
 	@Override
