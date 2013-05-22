@@ -18,9 +18,7 @@
 
 package org.powerTools.web;
 
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 import org.powerTools.engine.InstructionSet;
@@ -396,6 +394,12 @@ public abstract class WebLibrary implements InstructionSet {
 		}
 	}
 	
+
+	public boolean ClickAcceptInAlert()	{
+        return mBrowser.clickAcceptInAlert();
+	}
+	
+	
 	public final boolean MoveMouseOver_ (String itemName) {
 		final Item item = findItem (itemName);
 		return item != null && mBrowser.mouseOver (item);
@@ -411,6 +415,23 @@ public abstract class WebLibrary implements InstructionSet {
 			return mBrowser.type (getKeyType (keyTypeString), value, text);
 		} catch (IllegalArgumentException iae) {
 			mRunTime.reportError (iae.getMessage ());
+			return false;
+		}
+	}
+	
+	
+	public boolean Set_IntoCheckbox_(String text, String itemName) {
+		final Item item = findItem(itemName);
+		boolean value = makeBoolean(text);
+		return mBrowser.setCheckboxValue(item, value);
+	}
+
+	public boolean Set_IntoCheckboxWhere_Is_(String text, String keyTypeString,	String value) {
+		try {
+			boolean checkValue = makeBoolean(text);
+			return mBrowser.setCheckboxValue(getKeyType(keyTypeString), value, checkValue);
+		} catch (IllegalArgumentException iae) {
+			mRunTime.reportError(iae.getMessage());
 			return false;
 		}
 	}
@@ -629,6 +650,19 @@ public abstract class WebLibrary implements InstructionSet {
 	private final static Map<String, IKeyType> cKeyTypesMap;
 
 	private final Map<String, Item> mItemMap;
+	
+	
+	private boolean makeBoolean(String text) {
+		if (text.equalsIgnoreCase("true") || text.equalsIgnoreCase("on")) {
+			return true;
+		}
+		if (text.equalsIgnoreCase("false") || text.equalsIgnoreCase("off")) {
+			return false;
+		}
+		String msg = "Invalid value: " + text + " valid values: true/false/on/off";
+		throw new IllegalArgumentException(msg);
+	}
+
 	//private final Map<String, IBrowser> mBrowserMap;
 
 	static {

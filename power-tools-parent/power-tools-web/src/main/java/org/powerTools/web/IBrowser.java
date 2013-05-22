@@ -57,6 +57,9 @@ public interface IBrowser {
 
 	boolean fireEvent (Item item, String event);
 
+	boolean setCheckboxValue(Item item, boolean value);
+	boolean setCheckboxValue(IKeyType keyType, String value, boolean checkValue);
+
 	boolean itemExists (Item item);
 	boolean itemExists (IKeyType keyType, String value);
 	int countItems (Item item);
@@ -71,6 +74,8 @@ public interface IBrowser {
 	boolean clickLink (Item item);
 	boolean clickLink (String text);
 	boolean clickLink (IKeyType key, String value);
+
+	boolean clickAcceptInAlert();
 
 	boolean selectChoice (Item item);
 	boolean selectChoiceByText (Item item, String text);

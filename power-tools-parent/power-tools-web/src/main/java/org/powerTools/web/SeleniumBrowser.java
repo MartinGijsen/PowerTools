@@ -267,6 +267,35 @@ final class SeleniumBrowser implements IBrowser {
 	}
 	
 	@Override
+	public boolean setCheckboxValue(Item item, boolean newValue) {
+		final String locator = getLocator (item);
+		return setCheckbox(locator, newValue);
+	}
+
+	@Override
+	public boolean setCheckboxValue(IKeyType keyType, String value, boolean newValue) {
+		final String locator = getLocator (WebLibrary.IItemType.cText, keyType, value);
+		return setCheckbox(locator, newValue);
+	}	
+	
+
+	
+	private boolean setCheckbox (String locator, boolean newValue) {
+		try {
+			if (browserIsOpen()) {
+				boolean current = mSelenium.isChecked(locator);
+				if (current != newValue) {
+					return clickIfPresent (locator);
+				}
+				return true;	
+			}
+		} catch (SeleniumException se) {
+			reportSeleniumException (se);
+		}
+		return false;
+	}	
+	
+	@Override
 	public boolean click (Item item) {
 		switch (item.mType) {
 		case cLink :
@@ -425,6 +454,12 @@ final class SeleniumBrowser implements IBrowser {
 		return false;
 	}
 
+	@Override
+	public boolean clickAcceptInAlert() {
+		mSelenium.getAlert();
+		return true;	
+	}
+	
 	@Override
 	public boolean selectChoice (Item item) {
 		try {
@@ -940,4 +975,7 @@ final class SeleniumBrowser implements IBrowser {
 	public Object getTestTool () {
 		return mSelenium;
 	}
+
+
+
 }
