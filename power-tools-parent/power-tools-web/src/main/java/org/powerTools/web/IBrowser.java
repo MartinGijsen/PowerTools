@@ -75,6 +75,8 @@ public interface IBrowser {
 	boolean clickLink (String text);
 	boolean clickLink (IKeyType key, String value);
 
+	boolean clickAcceptInAlert();
+
 	boolean selectChoice (Item item);
 	boolean selectChoiceByText (Item item, String text);
 	boolean selectChoiceByPartialText (Item item, String text);

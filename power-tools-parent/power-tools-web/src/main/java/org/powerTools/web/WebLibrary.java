@@ -394,6 +394,12 @@ public abstract class WebLibrary implements InstructionSet {
 		}
 	}
 	
+
+	public boolean ClickAcceptInAlert()	{
+        return mBrowser.clickAcceptInAlert();
+	}
+	
+	
 	public final boolean MoveMouseOver_ (String itemName) {
 		final Item item = findItem (itemName);
 		return item != null && mBrowser.mouseOver (item);

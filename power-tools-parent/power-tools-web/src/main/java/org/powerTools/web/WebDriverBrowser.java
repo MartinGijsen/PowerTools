@@ -282,6 +282,13 @@ class WebDriverBrowser implements IBrowser {
 	}
 
 	@Override
+	public boolean clickAcceptInAlert() {
+		mDriver.switchTo().alert().accept();
+		return true;	
+	}
+	
+	
+	@Override
 	public boolean selectChoice (Item item) {
 		if (item.mType != WebLibrary.IItemType.cListboxItem) {
 			mRunTime.reportError ("item is not a listbox item");

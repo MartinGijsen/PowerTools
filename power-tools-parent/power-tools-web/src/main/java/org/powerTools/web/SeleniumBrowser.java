@@ -455,6 +455,12 @@ final class SeleniumBrowser implements IBrowser {
 	}
 
 	@Override
+	public boolean clickAcceptInAlert() {
+		mSelenium.getAlert();
+		return true;	
+	}
+	
+	@Override
 	public boolean selectChoice (Item item) {
 		try {
 			if (!browserIsOpen()) {
