@@ -57,6 +57,9 @@ public interface IBrowser {
 
 	boolean fireEvent (Item item, String event);
 
+	boolean setCheckboxValue(Item item, boolean value);
+	boolean setCheckboxValue(IKeyType keyType, String value, boolean checkValue);
+
 	boolean itemExists (Item item);
 	boolean itemExists (IKeyType keyType, String value);
 	int countItems (Item item);
