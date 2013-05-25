@@ -202,6 +202,16 @@ class WebDriverBrowser implements IBrowser {
 	}
 
 	@Override
+	public boolean setCheckboxValue(Item item, boolean value) {
+		return setCheckboxValue (waitForUniqueElement (getLocator (item)), value);
+	}
+	
+	@Override
+	public boolean setCheckboxValue(IKeyType keyType, String value, boolean checkValue) {
+		return setCheckboxValue (waitForUniqueElement (getLocator (keyType, value)), checkValue);
+	}	
+	
+	@Override
 	public boolean itemExists (Item item) {
 		return getUniqueElement (getLocator (item)) != null;
 	}
@@ -271,6 +281,13 @@ class WebDriverBrowser implements IBrowser {
 		return click (getLocator (keyType, value));
 	}
 
+	@Override
+	public boolean clickAcceptInAlert() {
+		mDriver.switchTo().alert().accept();
+		return true;	
+	}
+	
+	
 	@Override
 	public boolean selectChoice (Item item) {
 		if (item.mType != WebLibrary.IItemType.cListboxItem) {
@@ -592,6 +609,15 @@ class WebDriverBrowser implements IBrowser {
 		element.sendKeys (text);
 		return true;
 	}
+	
+	private boolean setCheckboxValue(WebElement element, boolean value) {
+		boolean current = element.isSelected();
+		if (current != value) {
+			element.click();
+		}
+		return true;
+	}
+	
 	
 	private boolean click (WebElement element) {
 		element.click ();
