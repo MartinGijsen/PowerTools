@@ -304,11 +304,6 @@ final class BuiltinLogic {
 		return true;
 	}
 	
-	boolean declareRole (String role, String domain, String username, String password) {
-		mRunTime.getRoles ().addRole (role, domain, username, password);
-		return true;
-	}
-	
 	boolean declareRole (String system, String role, String domain, String username, String password) {
 		mRunTime.getRoles ().addRole (system, role, domain, username, password);
 		return true;

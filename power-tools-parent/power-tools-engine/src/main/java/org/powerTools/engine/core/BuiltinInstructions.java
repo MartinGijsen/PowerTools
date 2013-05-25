@@ -138,7 +138,7 @@ public final class BuiltinInstructions implements InstructionSet {
 	}
 	
 	public boolean Role_Username_Password_ (String role, String username, String password) {
-		return mLogic.declareRole (role, "", username, password);
+		return mLogic.declareRole ("", role, "", username, password);
 	}
 	
 	public boolean System_Role_Domain_Username_Password_ (String system, String role, String domain, String username, String password) {

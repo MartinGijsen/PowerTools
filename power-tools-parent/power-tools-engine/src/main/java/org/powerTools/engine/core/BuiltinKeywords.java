@@ -133,7 +133,7 @@ public final class BuiltinKeywords implements InstructionSet {
 		return mLogic.runSheet (sheetName);
 	}
 	
-	public boolean DeclareRole (String role, String domain, String username, String password) {
-		return mLogic.declareRole (role, domain, username, password);
+	public boolean DeclareRole (String system, String role, String domain, String username, String password) {
+		return mLogic.declareRole (system, role, domain, username, password);
 	}
 }

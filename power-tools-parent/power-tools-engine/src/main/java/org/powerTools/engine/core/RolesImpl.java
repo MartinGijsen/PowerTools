@@ -42,22 +42,36 @@ public final class RolesImpl implements Roles {
 
 	@Override
 	public void addRole (String role, String domain, String username, String password) {
-		getRolesSymbol ();
-		String prefix = SYMBOL_NAME + "." + role + ".";
-		mSymbol.setValue (prefix + DOMAIN_FIELD_NAME, domain);
-		mSymbol.setValue (prefix + USERNAME_FIELD_NAME, username);
-		mSymbol.setValue (prefix + PASSWORD_FIELD_NAME, password);
+		checkAndAddRole (SYMBOL_NAME + "." + role + ".", role, domain, username, password);
 	}
 
 	@Override
 	public void addRole (String system, String role, String domain, String username, String password) {
+		if (system.isEmpty ()) {
+			addRole (role, domain, username, password);
+		} else {
+			checkAndAddRole (SYMBOL_NAME + "." + system + "." + role + ".", role, domain, username, password);
+		}
+	}
+
+	private void checkAndAddRole (String prefix, String role, String domain, String username, String password) {
+		checkValues (role, username, password);
 		getRolesSymbol ();
-		String prefix = SYMBOL_NAME + "." + system + "." + role + ".";
 		mSymbol.setValue (prefix + DOMAIN_FIELD_NAME, domain);
 		mSymbol.setValue (prefix + USERNAME_FIELD_NAME, username);
 		mSymbol.setValue (prefix + PASSWORD_FIELD_NAME, password);
 	}
 
+	private void checkValues (String role, String username, String password) {
+		if (role.isEmpty ()) {
+			throw new ExecutionException ("role name is empty");
+		} else if (username.isEmpty ()) {
+			throw new ExecutionException ("user name is empty");
+		} else if (password.isEmpty ()) {
+			mRunTime.reportWarning ("password is empty");
+		}
+	}
+	
 	@Override
 	public String getDomain (String role) {
 		return getValue (SYMBOL_NAME + "." + role + "." + DOMAIN_FIELD_NAME);
