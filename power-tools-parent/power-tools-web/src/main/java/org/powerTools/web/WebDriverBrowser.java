@@ -97,7 +97,7 @@ class WebDriverBrowser implements IBrowser {
 //	}
 
 	
-	public boolean open(IBrowserType type, String browserVersion, String url, String logDirectory, String hubUrl) {
+	public boolean open (IBrowserType type, String browserVersion, String url, String logDirectory, String hubUrl) {
 		if (hubUrl == null || hubUrl.isEmpty()) {
 			return open(type, url, logDirectory);
 		} else {
@@ -106,39 +106,41 @@ class WebDriverBrowser implements IBrowser {
 	}
 
 
-	private boolean openOnGrid(IBrowserType type, String browserVersion, String url, String hubUrl) {
-		DesiredCapabilities capability;
-		switch (type) {
-		case cInternetExplorer:
-		    capability = DesiredCapabilities.internetExplorer();
-		    break;
-		case cChrome:
-		    capability = DesiredCapabilities.chrome();
-		    break;
-		case cFirefox:
-		    capability = DesiredCapabilities.firefox();
-		    break;
-		default:
-		    mRunTime.reportError("unknown browser code: " + type);
-		    return false;
-		}
-	
-		if (browserVersion != null && !browserVersion.isEmpty())  {
+	private boolean openOnGrid (IBrowserType type, String browserVersion, String url, String hubUrl) {
+		DesiredCapabilities capability = getBrowserCapabilities (type);
+
+		if (browserVersion != null && !browserVersion.isEmpty ()) {
 			capability.setCapability(CapabilityType.VERSION, browserVersion);
 		}
 		
-		try  {
-		    mDriver = new RemoteWebDriver(new URL(hubUrl), capability);
+		try {
+			mDriver = new RemoteWebDriver (new URL (hubUrl), capability);
+			mDriver.get (url);
+			mRunTime.addSharedObject ("WebDriver", mDriver);
+			return true;
 		} catch (MalformedURLException e) {
-		    mRunTime.reportError("'GridUrl' defined Url invalid: " + url + ", exception=" + e);
-		    return false;
+			mRunTime.reportError("'GridUrl' defined Url invalid: " + url + ", exception=" + e);
+			return false;
 		}
-		
-		mDriver.get(url);
-		mRunTime.addSharedObject("WebDriver", mDriver);
-		return true;
 	}
-	
+
+	private DesiredCapabilities getBrowserCapabilities (IBrowserType type) {
+		DesiredCapabilities capabilities;
+		switch (type) {
+		case cInternetExplorer:
+			capabilities = DesiredCapabilities.internetExplorer ();
+			break;
+		case cChrome:
+			capabilities = DesiredCapabilities.chrome ();
+			break;
+		case cFirefox:
+			capabilities = DesiredCapabilities.firefox ();
+			break;
+		default:
+			throw new ExecutionException ("unknown browser code: " + type);
+		}
+		return capabilities;
+	}
 	
 	@Override
 	public boolean open (IBrowserType type, String url, String logDirectory) {
@@ -379,8 +381,8 @@ class WebDriverBrowser implements IBrowser {
 			return false;
 		} else {
 			Select listbox				= new Select (mDriver.findElement (getLocator (selectItem)));
-	        List<WebElement> choices	= listbox.getOptions ();
-	        WebElement theOne			= null;
+			List<WebElement> choices	= listbox.getOptions ();
+			WebElement theOne			= null;
 			for (WebElement option : choices) {
 				if (!option.getText ().contains (optionText)) {
 					;
