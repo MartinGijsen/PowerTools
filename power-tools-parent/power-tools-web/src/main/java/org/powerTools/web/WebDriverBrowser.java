@@ -18,8 +18,10 @@
 
 package org.powerTools.web;
 
-import java.io.IOException;
 import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Collection;
@@ -28,15 +30,18 @@ import java.util.List;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeDriverService;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.remote.Augmenter;
+import org.openqa.selenium.remote.CapabilityType;
+import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.Select;
 import org.powerTools.engine.ExecutionException;
 import org.powerTools.engine.RunTime;
@@ -91,6 +96,50 @@ class WebDriverBrowser implements IBrowser {
 //
 //	}
 
+	
+	public boolean open(IBrowserType type, String browserVersion, String url, String logDirectory, String hubUrl) {
+		if (hubUrl == null || hubUrl.isEmpty()) {
+			return open(type, url, logDirectory);
+		} else {
+			return openOnGrid(type, browserVersion, url, hubUrl);
+		}
+	}
+
+
+	private boolean openOnGrid(IBrowserType type, String browserVersion, String url, String hubUrl) {
+		DesiredCapabilities capability;
+		switch (type) {
+		case cInternetExplorer:
+		    capability = DesiredCapabilities.internetExplorer();
+		    break;
+		case cChrome:
+		    capability = DesiredCapabilities.chrome();
+		    break;
+		case cFirefox:
+		    capability = DesiredCapabilities.firefox();
+		    break;
+		default:
+		    mRunTime.reportError("unknown browser code: " + type);
+		    return false;
+		}
+	
+		if (browserVersion != null && !browserVersion.isEmpty())  {
+			capability.setCapability(CapabilityType.VERSION, browserVersion);
+		}
+		
+		try  {
+		    mDriver = new RemoteWebDriver(new URL(hubUrl), capability);
+		} catch (MalformedURLException e) {
+		    mRunTime.reportError("'GridUrl' defined Url invalid: " + url + ", exception=" + e);
+		    return false;
+		}
+		
+		mDriver.get(url);
+		mRunTime.addSharedObject("WebDriver", mDriver);
+		return true;
+	}
+	
+	
 	@Override
 	public boolean open (IBrowserType type, String url, String logDirectory) {
 		switch (type) {

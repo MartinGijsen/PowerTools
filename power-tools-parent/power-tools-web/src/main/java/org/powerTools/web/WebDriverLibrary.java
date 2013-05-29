@@ -18,7 +18,6 @@
 
 package org.powerTools.web;
 
-import org.powerTools.engine.ExecutionException;
 import org.powerTools.engine.RunTime;
 
 
@@ -29,12 +28,29 @@ public final class WebDriverLibrary extends WebLibrary {
 	}
 
 
-	public boolean OpenBrowser_At_ (String typeString, String url) {
-		if (mBrowser != null) {
-			throw new ExecutionException ("browser is already open");
-		} else {
-			mBrowser = new WebDriverBrowser (mRunTime);
-			return mBrowser.open (getBrowserType (typeString), completeUrl (url), mRunTime.getContext ().mResultsDirectory);
-		}
-	}
+	public boolean OpenBrowser_At_ (String typeString, String url)  {
+    	return OpenBrowser_Version_At_OnGrid_(typeString, null, url, null);
+    }	
+	
+    public boolean OpenBrowser_Version_At_OnGrid_ (String typeString, String browserVersion, String url, String hubUrl) {
+        if (mBrowser != null) {
+            mRunTime.reportError ("browser is already open");
+            return false;
+        } else {
+        	WebDriverBrowser myBrowser = new WebDriverBrowser (mRunTime);
+            mBrowser = myBrowser;
+            String urlToOpen;
+            if (url.isEmpty())
+            {
+                urlToOpen = "about:blank";
+            }
+            else
+            {
+                urlToOpen = completeUrl (url);
+            }
+            
+            IBrowserType browserType = getBrowserType (typeString);
+            return myBrowser.open (browserType, browserVersion, urlToOpen, mRunTime.getContext ().mResultsDirectory, hubUrl);
+        }
+    }
 }
