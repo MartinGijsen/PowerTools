@@ -20,10 +20,8 @@ package org.powerTools.engine.instructions;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-
-import java.util.Date;
 import java.util.Calendar;
-import java.util.GregorianCalendar;
+import java.util.Date;
 
 import org.powerTools.engine.ExecutionException;
 import org.powerTools.engine.TestLine;

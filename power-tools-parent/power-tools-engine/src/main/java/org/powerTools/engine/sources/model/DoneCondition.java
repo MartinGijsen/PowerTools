@@ -20,20 +20,19 @@ package org.powerTools.engine.sources.model;
 
 
 /*
- * Determines when the model has been processed
+ * Determines when the model (including any submodels) has been processed
  */
 abstract class DoneCondition {
 	final static class DoneException extends RuntimeException {
+		private static final long serialVersionUID = 1L;
+
 		DoneException () {
 			super ();
 		}
 	}
 
-
-	protected DoneCondition () {
-		super ();
-	}
-	
+	abstract DoneCondition create (DirectedGraph graph);
+	abstract void addSubModelGraph (DirectedGraph graph);
 	abstract String getDescription ();
 	abstract void markEdge (Edge edge);
 	abstract void check ();

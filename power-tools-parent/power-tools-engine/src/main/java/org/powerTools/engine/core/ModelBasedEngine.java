@@ -38,7 +38,7 @@ public class ModelBasedEngine extends Engine {
 			new ModelBasedEngine (args[0]).run (args[1], args[2], args[3]);
 			break;
 		default:
-			System.err.println ("Please specify a directory, file, selection strategy and stop condition");
+			System.err.println ("Please specify a directory, model name, selection strategy and stop condition");
 		}
 	}
 
@@ -59,7 +59,7 @@ public class ModelBasedEngine extends Engine {
 
 	@Override
 	public final void run (String fileName) {
-		run (new ModelTestSource (fileName, "random", "all edges", Scope.getGlobalScope (), mRunTime));
+		run (fileName, "random", "all edges");
 	}
 
 	public final void run (String fileName, String selector, String condition) {

@@ -21,28 +21,47 @@ package org.powerTools.engine.sources.model;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.StringReader;
-
 import java.util.Stack;
 
-import org.xml.sax.XMLReader;
+import org.powerTools.engine.ExecutionException;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
-import org.xml.sax.helpers.XMLReaderFactory;
-import org.xml.sax.helpers.DefaultHandler;
 import org.xml.sax.SAXException;
+import org.xml.sax.XMLReader;
+import org.xml.sax.helpers.DefaultHandler;
+import org.xml.sax.helpers.XMLReaderFactory;
 
 
 final class GraphMLParser extends DefaultHandler {
+	private final static String NODE_KEY_TYPE				= "node";
+	private final static String EDGE_KEY_TYPE				= "edge";
+
+	private final static String CONDITION_KEY_NAME			= "Condition";
+	private final static String ACTION_KEY_NAME				= "Action";
+	private final static String DESCRIPTION_KEY_NAME		= "description";
+
+	private final static String KEY_NAME_ATTRIBUTE_NAME		= "attr.name";
+	private final static String KEY_DOMAIN_ATTRIBUTE_NAME	= "for";
+	private final static String KEY_ID_ATTRIBUTE_NAME		= "id";
+
+	// node
 	private final static String NODE_NAME_ATTRIBUTE_NAME	= "id";
+	
+	// edge
 	private final static String EDGE_SOURCE_ATTRIBUTE_NAME	= "source";
 	private final static String EDGE_TARGET_ATTRIBUTE_NAME	= "target";
-	private final static String NODE_DESCRIPTION_KEY_NAME	= "d5";
-	private final static String EDGE_CONDITION_KEY_NAME		= "d8";
-	private final static String EDGE_ACTION_KEY_NAME		= "d9";
+//	private final static String NODE_DESCRIPTION_KEY_NAME	= "d5";
+//	private final static String EDGE_CONDITION_KEY_NAME		= "d8";
+//	private final static String EDGE_ACTION_KEY_NAME		= "d9";
 
-	private final DirectedGraph mGraph;
-	private final Stack<Element> mElementStack;
+	private DirectedGraph mGraph;
+	private Stack<Element> mElementStack;
+
+	private String mNodeDescriptionKeyId;
+	private String mNodeActionKeyId;
+	private String mEdgeDescriptionKeyId;
+	private String mEdgeConditionKeyId;
+	private String mEdgeActionKeyId;
 
 	private Node mLastNode;
 	private Edge mLastEdge;
@@ -58,16 +77,17 @@ final class GraphMLParser extends DefaultHandler {
 	}
 	
 
-	GraphMLParser () throws SAXException {
+	GraphMLParser () {
 		super ();
-		mGraph			= new DirectedGraph ();
-		mElementStack	= new Stack<Element> ();
 	}
 
-	DirectedGraph parse (String filename) throws FileNotFoundException, IOException, SAXException {
+	DirectedGraph parse (DirectedGraph graph) throws FileNotFoundException, IOException, SAXException {
+		mGraph			= graph;
+		mElementStack	= new Stack<Element> ();
+
 		final XMLReader reader = XMLReaderFactory.createXMLReader ();
 		reader.setContentHandler (this);
-		reader.parse (new InputSource (new FileReader (filename)));
+		reader.parse (new InputSource (new FileReader (graph.mName + ".graphml")));
 		return mGraph;
 	}
 
@@ -75,7 +95,32 @@ final class GraphMLParser extends DefaultHandler {
 	@Override
 	public void startElement (String uri, String name, String qName, Attributes attributes) {
 		mElementStack.push (new Element ());
-		if ("node".equals (name)) {
+		if ("key".equals (name)) {
+			String keyName	= attributes.getValue (KEY_NAME_ATTRIBUTE_NAME);
+			String keyType	= attributes.getValue (KEY_DOMAIN_ATTRIBUTE_NAME);
+			String keyId	= attributes.getValue (KEY_ID_ATTRIBUTE_NAME);
+			if (keyName == null) {
+				;
+			} else if (keyType.equals (NODE_KEY_TYPE)) {
+				if (keyName.equals (DESCRIPTION_KEY_NAME)) {
+					mNodeDescriptionKeyId = keyId;
+				} else if (keyName.equals (ACTION_KEY_NAME)) {
+					mNodeActionKeyId = keyId;
+				} else {
+					// error
+				}
+			} else if (keyType.equals (EDGE_KEY_TYPE)) {
+				if (keyName.equals (DESCRIPTION_KEY_NAME)) {
+					mEdgeDescriptionKeyId = keyId;
+				} else if (keyName.equals (ACTION_KEY_NAME)) {
+					mEdgeActionKeyId = keyId;
+				} else if (keyName.equals (CONDITION_KEY_NAME)) {
+					mEdgeConditionKeyId = keyId;
+				} else {
+					// error
+				}
+			}
+		} else if ("node".equals (name)) {
 			String nodeName	= attributes.getValue (NODE_NAME_ATTRIBUTE_NAME);
 			mLastNode		= mGraph.addNode (nodeName);
 		} else if ("edge".equals (name)) {
@@ -94,7 +139,6 @@ final class GraphMLParser extends DefaultHandler {
 				|| "ModeParameter".equals (name)
 				|| "PolyLineEdge".equals (name)
 				|| "Path".equals (name)
-				|| "key".equals (name)
 				|| "default".equals (name)
 				|| "NodeLabel".equals (name)
 				|| "EdgeLabel".equals (name)
@@ -112,7 +156,7 @@ final class GraphMLParser extends DefaultHandler {
 				|| "LabelModel".equals (name)) {
 			;
 		} else {
-			System.out.println ("unsupported element: " + qName);
+			throw new ExecutionException ("unsupported element: " + qName);
 		}
 	}
 
@@ -125,11 +169,11 @@ final class GraphMLParser extends DefaultHandler {
 	public void endElement (String uri, String name, String qName) {
 		final String text = mElementStack.peek ().mText.trim ();
 		if ("data".equals (name)) {
-			if (NODE_DESCRIPTION_KEY_NAME.equals (mKeyName)) {
+			if (mNodeActionKeyId.equals (mKeyName)) {
 				mLastNode.mAction = text;
-			} else if (EDGE_CONDITION_KEY_NAME.equals (mKeyName)) {
+			} else if (mEdgeConditionKeyId.equals (mKeyName)) {
 				mLastEdge.mCondition = text;
-			} else if (EDGE_ACTION_KEY_NAME.equals (mKeyName)) {
+			} else if (mEdgeActionKeyId.equals (mKeyName)) {
 				mLastEdge.mAction = text;
 			}
 			mKeyName = null;

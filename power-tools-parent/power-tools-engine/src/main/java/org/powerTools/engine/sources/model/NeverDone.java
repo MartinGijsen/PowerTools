@@ -19,6 +19,10 @@
 package org.powerTools.engine.sources.model;
 
 
+/*
+ * The NeverDone condition never indicates that model processing is done.
+ * So it can ignore submodels and processed edges.
+ */
 final class NeverDone extends DoneCondition {
 	final static String NAME = "never";
 
@@ -29,6 +33,18 @@ final class NeverDone extends DoneCondition {
 		super ();
 	}
 	
+	
+	@Override
+	DoneCondition create (DirectedGraph graph) {
+		return new NeverDone ();
+	}
+
+	
+	@Override
+	void addSubModelGraph (DirectedGraph graph) {
+		;
+	}
+
 	@Override
 	String getDescription () {
 		return DESCRIPTION;

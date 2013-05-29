@@ -150,10 +150,10 @@ abstract class ExcelTestSource extends TestSource {
 		return false;
 	}
 	
-	private void processInstructionHeader () {
-		final int nrOfParts = mTestLine.getNrOfParts ();
-		
-	}
+//	private void processInstructionHeader () {
+//		final int nrOfParts = mTestLine.getNrOfParts ();
+//		
+//	}
 
 	protected static Names createNamesFromFileName (String sourceName) {
 		int separatorPosition = sourceName.indexOf ('@');

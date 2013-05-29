@@ -20,7 +20,6 @@ package org.powerTools.web;
 
 import org.powerTools.engine.ExecutionException;
 import org.powerTools.engine.RunTime;
-import org.openqa.selenium.WebDriver;
 
 
 public final class WebDriverLibrary extends WebLibrary {

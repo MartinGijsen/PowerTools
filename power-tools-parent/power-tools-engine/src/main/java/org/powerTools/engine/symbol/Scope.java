@@ -101,7 +101,7 @@ public final class Scope {
 	private Symbol add (Symbol symbol) {
 		final String name = symbol.getName ();
 		if (mSymbols.get (name) != null) {
-			throw new ExecutionException ("a symbol of this name already exists");
+			throw new ExecutionException (String.format ("a symbol '%s' already exists", name));
 		} else {
 			mSymbols.put (symbol.getName (), symbol);
 			return symbol;

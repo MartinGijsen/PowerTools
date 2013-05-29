@@ -18,6 +18,8 @@
 
 package org.powerTools.engine.sources.model;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.lang.RuntimeException;
 
 import java.util.Map;
@@ -25,13 +27,31 @@ import java.util.HashMap;
 import java.util.Set;
 import java.util.HashSet;
 
+import org.powerTools.engine.ExecutionException;
+import org.xml.sax.SAXException;
+
 
 final class DirectedGraph {
-	Map<String, Node> mNodes;
-	Map<Node, Set<Edge>> mEdges;
+	final String				mName;
+	final Map<String, Node>		mNodes;
+	final Map<Node, Set<Edge>>	mEdges;
 	
 	
-	DirectedGraph () {
+	static DirectedGraph createGraph (String name) {
+		// TODO: move to DirectedGraph class
+		try {
+			return new GraphMLParser ().parse (new DirectedGraph (name));
+		} catch (SAXException se) {
+			throw new ExecutionException ("SAX exception");
+		} catch (FileNotFoundException fnfe) {
+			throw new ExecutionException ("file not found: " + name);
+		} catch (IOException ioe) {
+			throw new ExecutionException ("error reading file: " + name);
+		}
+	}
+
+	private DirectedGraph (String name) {
+		mName	= name;
 		mNodes	= new HashMap<String, Node> ();
 		mEdges	= new HashMap<Node, Set<Edge>> ();
 	}
@@ -40,7 +60,7 @@ final class DirectedGraph {
 		if (mNodes.containsKey (name)) {
 			throw new RuntimeException (String.format ("node name %s not unique", name));
 		} else {
-			Node node = new Node (name);
+			Node node = new Node (name, this);
 			mNodes.put (name, node);
 			return node;
 		}

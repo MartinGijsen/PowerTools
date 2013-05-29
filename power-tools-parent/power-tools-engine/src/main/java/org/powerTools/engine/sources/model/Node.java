@@ -20,26 +20,24 @@ package org.powerTools.engine.sources.model;
 
 
 final class Node {
-	final String mName;
+	final DirectedGraph	mGraph;
+	final String		mName;
 	
-	String mLabel;
-	String mAction;
+	String				mLabel;
+	String				mAction;
 	
 
-	Node (String name) {
+	Node (String name, DirectedGraph graph) {
 		if (name == null || name.isEmpty ()) {
 			throw new RuntimeException ("empty node name");
 		}
 		mName	= name;
+		mGraph	= graph;
 		mLabel	= "";
 		mAction	= "";
 	}
 	
 	String getDescription () {
-		if (mLabel.isEmpty ()) {
-			return mName;
-		} else {
-			return mLabel + " (" + mName + ")";
-		}
+		return mGraph.mName + "." + (mLabel.isEmpty () ? mName : mLabel + " (" + mName + ")");
 	}
 }

@@ -25,10 +25,11 @@ import java.util.Set;
 final class DoneWhenAllEdgesSeen extends DoneCondition {
 	final static String NAME = "all edges";
 
-	private final static String DESCRIPTION = "stop when all edges have been traversed";
+	private final static String DESCRIPTION = "stop after all edges have been traversed";
 
 	private Set<Edge> mUnseenEdges;
 
+	
 	DoneWhenAllEdgesSeen (DirectedGraph graph) {
 		super ();
 		mUnseenEdges = new HashSet<Edge> ();
@@ -36,6 +37,20 @@ final class DoneWhenAllEdgesSeen extends DoneCondition {
 			mUnseenEdges.addAll (edges);
 		}
 	}
+
+	
+	@Override
+	void addSubModelGraph (DirectedGraph graph) {
+		for (Set<Edge> edges : graph.mEdges.values ()) {
+			mUnseenEdges.addAll (edges);
+		}
+	}
+
+	@Override
+	DoneCondition create (DirectedGraph graph) {
+		return new DoneWhenAllEdgesSeen (graph);
+	}
+
 	
 	@Override
 	String getDescription () {

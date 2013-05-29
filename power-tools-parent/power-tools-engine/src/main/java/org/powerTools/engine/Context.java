@@ -50,8 +50,8 @@ public class Context {
 	
 	public Context (Date startTime, String resultsBaseDirectory, String logFileName) {
 		mStartTime				= startTime;
-		mResultsBaseDirectory	= resultsBaseDirectory;
-		mResultsDirectory		= resultsBaseDirectory + mDateFormat.format (startTime) + "/";
+		mResultsBaseDirectory	= resultsBaseDirectory + "/";
+		mResultsDirectory		= mResultsBaseDirectory + mDateFormat.format (startTime) + "/";
 		mLogFileName			= logFileName;
 		mFullLogFilePath		= mResultsDirectory + logFileName;
 	}

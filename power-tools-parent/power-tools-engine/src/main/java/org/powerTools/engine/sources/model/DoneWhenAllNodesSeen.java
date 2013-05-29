@@ -25,7 +25,7 @@ import java.util.Set;
 final class DoneWhenAllNodesSeen extends DoneCondition {
 	final static String NAME = "all nodes";
 	
-	private final static String DESCRIPTION = "stop when all nodes have been traversed";
+	private final static String DESCRIPTION = "stop after all nodes have been traversed";
 
 	private boolean mDone;
 	private Set<Node> mUnseenNodes;
@@ -35,6 +35,18 @@ final class DoneWhenAllNodesSeen extends DoneCondition {
 		mDone			= false;
 		mUnseenNodes	= new HashSet<Node> (graph.mNodes.values ());
 		mUnseenNodes.remove (graph.getRoot ());
+	}
+	
+
+	@Override
+	DoneCondition create (DirectedGraph graph) {
+		return new DoneWhenAllNodesSeen (graph);
+	}
+
+	
+	@Override
+	void addSubModelGraph (DirectedGraph graph) {
+		mUnseenNodes.addAll (graph.mNodes.values ());
 	}
 	
 	@Override

@@ -70,6 +70,7 @@ public class ExcelEngine extends Engine {
 		}
 		mRunTime.invokeSource (source);
 		run ();
+		//TODO: mInstructions.cleanup ();??? where does the cleanup happen???
 		mPublisher.finish ();
 	}
 }

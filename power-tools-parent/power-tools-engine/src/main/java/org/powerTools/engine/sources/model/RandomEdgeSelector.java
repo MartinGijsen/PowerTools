@@ -50,9 +50,8 @@ final class RandomEdgeSelector implements EdgeSelectionStrategy {
 	}
 
 	@Override
-	public Edge selectEdge (Model model) {
-		final DirectedGraph graph		= model.getGraph ();
-		final Set<Edge> remainingEdges	= new HashSet<Edge> (graph.getEdges (model.getCurrentNode ()));
+	public Edge selectEdge (DirectedGraph graph, Node currentNode) {
+		final Set<Edge> remainingEdges = new HashSet<Edge> (graph.getEdges (currentNode));
 		while (!remainingEdges.isEmpty ()) {
 			final Edge edge = removeRandomEdge (remainingEdges);
 			if ("".equals (edge.mCondition) || returnsTrue (edge.mCondition)) {
@@ -60,10 +59,9 @@ final class RandomEdgeSelector implements EdgeSelectionStrategy {
 			}
 		}
 
-		final Node currentNode = model.getCurrentNode ();
 		if (currentNode.mLabel.equals (Model.END_NODE_LABEL)) {
 			// TODO prepare at the start
-			return graph.addEdge (currentNode, model.getStartNode ());
+			return graph.addEdge (currentNode, graph.getRoot ());
 		} else {
 			// TODO check at the start (remove exception?)
 			throw new RuntimeException (String.format ("no edges out of node %s", currentNode.mName));

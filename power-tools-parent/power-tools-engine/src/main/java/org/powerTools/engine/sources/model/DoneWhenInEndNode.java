@@ -22,14 +22,29 @@ package org.powerTools.engine.sources.model;
 final class DoneWhenInEndNode extends DoneCondition {
 	final static String NAME = "end node";
 
-	private final static String DESCRIPTION = "stop when reaching an end node";
+	private final static String DESCRIPTION = "stop after reaching an end node";
 
+	private final String mEndNodeLabel;
+	
 	private boolean mDone;
 
 	
-	DoneWhenInEndNode () {
+	DoneWhenInEndNode (String endNodeLabel) {
 		super ();
-		mDone = false;
+		mEndNodeLabel	= endNodeLabel;
+		mDone			= false;
+	}
+
+	
+	@Override
+	DoneCondition create (DirectedGraph graph) {
+		return new DoneWhenInEndNode (this.mEndNodeLabel);
+	}
+	
+
+	@Override
+	void addSubModelGraph (DirectedGraph graph) {
+		;
 	}
 	
 	@Override
@@ -39,7 +54,7 @@ final class DoneWhenInEndNode extends DoneCondition {
 
 	@Override
 	void markEdge (Edge edge) {
-		if (edge.mTarget.mLabel.equals (Model.END_NODE_LABEL)) {
+		if (edge.mTarget.mLabel.equals (mEndNodeLabel)) {
 			mDone = true;
 		}
 	}

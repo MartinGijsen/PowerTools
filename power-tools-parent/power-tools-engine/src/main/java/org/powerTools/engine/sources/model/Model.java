@@ -18,72 +18,101 @@
 
 package org.powerTools.engine.sources.model;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Stack;
 
-import org.xml.sax.SAXException;
-
-import org.powerTools.engine.ExecutionException;
 import org.powerTools.engine.core.RunTimeImpl;
 import org.powerTools.engine.reports.TestRunResultPublisher;
+import org.powerTools.engine.sources.model.DoneCondition.DoneException;
 
 
+/*
+ * A Model is read from a file and contains nodes and the edges between them.
+ * It generates a sequence of edges.
+ * It starts at the start node and then travels from node to node.
+ * It selects the next edge using the specified edge selection strategy.
+ * The done condition will generate an exception when it is satisfied,
+ * but this is only passed on to the test source once in a final state.
+ */
 final class Model {
-	final static String START_NODE_LABEL	= "start";
-	final static String END_NODE_LABEL		= "end";
+	final static String START_NODE_LABEL		= "start";
+	final static String END_NODE_LABEL			= "end";
+	final static String SUBMODEL_ACTION_PREFIX	= "submodel ";
 	
-	private final String					mFileName;
-	private final EdgeSelectionStrategy		mSelector;
-	private final DoneCondition				mDoneCondition;
-	private final TestRunResultPublisher	mPublisher;
-	private final DirectedGraph				mGraph;
-	private final Node						mStartNode;
+	private final TestRunResultPublisher		mPublisher;
+
+	private final EdgeSelectionStrategy			mSelector;
+	private final DoneCondition					mDoneCondition;
+	private final Stack<ActiveGraph>			mGraphStack;
+	private final Map<String, DirectedGraph>	mSubModels;
 	
-	private Node mCurrentNode;
+	private boolean								mDoneConditionSatisfied;
 
 
-	Model (String fileName, String selector, String doneCondition, RunTimeImpl runTime) {
-		try {
-			mFileName		= fileName;
-			mPublisher		= TestRunResultPublisher.getInstance ();
-			mSelector		= EdgeSelectionStrategyFactory.create (selector, runTime);
-			mPublisher.publishCommentLine ("edge selection: " + mSelector.getDescription ());
+	Model (String name, String selector, String doneCondition, RunTimeImpl runTime) {
+		mPublisher				= TestRunResultPublisher.getInstance ();
+		mDoneConditionSatisfied	= false;
+		mSubModels				= new HashMap<String, DirectedGraph> ();
+		
+		mSelector = EdgeSelectionStrategyFactory.create (selector, runTime);
+		mPublisher.publishCommentLine ("edge selection: " + mSelector.getDescription ());
 
-			mGraph			= new GraphMLParser ().parse (fileName);
-			mDoneCondition	= DoneConditionFactory.create (doneCondition, mGraph);
-			mPublisher.publishCommentLine ("stop condition: " + mDoneCondition.getDescription ());
+		mGraphStack				= new Stack<ActiveGraph> ();
+		DirectedGraph mainGraph	= DirectedGraph.createGraph (name);
+		ActiveGraph activeGraph = new ActiveGraph (mainGraph);
+		mGraphStack.push (activeGraph);
+		mDoneCondition	= DoneConditionFactory.create (doneCondition, mainGraph);
+		mPublisher.publishCommentLine ("stop condition: " + mDoneCondition.getDescription ());
 
-			mStartNode		= mGraph.getRoot ();
-			mCurrentNode	= mStartNode;
-			mPublisher.publishCommentLine ("start node: " + mStartNode.getDescription ());
-		} catch (SAXException se) {
-			throw new ExecutionException ("SAX exception");
-		} catch (FileNotFoundException fnfe) {
-			throw new ExecutionException ("file not found: " + fileName);
-		} catch (IOException ioe) {
-			throw new ExecutionException ("IO exception");
+		mPublisher.publishCommentLine ("start node: " + activeGraph.mCurrentNode.getDescription ());
+	}
+	
+	final Edge getNextEdge () {
+		ActiveGraph currentGraph	= mGraphStack.peek ();
+		Node currentNode			= currentGraph.mCurrentNode;
+		if (doneConditionIsSatisfied () && mGraphStack.size () == 1 && currentNode.mLabel.equals (END_NODE_LABEL)) {
+			throw new DoneException ();
+		} else if (mGraphStack.size () != 1 && currentNode.mLabel.equals (END_NODE_LABEL)) {
+			mGraphStack.pop ();
+			currentGraph	= mGraphStack.peek ();
+		} else if (currentNode.mAction.startsWith (SUBMODEL_ACTION_PREFIX)) {
+			int begin				= currentNode.mAction.indexOf ('"') + 1;
+			int end					= currentNode.mAction.indexOf ('"', begin);
+			String modelName		= currentNode.mAction.substring (begin, end);
+			currentGraph			= new ActiveGraph (getGraph (modelName));
+			mGraphStack.push (currentGraph);
 		}
-	}
 
-	DirectedGraph getGraph () {
-		return mGraph;
-	}
-
-	Node getStartNode () {
-		return mStartNode;
-	}
-
-	Node getCurrentNode () {
-		return mCurrentNode;
-	}
-
-	Edge getNextEdge () {
-		mDoneCondition.check ();
-		Edge edge		= mSelector.selectEdge (this);
-		mCurrentNode	= edge.mTarget;
-		mDoneCondition.markEdge (edge);		
+//		mDoneCondition.check ();
+		
+		//TODO: pass ActiveGraph to selector?
+		Edge edge					= mSelector.selectEdge (currentGraph.mGraph, currentGraph.mCurrentNode);
+		currentGraph.mCurrentNode	= edge.mTarget;
+		mDoneCondition.markEdge (edge);
 		mPublisher.publishCommentLine ("next node: " + edge.mTarget.getDescription ());
 		return edge;
+	}
+	
+	private boolean doneConditionIsSatisfied () {
+		if (!mDoneConditionSatisfied) {
+			try {
+				mDoneCondition.check ();
+			} catch (DoneException de) {
+				mDoneConditionSatisfied = true;
+				mPublisher.publishCommentLine ("done condition is satisfied");
+			}
+		}
+		return mDoneConditionSatisfied;
+	}
+	
+	private DirectedGraph getGraph (String name) {
+		DirectedGraph subModel = mSubModels.get (name);
+		if (subModel == null) {
+			subModel = DirectedGraph.createGraph (name);
+			mDoneCondition.addSubModelGraph (subModel);
+			mSubModels.put (name, subModel);
+		}
+		return subModel;
 	}
 }

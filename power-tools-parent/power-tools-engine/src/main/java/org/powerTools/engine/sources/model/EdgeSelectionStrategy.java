@@ -19,7 +19,10 @@
 package org.powerTools.engine.sources.model;
 
 
+/*
+ * The EdgeSelectionStrategy selects an edge out of the current node in a model.
+ */
 interface EdgeSelectionStrategy {
 	String getDescription ();
-	Edge selectEdge (Model model);
+	Edge selectEdge (DirectedGraph graph, Node currentNode);
 }

@@ -43,7 +43,6 @@ final class BuiltinLogic {
 	private final RunTimeImpl mRunTime;
 	private final Instructions mInstructions;
 	private final String[] mFieldNames;
-	private final RolesImpl mRoles;
 
 
 	BuiltinLogic (RunTimeImpl runTime, Instructions instructions) {
@@ -53,7 +52,6 @@ final class BuiltinLogic {
 		for (int fieldNameNr = 0; fieldNameNr < MAX_NR_OF_FIELD_NAMES; ++fieldNameNr) {
 			mFieldNames[fieldNameNr] = "";
 		}
-		mRoles = new RolesImpl (runTime);
 	}
 
 
@@ -142,9 +140,9 @@ final class BuiltinLogic {
 //		}
 //	}
 	
-	private boolean containsInstructionSet (String name) {
-		return name.contains (".");
-	}
+//	private boolean containsInstructionSet (String name) {
+//		return name.contains (".");
+//	}
 
 
 	// number and string sequences

@@ -23,6 +23,7 @@ final class DoneConditionFactory {
 	private DoneConditionFactory () { }
 
 	static DoneCondition create (String conditionName, DirectedGraph graph) {
+		// TODO: pass end node label as parameter?
 		if (NeverDone.NAME.equals (conditionName)) {
 			return new NeverDone ();
 		} else if (DoneWhenAllEdgesSeen.NAME.equals (conditionName)) {
@@ -30,7 +31,7 @@ final class DoneConditionFactory {
 		} else if (DoneWhenAllNodesSeen.NAME.equals (conditionName)) {
 			return new DoneWhenAllNodesSeen (graph);
 		} else if (DoneWhenInEndNode.NAME.equals (conditionName)) {
-			return new DoneWhenInEndNode ();
+			return new DoneWhenInEndNode (Model.END_NODE_LABEL);
 		} else {
 			throw new RuntimeException (String.format ("unknown condition: %s", conditionName));
 		}
