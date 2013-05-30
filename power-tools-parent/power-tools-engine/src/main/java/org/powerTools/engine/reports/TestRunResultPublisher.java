@@ -108,9 +108,13 @@ public final class TestRunResultPublisher {
 		}
 	}
 
-	public void publishError (String error) {
-		for (TestResultSubscriber subscriber : mTestResultSubscribers) {
-			subscriber.processError (error);
+	public void publishError (String message) {
+		if (mTestResultSubscribers.isEmpty ()) {
+			System.err.println ("error: " + message);
+		} else {
+			for (TestResultSubscriber subscriber : mTestResultSubscribers) {
+				subscriber.processError (message);
+			}
 		}
 	}
 
@@ -121,9 +125,9 @@ public final class TestRunResultPublisher {
 		}
 	}
 
-	public void publishWarning (String warning) {
+	public void publishWarning (String message) {
 		for (TestResultSubscriber subscriber : mTestResultSubscribers) {
-			subscriber.processWarning (warning);
+			subscriber.processWarning (message);
 		}
 	}
 

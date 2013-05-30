@@ -34,9 +34,8 @@ public final class XlsTestSource extends ExcelTestSource {
 	}
 
 
-	public static XlsTestSource createTestSource (String fileName, Scope scope) {
-		Names names = createNamesFromFileName (fileName);
-		return new XlsTestSource (names.mFileName, names.mSheetName, scope);
+	public static XlsTestSource createTestSource (String fileName, String sheetName, Scope scope) {
+		return new XlsTestSource (fileName, sheetName, scope);
 	}
 	
 	@Override

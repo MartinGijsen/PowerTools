@@ -19,6 +19,7 @@
 package org.powerTools.engine.core;
 
 import org.powerTools.engine.Context;
+import org.powerTools.engine.ExecutionException;
 import org.powerTools.engine.reports.ReportFactory;
 import org.powerTools.engine.sources.TestSource;
 import org.powerTools.engine.sources.XlsTestSource;
@@ -44,6 +45,17 @@ public class ExcelEngine extends Engine {
 	}
 
 
+	private static class Names {
+		final String mFileName;
+		final String mSheetName;
+		
+		public Names (String fileName, String sheetName) {
+			mFileName	= fileName;
+			mSheetName	= sheetName;
+		}
+	}
+	
+
 	public ExcelEngine (String resultsDirectory) {
 		this (new RunTimeImpl (new Context (resultsDirectory)));
 	}
@@ -52,25 +64,35 @@ public class ExcelEngine extends Engine {
 		super (runTime);
 
 		if (!ReportFactory.createKeywordsHtmlLog (runTime.getContext ())) {
-			mPublisher.publishError ("could not open HTML log");
+			System.err.println ("could not open HTML log");
 		}
 
 		BuiltinKeywords.register (runTime, mInstructions);
 	}
 
 	@Override
-	public final void run (String fileName) {
-		TestSource source;
-		if (fileName.endsWith (".xls")) {
-			source = XlsTestSource.createTestSource (fileName, Scope.getGlobalScope ());
-		} else if (fileName.endsWith (".xlsx")) {
-			source = XlsxTestSource.createTestSource (fileName, Scope.getGlobalScope ());
+	public final void run (String sourceName) {
+		run (createSource (sourceName));
+	}
+
+	private TestSource createSource (String sourceName) {
+		Names names = createNamesFromSourceName (sourceName);
+
+		if (names.mFileName.endsWith (".xls")) {
+			return XlsTestSource.createTestSource (names.mFileName, names.mSheetName, Scope.getGlobalScope ());
+		} else if (names.mFileName.endsWith (".xlsx")) {
+			return XlsxTestSource.createTestSource (names.mFileName, names.mSheetName, Scope.getGlobalScope ());
 		} else {
-			return;
+			throw new ExecutionException ("invalid file extension");
 		}
-		mRunTime.invokeSource (source);
-		run ();
-		//TODO: mInstructions.cleanup ();??? where does the cleanup happen???
-		mPublisher.finish ();
+	}
+
+	private Names createNamesFromSourceName (String sourceName) {
+		int separatorPosition = sourceName.indexOf ('@');
+		if (separatorPosition > 0) {
+			return new Names (sourceName.substring (0, separatorPosition), sourceName.substring (separatorPosition + 1));
+		} else {
+			return new Names (sourceName, "");
+		}
 	}
 }

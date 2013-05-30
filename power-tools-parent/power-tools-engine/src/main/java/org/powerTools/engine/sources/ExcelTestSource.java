@@ -58,7 +58,7 @@ abstract class ExcelTestSource extends TestSource {
 		mSheetName			= sheetName.isEmpty () ? workbook.getSheetName (0) : sheetName;
 		Sheet sheet			= workbook.getSheet (mSheetName);
 		if (sheet == null) {
-			throw new ExecutionException ("sheet '" + fileName + "' does not exist");
+			throw new ExecutionException ("sheet '" + mSheetName + "' does not exist");
 		}
 		mRowIter = sheet.rowIterator ();
 	}
@@ -150,20 +150,6 @@ abstract class ExcelTestSource extends TestSource {
 		return false;
 	}
 	
-//	private void processInstructionHeader () {
-//		final int nrOfParts = mTestLine.getNrOfParts ();
-//		
-//	}
-
-	protected static Names createNamesFromFileName (String sourceName) {
-		int separatorPosition = sourceName.indexOf ('@');
-		if (separatorPosition > 0) {
-			return new Names (sourceName.substring (0, separatorPosition), sourceName.substring (separatorPosition + 1));
-		} else {
-			return new Names (sourceName, "");
-		}
-	}
-
 	protected final Names createNamesFromSheetName (String sourceName) {
 		int separatorPosition = sourceName.indexOf ('@');
 		if (separatorPosition > 0) {
