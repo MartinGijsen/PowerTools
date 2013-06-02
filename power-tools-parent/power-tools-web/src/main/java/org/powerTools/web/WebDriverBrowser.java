@@ -29,7 +29,9 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.OutputType;
+import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -679,9 +681,11 @@ class WebDriverBrowser implements IBrowser {
 		getUniqueElement (locator).click ();
 		return true;
 	}
+
 	
 	private boolean waitForCondition (Condition condition, int timeout) {
 		for (int nrOfSeconds = 0; nrOfSeconds < timeout; ++nrOfSeconds) {
+			// TODO find better place for handling the exceptions
 			try {
 				if (condition.isSatisfied ()) {
 					return true;
@@ -689,10 +693,16 @@ class WebDriverBrowser implements IBrowser {
 				Thread.sleep (cOneSecondTimeout);
 			} catch (InterruptedException ie) {
 				;
+			} catch (StaleElementReferenceException e) {
+				// This error occurs occasionally in IE when using SeleniumGrid
+			} catch (NoSuchElementException e) {
+				// This error occurs occasionally in IE when using SeleniumGrid
+			} catch (ExecutionException e) {
+				// This error occurs occasionally in Firefox. Sometimes the body tag cannot be found, due of Animation by Javascript 
 			}
 		}
 		return false;
-	}
+	}	
 	
 	
 	private interface Condition {
