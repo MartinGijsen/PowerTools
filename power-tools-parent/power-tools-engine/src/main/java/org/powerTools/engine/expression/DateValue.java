@@ -18,8 +18,11 @@
 
 package org.powerTools.engine.expression;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 
 import org.powerTools.engine.ExecutionException;
 
@@ -32,6 +35,17 @@ final class DateValue extends Value {
 	
 	public DateValue (Calendar date) {
 		mDate = date;
+	}
+
+	public DateValue (String stringValue) {
+		Date date = null;
+		try {
+			date = mFormat.parse (stringValue);
+		} catch (ParseException e) {
+			throw new ExecutionException ("Date parse error: " + stringValue);
+		}
+		mDate = GregorianCalendar.getInstance ();
+		mDate.setTime (date);
 	}
 	
 	

@@ -72,7 +72,8 @@ booleanExpr
 
 comparableExpression
 	:	(term '++') => stringExpr
-	|	dateExpr
+	|	(date dateOperator expr period) => dateExpr
+	|	(day) => dateExpr
 	|	addExpr
 	;
 
@@ -81,12 +82,16 @@ stringExpr
 	;
 
 dateExpr
-	:	day (dateOperator^ addExpr period)*
+	:	date (dateOperator^ addExpr period)*
 	;
 
 dateOperator
 	:	'+' -> DatePlus
 	|	'-' -> DateMinus
+	;
+
+date
+	: day | term
 	;
 	
 day

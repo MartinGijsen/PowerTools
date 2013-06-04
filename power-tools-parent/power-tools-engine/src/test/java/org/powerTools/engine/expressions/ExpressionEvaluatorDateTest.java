@@ -25,8 +25,32 @@ public class ExpressionEvaluatorDateTest {
 		mScope		= null;
 	}
 
+	@Test
+	public void testToday () {
+		
+		String result = ExpressionEvaluator.evaluate ("? today", mScope);
+		String expectation = getDateWithOffsetForToday (0);
+		Assert.assertEquals (expectation, result);
+	}
 	
-
+	
+	@Test
+	public void testYesterday () {
+		
+		String result = ExpressionEvaluator.evaluate ("? yesterday", mScope);
+		String expectation = getDateWithOffsetForToday (-1);
+		Assert.assertEquals (expectation, result);
+	}
+	
+	@Test
+	public void testTomorrow () {
+		
+		String result = ExpressionEvaluator.evaluate ("? tomorrow", mScope);
+		String expectation = getDateWithOffsetForToday (1);
+		Assert.assertEquals (expectation, result);
+	}
+	
+	
 	@Test
 	public void testNrOfDaysAsLiteral () {
 		
@@ -83,6 +107,35 @@ public class ExpressionEvaluatorDateTest {
 		Assert.assertEquals (expectation, result);
 	}
 	
+
+	@Test
+	public void testDataAsSymbolNrOfDaysAsLiteral () {
+		
+		mScope.createVariable ("aDate", "12-01-2013");
+		String result = ExpressionEvaluator.evaluate ("? aDate + 12 days", mScope);
+		Assert.assertEquals ("24-01-2013", result);
+	}
+	
+	@Test
+	public void testSubtractionDataAsSymbolNrOfDaysNegativeAsSymbol () {
+		
+		mScope.createVariable ("aDate", "12-01-2013");
+		mScope.createVariable ("nrOfDays", "-12");
+		String result = ExpressionEvaluator.evaluate ("? aDate - nrOfDays days", mScope);
+		Assert.assertEquals ("24-01-2013", result);
+	}
+	
+
+	@Test
+	public void testExpressionWithSubExpressions () {
+		
+		mScope.createVariable ("aDate", "31-01-2013");
+		mScope.createVariable ("nrOfDays", "-28");
+		mScope.createVariable ("nrOfWeeks", "-2");
+		String result = ExpressionEvaluator.evaluate ("? (aDate - nrOfDays days) + (2 * nrOfWeeks) weeks", mScope);
+		Assert.assertEquals ("31-01-2013", result);
+	}
+	
 	
 	private String getDateWithOffsetForToday (int nrOfDays)	{
 		Calendar mDate = Calendar.getInstance ();
@@ -90,6 +143,5 @@ public class ExpressionEvaluatorDateTest {
 		return mFormat.format (mDate.getTime ());
 	}
 	
-
 	private Scope mScope;
 }
