@@ -21,6 +21,8 @@ package org.powerTools.engine.expression;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
+import org.powerTools.engine.ExecutionException;
+
 
 final class DateValue extends Value {
 	private static SimpleDateFormat mFormat = new SimpleDateFormat ("dd-MM-yyyy");
@@ -49,18 +51,18 @@ final class DateValue extends Value {
 		return new BooleanValue (mDate.equals (v.toDateValue ().mDate));
 	}
 	
+	
 	Value add (String number, String period) {
-		if (period.equals ("days")) {
-			mDate.add (Calendar.DAY_OF_MONTH, Integer.parseInt (number));
-		} else if (period.equals ("weeks")) {
-			mDate.add (Calendar.WEEK_OF_YEAR, Integer.parseInt (number));
-		} else if (period.equals ("months")) {
-			mDate.add (Calendar.MONTH, Integer.parseInt (number));
-		} else {
-			mDate.add (Calendar.YEAR, Integer.parseInt (number));
-		}
-		return this;
+		int nr = parseInteger(number);
+		return addPeriod(nr, period);
 	}
+
+
+	Value subtract (String number, String period) {
+		int nr = parseInteger(number);
+		return addPeriod(0 - nr, period);
+	}
+
 	
 	@Override
 	public StringValue toStringValue () {
@@ -77,4 +79,28 @@ final class DateValue extends Value {
 	public String toString () {
 		return mFormat.format (mDate.getTime ());
 	}
+	
+	
+	private int parseInteger(String number) {
+		try 
+		{
+			return Integer.parseInt (number);
+		}
+		catch (NumberFormatException e) {
+			throw new ExecutionException("Number parse error: " + number);
+		}
+	}
+		
+	private Value addPeriod (int number, String period) {
+		if (period.equals ("days")) {
+			mDate.add (Calendar.DAY_OF_MONTH, number);
+		} else if (period.equals ("weeks")) {
+			mDate.add (Calendar.WEEK_OF_YEAR, number);
+		} else if (period.equals ("months")) {
+			mDate.add (Calendar.MONTH, number);
+		} else {
+			mDate.add (Calendar.YEAR, number);
+		}
+		return this;
+	}	
 }

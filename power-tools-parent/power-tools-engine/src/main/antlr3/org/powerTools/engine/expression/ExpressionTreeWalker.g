@@ -98,6 +98,6 @@ expr returns [Value v]
 			v = ((DateValue) $day.v).add ($e.v.toString (), $p.getText ());
 		}
 	|	^(DateMinus day=expr e=expr (p='days' | p='weeks' | p='months' | p='years')) {
-			v = ((DateValue) $day.v).add ("-" + $e.v.toString (), $p.getText ());
+			v = ((DateValue) $day.v).subtract ($e.v.toString (), $p.getText ());
 		}
 	;
