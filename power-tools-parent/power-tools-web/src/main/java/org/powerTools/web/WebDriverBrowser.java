@@ -31,9 +31,9 @@ import java.util.List;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.OutputType;
-import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeDriverService;
@@ -693,9 +693,7 @@ class WebDriverBrowser implements IBrowser {
 				Thread.sleep (cOneSecondTimeout);
 			} catch (InterruptedException ie) {
 				;
-			} catch (StaleElementReferenceException e) {
-				// This error occurs occasionally in IE when using SeleniumGrid
-			} catch (NoSuchElementException e) {
+			} catch (WebDriverException e) {
 				// This error occurs occasionally in IE when using SeleniumGrid
 			} catch (ExecutionException e) {
 				// This error occurs occasionally in Firefox. Sometimes the body tag cannot be found, due of Animation by Javascript 
