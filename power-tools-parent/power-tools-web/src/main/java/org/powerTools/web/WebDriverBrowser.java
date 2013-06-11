@@ -515,7 +515,10 @@ class WebDriverBrowser implements IBrowser {
 
 	@Override
 	public String getItemText (Item item) {
-		return waitForUniqueElement (getLocator (item)).getText ();
+		String text = waitForUniqueElement (getLocator (item)).getText ();
+		mRunTime.reportInfo ("getItemText result: " + text);
+		// Chrome does not trim the result. (selenium 2.32.0)
+		return (text == null)? text:  text.trim();
 	}
 
 	@Override
