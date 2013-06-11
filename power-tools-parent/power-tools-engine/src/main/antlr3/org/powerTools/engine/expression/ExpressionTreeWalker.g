@@ -94,10 +94,12 @@ expr returns [Value v]
 			calendar.add (Calendar.DATE, 1);
 			v = new DateValue (calendar);
 		}
-	|	^(DatePlus day=expr e=expr (p='days' | p='weeks' | p='months' | p='years')) {
-			v = ((DateValue) $day.v).add ($e.v.toString (), $p.getText ());
+	|	^(DatePlus day=expr nr=expr (p='days' | p='weeks' | p='months' | p='years')) {
+			DateValue d = new DateValue ($day.v.toString ());
+			v = d.add ($nr.v.toString (), $p.getText ());
 		}
-	|	^(DateMinus day=expr e=expr (p='days' | p='weeks' | p='months' | p='years')) {
-			v = ((DateValue) $day.v).add ("-" + $e.v.toString (), $p.getText ());
+	|	^(DateMinus day=expr nr=expr (p='days' | p='weeks' | p='months' | p='years')) {
+			DateValue d = new DateValue ($day.v.toString ());
+			v = d.subtract ($nr.v.toString (), $p.getText ());
 		}
 	;
