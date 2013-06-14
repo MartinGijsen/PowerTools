@@ -29,7 +29,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
@@ -101,8 +100,10 @@ class WebDriverBrowser implements IBrowser {
 	
 	public boolean open (IBrowserType type, String browserVersion, String url, String logDirectory, String hubUrl) {
 		if (hubUrl == null || hubUrl.isEmpty()) {
+			webBrowserRunsOnGrid = false;
 			return open(type, url, logDirectory);
 		} else {
+			webBrowserRunsOnGrid = true;
 			return openOnGrid(type, browserVersion, url, hubUrl);
 		}
 	}
@@ -556,13 +557,20 @@ class WebDriverBrowser implements IBrowser {
 	
 	@Override
 	public boolean makeScreenshot (String path) {
+		
 		try {
-			TakesScreenshot augmentedDriver	= (TakesScreenshot) new Augmenter ().augment (mDriver);
-			File screenshot					= augmentedDriver.getScreenshotAs (OutputType.FILE);
+			WebDriver webDriver = mDriver;
+			if (webBrowserRunsOnGrid) {
+				webDriver = new Augmenter ().augment (mDriver);
+			}
+			
+			TakesScreenshot screenshotCapableDriver	= (TakesScreenshot) webDriver;
+			File screenshot	= screenshotCapableDriver.getScreenshotAs (OutputType.FILE);
 			Files.copy (Paths.get (screenshot.getPath ()), Paths.get (path));
 			return true;
 		} catch (IOException ioe) {
-			throw new ExecutionException ("could not copy screenshot file");
+			mRunTime.reportStackTrace(ioe);
+			throw new ExecutionException ("Could not copy screenshot file");
 		}
 	}
 
@@ -576,6 +584,7 @@ class WebDriverBrowser implements IBrowser {
 	protected int mLongDefaultTimeoutInSeconds	= 30;
 	protected WebDriver mDriver;
 
+	protected boolean webBrowserRunsOnGrid;
 
 	// private members
 //	private WebElement findOneElement (Item item) {
