@@ -24,10 +24,13 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
+import org.powerTools.engine.BusinessDayChecker;
 import org.powerTools.engine.ExecutionException;
 
 
 final class DateValue extends Value {
+	static BusinessDayChecker mBusinessDayChecker = new BusinessDayChecker ();
+	
 	private static SimpleDateFormat mFormat = new SimpleDateFormat ("dd-MM-yyyy");
 	
 	private Calendar mDate;
@@ -74,7 +77,7 @@ final class DateValue extends Value {
 
 	Value subtract (String number, String period) {
 		int nr = parseInteger(number);
-		return addPeriod(0 - nr, period);
+		return addPeriod(-nr, period);
 	}
 
 	
@@ -96,15 +99,13 @@ final class DateValue extends Value {
 	
 	
 	private int parseInteger(String number) {
-		try 
-		{
+		try {
 			return Integer.parseInt (number);
-		}
-		catch (NumberFormatException e) {
-			throw new ExecutionException("Number parse error: " + number);
+		} catch (NumberFormatException e) {
+			throw new ExecutionException ("Number parse error: " + number);
 		}
 	}
-		
+
 	private Value addPeriod (int number, String period) {
 		if (period.equals ("days")) {
 			mDate.add (Calendar.DAY_OF_MONTH, number);
@@ -112,9 +113,24 @@ final class DateValue extends Value {
 			mDate.add (Calendar.WEEK_OF_YEAR, number);
 		} else if (period.equals ("months")) {
 			mDate.add (Calendar.MONTH, number);
-		} else {
+		} else if (period.equals ("years")) {
 			mDate.add (Calendar.YEAR, number);
+		} else {
+			addBusinessDays (number);
 		}
 		return this;
-	}	
+	}
+	
+	private void addBusinessDays (int number) {
+		if (mBusinessDayChecker == null) {
+			throw new ExecutionException ("no business day checker selected");
+		} else if (number != 0) {
+			int step = (number < 0 ? -1 : 1);
+			for (int counter = 0; counter != number; counter += step) {
+				do {
+					mDate.add (Calendar.DAY_OF_MONTH, step);
+				} while (!mBusinessDayChecker.isBusinessDay (mDate));
+			}
+		}
+	}
 }

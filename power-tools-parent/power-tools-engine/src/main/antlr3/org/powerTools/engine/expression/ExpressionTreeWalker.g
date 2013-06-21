@@ -94,11 +94,11 @@ expr returns [Value v]
 			calendar.add (Calendar.DATE, 1);
 			v = new DateValue (calendar);
 		}
-	|	^(DatePlus day=expr nr=expr (p='days' | p='weeks' | p='months' | p='years')) {
+	|	^(DatePlus day=expr nr=expr (p='days' | p='weeks' | p='months' | p='years' | p='business' 'days')) {
 			DateValue d = new DateValue ($day.v.toString ());
 			v = d.add ($nr.v.toString (), $p.getText ());
 		}
-	|	^(DateMinus day=expr nr=expr (p='days' | p='weeks' | p='months' | p='years')) {
+	|	^(DateMinus day=expr nr=expr (p='days' | p='weeks' | p='months' | p='years' | p='business' 'days')) {
 			DateValue d = new DateValue ($day.v.toString ());
 			v = d.subtract ($nr.v.toString (), $p.getText ());
 		}

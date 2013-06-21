@@ -21,6 +21,7 @@ package org.powerTools.engine.core;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
+import org.powerTools.engine.BusinessDayChecker;
 import org.powerTools.engine.ExecutionException;
 import org.powerTools.engine.InstructionSet;
 import org.powerTools.engine.RunTime;
@@ -305,5 +306,19 @@ final class BuiltinLogic {
 	boolean declareRole (String system, String role, String domain, String username, String password) {
 		mRunTime.getRoles ().addRole (system, role, domain, username, password);
 		return true;
+	}
+	
+	boolean setBusinessDayChecker (String className) {
+		try {
+			Object instance = Class.forName (className).newInstance ();
+			mRunTime.setBusinessDayChecker ((BusinessDayChecker) instance);
+			return true;
+		} catch (ClassNotFoundException cnfe) {
+			throw new ExecutionException ("unknown class: " + className);
+		} catch (IllegalAccessException iae) {
+			throw new ExecutionException ("no access to class " + className);
+		} catch (InstantiationException ie) {
+			throw new ExecutionException ("failed to create instance of class " + className);
+		}
 	}
 }

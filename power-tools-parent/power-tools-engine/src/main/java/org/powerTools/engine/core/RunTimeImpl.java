@@ -21,17 +21,17 @@ package org.powerTools.engine.core;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.powerTools.engine.BusinessDayChecker;
 import org.powerTools.engine.Context;
-import org.powerTools.engine.Symbol;
 import org.powerTools.engine.Roles;
 import org.powerTools.engine.RunTime;
+import org.powerTools.engine.Symbol;
 import org.powerTools.engine.expression.ExpressionEvaluator;
 import org.powerTools.engine.instructions.ProcedureRunner;
 import org.powerTools.engine.reports.TestRunResultPublisher;
 import org.powerTools.engine.sources.TestLineImpl;
 import org.powerTools.engine.sources.TestSource;
 import org.powerTools.engine.symbol.Scope;
-import org.powerTools.engine.symbol.StringSequence;
 import org.powerTools.engine.symbol.Util;
 
 
@@ -177,5 +177,10 @@ public final class RunTimeImpl implements RunTime, ProcedureRunner {
 	@Override
 	public Roles getRoles () {
 		return mRoles;
+	}
+
+	@Override
+	public void setBusinessDayChecker (BusinessDayChecker checker) {
+		ExpressionEvaluator.setBusinessDayChecker (checker);
 	}
 }

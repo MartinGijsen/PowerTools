@@ -39,9 +39,7 @@ package org.powerTools.engine.expression;
 }
 
 root
-	:	'?'!
-		expr
-		EOF!
+	:	'?'! expr EOF!
 	;
 	
 expr
@@ -53,8 +51,7 @@ andExpr
 	;
 
 notExpr
-	:	'not'^ booleanExpr
-	|	booleanExpr*
+	:	('not'^)? booleanExpr
 	;
 
 booleanExpr
@@ -72,8 +69,7 @@ booleanExpr
 
 comparableExpression
 	:	(term '++') => stringExpr
-	|	(date dateOperator expr period) => dateExpr
-	|	(day) => dateExpr
+	|	(day | IdentifierPlus dateOperator addExpr period) => dateExpr
 	|	addExpr
 	;
 
@@ -82,7 +78,10 @@ stringExpr
 	;
 
 dateExpr
-	:	date (dateOperator^ addExpr period)*
+	:	(	day
+		|	IdentifierPlus dateOperator^ addExpr period
+		)
+		(dateOperator^ addExpr period)*
 	;
 
 dateOperator
@@ -90,16 +89,12 @@ dateOperator
 	|	'-' -> DateMinus
 	;
 
-date
-	: day | term
-	;
-	
 day
 	:	'yesterday' | 'today' | 'tomorrow'
 	;
 
 period
-	:	'days' | 'weeks' | 'months' | 'years'
+	:	'business'? 'days' | 'weeks' | 'months' | 'years'
 	;
 
 addExpr
@@ -132,9 +127,9 @@ StringLiteral
 			String text = getText ();
 			setText (text.substring (1, text.length () - 1));
 		};
-Spaces:				(' ')+ { skip(); };
+Spaces:					(' ')+ { skip(); };
+IdentifierPlus:			Identifier ('.' (NumberLiteral | Identifier) )*;
 fragment Identifier:	Alpha (Alpha | Digit | '_')*;
-IdentifierPlus:		Identifier ('.' (NumberLiteral | Identifier) )*;
-fragment Alpha:		'a'..'z'|'A'..'Z';
-fragment Digit:		'0'..'9';
-NumberLiteral:		Digit+ ('.' Digit+)?;
+fragment Alpha:			'a'..'z'|'A'..'Z';
+fragment Digit:			'0'..'9';
+NumberLiteral:			Digit+ ('.' Digit+)?;

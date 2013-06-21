@@ -178,4 +178,8 @@ public final class BuiltinInstructions implements InstructionSet {
 	public boolean CheckThat_IsNotBetween_And_ (String valueString, String lowerBoundString, String upperBoundString) {
 		return !CheckThat_IsBetween_And_ (valueString, lowerBoundString, upperBoundString);
 	}
+	
+	public boolean setBusinessDayCheckerTo_ (String className) {
+		return mLogic.setBusinessDayChecker (className);
+	}
 }

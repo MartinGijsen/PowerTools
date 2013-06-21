@@ -136,4 +136,8 @@ public final class BuiltinKeywords implements InstructionSet {
 	public boolean DeclareRole (String system, String role, String domain, String username, String password) {
 		return mLogic.declareRole (system, role, domain, username, password);
 	}
+	
+	public boolean SetBusinessDayChecker (String className) {
+		return mLogic.setBusinessDayChecker (className);
+	}
 }

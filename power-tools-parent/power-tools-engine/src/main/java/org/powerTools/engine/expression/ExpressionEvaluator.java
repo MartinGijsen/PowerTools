@@ -23,6 +23,7 @@ import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.tree.CommonTree;
 import org.antlr.runtime.tree.CommonTreeNodeStream;
+import org.powerTools.engine.BusinessDayChecker;
 import org.powerTools.engine.ExecutionException;
 import org.powerTools.engine.symbol.Scope;
 
@@ -38,6 +39,10 @@ public final class ExpressionEvaluator {
 
 	private ExpressionEvaluator () { }
 
+	public static void setBusinessDayChecker (BusinessDayChecker checker) {
+		DateValue.mBusinessDayChecker = checker;
+	}
+	
 	public static String evaluate (String expression, Scope scope) {
 		try {
 			// parse the expression, create AST (Abstract Syntax Tree)

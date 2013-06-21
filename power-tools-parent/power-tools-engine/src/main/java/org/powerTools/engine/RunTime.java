@@ -148,4 +148,11 @@ public interface RunTime {
 	 * @return	the specified shared object
 	 */
 	Object getSharedObject (String name);
+	
+	/**
+	 * Sets the object that determines which are business days for
+	 * date calculations with business days (e.g. today + 1 business day)
+	 * @param	checker	the business day checker to use
+	 */
+	void setBusinessDayChecker (BusinessDayChecker checker);
 }
