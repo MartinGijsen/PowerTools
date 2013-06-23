@@ -18,16 +18,13 @@
 
 package org.powerTools.engine.sources.model;
 
-import java.lang.RuntimeException;
-
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Random;
 import java.util.Set;
-import java.util.HashSet;
 
 import org.powerTools.engine.core.RunTimeImpl;
 import org.powerTools.engine.expression.ExpressionEvaluator;
-import org.powerTools.engine.symbol.Scope;
 
 
 final class RandomEdgeSelector implements EdgeSelectionStrategy {

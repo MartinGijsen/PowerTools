@@ -18,9 +18,6 @@
 
 package org.powerTools.engine.sources.model;
 
-import java.lang.RuntimeException;
-
-import java.util.Iterator;
 import java.util.Random;
 import java.util.Set;
 

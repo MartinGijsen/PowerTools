@@ -67,6 +67,6 @@ final class RemoteInstructionSet implements InstructionSet {
 
 	@Override
 	public void cleanup () {
-		;
+		mExecutor.disconnect ();
 	}
 }

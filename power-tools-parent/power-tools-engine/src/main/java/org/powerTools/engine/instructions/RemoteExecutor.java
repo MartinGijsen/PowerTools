@@ -39,4 +39,8 @@ final class RemoteExecutor implements Executor {
 	public boolean execute (TestLine testLine) {
 		return mClient.execute (testLine);
 	}
+	
+	void disconnect () {
+		mClient.disconnect ();
+	}
 }

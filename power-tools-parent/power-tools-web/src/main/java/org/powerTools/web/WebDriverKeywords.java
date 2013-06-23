@@ -18,10 +18,8 @@
 
 package org.powerTools.web;
 
-import org.powerTools.engine.RunTime;
 import org.powerTools.engine.InstructionSet;
-
-import org.openqa.selenium.WebDriver;
+import org.powerTools.engine.RunTime;
 
 
 public final class WebDriverKeywords implements InstructionSet {

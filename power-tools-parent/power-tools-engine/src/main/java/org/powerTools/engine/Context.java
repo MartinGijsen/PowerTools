@@ -32,6 +32,9 @@ public class Context {
 	public final String mResultsDirectory;
 	public final String mLogFileName;
 	public final String mFullLogFilePath;
+
+	final static String LOG_FILE_NAME = "log.html";
+
 	
 	protected static final SimpleDateFormat mDateFormat = new SimpleDateFormat ("yyyy.MM.dd-HH.mm.ss");
 
@@ -41,7 +44,7 @@ public class Context {
 	}
 
 	public Context (Date startTime, String resultsBaseDirectory) {
-		this (startTime, resultsBaseDirectory, "log.html");
+		this (startTime, resultsBaseDirectory, LOG_FILE_NAME);
 	}
 
 	public Context (String resultsBaseDirectory, String logFileName) {

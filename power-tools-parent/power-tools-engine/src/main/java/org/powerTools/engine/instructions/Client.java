@@ -31,7 +31,7 @@ import org.powerTools.engine.TestLine;
 
 
 final class Client {
-	private static final int ONE_SECOND = 1000;
+	private static final int ONE_SECOND		= 1000;
 	
 	private static final String SEPARATOR	= "|";
 	private static final String OK			= "ok";
@@ -40,27 +40,26 @@ final class Client {
 	private final String mHostName;
 	private final int mPortNr;
 	
+	private Socket mSocket;
 	private BufferedWriter mWriter;
 	private BufferedReader mReader;
-	private boolean mIsConnected;
 	
 	private String mRequest;
 	private String mResponse;
 
 	
 	Client (String hostName, int portNr) {
-		mIsConnected	= false;
-		mHostName		= hostName;
-		mPortNr			= portNr;
+		mSocket		= null;
+		mHostName	= hostName;
+		mPortNr		= portNr;
 	}
 
 	
 	boolean isConnected () {
-		return mIsConnected;
+		return mSocket == null;
 	}
 
 	Set<String> getMethodNames () {
-		
 		return null;
 	}
 
@@ -100,10 +99,9 @@ final class Client {
 
 	private void connectIfNotConnected () {
 		try {
-			final Socket socket	= new Socket (mHostName, mPortNr);
-			mWriter				= new BufferedWriter (new OutputStreamWriter (socket.getOutputStream ()));
-			mReader				= new BufferedReader (new InputStreamReader (socket.getInputStream ()));
-			mIsConnected		= true;
+			mSocket	= new Socket (mHostName, mPortNr);
+			mWriter	= new BufferedWriter (new OutputStreamWriter (mSocket.getOutputStream ()));
+			mReader	= new BufferedReader (new InputStreamReader (mSocket.getInputStream ()));
 		} catch (IOException ioe) {
 			throw new ExecutionException ("could not connect to remote instructions");
 		}
@@ -139,6 +137,15 @@ final class Client {
 			throw new ExecutionException (parts[1]);
 		} else {
 			throw new ExecutionException ("invalid response: " + parts[0]);
+		}
+	}
+	
+	void disconnect () {
+		try {
+			mSocket.close ();
+			mSocket = null;
+		} catch (IOException ioe) {
+			;
 		}
 	}
 }

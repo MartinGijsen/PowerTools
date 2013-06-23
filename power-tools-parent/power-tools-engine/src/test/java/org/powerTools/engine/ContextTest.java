@@ -40,40 +40,48 @@ public class ContextTest {
 	}
 
 	
-//	@Test
-//	public void testContextString () {
-//		Context context = new Context (PATH);
-//		assertEquals (PATH, context.mResultsDirectory);
-//	}
-//
-//	@Test
-//	public void testContextDateString () {
-//		Date date = GregorianCalendar.getInstance ().getTime ();
-//		Context context = new Context (date, PATH);
-//		assertEquals (date, context.mStartTime);
-//		assertEquals (PATH, context.mResultsDirectory);
-//	}
-//
-//	@Test
-//	public void testContextStringString () {
-//		Context context = new Context (PATH, LOGFILE_NAME);
-//		assertEquals (PATH, context.mResultsDirectory);
-//		assertEquals (LOGFILE_NAME, context.mLogFileName);
-//		assertEquals (PATH + '/' + LOGFILE_NAME, context.mFullLogFilePath);
-//	}
-//
-//	@Test
-//	public void testContextDateStringString () {
-//		Date date = GregorianCalendar.getInstance ().getTime ();
-//		Context context = new Context (date, PATH, LOGFILE_NAME);
-//		assertEquals (date, context.mStartTime);
-//		assertEquals (PATH, context.mResultsDirectory);
-//		assertEquals (LOGFILE_NAME, context.mLogFileName);
-//		assertEquals (PATH + '/' + LOGFILE_NAME, context.mFullLogFilePath);
-//	}
+	@Test
+	public void testContextString () {
+		Context context = new Context (PATH);
+		assertEquals (context.mResultsBaseDirectory, PATH + "/");
+		assertEquals (context.mResultsDirectory, context.mResultsBaseDirectory + Context.mDateFormat.format (context.mStartTime) + "/");
+		assertEquals (context.mLogFileName, Context.LOG_FILE_NAME);
+		assertEquals (context.mFullLogFilePath, context.mResultsDirectory + Context.LOG_FILE_NAME);
+	}
+
+	@Test
+	public void testContextDateString () {
+		Date date = GregorianCalendar.getInstance ().getTime ();
+		Context context = new Context (date, PATH);
+		assertEquals (context.mStartTime, date);
+		assertEquals (context.mResultsBaseDirectory, PATH + "/");
+		assertEquals (context.mResultsDirectory, context.mResultsBaseDirectory + Context.mDateFormat.format (date) + "/");
+		assertEquals (context.mLogFileName, Context.LOG_FILE_NAME);
+		assertEquals (context.mFullLogFilePath, context.mResultsDirectory + Context.LOG_FILE_NAME);
+	}
+
+	@Test
+	public void testContextStringString () {
+		Context context = new Context (PATH, LOG_FILE_NAME);
+		assertEquals (context.mResultsBaseDirectory, PATH + "/");
+		assertEquals (context.mResultsDirectory, context.mResultsBaseDirectory + Context.mDateFormat.format (context.mStartTime) + "/");
+		assertEquals (context.mLogFileName, LOG_FILE_NAME);
+		assertEquals (context.mFullLogFilePath, context.mResultsDirectory + LOG_FILE_NAME);
+	}
+
+	@Test
+	public void testContextDateStringString () {
+		Date date = GregorianCalendar.getInstance ().getTime ();
+		Context context = new Context (date, PATH, LOG_FILE_NAME);
+		assertEquals (context.mStartTime, date);
+		assertEquals (context.mResultsBaseDirectory, PATH + "/");
+		assertEquals (context.mResultsDirectory, context.mResultsBaseDirectory + Context.mDateFormat.format (date) + "/");
+		assertEquals (context.mLogFileName, LOG_FILE_NAME);
+		assertEquals (context.mFullLogFilePath, context.mResultsDirectory + LOG_FILE_NAME);
+	}
 
 
 	// private members
-	private static final String PATH			= "c:/test";
-	private static final String LOGFILE_NAME	= "logfile";
+	private static final String PATH			= "c:/tmp";
+	private static final String LOG_FILE_NAME	= "otherLogfileName";
 }

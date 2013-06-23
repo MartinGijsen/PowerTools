@@ -18,7 +18,6 @@
 
 package org.powerTools.engine.instructions;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import org.powerTools.engine.ExecutionException;
