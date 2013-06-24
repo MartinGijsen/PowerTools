@@ -166,6 +166,12 @@ public class ExpressionEvaluatorDateTest {
 		Assert.assertEquals ("31-12-2012", result);
 	}
 
+	@Test
+	public void testExpressionLiteralDate () {
+		String result = ExpressionEvaluator.evaluate ("? 01-01-2013 + 2 days", mScope);
+		Assert.assertEquals ("03-01-2013", result);
+	}
+	
 	private String getDateWithOffsetForToday (int nrOfDays)	{
 		Calendar mDate = Calendar.getInstance ();
 		mDate.add (Calendar.DATE, nrOfDays);

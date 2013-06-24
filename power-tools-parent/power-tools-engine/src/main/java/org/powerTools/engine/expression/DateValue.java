@@ -41,14 +41,13 @@ final class DateValue extends Value {
 	}
 
 	public DateValue (String stringValue) {
-		Date date = null;
 		try {
-			date = mFormat.parse (stringValue);
+			Date date = mFormat.parse (stringValue);
+			mDate = GregorianCalendar.getInstance ();
+			mDate.setTime (date);
 		} catch (ParseException e) {
 			throw new ExecutionException ("Date parse error: " + stringValue);
 		}
-		mDate = GregorianCalendar.getInstance ();
-		mDate.setTime (date);
 	}
 	
 	

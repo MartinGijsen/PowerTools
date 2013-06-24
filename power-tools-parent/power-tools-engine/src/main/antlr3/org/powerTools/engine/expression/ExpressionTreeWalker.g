@@ -38,6 +38,7 @@ import org.powerTools.engine.symbol.Scope;
 	// TODO use from elsewhere
 	private final static Pattern cIntegerPattern	= Pattern.compile ("-?\\d+");
 	private final static Pattern cRealPattern		= Pattern.compile ("-?\\d+\\.\\d+");
+	private final static Pattern cDatePattern		= Pattern.compile ("\\d\\d-\\d\\d-\\d\\d\\d\\d");
 
 	private Scope mScope;
 	
@@ -46,15 +47,27 @@ import org.powerTools.engine.symbol.Scope;
 			return new IntegerValue (valueString);
 		} else if (cRealPattern.matcher (valueString).matches ()) {
 			return new RealValue (valueString);
+		} else if (cDatePattern.matcher (valueString).matches ()) {
+			return new DateValue (valueString);
 		} else {
 			return new StringValue (valueString);
 		}
 	}
+	
+	private Value getSymbol (String name) {
+		return createValue (mScope.getSymbol (name).getValue (name));
+	}
+	
+	private Value getDay (int offset) {
+		Calendar calendar = GregorianCalendar.getInstance ();
+		calendar.add (Calendar.DATE, offset);
+		return new DateValue (calendar);
+	}
 }
 
 main [Scope scope] returns [Value v]
-	:		{ mScope = scope; }
-	e=expr	{ v = $e.v; }
+	:	{ mScope = scope; }
+		e=expr	{ v = $e.v; }
 	;
 	
 expr returns [Value v]
@@ -77,29 +90,15 @@ expr returns [Value v]
 	|	'false'					{ v = BooleanValue.cFalseStringValue; }
 	|	s=StringLiteral			{ v = new StringValue ($s.getText ()); }
 	|	n=NumberLiteral			{ v = createValue ($n.getText ()); }
-	|	i=IdentifierPlus {
-			final String name = $i.getText ();
-			v = createValue (mScope.getSymbol (name).getValue (name));
-		}
-	|	'yesterday' {
-			Calendar calendar = GregorianCalendar.getInstance ();
-			calendar.add (Calendar.DATE, -1);
-			v = new DateValue (calendar);
-		}
-	|	'today' {
-			v = new DateValue (GregorianCalendar.getInstance ());
-		}
-	|	'tomorrow' {
-			Calendar calendar = GregorianCalendar.getInstance ();
-			calendar.add (Calendar.DATE, 1);
-			v = new DateValue (calendar);
-		}
+	|	d=DateLiteral			{ v = new DateValue ($d.getText ()); }
+	|	i=IdentifierPlus		{ v = getSymbol ($i.getText ()); }
+	|	'yesterday'				{ v = getDay (-1); }
+	|	'today'					{ v = new DateValue (GregorianCalendar.getInstance ()); }
+	|	'tomorrow'				{ v = getDay (1); }
 	|	^(DatePlus day=expr nr=expr (p='days' | p='weeks' | p='months' | p='years' | p='business' 'days')) {
-			DateValue d = new DateValue ($day.v.toString ());
-			v = d.add ($nr.v.toString (), $p.getText ());
+			v = $day.v.toDateValue ().add ($nr.v.toString (), $p.getText ());
 		}
 	|	^(DateMinus day=expr nr=expr (p='days' | p='weeks' | p='months' | p='years' | p='business' 'days')) {
-			DateValue d = new DateValue ($day.v.toString ());
-			v = d.subtract ($nr.v.toString (), $p.getText ());
+			v = $day.v.toDateValue ().subtract ($nr.v.toString (), $p.getText ());
 		}
 	;

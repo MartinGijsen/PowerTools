@@ -81,7 +81,7 @@ dateExpr
 	:	(	day
 		|	IdentifierPlus dateOperator^ addExpr period
 		)
-		(dateOperator^ addExpr period)*
+		( dateOperator^ addExpr period)*
 	;
 
 dateOperator
@@ -90,7 +90,7 @@ dateOperator
 	;
 
 day
-	:	'yesterday' | 'today' | 'tomorrow'
+	:	'yesterday' | 'today' | 'tomorrow' | DateLiteral
 	;
 
 period
@@ -132,4 +132,5 @@ IdentifierPlus:			Identifier ('.' (NumberLiteral | Identifier) )*;
 fragment Identifier:	Alpha (Alpha | Digit | '_')*;
 fragment Alpha:			'a'..'z'|'A'..'Z';
 fragment Digit:			'0'..'9';
+DateLiteral:			Digit Digit '-' Digit Digit '-' Digit Digit Digit Digit;
 NumberLiteral:			Digit+ ('.' Digit+)?;
