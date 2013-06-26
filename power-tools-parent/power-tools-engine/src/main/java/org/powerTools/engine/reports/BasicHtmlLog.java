@@ -82,7 +82,7 @@ public abstract class BasicHtmlLog implements TestLineSubscriber, TestResultSubs
 	@Override
 	public void processWarning (String message) {
 		writeTableRowStartWithTimestamp (mWriter);
-		mWriter.format ("TD colspan=\"10\" style=\"background-color:#FFFFAA\">%s</TD></TR>", message).println ();
+		mWriter.format ("<TD colspan=\"10\" style=\"background-color:#FFFFAA\">%s</TD></TR>", message).println ();
 	}
 
 	@Override
