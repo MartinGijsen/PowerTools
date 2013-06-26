@@ -33,7 +33,7 @@ public class KeywordsHtmlLog extends BasicHtmlLog {
 	@Override
 	public void processTestLine (TestLine testLine) {
 		mWriter.println ("<TABLE border=\"1\" cellspacing=\"0\">");
-		mWriter.append ("<TR>");
+		writeTableRowStartWithTimestamp (mWriter);
 		final int nrOfParts = testLine.getNrOfParts ();
 		for (int argNr = 0; argNr < nrOfParts - 1; ++argNr) {
 //			final String originalPart = testLine.getOriginalPart (argNr);
@@ -55,14 +55,16 @@ public class KeywordsHtmlLog extends BasicHtmlLog {
 	@Override
 	public void processCommentLine (String testLine) {
 		mWriter.println ("<TABLE border=\"1\" cellspacing=\"0\">");
-		mWriter.format ("<TR><TD></TD><TD colspan=\"10\">%s</TD></TR>", testLine).println ();
+		writeTableRowStartWithTimestamp (mWriter);
+		mWriter.format ("<TD></TD><TD colspan=\"10\">%s</TD></TR>", testLine).println ();
 		mWriter.println ("</TABLE><BR/>");
 	}
 
 	@Override
 	public void processCommentLine (TestLine testLine) {
 		mWriter.println ("<TABLE border=\"1\" cellspacing=\"0\">");
-		mWriter.append ("<TR><TD></TD>");
+		writeTableRowStartWithTimestamp (mWriter);
+		mWriter.append ("<TD></TD>");
 		final int nrOfParts = testLine.getNrOfParts ();
 		for (int partNr = 1; partNr < nrOfParts - 1; ++partNr) {
 			mWriter.format ("<TD>%s</TD>", testLine.getPart (partNr));

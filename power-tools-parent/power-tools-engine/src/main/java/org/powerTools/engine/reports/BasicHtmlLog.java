@@ -19,6 +19,7 @@
 package org.powerTools.engine.reports;
 
 import java.io.PrintWriter;
+import java.util.Calendar;
 import java.util.Date;
 
 import org.powerTools.engine.TestLine;
@@ -63,7 +64,8 @@ public abstract class BasicHtmlLog implements TestLineSubscriber, TestResultSubs
 	// the results
 	@Override
 	public void processStackTrace (String[] stackTraceLines) {
-		mWriter.println ("<TR><TD colspan=\"10\">stack trace:<BR/>");
+		writeTableRowStartWithTimestamp (mWriter);
+		mWriter.println ("<TD colspan=\"10\">stack trace:<BR/>");
 		int nrOfElements = stackTraceLines.length;
 		for (int elementNr = 0; elementNr < nrOfElements; ++elementNr) {
 			mWriter.append (stackTraceLines[elementNr]).println ("<BR/>");
@@ -73,22 +75,26 @@ public abstract class BasicHtmlLog implements TestLineSubscriber, TestResultSubs
 
 	@Override
 	public void processError (String message) {
-		mWriter.format ("<TR><TD colspan=\"10\" style=\"background-color:#FFAAAA\">%s</TD></TR>", message).println ();
+		writeTableRowStartWithTimestamp (mWriter);
+		mWriter.format ("<TD colspan=\"10\" style=\"background-color:#FFAAAA\">%s</TD></TR>", message).println ();
 	}
 
 	@Override
 	public void processWarning (String message) {
-		mWriter.format ("<TR><TD colspan=\"10\" style=\"background-color:#FFFFAA\">%s</TD></TR>", message).println ();
+		writeTableRowStartWithTimestamp (mWriter);
+		mWriter.format ("TD colspan=\"10\" style=\"background-color:#FFFFAA\">%s</TD></TR>", message).println ();
 	}
 
 	@Override
 	public void processInfo (String message) {
-		mWriter.format ("<TR><TD colspan=\"10\">%s</TD></TR>", message).println ();
+		writeTableRowStartWithTimestamp (mWriter);
+		mWriter.format ("<TD colspan=\"10\">%s</TD></TR>", message).println ();
 	}
 
 	@Override
 	public void processLink (String url) {
-		mWriter.format ("<TR><TD colspan=\"10\">url: <A href=\"%s\">%s</A></TD></TR>", url, url).println ();
+		writeTableRowStartWithTimestamp (mWriter);
+		mWriter.format ("<TD colspan=\"10\">url: <A href=\"%s\">%s</A></TD></TR>", url, url).println ();
 	}
 
 	@Override
@@ -101,5 +107,10 @@ public abstract class BasicHtmlLog implements TestLineSubscriber, TestResultSubs
 	public void processDecreaseLevel () {
 		--mLevel;
 		mWriter.println ("</TABLE><BR/></TD></TR>");
+	}
+	
+	protected void writeTableRowStartWithTimestamp (PrintWriter writer) {
+		Calendar c = Calendar.getInstance ();
+		writer.format("<TR><TD>%1$tT</TD>", c);
 	}
 }
