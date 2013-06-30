@@ -19,6 +19,7 @@
 package org.powerTools.engine.fitnesse;
 
 import java.io.PrintWriter;
+import java.util.Calendar;
 import java.util.Date;
 
 import org.powerTools.engine.TestLine;
@@ -48,6 +49,7 @@ final class HtmlLog extends BasicHtmlLog {
 	// the input
 	@Override
 	public void processTestLine (TestLine testLine) {
+		writeTableRowStartWithTimestamp (mWriter);
 		final int nrOfParts = testLine.getNrOfParts ();
 		for (int partNr = 0; partNr < nrOfParts - 1; ++partNr) {
 			mWriter.format ("<TD>%s</TD>", getCell (testLine, partNr));
@@ -61,12 +63,14 @@ final class HtmlLog extends BasicHtmlLog {
 	
 	@Override
 	public void processCommentLine (String testLine) {
-		mWriter.format ("<TR><TD></TD><TD colspan=\"10\">%s</TD></TR>", testLine).println ();
+		writeTableRowStartWithTimestamp (mWriter);
+		mWriter.format ("<TD></TD><TD colspan=\"10\">%s</TD></TR>", testLine).println ();
 	}
 
 	@Override
 	public void processCommentLine (TestLine testLine) {
-		mWriter.append ("<TR><TD></TD>");
+		writeTableRowStartWithTimestamp (mWriter);
+		mWriter.append ("<TD></TD>");
 		final int nrOfParts = testLine.getNrOfParts ();
 		for (int partNr = 1; partNr < nrOfParts - 1; ++partNr) {
 			mWriter.format ("<TD>%s</TD>", testLine.getPart (partNr));

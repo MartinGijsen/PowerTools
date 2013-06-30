@@ -69,21 +69,18 @@ final class DateValue extends Value {
 	
 	
 	Value add (String number, String period) {
-		int nr = parseInteger(number);
+		int nr = parseInteger (number);
 		return addPeriod(nr, period);
 	}
 
-
 	Value subtract (String number, String period) {
-		int nr = parseInteger(number);
+		int nr = parseInteger (number);
 		return addPeriod(-nr, period);
 	}
 
-	
 	@Override
 	public StringValue toStringValue () {
-		throwException ("cannot make string from date");
-		return null;
+		return new StringValue (toString());
 	}
 	
 	@Override
@@ -95,7 +92,6 @@ final class DateValue extends Value {
 	public String toString () {
 		return mFormat.format (mDate.getTime ());
 	}
-	
 	
 	private int parseInteger(String number) {
 		try {

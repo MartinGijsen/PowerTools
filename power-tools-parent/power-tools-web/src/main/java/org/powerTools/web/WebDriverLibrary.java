@@ -19,11 +19,18 @@
 package org.powerTools.web;
 
 import org.powerTools.engine.RunTime;
+import org.powerTools.engine.reports.TestResultSubscriber;
+import org.powerTools.engine.reports.TestRunResultPublisher;
 
 
 public final class WebDriverLibrary extends WebLibrary {
 	public WebDriverLibrary (RunTime runTime) {
 		super (runTime);
+		
+		TestRunResultPublisher mPublisher = TestRunResultPublisher.getInstance ();
+        TestResultSubscriber subscriber = new TestResultSubscriberMakeScreenshotByError(this);
+		mPublisher.subscribeToTestResults(subscriber);		
+		
 		runTime.addSharedObject ("WebDriverLibrary", this);
 	}
 
