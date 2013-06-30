@@ -24,7 +24,6 @@ import java.util.Stack;
 
 import org.powerTools.engine.core.RunTimeImpl;
 import org.powerTools.engine.reports.TestRunResultPublisher;
-import org.powerTools.engine.sources.model.DoneCondition.DoneException;
 
 
 /*
@@ -35,7 +34,7 @@ import org.powerTools.engine.sources.model.DoneCondition.DoneException;
  * The done condition will generate an exception when it is satisfied,
  * but this is only passed on to the test source once in a final state.
  */
-final class Model {
+public final class Model {
 	final static String START_NODE_LABEL		= "start";
 	final static String END_NODE_LABEL			= "end";
 	final static String SUBMODEL_ACTION_PREFIX	= "submodel ";
@@ -50,7 +49,7 @@ final class Model {
 	private boolean								mDoneConditionSatisfied;
 
 
-	Model (String name, String selector, String doneCondition, RunTimeImpl runTime) {
+	public Model (String name, String selector, String doneCondition, RunTimeImpl runTime) {
 		mPublisher				= TestRunResultPublisher.getInstance ();
 		mDoneConditionSatisfied	= false;
 		mSubModels				= new HashMap<String, DirectedGraph> ();
@@ -68,7 +67,11 @@ final class Model {
 		mPublisher.publishCommentLine ("start node: " + activeGraph.mCurrentNode.getDescription ());
 	}
 	
-	final Edge getNextEdge () {
+	public String getNextAction () {
+		return getNextEdge ().mAction;
+	}
+	
+	private Edge getNextEdge () {
 		ActiveGraph currentGraph	= mGraphStack.peek ();
 		Node currentNode			= currentGraph.mCurrentNode;
 		if (doneConditionIsSatisfied () && mGraphStack.size () == 1 && currentNode.mLabel.equals (END_NODE_LABEL)) {
@@ -84,8 +87,6 @@ final class Model {
 			mGraphStack.push (currentGraph);
 		}
 
-//		mDoneCondition.check ();
-		
 		//TODO: pass ActiveGraph to selector?
 		Edge edge					= mSelector.selectEdge (currentGraph.mGraph, currentGraph.mCurrentNode);
 		currentGraph.mCurrentNode	= edge.mTarget;

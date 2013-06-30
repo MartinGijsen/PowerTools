@@ -18,36 +18,16 @@
 
 package org.powerTools.engine.fitnesse;
 
-import org.powerTools.engine.sources.TestLineImpl;
-import org.powerTools.engine.symbol.Scope;
-
 import fit.Fixture;
 import fit.Parse;
 
 
-class ScenarioSource extends BaseTestSource {
-	ScenarioSource (Fixture fixture, Parse table, String logFilePath) {
-		super (Scope.getGlobalScope (), fixture, table.parts, logFilePath);
+public final class TestCaseFixture extends Fixture {
+	public TestCaseFixture () {
+		super ();
 	}
-
-
-	@Override
-	public void initialize () {
-		processFixtureLine ();
-	}
-
-	@Override
-	public TestLineImpl getTestLine () {
-		while ((mRow = mRow.more) != null) {
-			mTestLine.setParts (readSentence (mRow.parts));
-			if (mTestLine.getPart (0).isEmpty ()) {
-				return mTestLine;
-			} else if (!mTestLine.isEmpty ()) {
-				linkToLogFile (mRow.parts);
-				return mTestLine;
-			}
-		}
-		
-		return null;
+	
+	public void doTable (Parse table) {
+		FitNesseEngine.getInstance ().run (this, table);
 	}
 }

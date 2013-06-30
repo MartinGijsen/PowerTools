@@ -32,29 +32,22 @@ public class KeywordsHtmlLog extends BasicHtmlLog {
 	// the input
 	@Override
 	public void processTestLine (TestLine testLine) {
-		mWriter.println ("<TABLE border=\"1\" cellspacing=\"0\">");
+		mWriter.println ("<TABLE>");
 		writeTableRowStartWithTimestamp (mWriter);
-		final int nrOfParts = testLine.getNrOfParts ();
+		int nrOfParts = testLine.getNrOfParts ();
 		for (int argNr = 0; argNr < nrOfParts - 1; ++argNr) {
-//			final String originalPart = testLine.getOriginalPart (argNr);
-//			if (originalPart != null) {
-//				mWriter.format("<TD>%s<HR/>%s</TD>", originalPart, testLine.getPart (argNr));
-//			} else {
-//				mWriter.format("<TD>%s</TD>", testLine.getPart (argNr));
-//			}
 			mWriter.format ("<TD>%s</TD>", getCell (testLine, argNr));
 		}
 		mWriter.append ("<TD colspan=\"10\">");
 		if (mLevel == 0) {
 			mWriter.format ("<A id=\"id%d\">", ++mLastId);
 		}
-//		mWriter.append (testLine.getPart (nrOfParts - 1)).println ("</TD></TR>");
 		mWriter.append (getCell (testLine, nrOfParts - 1)).println ("</TD></TR>");
 	}
 
 	@Override
 	public void processCommentLine (String testLine) {
-		mWriter.println ("<TABLE border=\"1\" cellspacing=\"0\">");
+		mWriter.println ("<TABLE>");
 		writeTableRowStartWithTimestamp (mWriter);
 		mWriter.format ("<TD></TD><TD colspan=\"10\">%s</TD></TR>", testLine).println ();
 		mWriter.println ("</TABLE><BR/>");
@@ -62,10 +55,10 @@ public class KeywordsHtmlLog extends BasicHtmlLog {
 
 	@Override
 	public void processCommentLine (TestLine testLine) {
-		mWriter.println ("<TABLE border=\"1\" cellspacing=\"0\">");
+		mWriter.println ("<TABLE>");
 		writeTableRowStartWithTimestamp (mWriter);
 		mWriter.append ("<TD></TD>");
-		final int nrOfParts = testLine.getNrOfParts ();
+		int nrOfParts = testLine.getNrOfParts ();
 		for (int partNr = 1; partNr < nrOfParts - 1; ++partNr) {
 			mWriter.format ("<TD>%s</TD>", testLine.getPart (partNr));
 		}
@@ -76,7 +69,7 @@ public class KeywordsHtmlLog extends BasicHtmlLog {
 	@Override
 	public void processEndSection () { }
 
-	
+
 	@Override
 	public void processEndOfTestLine () {
 		mWriter.println ("</TABLE><BR/>");

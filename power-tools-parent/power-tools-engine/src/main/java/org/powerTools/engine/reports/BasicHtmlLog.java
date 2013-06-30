@@ -39,8 +39,8 @@ public abstract class BasicHtmlLog implements TestLineSubscriber, TestResultSubs
 		mWriter = writer;
 		mWriter.format ("<HTML><HEAD><TITLE>%s</TITLE>", title).println ();
 		mWriter.println ("<STYLE type=\"text/css\">");
-		mWriter.println ("table { border-width: 1px 1px 0px 0px }");
-		mWriter.println ("td { border-width: 0px 0px 1px 1px }");
+		mWriter.println ("table { border:1px solid black; border-collapse:collapse; }");
+		mWriter.println ("td { border:1px solid black; padding:3px; }");
 		mWriter.println ("</STYLE>");
 		mWriter.println ("</HEAD>");
 		mWriter.println ("<BODY>");
@@ -100,7 +100,7 @@ public abstract class BasicHtmlLog implements TestLineSubscriber, TestResultSubs
 	@Override
 	public void processIncreaseLevel () {
 		++mLevel;
-		mWriter.println ("<TR><TD colspan=\"10\"><BR/><TABLE border=\"1\" cellspacing=\"0\">");
+		mWriter.println ("<TR><TD colspan=\"10\"><BR/><TABLE>");
 	}
 	
 	@Override

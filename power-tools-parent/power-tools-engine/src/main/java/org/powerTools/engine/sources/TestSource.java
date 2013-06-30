@@ -44,6 +44,8 @@ public abstract class TestSource {
 	
 	public abstract void initialize ();
 	public abstract TestLineImpl getTestLine ();
+
+	public void cleanup () { }
 	
 	
 	public final Scope getScope () {
@@ -52,5 +54,9 @@ public abstract class TestSource {
 
 	public TestSource create (String sourceName) {
 		throw new ExecutionException ("operation not supported for this test source");
+	}
+	
+	public final TestSource createTestCase (String name, String description) {
+		return new TestCaseTestSource (this);
 	}
 }

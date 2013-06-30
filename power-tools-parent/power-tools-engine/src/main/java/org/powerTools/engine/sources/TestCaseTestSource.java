@@ -16,38 +16,49 @@
  *	along with the PowerTools engine. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.powerTools.engine.fitnesse;
+package org.powerTools.engine.sources;
 
-import org.powerTools.engine.sources.TestLineImpl;
+import java.util.LinkedList;
+import java.util.List;
+
 import org.powerTools.engine.symbol.Scope;
 
-import fit.Fixture;
-import fit.Parse;
 
+/**
+ * A TestCaseTestSource represents a subset of the test lines of another test source.
+ * The test case has its own scope.
+ * It does not nest and must terminate before the test source does.
+ */
+public final class TestCaseTestSource extends TestSource {
+	private final TestSource mParent;
 
-class ScenarioSource extends BaseTestSource {
-	ScenarioSource (Fixture fixture, Parse table, String logFilePath) {
-		super (Scope.getGlobalScope (), fixture, table.parts, logFilePath);
+	
+	TestCaseTestSource (TestSource parent) {
+		super (new Scope (parent.mScope));
+		mParent = parent;
 	}
 
 
 	@Override
 	public void initialize () {
-		processFixtureLine ();
+		;
 	}
 
 	@Override
 	public TestLineImpl getTestLine () {
-		while ((mRow = mRow.more) != null) {
-			mTestLine.setParts (readSentence (mRow.parts));
-			if (mTestLine.getPart (0).isEmpty ()) {
-				return mTestLine;
-			} else if (!mTestLine.isEmpty ()) {
-				linkToLogFile (mRow.parts);
-				return mTestLine;
-			}
+		TestLineImpl testLine = mParent.getTestLine ();
+		if (testLine != null) {
+			return testLine;
+		} else {
+			List<String> parts = new LinkedList<String> ();
+			parts.add ("end test case");
+			testLine = new TestLineImpl ();
+			testLine.setParts (parts);
+			mPublisher.publishTestLine (testLine);
+			mPublisher.publishError ("missing end of test case before end of file");
+			mPublisher.publishEndOfTestLine ();
+			mPublisher.publishTestCaseEnd ();
+			return null;
 		}
-		
-		return null;
 	}
 }

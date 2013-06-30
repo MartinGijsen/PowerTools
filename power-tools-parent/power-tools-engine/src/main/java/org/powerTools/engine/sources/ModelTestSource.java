@@ -16,14 +16,14 @@
  *	along with the PowerTools engine. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.powerTools.engine.sources.model;
+package org.powerTools.engine.sources;
 
 import java.util.LinkedList;
 import java.util.List;
 
 import org.powerTools.engine.core.RunTimeImpl;
-import org.powerTools.engine.sources.TestLineImpl;
-import org.powerTools.engine.sources.TestSource;
+import org.powerTools.engine.sources.model.DoneException;
+import org.powerTools.engine.sources.model.Model;
 import org.powerTools.engine.symbol.Scope;
 
 
@@ -33,31 +33,31 @@ import org.powerTools.engine.symbol.Scope;
  * A strategy object determines the edge to the next node.
  * The strategy throws a DoneException to signal it is done.
  */
-public class ModelTestSource extends TestSource {
+final class ModelTestSource extends TestSource {
 	final Model mModel;
 
 
-	public ModelTestSource (String fileName, String selector, String doneCondition, Scope scope, RunTimeImpl runTime) {
+	ModelTestSource (String fileName, String selector, String doneCondition, Scope scope, RunTimeImpl runTime) {
 		super (scope);
 		mModel = new Model (fileName, selector, doneCondition, runTime);
 	}
 
 
 	@Override
-	public final void initialize () {
+	public void initialize () {
 		;
 	}
 
 	@Override
-	public final TestLineImpl getTestLine () {
+	public TestLineImpl getTestLine () {
 		try {
 			String instruction;
 			do {
-				instruction = mModel.getNextEdge ().mAction;
+				instruction = mModel.getNextAction ();
 			} while ("".equals (instruction));
 			mTestLine.setParts (getParts (instruction));
 			return mTestLine;
-		} catch (DoneCondition.DoneException e) {
+		} catch (DoneException de) {
 			return null;
 		}
 	}

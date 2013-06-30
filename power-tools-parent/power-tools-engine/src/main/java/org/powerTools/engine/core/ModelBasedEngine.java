@@ -20,7 +20,7 @@ package org.powerTools.engine.core;
 
 import org.powerTools.engine.Context;
 import org.powerTools.engine.reports.ReportFactory;
-import org.powerTools.engine.sources.model.ModelTestSource;
+import org.powerTools.engine.sources.TestSourceFactory;
 import org.powerTools.engine.symbol.Scope;
 
 
@@ -63,6 +63,6 @@ public class ModelBasedEngine extends Engine {
 	}
 
 	public final void run (String fileName, String selector, String condition) {
-		run (new ModelTestSource (fileName, selector, condition, Scope.getGlobalScope (), mRunTime));
+		run (TestSourceFactory.createModelTestSource (fileName, selector, condition, Scope.getGlobalScope (), mRunTime));
 	}
 }

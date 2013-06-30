@@ -19,12 +19,8 @@
 package org.powerTools.engine.core;
 
 import org.powerTools.engine.Context;
-import org.powerTools.engine.ExecutionException;
 import org.powerTools.engine.reports.ReportFactory;
-import org.powerTools.engine.sources.TestSource;
-import org.powerTools.engine.sources.XlsTestSource;
-import org.powerTools.engine.sources.XlsxTestSource;
-import org.powerTools.engine.symbol.Scope;
+import org.powerTools.engine.sources.TestSourceFactory;
 
 
 /**
@@ -45,17 +41,6 @@ public class ExcelEngine extends Engine {
 	}
 
 
-	private static class Names {
-		final String mFileName;
-		final String mSheetName;
-		
-		public Names (String fileName, String sheetName) {
-			mFileName	= fileName;
-			mSheetName	= sheetName;
-		}
-	}
-	
-
 	public ExcelEngine (String resultsDirectory) {
 		this (new RunTimeImpl (new Context (resultsDirectory)));
 	}
@@ -66,33 +51,15 @@ public class ExcelEngine extends Engine {
 		if (!ReportFactory.createKeywordsHtmlLog (runTime.getContext ())) {
 			System.err.println ("could not open HTML log");
 		}
+		if (!ReportFactory.createTestCaseReport (runTime.getContext ())) {
+			System.err.println ("could not open test case report");
+		}
 
-		BuiltinKeywords.register (runTime, mInstructions);
+		BuiltinInstructions.register (runTime, mInstructions);
 	}
 
 	@Override
 	public final void run (String sourceName) {
-		run (createSource (sourceName));
-	}
-
-	private TestSource createSource (String sourceName) {
-		Names names = createNamesFromSourceName (sourceName);
-
-		if (names.mFileName.endsWith (".xls")) {
-			return XlsTestSource.createTestSource (names.mFileName, names.mSheetName, Scope.getGlobalScope ());
-		} else if (names.mFileName.endsWith (".xlsx")) {
-			return XlsxTestSource.createTestSource (names.mFileName, names.mSheetName, Scope.getGlobalScope ());
-		} else {
-			throw new ExecutionException ("invalid file extension");
-		}
-	}
-
-	private Names createNamesFromSourceName (String sourceName) {
-		int separatorPosition = sourceName.indexOf ('@');
-		if (separatorPosition > 0) {
-			return new Names (sourceName.substring (0, separatorPosition), sourceName.substring (separatorPosition + 1));
-		} else {
-			return new Names (sourceName, "");
-		}
+		run (TestSourceFactory.createExcelTestSource (sourceName));
 	}
 }

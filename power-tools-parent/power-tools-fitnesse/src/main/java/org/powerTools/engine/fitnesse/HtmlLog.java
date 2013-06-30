@@ -29,14 +29,14 @@ import org.powerTools.engine.reports.BasicHtmlLog;
 final class HtmlLog extends BasicHtmlLog {
 	HtmlLog (PrintWriter writer, String title) {
 		super (writer, title);
-		mWriter.println ("<TABLE border=\"1\" cellspacing=\"0\">");
+		mWriter.println ("<TABLE>");
 	}
 
 
 	// start and finish the test run
 	@Override
 	public void start (Date dateTime) {
-		mWriter.println ("<TABLE border=\"1\" cellspacing=\"0\">");
+		mWriter.println ("<TABLE>");
 	}
 	
 	@Override
@@ -80,7 +80,7 @@ final class HtmlLog extends BasicHtmlLog {
 
 	@Override
 	public void processEndSection () {
-		mWriter.println ("</TABLE><BR/><TABLE border=\"1\" cellspacing=\"0\">");
+		mWriter.println ("</TABLE><BR/><TABLE>");
 		mWriter.flush ();
 	}
 

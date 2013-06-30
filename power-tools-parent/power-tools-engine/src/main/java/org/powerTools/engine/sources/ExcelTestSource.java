@@ -31,8 +31,8 @@ import org.powerTools.engine.symbol.Scope;
 
 
 abstract class ExcelTestSource extends TestSource {
-	public final String mFileName;
-	public final String mSheetName;
+	final String mFileName;
+	final String mSheetName;
 
 	private final static String DEFINE_PROCEDURE_INSTRUCTION	= "define instruction";
 	private final static String END_PROCEDURE_INSTRUCTION		= "end instruction";
@@ -150,6 +150,15 @@ abstract class ExcelTestSource extends TestSource {
 		return false;
 	}
 	
+	static final Names createNamesFromSourceName (String sourceName) {
+		int separatorPosition = sourceName.indexOf ('@');
+		if (separatorPosition > 0) {
+			return new Names (sourceName.substring (0, separatorPosition), sourceName.substring (separatorPosition + 1));
+		} else {
+			return new Names (sourceName, "");
+		}
+	}
+
 	protected final Names createNamesFromSheetName (String sourceName) {
 		int separatorPosition = sourceName.indexOf ('@');
 		if (separatorPosition > 0) {

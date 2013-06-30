@@ -69,7 +69,23 @@ public final class RunTimeImpl implements RunTime, ProcedureRunner {
 	public Context getContext () {
 		return mContext;
 	}
+
 	
+	@Override
+	public boolean enterTestCase (String name, String description) {
+		mSourceStack.createAndPushTestCase (name, description);
+		mPublisher.publishTestCaseBegin (name, description);
+		return true;
+	}
+
+	@Override
+	public boolean leaveTestCase () {
+		mSourceStack.popTestCase ();
+		mPublisher.publishTestCaseEnd ();
+		return true;
+	}
+
+
 	@Override
 	public boolean addSharedObject (String name, Object object) {
 		if (mSharedObjects.containsKey (name)) {
@@ -163,7 +179,7 @@ public final class RunTimeImpl implements RunTime, ProcedureRunner {
 		mSourceStack.initAndPush (source);
 	}
 
-	public void evaluateExpressions (TestLineImpl testLine) {
+	void evaluateExpressions (TestLineImpl testLine) {
 		final Scope scope	= getCurrentScope ();
 		final int nrOfParts	= testLine.getNrOfParts ();
 		for (int partNr = 0; partNr < nrOfParts; ++partNr) {

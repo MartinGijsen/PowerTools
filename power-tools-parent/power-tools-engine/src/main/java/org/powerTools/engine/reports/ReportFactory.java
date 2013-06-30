@@ -32,10 +32,10 @@ public final class ReportFactory {
 	
 	public static boolean createKeywordsHtmlLog (Context context) {
 		try {
-			final File file = new File (context.mFullLogFilePath);
+			File file = new File (context.mFullLogFilePath);
 			file.getParentFile ().mkdirs ();
-			final KeywordsHtmlLog log				= new KeywordsHtmlLog (new PrintWriter (new FileWriter (file)), context.mLogFileName);
-			final TestRunResultPublisher publisher	= TestRunResultPublisher.getInstance ();
+			KeywordsHtmlLog log					= new KeywordsHtmlLog (new PrintWriter (new FileWriter (file)), context.mLogFileName);
+			TestRunResultPublisher publisher	= TestRunResultPublisher.getInstance ();
 			publisher.subscribeToTestLines (log);
 			publisher.subscribeToTestResults (log);
 			return true;
@@ -44,9 +44,23 @@ public final class ReportFactory {
 		}
 	}
 
+	public static boolean createTestCaseReport (Context context) {
+		try {
+			File file = new File (context.mResultsDirectory + "testcasereport.html");
+			file.getParentFile ().mkdirs ();
+			TestCaseReport report				= new TestCaseReport (new PrintWriter (new FileWriter (file)));
+			TestRunResultPublisher publisher	= TestRunResultPublisher.getInstance ();
+			publisher.subscribeToTestCases (report);
+			publisher.subscribeToTestResults (report);
+			return true;
+		} catch (IOException ioe) {
+			return false;
+		}
+	}
+	
 	public static void createConsole () {
-		final Console console					= new Console ();
-		final TestRunResultPublisher publisher	= TestRunResultPublisher.getInstance ();
+		Console console						= new Console ();
+		TestRunResultPublisher publisher	= TestRunResultPublisher.getInstance ();
 		publisher.subscribeToTestLines (console);
 		publisher.subscribeToTestResults (console);
 	}
