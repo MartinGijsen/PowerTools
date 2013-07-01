@@ -172,6 +172,14 @@ public class ExpressionEvaluatorDateTest {
 		Assert.assertEquals ("03-01-2013", result);
 	}
 	
+	@Test
+	public void testConcateDateExpressionToString () {
+		mScope.createVariable ("aDate", "03-01-2013");
+		String result = ExpressionEvaluator.evaluate ("? 'aStringLiteral' ++ (aDate + 1 days)", mScope);
+		String expectation = "aStringLiteral04-01-2013";
+		Assert.assertEquals (expectation, result);
+	}	
+
 	private String getDateWithOffsetForToday (int nrOfDays)	{
 		Calendar mDate = Calendar.getInstance ();
 		mDate.add (Calendar.DATE, nrOfDays);

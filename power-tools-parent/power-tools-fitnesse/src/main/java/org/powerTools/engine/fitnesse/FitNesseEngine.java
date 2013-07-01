@@ -27,6 +27,7 @@ import org.powerTools.engine.Context;
 import org.powerTools.engine.core.BuiltinInstructions;
 import org.powerTools.engine.core.Engine;
 import org.powerTools.engine.core.RunTimeImpl;
+import org.powerTools.engine.reports.ReportFactory;
 import org.powerTools.engine.reports.TestRunResultPublisher;
 
 import fit.Parse;
@@ -37,27 +38,35 @@ public final class FitNesseEngine extends Engine {
 	
 	private static final FitNesseEngine mTheOne = new FitNesseEngine ();
 	
+	private final String mLogFilePath;
 	private final FitNesseReporter mFitNesseReporter;
-	
 
+	
 	private FitNesseEngine () {
 		super (new RunTimeImpl (new Context (ROOT_DIRECTORY + "files/testResults/")));
 
 		//ReportFactory.createConsole ();
+		mLogFilePath = mRunTime.getContext ().mFullLogFilePath;
 		createLog ();
+		if (!ReportFactory.createTestCaseReport (mRunTime.getContext ())) {
+			System.err.println ("could not open test case report");
+		}
 		mFitNesseReporter = new FitNesseReporter ();
 		mPublisher.subscribeToTestResults (mFitNesseReporter);
 
 		BuiltinInstructions.register (mRunTime, mInstructions);
+		
+		mPublisher.start (mRunTime.getContext ().mStartTime);
+		// TODO: send stop signal also, once integration with Fit is improved
 	}
-	
+
 	private boolean createLog () {
 		try {
-			final Context context	= mRunTime.getContext ();
-			final File file			= new File (context.mFullLogFilePath);
+			Context context	= mRunTime.getContext ();
+			File file		= new File (context.mFullLogFilePath);
 			file.getParentFile ().mkdirs ();
-			final HtmlLog log						= new HtmlLog (new PrintWriter (new FileWriter (file)), context.mLogFileName);
-			final TestRunResultPublisher publisher	= TestRunResultPublisher.getInstance ();
+			HtmlLog log							= new HtmlLog (new PrintWriter (new FileWriter (file)), context.mLogFileName);
+			TestRunResultPublisher publisher	= TestRunResultPublisher.getInstance ();
 			publisher.subscribeToTestLines (log);
 			publisher.subscribeToTestResults (log);
 			return true;
@@ -71,7 +80,7 @@ public final class FitNesseEngine extends Engine {
 	}
 
 	public void run (InstructionFixture fixture, Parse table) {
-		final InstructionSource source = new InstructionSource (fixture, table, mRunTime.getContext ().mFullLogFilePath);
+		InstructionSource source = new InstructionSource (fixture, table, mLogFilePath);
 		mFitNesseReporter.setSource (source);
 		mRunTime.invokeSource (source);
 		addProcedure (source.getProcedure ());
@@ -79,11 +88,15 @@ public final class FitNesseEngine extends Engine {
 	}
 
 	public void run (ScenarioFixture fixture, Parse table) {
-		run (new ScenarioSource (fixture, table, mRunTime.getContext ().mFullLogFilePath));
+		run (new ScenarioSource (fixture, table, mLogFilePath));
+	}
+
+	public void run (TestCaseFixture fixture, Parse table) {
+		run (new TestCaseSource (fixture, table, mLogFilePath));
 	}
 
 	public void run (DataFixture fixture, Parse table) {
-		run (new DataSource (fixture, table, mRunTime.getContext ().mFullLogFilePath));
+		run (new DataSource (fixture, table, mLogFilePath));
 	}
 
 	private void run (BaseTestSource source) {

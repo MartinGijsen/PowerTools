@@ -27,10 +27,10 @@ import org.powerTools.engine.ExecutionException;
 import org.powerTools.engine.TestLine;
 
 
-final class MethodExecutor implements Executor {
-	private final Object mObject;
-	private final Method mMethod;
-	private final Object[] mArguments;
+class MethodExecutor implements Executor {
+	protected final Object mObject;
+	protected final Method mMethod;
+	protected final Object[] mArguments;
 
 	
 	MethodExecutor (Object object, Method method) {
@@ -40,13 +40,13 @@ final class MethodExecutor implements Executor {
 	}
 
 	@Override
-	public boolean execute (TestLine testLine) {
+	public final boolean execute (TestLine testLine) {
 		getArguments (testLine);
 		return invokeMethodAndHandleExceptions ();
 	}
 	
 	
-	private void getArguments (TestLine testLine) {
+	protected void getArguments (TestLine testLine) {
 		Class<?>[] parameterTypes	= mMethod.getParameterTypes ();
 		int nrOfParameters			= parameterTypes.length;
 		checkNrOfArguments (testLine, nrOfParameters);
@@ -56,14 +56,14 @@ final class MethodExecutor implements Executor {
 		}
 	}
 
-	private void checkNrOfArguments (TestLine testLine, int maxNrOfArgs) {
+	protected final void checkNrOfArguments (TestLine testLine, int maxNrOfArgs) {
 		final int actualNrOfArgs = testLine.getNrOfParts () - 1;
 		if (actualNrOfArgs > maxNrOfArgs) {
 			throw new ExecutionException (String.format ("instruction %s expects %d arguments but receives %d", testLine.getPart (0), maxNrOfArgs, actualNrOfArgs));
 		}
 	}
 	
-	private Object getArgument (Class<?> parameterType, String arg) {
+	protected final Object getArgument (Class<?> parameterType, String arg) {
 		if (parameterType == String.class) {
 			return arg;
 		} else if (arg.isEmpty ()) {

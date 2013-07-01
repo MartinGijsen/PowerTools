@@ -20,7 +20,7 @@ package org.powerTools.engine.instructions;
 
 import org.powerTools.engine.TestLine;
 import org.powerTools.engine.sources.Procedure;
-import org.powerTools.engine.sources.ProcedureTestSource;
+import org.powerTools.engine.sources.TestSourceFactory;
 
 
 public final class ProcedureExecutor implements Executor {
@@ -36,7 +36,7 @@ public final class ProcedureExecutor implements Executor {
 	
 	@Override
 	public boolean execute (TestLine testLine) {
-		mRunner.invokeSource (new ProcedureTestSource (mProcedure, mRunner.getCurrentScope (), testLine));
+		mRunner.invokeSource (TestSourceFactory.createProcedureTestSource (mProcedure, mRunner.getCurrentScope (), testLine));
 		return true;
 	}
 }

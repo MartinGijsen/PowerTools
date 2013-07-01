@@ -28,13 +28,13 @@ import org.powerTools.engine.ExecutionException;
 import org.powerTools.engine.symbol.Scope;
 
 
-public final class XlsxTestSource extends ExcelTestSource {
+final class XlsxTestSource extends ExcelTestSource {
 	private XlsxTestSource (String fileName, String sheetName, Scope scope) {
 		super (fileName, sheetName, scope);
 	}
 
 
-	public static XlsxTestSource createTestSource (String fileName, String sheetName, Scope scope) {
+	static XlsxTestSource createTestSource (String fileName, String sheetName, Scope scope) {
 		return new XlsxTestSource (fileName, sheetName, scope);
 	}
 	

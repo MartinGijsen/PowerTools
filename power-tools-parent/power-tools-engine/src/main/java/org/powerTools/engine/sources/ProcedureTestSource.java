@@ -25,11 +25,11 @@ import org.powerTools.engine.TestLine;
 import org.powerTools.engine.symbol.Scope;
 
 
-public final class ProcedureTestSource extends TestSource {
-	private Iterator<List<String>> mInstructionIter;
+final class ProcedureTestSource extends TestSource {
+	private final Iterator<List<String>> mInstructionIter;
 
 	
-	public ProcedureTestSource (Procedure procedure, Scope parentScope, TestLine testLine) {
+	ProcedureTestSource (Procedure procedure, Scope parentScope, TestLine testLine) {
 		super (new Scope (parentScope));
 		procedure.createParameters (mScope, testLine);
 		mInstructionIter = procedure.instructionIterator ();

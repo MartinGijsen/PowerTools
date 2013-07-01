@@ -21,6 +21,8 @@ package org.powerTools.engine.core;
 import java.util.EmptyStackException;
 import java.util.Stack;
 
+import org.powerTools.engine.ExecutionException;
+import org.powerTools.engine.sources.TestCaseTestSource;
 import org.powerTools.engine.sources.TestLineImpl;
 import org.powerTools.engine.sources.TestSource;
 import org.powerTools.engine.symbol.Scope;
@@ -32,13 +34,24 @@ import org.powerTools.engine.symbol.Scope;
  */
 final class TestSourceStack {
 	private final Stack<TestSource> mSourceStack;
+	
+	private boolean mInATestCase;
 
 	
 	TestSourceStack () {
 		mSourceStack = new Stack<TestSource> ();
+		mInATestCase = false;
 	}
 
 
+	TestSource getCurrentTestSource () {
+		return mSourceStack.peek ();
+	}
+
+	boolean inATestCase () {
+		return mInATestCase;
+	}
+	
 	Scope getCurrentScope () {
 		try {
 			return mSourceStack.peek ().getScope ();
@@ -58,15 +71,42 @@ final class TestSourceStack {
 		initAndPush (mSourceStack.peek ().create (fileName));
 	}
 
+	boolean createAndPushTestCase (String name, String description) {
+		if (!mInATestCase) {
+			;
+		} else if (mSourceStack.peek () instanceof TestCaseTestSource) {
+			popTestSource ();
+		} else {
+			return false;
+		}
+
+		initAndPush (mSourceStack.peek ().createTestCase (name, description));
+		mInATestCase = true;
+		return true;
+	}
+
 	TestLineImpl getTestLine () {
 		while (!mSourceStack.isEmpty ()) {
 			TestLineImpl testLine = mSourceStack.peek ().getTestLine ();
 			if (testLine != null) {
 				return testLine;
 			} else {
-				mSourceStack.pop ();
+				popTestSource ();
 			}
 		}
 		return null;
+	}
+	
+	void popTestCase () {
+		if (!(mSourceStack.peek () instanceof TestCaseTestSource)) {
+			throw new ExecutionException ("not in a test case (in this test line source)");
+		} else {
+			popTestSource ();
+			mInATestCase = false;
+		}
+	}
+	
+	private void popTestSource () {
+		mSourceStack.pop ().cleanup ();
 	}
 }

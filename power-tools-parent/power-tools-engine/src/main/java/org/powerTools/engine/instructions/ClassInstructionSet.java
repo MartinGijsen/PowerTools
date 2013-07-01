@@ -18,9 +18,12 @@
 
 package org.powerTools.engine.instructions;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 
 import org.powerTools.engine.ExecutionException;
+import org.powerTools.engine.KeywordName;
+import org.powerTools.engine.ParameterOrder;
 
 
 /**
@@ -57,7 +60,13 @@ final class ClassInstructionSet implements InstructionSet {
 	@Override
 	public Executor getExecutor (String instructionName) {
 		Method method = getMethod (getMethodName (instructionName));
-		return method != null ? new MethodExecutor (mObject, method) : null;
+		if (method == null) {
+			return null;
+		} else if (method.isAnnotationPresent (KeywordName.class) && method.isAnnotationPresent (ParameterOrder.class)) {
+			return new ShuffledParametersMethodExecutor (mObject, method);
+		} else {
+			return new MethodExecutor (mObject, method);
+		}
 	}
 	
 	private String getMethodName (String instructionName) {
@@ -85,12 +94,18 @@ final class ClassInstructionSet implements InstructionSet {
 	
 	private Method getMethod (String methodName) {
 	    for (Method method : mObject.getClass ().getMethods ()) {
-	    	if (method.getName ().equals (methodName)) {
+	    	if (   method.getName ().equals (methodName)
+	    		|| isAnnotatedWithKeyword (method, methodName)) {
 	    		return method;
 	    	}
 	    }
 	    
 	    return null;
+	}
+	
+	private boolean isAnnotatedWithKeyword (Method method, String methodName) {
+		Annotation annotation = method.getAnnotation (KeywordName.class);
+		return annotation != null && ((KeywordName) annotation).value ().equals (methodName);
 	}
 
 	@Override

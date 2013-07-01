@@ -27,6 +27,8 @@ import org.powerTools.engine.symbol.Scope;
  * It supports reporting errors and other execution information and
  * getting the local and global scope for getting and setting symbols.
  * <BR/>
+ * It enables entering and leaving a test case.
+ * <BR/>
  * It also allows an instruction (set) to create or get a shared object,
  * so data or logic can be shared between instruction sets.
  */
@@ -136,9 +138,25 @@ public interface RunTime {
 	
 
 	/**
+	 * Enters a test case, creating a new scope for variables.
+	 * @param	name	the (unique) name of the test case
+	 * @param	description	a description of the test case
+	 * @return	true
+	 */
+	boolean enterTestCase (String name, String description);
+
+	/**
+	 * Leaves the test case and deletes its scope and the variables in it
+	 * @return	false if not in a test case, true otherwise
+	 */
+	boolean leaveTestCase ();
+	
+
+	/**
 	 * Makes an object available to other instruction sets
 	 * @param	name	the name of the object
 	 * @param	object	the object to share
+	 * @return	false if an object of the specified name already exists, true otherwise
 	 */
 	boolean addSharedObject (String name, Object object);
 
