@@ -238,15 +238,15 @@ class WebDriverBrowser implements IBrowser {
 		mDriver.switchTo ().defaultContent ();
 		return true;
 	}
-
+	
 	@Override
-	public boolean type (Item item, String text) {
-		return type (waitForUniqueElement (getLocator (item)), text);
+	public boolean type (Item item, final String text) {
+		return type (getLocator (item), text);		
 	}
 
 	@Override
 	public boolean type (IKeyType keyType, String value, String text) {
-		return type (waitForUniqueElement (getLocator (keyType, value)), text);
+		return type (getLocator (keyType, value), text);		
 	}
 
 	@Override
@@ -257,12 +257,12 @@ class WebDriverBrowser implements IBrowser {
 
 	@Override
 	public boolean setCheckboxValue(Item item, boolean value) {
-		return setCheckboxValue (waitForUniqueElement (getLocator (item)), value);
+		return setCheckboxValue (getLocator (item), value);
 	}
 	
 	@Override
-	public boolean setCheckboxValue(IKeyType keyType, String value, boolean checkValue) {
-		return setCheckboxValue (waitForUniqueElement (getLocator (keyType, value)), checkValue);
+	public boolean setCheckboxValue(IKeyType keyType, String keyValue, boolean value) {
+		return setCheckboxValue (getLocator (keyType, keyValue), value);
 	}	
 	
 	@Override
@@ -290,12 +290,12 @@ class WebDriverBrowser implements IBrowser {
 	
 	@Override
 	public boolean click (Item item) {
-		return click (waitForUniqueElement (getLocator (item)));
+		return click (getLocator (item));
 	}
 
 	@Override
 	public boolean click (IKeyType keyType, String value) {
-		return click (waitForUniqueElement (getLocator (keyType, value)));
+		return click (getLocator (keyType, value));
 	}
 
 	@Override
@@ -435,7 +435,7 @@ class WebDriverBrowser implements IBrowser {
 
 	@Override
 	public boolean waitUntilItemIsPresent (Item item, int timeout) {
-		return waitForCondition (new ItemPresentCondition (getLocator (item)), timeout);
+		return waitUntilItemIsPresent (getLocator (item), timeout);
 	}
 
 	@Override
@@ -609,6 +609,7 @@ class WebDriverBrowser implements IBrowser {
 //		}
 //	}
 
+	
 	private WebElement getUniqueElement (By locator) {
 		final List<WebElement> list = mDriver.findElements (locator);
 		switch (list.size ()) {
@@ -669,31 +670,76 @@ class WebDriverBrowser implements IBrowser {
 		return locator;
 	}
 
-	private boolean type (WebElement element, String text) {
-		element.clear ();
-		element.sendKeys (text);
-		return true;
-	}
-	
-	private boolean setCheckboxValue(WebElement element, boolean value) {
-		boolean current = element.isSelected();
-		if (current != value) {
-			element.click();
-		}
-		return true;
-	}
-	
-	
-	private boolean click (WebElement element) {
-		element.click ();
-		return true;
-	}
+	private boolean setCheckboxValue (By locator, final boolean value) {
+		return executeCommandWhenElementAvailable (locator, mShortDefaultTimeoutInSeconds, new WebCommand() {
 
+			@Override
+			public boolean execute (WebElement element) throws WebDriverException, ExecutionException {
+				boolean current = element.isSelected ();
+				if (current != value) {
+					element.click ();
+				}
+				return true;
+			}
+		});		
+	}
+	
 	private boolean click (By locator) {
-		getUniqueElement (locator).click ();
-		return true;
+		return executeCommandWhenElementAvailable (locator, mShortDefaultTimeoutInSeconds, new WebCommand() {
+
+			@Override
+			public boolean execute (WebElement element) throws WebDriverException, ExecutionException {
+				element.click ();
+				return true;			}
+		});
+	}
+	
+	private boolean type (By locator, final String text) {
+		return executeCommandWhenElementAvailable (locator, mShortDefaultTimeoutInSeconds, new WebCommand() {
+
+			@Override
+			public boolean execute (WebElement element) throws WebDriverException, ExecutionException {
+				element.clear ();
+				element.sendKeys (text);
+				return true;
+			}
+		});
+	}	
+	
+	private boolean waitUntilItemIsPresent(By locator, int timeout) {
+		return executeCommandWhenElementAvailable (locator, timeout, new WebCommand() {
+
+			@Override
+			public boolean execute (WebElement element) throws WebDriverException, ExecutionException {
+				return true;			}
+		});
+	}
+	
+	private boolean executeCommandWhenElementAvailable (By locator, int timeoutInSec, WebCommand cmd) {
+
+		for (int nrOfSeconds = 0; nrOfSeconds < timeoutInSec; ++nrOfSeconds) {
+			try {
+				WebElement element = getUniqueElement(locator);
+				if (cmd.execute (element)) {
+					return true;
+				}
+			} catch (WebDriverException e) {
+				// This error occurs occasionally in IE when using SeleniumGrid
+			} catch (ExecutionException e) {
+				// This error occurs occasionally in Firefox. Sometimes the body tag cannot be found, due of Animation by Javascript 
+			}
+			sleep (cOneSecondTimeout);
+		}
+		return false;
 	}
 
+	private void sleep (long ms) {
+		try {
+			Thread.sleep (ms);
+		} catch (InterruptedException ie) {
+			// ignore
+		}
+	}
 	
 	private boolean waitForCondition (Condition condition, int timeout) {
 		for (int nrOfSeconds = 0; nrOfSeconds < timeout; ++nrOfSeconds) {
@@ -713,7 +759,11 @@ class WebDriverBrowser implements IBrowser {
 		}
 		return false;
 	}	
+
 	
+	private interface WebCommand {
+		boolean execute(WebElement element) throws WebDriverException, ExecutionException;
+	}
 	
 	private interface Condition {
 		boolean isSatisfied ();
