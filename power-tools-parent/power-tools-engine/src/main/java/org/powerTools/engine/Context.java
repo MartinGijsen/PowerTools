@@ -56,7 +56,6 @@ public class Context {
 	}
 	
 	public Context (Date startTime, String resultsBaseDirectory, String logFileName) {
-		System.out.println("Maken context: " + logFileName);
 		mStartTime				= startTime;
 		
 		if (defaulBaseDirectory == null) {
