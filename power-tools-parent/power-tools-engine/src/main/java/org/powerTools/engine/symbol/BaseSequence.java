@@ -18,25 +18,30 @@
 
 package org.powerTools.engine.symbol;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import org.powerTools.engine.ExecutionException;
 
 
-public final class StringSequence extends BaseSequence {
-	StringSequence (String name, Scope scope) {
+public abstract class BaseSequence extends SimpleSymbol {
+	protected List<String> mList;
+	protected Iterator<String> mIter;
+
+	
+	protected BaseSequence (String name, Scope scope) {
 		super (name, scope);
+		mList = new ArrayList<String> ();
+		mIter = null;
 	}
 
-
 	@Override
-	public String getValue (String name) {
-		checkName (name);
-		if (mIter == null) {
-			mIter = mList.iterator ();
-		}
-		if (mIter.hasNext ()) {
-			return mIter.next ();
+	public final void setValue (String name, String value) {
+		if (mIter != null) {
+			throw new ExecutionException ("unable to add string to string sequence after it is used");
 		} else {
-			throw new ExecutionException ("all strings have been used");
+			mList.add (value);
 		}
 	}
 }

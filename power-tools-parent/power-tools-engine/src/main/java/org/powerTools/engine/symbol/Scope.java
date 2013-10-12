@@ -42,7 +42,7 @@ public final class Scope {
 	}
 
 	public Symbol get (String name) {
-		final Symbol symbol = mSymbols.get (name);
+		Symbol symbol = mSymbols.get (name);
 		if (symbol != null) {
 			return symbol;
 		} else if (mParent == null) {
@@ -86,7 +86,13 @@ public final class Scope {
 	}
 
 	public StringSequence createStringSequence (String name) {
-		final StringSequence sequence = new StringSequence (name, new Scope (this));
+		StringSequence sequence = new StringSequence (name, new Scope (this));
+		add (sequence);
+		return sequence;
+	}
+
+	public RepeatingStringSequence createRepeatingStringSequence (String name) {
+		RepeatingStringSequence sequence = new RepeatingStringSequence (name, new Scope (this));
 		add (sequence);
 		return sequence;
 	}
@@ -99,7 +105,7 @@ public final class Scope {
 	private final Scope mParent;
 
 	private Symbol add (Symbol symbol) {
-		final String name = symbol.getName ();
+		String name = symbol.getName ();
 		if (mSymbols.get (name) != null) {
 			throw new ExecutionException (String.format ("a symbol '%s' already exists", name));
 		} else {

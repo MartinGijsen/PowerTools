@@ -29,8 +29,8 @@ import org.powerTools.engine.ParameterOrder;
 import org.powerTools.engine.RunTime;
 import org.powerTools.engine.Symbol;
 import org.powerTools.engine.instructions.InstructionSetFactory;
+import org.powerTools.engine.symbol.BaseSequence;
 import org.powerTools.engine.symbol.Scope;
-import org.powerTools.engine.symbol.StringSequence;
 
 
 /**
@@ -168,10 +168,16 @@ public final class BuiltinInstructions implements InstructionSet {
 		return true;
 	}
 
+	@KeywordName ("DefineRepeatingStringSequence")
+	public boolean DefineRepeatingStringSequence_ (String name) {
+		mRunTime.getCurrentScope ().createRepeatingStringSequence (name);
+		return true;
+	}
+
 	@KeywordName ("AddSequenceString")
 	public boolean Add_ToSequence_ (String value, String name) {
-		final Symbol symbol = mRunTime.getSymbol (name);
-		if (symbol instanceof StringSequence) {
+		Symbol symbol = mRunTime.getSymbol (name);
+		if (symbol instanceof BaseSequence) {
 			symbol.setValue (value);
 			return true;
 		} else {

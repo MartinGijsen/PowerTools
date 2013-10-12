@@ -27,19 +27,19 @@ import org.junit.Test;
 import org.powerTools.engine.ExecutionException;
 
 
-public class StringSequenceTest {
+public class CyclicSequenceTest {
 	private static final String NAME	= "name";
 	private static final String VALUE1	= "something";
 	private static final String VALUE2	= "something else";
 	
 	private Scope mScope;
-	private StringSequence mSequence;
+	private RepeatingStringSequence mSequence;
 
 	
 	@Before
 	public void setUp () throws Exception {
 		mScope		= new Scope (Scope.getGlobalScope ());
-		mSequence	= new StringSequence (NAME, mScope);
+		mSequence	= new RepeatingStringSequence (NAME, mScope);
 	}
 
 	@After
@@ -66,36 +66,36 @@ public class StringSequenceTest {
 		mSequence.getValue ();
 	}
 
-	@Test (expected=ExecutionException.class)
+	@Test
 	public void testGetValueOneValueWithName () {
 		mSequence.setValue (NAME, VALUE1);
 		assertEquals (VALUE1, mSequence.getValue (NAME));
-		mSequence.getValue (NAME);
+		assertEquals (VALUE1, mSequence.getValue (NAME));
 	}
 
-	@Test (expected=ExecutionException.class)
+	@Test
 	public void testGetValueOneValueWithoutName () {
 		mSequence.setValue (VALUE1);
 		assertEquals (VALUE1, mSequence.getValue ());
-		mSequence.getValue ();
+		assertEquals (VALUE1, mSequence.getValue ());
 	}
 
-	@Test (expected=ExecutionException.class)
+	@Test
 	public void testGetValueTwoValuesWithName () {
 		mSequence.setValue (NAME, VALUE1);
 		mSequence.setValue (NAME, VALUE2);
 		assertEquals (VALUE1, mSequence.getValue (NAME));
 		assertEquals (VALUE2, mSequence.getValue (NAME));
-		mSequence.getValue (NAME);
+		assertEquals (VALUE1, mSequence.getValue (NAME));
 	}
 
-	@Test (expected=ExecutionException.class)
+	@Test
 	public void testGetValueTwoValuesWithoutName () {
 		mSequence.setValue (VALUE1);
 		mSequence.setValue (VALUE2);
 		assertEquals (VALUE1, mSequence.getValue ());
 		assertEquals (VALUE2, mSequence.getValue ());
-		mSequence.getValue ();
+		assertEquals (VALUE1, mSequence.getValue ());
 	}
 
 	@Test (expected=ExecutionException.class)

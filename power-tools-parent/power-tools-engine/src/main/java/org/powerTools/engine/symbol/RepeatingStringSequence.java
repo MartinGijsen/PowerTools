@@ -21,8 +21,8 @@ package org.powerTools.engine.symbol;
 import org.powerTools.engine.ExecutionException;
 
 
-public final class StringSequence extends BaseSequence {
-	StringSequence (String name, Scope scope) {
+public final class RepeatingStringSequence extends BaseSequence {
+	RepeatingStringSequence (String name, Scope scope) {
 		super (name, scope);
 	}
 
@@ -32,11 +32,13 @@ public final class StringSequence extends BaseSequence {
 		checkName (name);
 		if (mIter == null) {
 			mIter = mList.iterator ();
+			if (!mIter.hasNext ()) {
+				throw new ExecutionException ("sequence is empty");
+			}
 		}
-		if (mIter.hasNext ()) {
-			return mIter.next ();
-		} else {
-			throw new ExecutionException ("all strings have been used");
+		if (!mIter.hasNext ()) {
+			mIter = mList.iterator ();
 		}
+		return mIter.next ();
 	}
 }
