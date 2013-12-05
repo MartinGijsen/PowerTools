@@ -35,9 +35,13 @@ public class Context {
 
 	final static String LOG_FILE_NAME = "log.html";
 
-	
 	protected static final SimpleDateFormat mDateFormat = new SimpleDateFormat ("yyyy.MM.dd-HH.mm.ss");
 
+	private static String defaulBaseDirectory = null;
+	
+	public static void setAlternativeResultBaseDirectory (String baseDirectory) {
+		defaulBaseDirectory = baseDirectory;
+	}
 	
 	public Context (String resultsBaseDirectory) {
 		this (GregorianCalendar.getInstance ().getTime (), resultsBaseDirectory);
@@ -53,7 +57,13 @@ public class Context {
 	
 	public Context (Date startTime, String resultsBaseDirectory, String logFileName) {
 		mStartTime				= startTime;
-		mResultsBaseDirectory	= resultsBaseDirectory + "/";
+		
+		if (defaulBaseDirectory == null) {
+			mResultsBaseDirectory	= resultsBaseDirectory + "/";
+		} else	{
+			mResultsBaseDirectory	= defaulBaseDirectory + "/";
+		}
+		
 		mResultsDirectory		= mResultsBaseDirectory + mDateFormat.format (startTime) + "/";
 		mLogFileName			= logFileName;
 		mFullLogFilePath		= mResultsDirectory + logFileName;
