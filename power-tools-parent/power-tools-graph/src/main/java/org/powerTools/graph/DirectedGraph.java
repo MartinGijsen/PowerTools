@@ -16,7 +16,7 @@
  *	along with the PowerTools. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.powerTools.graph;
+package org.powertools.graph;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -137,7 +137,7 @@ public final class DirectedGraph {
 		cluster.add (node);
 		return node;
 	}
-	
+
 	public Node getNode (String name) {
 		Node node = this.nodes.get (name);
 		if (node == null) {
@@ -147,18 +147,18 @@ public final class DirectedGraph {
 	}
 
 	public Node getRoot () {
-		Set<Node> nodes = new HashSet<Node> ();
-		nodes.addAll (this.nodes.values ());
+		Set<Node> startNodes = new HashSet<Node> ();
+		startNodes.addAll (this.nodes.values ());
 
-		for (Set<Edge> edges : this.edges.values ()) {
-			nodes.removeAll (edges);
+		for (Set<Edge> edgeSet : this.edges.values ()) {
+			startNodes.removeAll (edgeSet);
 		}
 
-		switch (nodes.size ()) {
+		switch (startNodes.size ()) {
 		case 0:
 			throw new GraphException ("no start node");
 		case 1:
-			return nodes.iterator ().next ();
+			return startNodes.iterator ().next ();
 		default:
 			throw new GraphException ("multiple start nodes");
 		}
@@ -177,26 +177,25 @@ public final class DirectedGraph {
 	}
 
 	public Edge addEdge (Node source, Node target) {
-		Set<Edge> edges = this.edges.get (source);
-		if (edges == null) {
-			edges = new HashSet<Edge> ();
-			this.edges.put (source, edges);
-		}
-
-		if (edges.contains (target)) {
+		Set<Edge> edgesFromSameSource = this.edges.get (source);
+		if (edgesFromSameSource == null) {
+			edgesFromSameSource = new HashSet<Edge> ();
+			this.edges.put (source, edgesFromSameSource);
+		} else if (edgesFromSameSource.contains (target)) {
 			throw new GraphException ("edge already exists");
 		}
+
 		final Edge edge = new Edge (source, target);
-		edges.add (edge);
+		edgesFromSameSource.add (edge);
 		return edge;
 	}
 	
 	public Edge getEdge (Node source, Node target) {
-		final Set<Edge> edges = this.edges.get (source);
-		if (edges == null) {
+		final Set<Edge> edgesFromSameSource = this.edges.get (source);
+		if (edgesFromSameSource == null) {
 			throw new GraphException ("edge does not exist");
 		}
-		for (Edge edge : edges) {
+		for (Edge edge : edgesFromSameSource) {
 			if (edge.target == target) {
 				return edge;
 			}
@@ -205,12 +204,8 @@ public final class DirectedGraph {
 	}
 
 	public Set<Edge> getEdges (Node source) {
-		final Set<Edge> edges = this.edges.get (source);
-		if (edges == null) {
-			return new HashSet<Edge> ();
-		} else {
-			return edges;
-		}
+		Set<Edge> edgesFromSameSource = this.edges.get (source);
+		return edgesFromSameSource == null ? new HashSet<Edge> () : edgesFromSameSource;
 	}
 
 	public Cluster addCluster (String label) {

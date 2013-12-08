@@ -1,4 +1,4 @@
-package org.powerTools.engine.expressions;
+package org.powertools.engine.expressions;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -7,9 +7,9 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.powerTools.engine.BusinessDayChecker;
-import org.powerTools.engine.expression.ExpressionEvaluator;
-import org.powerTools.engine.symbol.Scope;
+import org.powertools.engine.BusinessDayChecker;
+import org.powertools.engine.expression.ExpressionEvaluator;
+import org.powertools.engine.symbol.Scope;
 
 
 public class ExpressionEvaluatorDateTest {

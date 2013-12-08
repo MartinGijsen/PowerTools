@@ -16,7 +16,7 @@
  *	along with the PowerTools engine. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.powerTools.engine.sources;
+package org.powertools.engine.sources;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -24,8 +24,8 @@ import java.io.IOException;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Workbook;
-import org.powerTools.engine.ExecutionException;
-import org.powerTools.engine.symbol.Scope;
+import org.powertools.engine.ExecutionException;
+import org.powertools.engine.symbol.Scope;
 
 
 final class XlsTestSource extends ExcelTestSource {
@@ -41,7 +41,7 @@ final class XlsTestSource extends ExcelTestSource {
 	@Override
 	public TestSource create (String sourceName) {
 		Names names = createNamesFromSheetName (sourceName);
-		return new XlsTestSource (names.mFileName, names.mSheetName, mScope);
+		return new XlsTestSource (names.getFileName (), names.getSheetName (), mScope);
 	}
 
 	@Override

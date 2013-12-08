@@ -1,8 +1,8 @@
-package org.powerTools.engine.reports;
+package org.powertools.engine.reports;
 
 import java.util.Date;
 
-import org.powerTools.engine.TestLine;
+import org.powertools.engine.TestLine;
 
 
 final class Subscriber implements TestCaseSubscriber, TestLineSubscriber, TestResultSubscriber {

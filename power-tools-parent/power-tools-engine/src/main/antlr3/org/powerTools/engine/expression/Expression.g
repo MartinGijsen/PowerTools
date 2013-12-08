@@ -31,11 +31,11 @@ tokens {
 }
 
 @lexer::header {
-package org.powerTools.engine.expression;
+package org.powertools.engine.expression;
 }
 
 @parser::header {
-package org.powerTools.engine.expression;
+package org.powertools.engine.expression;
 }
 
 root

@@ -16,12 +16,12 @@
  *	along with the PowerTools engine. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.powerTools.engine.sources;
+package org.powertools.engine.sources;
 
 import java.util.LinkedList;
 import java.util.List;
 
-import org.powerTools.engine.symbol.Scope;
+import org.powertools.engine.symbol.Scope;
 
 
 /**
@@ -38,11 +38,6 @@ public final class TestCaseTestSource extends TestSource {
 		mParent = parent;
 	}
 
-
-	@Override
-	public void initialize () {
-		;
-	}
 
 	@Override
 	public TestLineImpl getTestLine () {

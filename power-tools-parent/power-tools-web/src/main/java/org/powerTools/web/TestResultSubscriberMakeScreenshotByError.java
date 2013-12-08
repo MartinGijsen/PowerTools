@@ -1,12 +1,12 @@
-package org.powerTools.web;
+package org.powertools.web;
 
 import java.util.Date;
 
-import org.powerTools.engine.reports.TestResultSubscriber;
+import org.powertools.engine.reports.TestResultSubscriber;
+
 
 public class TestResultSubscriberMakeScreenshotByError implements TestResultSubscriber {
-
-	private WebLibrary webLibrary;
+	private final WebLibrary webLibrary;
 	
 	public TestResultSubscriberMakeScreenshotByError(WebLibrary webLibrary) {
 		this.webLibrary = webLibrary;
@@ -52,5 +52,4 @@ public class TestResultSubscriberMakeScreenshotByError implements TestResultSubs
 	@Override
 	public void processDecreaseLevel() {
 	}
-
 }

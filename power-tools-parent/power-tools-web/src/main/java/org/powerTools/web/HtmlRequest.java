@@ -16,7 +16,7 @@
  *	along with the PowerTools engine. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.powerTools.web;
+package org.powertools.web;
 
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
@@ -72,9 +72,9 @@ public final class HtmlRequest {
 				return parameters;
 			}
 		} catch (MalformedURLException mue) {
-			;
+			// ignore
 		} catch (UnsupportedEncodingException uee) {
-			;
+			// ignore
 		}
 		return null;
 	}

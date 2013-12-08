@@ -16,10 +16,10 @@
  *	along with the PowerTools engine. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.powerTools.engine.fitnesse;
+package org.powertools.engine.fitnesse;
 
-import org.powerTools.engine.sources.TestLineImpl;
-import org.powerTools.engine.symbol.Scope;
+import org.powertools.engine.sources.TestLineImpl;
+import org.powertools.engine.symbol.Scope;
 
 import fit.Fixture;
 import fit.Parse;

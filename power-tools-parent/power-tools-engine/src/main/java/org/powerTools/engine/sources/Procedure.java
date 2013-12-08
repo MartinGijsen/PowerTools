@@ -16,15 +16,15 @@
  *	along with the PowerTools engine. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.powerTools.engine.sources;
+package org.powertools.engine.sources;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.powerTools.engine.ExecutionException;
-import org.powerTools.engine.TestLine;
-import org.powerTools.engine.symbol.Scope;
+import org.powertools.engine.ExecutionException;
+import org.powertools.engine.TestLine;
+import org.powertools.engine.symbol.Scope;
 
 
 // A Procedure is a scripted instruction.

@@ -16,13 +16,13 @@
  *	along with the PowerTools engine. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.powerTools.engine.fitnesse;
+package org.powertools.engine.fitnesse;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.powerTools.engine.sources.TestSource;
-import org.powerTools.engine.symbol.Scope;
+import org.powertools.engine.sources.TestSource;
+import org.powertools.engine.symbol.Scope;
 
 import fit.Fixture;
 import fit.Parse;

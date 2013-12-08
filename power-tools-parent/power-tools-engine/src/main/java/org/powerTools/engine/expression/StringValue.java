@@ -16,7 +16,7 @@
  *	along with the PowerTools engine. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.powerTools.engine.expression;
+package org.powertools.engine.expression;
 
 
 final class StringValue extends Value {
@@ -29,7 +29,7 @@ final class StringValue extends Value {
 	
 	
 	@Override
-	public String getType () {
+	String getType () {
 		return "string";
 	}
 

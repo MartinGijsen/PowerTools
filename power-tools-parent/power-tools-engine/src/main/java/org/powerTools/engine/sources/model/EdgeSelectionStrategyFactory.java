@@ -16,15 +16,17 @@
  *	along with the PowerTools engine. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.powerTools.engine.sources.model;
+package org.powertools.engine.sources.model;
 
-import org.powerTools.engine.core.RunTimeImpl;
+import org.powertools.engine.RunTime;
 
 
 final class EdgeSelectionStrategyFactory {
-	private EdgeSelectionStrategyFactory () { }
+	private EdgeSelectionStrategyFactory () {
+		// empty
+	}
 
-	static EdgeSelectionStrategy create (String selector, RunTimeImpl runTime) {
+	static EdgeSelectionStrategy create (String selector, RunTime runTime) {
 		if (RandomEdgeSelector.NAME.equals (selector)) {
 			return new RandomEdgeSelector (runTime);
 		} else if (WeightedEdgeSelector.NAME.equals (selector)) {

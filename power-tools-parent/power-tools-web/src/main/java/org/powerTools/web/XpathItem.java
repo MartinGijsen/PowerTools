@@ -16,9 +16,9 @@
  *	along with the PowerTools engine. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.powerTools.web;
+package org.powertools.web;
 
-import org.powerTools.web.WebLibrary.IItemType;
+import org.powertools.web.WebLibrary.IItemType;
 
 
 final class XpathItem extends Item {
@@ -33,11 +33,13 @@ final class XpathItem extends Item {
 	}
 
 	
+	@Override
 	boolean resetParameter (int paramNr) {
 		mParameters[paramNr] = null;
 		return true;
 	}
 
+	@Override
 	boolean resetParameters () {
 		for (int paramNr = 0; paramNr < mParameters.length; ++paramNr) {
 			mParameters[paramNr] = null;
@@ -45,6 +47,7 @@ final class XpathItem extends Item {
 		return true;
 	}
 
+	@Override
 	public boolean setParameterValue (int position, String value) {
 		if (mParameters == null || position <= 0 || position > mParameters.length) {
 			return false;
@@ -54,11 +57,11 @@ final class XpathItem extends Item {
 		}
 	}
 
+	@Override
 	public String getValue () {
 		String parentXpath = "";
-		// TODO: check parent has Xpath at creation
 		if (mParent == null) {
-			;
+			// TODO: check parent exists and has Xpath at creation
 		} else if (mParent.mKeyType == WebLibrary.IKeyType.cXpath) {
 			parentXpath = mParent.getValue ();
 		} else {
@@ -85,7 +88,7 @@ final class XpathItem extends Item {
 		if (mParameters == null) {
 			return mValue;
 		} else {
-			final StringBuffer sb = new StringBuffer ();
+			final StringBuilder sb = new StringBuilder ();
 			for (int paramNr = 0; paramNr < mParameters.length; ++paramNr) {
 				if (mParameters[paramNr] == null) {
 					return null;

@@ -16,18 +16,20 @@
  *	along with the PowerTools engine. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.powerTools.engine.reports;
+package org.powertools.engine.reports;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-import org.powerTools.engine.Context;
+import org.powertools.engine.Context;
 
 
 public final class ReportFactory {
-	private ReportFactory () { }
+	private ReportFactory () {
+		// empty
+	}
 
 	
 	public static boolean createKeywordsHtmlLog (Context context) {

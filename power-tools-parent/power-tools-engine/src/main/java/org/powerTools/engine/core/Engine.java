@@ -16,14 +16,14 @@
  *	along with the PowerTools engine. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.powerTools.engine.core;
+package org.powertools.engine.core;
 
-import org.powerTools.engine.ExecutionException;
-import org.powerTools.engine.reports.TestRunResultPublisher;
-import org.powerTools.engine.sources.Procedure;
-import org.powerTools.engine.sources.ProcedureException;
-import org.powerTools.engine.sources.TestSource;
-import org.powerTools.engine.sources.TestLineImpl;
+import org.powertools.engine.ExecutionException;
+import org.powertools.engine.reports.TestRunResultPublisher;
+import org.powertools.engine.sources.Procedure;
+import org.powertools.engine.sources.ProcedureException;
+import org.powertools.engine.sources.TestSource;
+import org.powertools.engine.sources.TestLineImpl;
 
 
 /**

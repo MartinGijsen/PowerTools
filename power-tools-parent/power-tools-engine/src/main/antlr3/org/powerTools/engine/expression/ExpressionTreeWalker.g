@@ -25,13 +25,13 @@ options {
 }
 
 @header {
-package org.powerTools.engine.expression;
+package org.powertools.engine.expression;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.regex.Pattern;
 
-import org.powerTools.engine.symbol.Scope;
+import org.powertools.engine.symbol.Scope;
 }
 
 @members {

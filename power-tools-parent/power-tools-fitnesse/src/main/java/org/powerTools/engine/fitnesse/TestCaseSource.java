@@ -1,4 +1,4 @@
-/*	Copyright 2012 by Martin Gijsen (www.DeAnalist.nl)
+/*	Copyright 2012-2013 by Martin Gijsen (www.DeAnalist.nl)
  *
  *	This file is part of the PowerTools engine.
  *
@@ -16,18 +16,21 @@
  *	along with the PowerTools engine. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.powerTools.engine.fitnesse;
+package org.powertools.engine.fitnesse;
 
 import fit.Fixture;
 import fit.Parse;
+import org.powertools.engine.RunTime;
 
 
 final class TestCaseSource extends ScenarioSource {
-	private String[] mArgs;
+	private final RunTime mRunTime;
+	private final String[] mArgs;
 	
-	TestCaseSource (Fixture fixture, Parse table, String logFilePath) {
+	TestCaseSource (Fixture fixture, Parse table, RunTime runTime, String logFilePath) {
 		super (fixture, table, logFilePath);
-		mArgs = fixture.getArgs ();
+		mRunTime	= runTime;
+		mArgs		= fixture.getArgs ();
 	}
 
 
@@ -42,6 +45,7 @@ final class TestCaseSource extends ScenarioSource {
 		if (mArgs.length > 2) {
 			mPublisher.publishError ("too many arguments (test case name and description expected)");
 		}
+		//TODO mRunTime.enterTestCase (id, description);
 		mPublisher.publishEndOfTestLine ();
 		mPublisher.publishTestCaseBegin (id, description);
 	}

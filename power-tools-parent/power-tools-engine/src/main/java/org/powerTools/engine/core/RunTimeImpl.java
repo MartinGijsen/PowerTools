@@ -16,23 +16,23 @@
  *	along with the PowerTools engine. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.powerTools.engine.core;
+package org.powertools.engine.core;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import org.powerTools.engine.BusinessDayChecker;
-import org.powerTools.engine.Context;
-import org.powerTools.engine.Roles;
-import org.powerTools.engine.RunTime;
-import org.powerTools.engine.Symbol;
-import org.powerTools.engine.expression.ExpressionEvaluator;
-import org.powerTools.engine.instructions.ProcedureRunner;
-import org.powerTools.engine.reports.TestRunResultPublisher;
-import org.powerTools.engine.sources.TestLineImpl;
-import org.powerTools.engine.sources.TestSource;
-import org.powerTools.engine.symbol.Scope;
-import org.powerTools.engine.symbol.Util;
+import org.powertools.engine.BusinessDayChecker;
+import org.powertools.engine.Context;
+import org.powertools.engine.Roles;
+import org.powertools.engine.RunTime;
+import org.powertools.engine.Symbol;
+import org.powertools.engine.expression.ExpressionEvaluator;
+import org.powertools.engine.instructions.ProcedureRunner;
+import org.powertools.engine.reports.TestRunResultPublisher;
+import org.powertools.engine.sources.TestLineImpl;
+import org.powertools.engine.sources.TestSource;
+import org.powertools.engine.symbol.Scope;
+import org.powertools.engine.symbol.Util;
 
 
 /**

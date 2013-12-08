@@ -16,15 +16,15 @@
  *	along with the PowerTools engine. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.powerTools.web;
+package org.powertools.web;
 
 import java.util.Collection;
 import java.util.regex.Pattern;
 
-import org.powerTools.engine.RunTime;
-import org.powerTools.web.WebLibrary.IBrowserType;
-import org.powerTools.web.WebLibrary.IItemType;
-import org.powerTools.web.WebLibrary.IKeyType;
+import org.powertools.engine.RunTime;
+import org.powertools.web.WebLibrary.IBrowserType;
+import org.powertools.web.WebLibrary.IItemType;
+import org.powertools.web.WebLibrary.IKeyType;
 
 import com.thoughtworks.selenium.DefaultSelenium;
 import com.thoughtworks.selenium.Selenium;
@@ -331,6 +331,7 @@ final class SeleniumBrowser implements IBrowser {
 //					mSelenium.click (getLocator (WebLibrary.IItemType.cButtonType, keyType, value));
 //					return true;
 				}
+				break;
 			default:
 				mRunTime.reportError ("unsupported key type");
 			}
@@ -527,7 +528,7 @@ final class SeleniumBrowser implements IBrowser {
 					}
 					Thread.sleep (cOneSecondTimeout);
 				} catch (InterruptedException ie) {
-					;
+					// ignore
 				} catch (SeleniumException se) {
 					reportSeleniumException (se);
 				} catch (Exception e) {
@@ -565,7 +566,7 @@ final class SeleniumBrowser implements IBrowser {
 					}
 					Thread.sleep (cOneSecondTimeout);
 				} catch (InterruptedException ie) {
-					;
+					// ignore
 				} catch (SeleniumException se) {
 					reportSeleniumException (se);
 				} catch (Exception e) {
@@ -605,7 +606,7 @@ final class SeleniumBrowser implements IBrowser {
 					}
 					Thread.sleep (cOneSecondTimeout);
 				} catch (InterruptedException ie) {
-					;
+					// ignore
 				} catch (SeleniumException se) {
 					reportSeleniumException (se);
 				} catch (Exception e) {
@@ -870,7 +871,7 @@ final class SeleniumBrowser implements IBrowser {
 //		mRunTime.reportInfo("present: " + mSelenium.isElementPresent (locator));
 
 		if (locator == null) {
-			;
+			// TODO: getLocator should throw exception and make this unneeded
 		} else if (mSelenium.isElementPresent (locator)) {
 			mSelenium.click (locator);
 			return true;
@@ -956,7 +957,7 @@ final class SeleniumBrowser implements IBrowser {
 			try {
 				Thread.sleep (2000);
 			} catch (InterruptedException ie) {
-				;
+				// ignore
 			}
 		}
 	}

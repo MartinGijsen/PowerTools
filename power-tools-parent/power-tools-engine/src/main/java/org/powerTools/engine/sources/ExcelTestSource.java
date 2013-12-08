@@ -16,7 +16,7 @@
  *	along with the PowerTools engine. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.powerTools.engine.sources;
+package org.powertools.engine.sources;
 
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -26,27 +26,35 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
-import org.powerTools.engine.ExecutionException;
-import org.powerTools.engine.symbol.Scope;
+import org.powertools.engine.ExecutionException;
+import org.powertools.engine.symbol.Scope;
 
 
 abstract class ExcelTestSource extends TestSource {
 	final String mFileName;
 	final String mSheetName;
 
-	private final static String DEFINE_PROCEDURE_INSTRUCTION	= "define instruction";
-	private final static String END_PROCEDURE_INSTRUCTION		= "end instruction";
+	private static final String DEFINE_PROCEDURE_INSTRUCTION	= "define instruction";
+	private static final String END_PROCEDURE_INSTRUCTION		= "end instruction";
 	
 	private final Iterator<Row> mRowIter;
 
 	
 	protected static class Names {
-		public final String mFileName;
-		public final String mSheetName;
+		private final String mFileName;
+		private final String mSheetName;
 		
 		public Names (String fileName, String sheetName) {
 			mFileName	= fileName;
 			mSheetName	= sheetName;
+		}
+		
+		public String getFileName () {
+			return mFileName;
+		}
+		
+		public String getSheetName () {
+			return mSheetName;
 		}
 	}
 	
@@ -65,9 +73,6 @@ abstract class ExcelTestSource extends TestSource {
 
 	protected abstract Workbook createWorkbook (String fileName);
 
-
-	@Override
-	public final void initialize () { }
 
 	@Override
 	public final TestLineImpl getTestLine () {

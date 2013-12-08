@@ -16,16 +16,16 @@
  *	along with the PowerTools engine. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.powerTools.engine.sources.model;
+package org.powertools.engine.sources.model;
 
 import java.util.HashSet;
 import java.util.Set;
 
 
 final class DoneWhenAllNodesSeen extends DoneCondition {
-	final static String NAME = "all nodes";
+	static final String NAME = "all nodes";
 	
-	private final static String DESCRIPTION = "stop after all nodes have been traversed";
+	private static final String DESCRIPTION = "stop after all nodes have been traversed";
 
 	private boolean mDone;
 	private Set<Node> mUnseenNodes;

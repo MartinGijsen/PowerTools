@@ -16,16 +16,16 @@
  *	along with the PowerTools engine. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.powerTools.engine.core;
+package org.powertools.engine.core;
 
 import java.util.EmptyStackException;
 import java.util.Stack;
 
-import org.powerTools.engine.ExecutionException;
-import org.powerTools.engine.sources.TestCaseTestSource;
-import org.powerTools.engine.sources.TestLineImpl;
-import org.powerTools.engine.sources.TestSource;
-import org.powerTools.engine.symbol.Scope;
+import org.powertools.engine.ExecutionException;
+import org.powertools.engine.sources.TestCaseTestSource;
+import org.powertools.engine.sources.TestLineImpl;
+import org.powertools.engine.sources.TestSource;
+import org.powertools.engine.symbol.Scope;
 
 
 /**
@@ -73,7 +73,7 @@ final class TestSourceStack {
 
 	boolean createAndPushTestCase (String name, String description) {
 		if (!mInATestCase) {
-			;
+			// can push immediately
 		} else if (mSourceStack.peek () instanceof TestCaseTestSource) {
 			popTestSource ();
 		} else {

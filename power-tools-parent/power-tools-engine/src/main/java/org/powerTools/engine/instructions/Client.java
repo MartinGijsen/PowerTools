@@ -16,7 +16,7 @@
  *	along with the PowerTools engine. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.powerTools.engine.instructions;
+package org.powertools.engine.instructions;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -26,8 +26,8 @@ import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.util.Set;
 
-import org.powerTools.engine.ExecutionException;
-import org.powerTools.engine.TestLine;
+import org.powertools.engine.ExecutionException;
+import org.powertools.engine.TestLine;
 
 
 final class Client {
@@ -72,7 +72,7 @@ final class Client {
 	}
 	
 	private void createRequest (TestLine testLine) {
-		final StringBuffer sb = new StringBuffer ();
+		final StringBuilder sb = new StringBuilder ();
 		sb.append (testLine.getPart (0));
 		final int nrOfParts = testLine.getNrOfParts ();
 		for (int partNr = 1; partNr < nrOfParts; ++partNr) {
@@ -92,7 +92,7 @@ final class Client {
 			try {
 				mReader.close ();
 			} catch (IOException anotherIoe) {
-				;
+				// empty
 			}
 		}
 	}
@@ -114,9 +114,9 @@ final class Client {
 				Thread.sleep (ONE_SECOND);
 			}
 		} catch (IOException ioe) {
-			;
+			// empty
 		} catch (InterruptedException ie) {
-			;
+			// empty
 		}
 	}
 	
@@ -125,7 +125,7 @@ final class Client {
 			mResponse = mReader.readLine ();
 			//System.out.println ("in: '" + mResponse + "'");
 		} catch (IOException ioe) {
-			;
+			// empty
 		}
 	}
 	
@@ -145,7 +145,7 @@ final class Client {
 			mSocket.close ();
 			mSocket = null;
 		} catch (IOException ioe) {
-			;
+			// empty
 		}
 	}
 }

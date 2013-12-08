@@ -1,4 +1,4 @@
-package org.powerTools.engine.reports;
+package org.powertools.engine.reports;
 
 import java.io.PrintWriter;
 import java.util.Date;
@@ -22,8 +22,8 @@ final class TestCaseReport implements TestCaseSubscriber, TestResultSubscriber {
 	private int mCounter;
 	private boolean mInTestCase;
 	private String mId;
-	private Counters mTestCaseCounters;
-	private Counters mTestCounters;
+	private final Counters mTestCaseCounters;
+	private final Counters mTestCounters;
 
 
 	TestCaseReport (PrintWriter writer) {
@@ -111,17 +111,27 @@ final class TestCaseReport implements TestCaseSubscriber, TestResultSubscriber {
 
 
 	@Override
-	public void processInfo (String message) { }
+	public void processInfo (String message) {
+		// ignored
+	}
 
 	@Override
-	public void processLink (String message) { }
+	public void processLink (String message) {
+		// ignored
+	}
 
 	@Override
-	public void processEndOfTestLine () { }
+	public void processEndOfTestLine () {
+		// ignored
+	}
 
 	@Override
-	public void processIncreaseLevel () { }
+	public void processIncreaseLevel () {
+		// ignored because only the test case level is considered
+	}
 
 	@Override
-	public void processDecreaseLevel () { }
+	public void processDecreaseLevel () {
+		// ignored because only the test case level is considered
+	}
 }

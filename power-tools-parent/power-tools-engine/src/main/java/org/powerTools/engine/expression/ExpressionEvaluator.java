@@ -16,16 +16,16 @@
  *	along with the PowerTools engine. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.powerTools.engine.expression;
+package org.powertools.engine.expression;
 
 import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.tree.CommonTree;
 import org.antlr.runtime.tree.CommonTreeNodeStream;
-import org.powerTools.engine.BusinessDayChecker;
-import org.powerTools.engine.ExecutionException;
-import org.powerTools.engine.symbol.Scope;
+import org.powertools.engine.BusinessDayChecker;
+import org.powertools.engine.ExecutionException;
+import org.powertools.engine.symbol.Scope;
 
 
 /**
@@ -37,7 +37,9 @@ public final class ExpressionEvaluator {
 	private static final ExpressionParser mParser = new ExpressionParser (new CommonTokenStream (mLexer));
 
 
-	private ExpressionEvaluator () { }
+	private ExpressionEvaluator () {
+		// empty
+	}
 
 	public static void setBusinessDayChecker (BusinessDayChecker checker) {
 		DateValue.mBusinessDayChecker = checker;
@@ -48,10 +50,10 @@ public final class ExpressionEvaluator {
 			// parse the expression, create AST (Abstract Syntax Tree)
 			mLexer.setCharStream (new ANTLRStringStream (expression));
 			mParser.setTokenStream (new CommonTokenStream (mLexer));
-			final CommonTree tree = (CommonTree) mParser.root ().getTree ();
+			CommonTree tree = (CommonTree) mParser.root ().getTree ();
 
 			// evaluate the AST using a tree walker parser
-			final ExpressionTreeWalker walker = new ExpressionTreeWalker (new CommonTreeNodeStream (tree));
+			ExpressionTreeWalker walker = new ExpressionTreeWalker (new CommonTreeNodeStream (tree));
 			return walker.main (scope).toString ();
 		} catch (RecognitionException re) {
 			throw new ExecutionException ("invalid expression: " + expression);

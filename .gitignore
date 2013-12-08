@@ -39,3 +39,4 @@ Thumbs.db
 .project
 .classpath
 .settings
+/power-tools-parent/target/

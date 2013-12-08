@@ -16,7 +16,7 @@
  *	along with the PowerTools engine. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.powerTools.engine;
+package org.powertools.engine;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -33,7 +33,7 @@ public class Context {
 	public final String mLogFileName;
 	public final String mFullLogFilePath;
 
-	final static String LOG_FILE_NAME = "log.html";
+	static final String LOG_FILE_NAME = "log.html";
 
 	protected static final SimpleDateFormat mDateFormat = new SimpleDateFormat ("yyyy.MM.dd-HH.mm.ss");
 

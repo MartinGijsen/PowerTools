@@ -16,14 +16,13 @@
  *	along with the PowerTools engine. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.powerTools.engine.fitnesse;
+package org.powertools.engine.fitnesse;
 
 import java.io.PrintWriter;
-import java.util.Calendar;
 import java.util.Date;
 
-import org.powerTools.engine.TestLine;
-import org.powerTools.engine.reports.BasicHtmlLog;
+import org.powertools.engine.TestLine;
+import org.powertools.engine.reports.BasicHtmlLog;
 
 
 final class HtmlLog extends BasicHtmlLog {
@@ -36,13 +35,14 @@ final class HtmlLog extends BasicHtmlLog {
 	// start and finish the test run
 	@Override
 	public void start (Date dateTime) {
+		super.start (dateTime);
 		mWriter.println ("<TABLE>");
 	}
 	
 	@Override
 	public void finish (Date dateTime) {
-		mWriter.println ("</TABLE></BODY></HTML>");
-		mWriter.close ();
+		mWriter.println ("</TABLE>");
+		super.finish (dateTime);
 	}
 
 

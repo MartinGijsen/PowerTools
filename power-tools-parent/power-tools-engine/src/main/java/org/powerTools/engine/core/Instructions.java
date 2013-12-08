@@ -16,7 +16,7 @@
  *	along with the PowerTools engine. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.powerTools.engine.core;
+package org.powertools.engine.core;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -24,12 +24,12 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.powerTools.engine.ExecutionException;
-import org.powerTools.engine.instructions.Executor;
-import org.powerTools.engine.instructions.InstructionSet;
-import org.powerTools.engine.instructions.ProcedureRunner;
-import org.powerTools.engine.instructions.Procedures;
-import org.powerTools.engine.sources.Procedure;
+import org.powertools.engine.ExecutionException;
+import org.powertools.engine.instructions.Executor;
+import org.powertools.engine.instructions.InstructionSet;
+import org.powertools.engine.instructions.ProcedureRunner;
+import org.powertools.engine.instructions.Procedures;
+import org.powertools.engine.sources.Procedure;
 
 
 /**

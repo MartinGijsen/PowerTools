@@ -16,7 +16,7 @@
  *	along with the PowerTools. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.powerTools.graph;
+package org.powertools.graph;
 
 
 public enum Shape {

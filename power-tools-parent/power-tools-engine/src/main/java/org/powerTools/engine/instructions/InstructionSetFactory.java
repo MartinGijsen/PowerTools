@@ -16,11 +16,13 @@
  *	along with the PowerTools engine. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.powerTools.engine.instructions;
+package org.powertools.engine.instructions;
 
 
 public final class InstructionSetFactory {
-	private InstructionSetFactory () { }
+	private InstructionSetFactory () {
+		// empty
+	}
 
 	
 	public static InstructionSet createClassInstructionSet (String name, Object object) {

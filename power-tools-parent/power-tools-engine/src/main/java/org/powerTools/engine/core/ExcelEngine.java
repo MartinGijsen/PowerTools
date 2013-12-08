@@ -16,11 +16,11 @@
  *	along with the PowerTools engine. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.powerTools.engine.core;
+package org.powertools.engine.core;
 
-import org.powerTools.engine.Context;
-import org.powerTools.engine.reports.ReportFactory;
-import org.powerTools.engine.sources.TestSourceFactory;
+import org.powertools.engine.Context;
+import org.powertools.engine.reports.ReportFactory;
+import org.powertools.engine.sources.TestSourceFactory;
 
 
 /**

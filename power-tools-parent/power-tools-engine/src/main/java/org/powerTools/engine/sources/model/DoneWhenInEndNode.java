@@ -16,13 +16,13 @@
  *	along with the PowerTools engine. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.powerTools.engine.sources.model;
+package org.powertools.engine.sources.model;
 
 
 final class DoneWhenInEndNode extends DoneCondition {
-	final static String NAME = "end node";
+	static final String NAME = "end node";
 
-	private final static String DESCRIPTION = "stop after reaching an end node";
+	private static final String DESCRIPTION = "stop after reaching an end node";
 
 	private final String mEndNodeLabel;
 	
@@ -44,7 +44,7 @@ final class DoneWhenInEndNode extends DoneCondition {
 
 	@Override
 	void addSubModelGraph (DirectedGraph graph) {
-		;
+		// TODO?
 	}
 	
 	@Override

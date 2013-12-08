@@ -16,13 +16,13 @@
  *	along with the PowerTools engine. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.powerTools.engine.reports;
+package org.powertools.engine.reports;
 
 import java.io.PrintStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import org.powerTools.engine.TestLine;
+import org.powertools.engine.TestLine;
 
 
 final class Console implements TestLineSubscriber, TestResultSubscriber {
@@ -112,10 +112,16 @@ final class Console implements TestLineSubscriber, TestResultSubscriber {
 	
 	// ignored events
 	@Override
-	public void processIncreaseLevel () { }
+	public void processIncreaseLevel () {
+		// console does not consider level
+	}
 	@Override
-	public void processDecreaseLevel () { }
+	public void processDecreaseLevel () {
+		// console does not consider level
+	}
 	
 	@Override
-	public void processEndOfTestLine () { }	
+	public void processEndOfTestLine () {
+		// not needed when everything is line oriented
+	}
 }

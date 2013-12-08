@@ -16,12 +16,12 @@
  *	along with the PowerTools engine. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.powerTools.engine.instructions;
+package org.powertools.engine.instructions;
 
 import java.util.HashSet;
 import java.util.Set;
 
-import org.powerTools.engine.ExecutionException;
+import org.powertools.engine.ExecutionException;
 
 
 final class RemoteInstructionSet implements InstructionSet {

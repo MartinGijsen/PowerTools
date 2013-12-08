@@ -1,4 +1,4 @@
-package org.powerTools.engine.sources;
+package org.powertools.engine.sources;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;

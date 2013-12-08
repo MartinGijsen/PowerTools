@@ -16,13 +16,13 @@
  *	along with the PowerTools engine. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.powerTools.engine.core;
+package org.powertools.engine.core;
 
-import org.powerTools.engine.ExecutionException;
-import org.powerTools.engine.Roles;
-import org.powerTools.engine.RunTime;
-import org.powerTools.engine.Symbol;
-import org.powerTools.engine.symbol.Scope;
+import org.powertools.engine.ExecutionException;
+import org.powertools.engine.Roles;
+import org.powertools.engine.RunTime;
+import org.powertools.engine.Symbol;
+import org.powertools.engine.symbol.Scope;
 
 
 public final class RolesImpl implements Roles {

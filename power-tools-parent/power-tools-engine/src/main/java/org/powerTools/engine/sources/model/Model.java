@@ -16,14 +16,14 @@
  *	along with the PowerTools engine. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.powerTools.engine.sources.model;
+package org.powertools.engine.sources.model;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
 
-import org.powerTools.engine.core.RunTimeImpl;
-import org.powerTools.engine.reports.TestRunResultPublisher;
+import org.powertools.engine.RunTime;
+import org.powertools.engine.reports.TestRunResultPublisher;
 
 
 /*
@@ -35,9 +35,9 @@ import org.powerTools.engine.reports.TestRunResultPublisher;
  * but this is only passed on to the test source once in a final state.
  */
 public final class Model {
-	final static String START_NODE_LABEL		= "start";
-	final static String END_NODE_LABEL			= "end";
-	final static String SUBMODEL_ACTION_PREFIX	= "submodel ";
+	static final String START_NODE_LABEL		= "start";
+	static final String END_NODE_LABEL			= "end";
+	static final String SUBMODEL_ACTION_PREFIX	= "submodel ";
 	
 	private final TestRunResultPublisher		mPublisher;
 
@@ -49,7 +49,7 @@ public final class Model {
 	private boolean								mDoneConditionSatisfied;
 
 
-	public Model (String name, String selector, String doneCondition, RunTimeImpl runTime) {
+	public Model (String name, String selector, String doneCondition, RunTime runTime) {
 		mPublisher				= TestRunResultPublisher.getInstance ();
 		mDoneConditionSatisfied	= false;
 		mSubModels				= new HashMap<String, DirectedGraph> ();

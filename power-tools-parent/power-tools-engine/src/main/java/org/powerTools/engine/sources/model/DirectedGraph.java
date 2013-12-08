@@ -16,18 +16,17 @@
  *	along with the PowerTools engine. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.powerTools.engine.sources.model;
+package org.powertools.engine.sources.model;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.lang.RuntimeException;
 
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Set;
 import java.util.HashSet;
 
-import org.powerTools.engine.ExecutionException;
+import org.powertools.engine.ExecutionException;
 import org.xml.sax.SAXException;
 
 
@@ -74,7 +73,7 @@ final class DirectedGraph {
 		Node root = null;
 		for (Node node : mNodes.values ()) {
 			if (!node.mLabel.equals (Model.START_NODE_LABEL)) {
-				;
+				// this is not a start node and can be ignored
 			} else if (root != null) {
 				throw new RuntimeException ("multiple start nodes");
 			} else {

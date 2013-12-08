@@ -16,15 +16,15 @@
  *	along with the PowerTools engine. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.powerTools.engine.sources;
+package org.powertools.engine.sources;
 
 import java.util.LinkedList;
 import java.util.List;
 
-import org.powerTools.engine.core.RunTimeImpl;
-import org.powerTools.engine.sources.model.DoneException;
-import org.powerTools.engine.sources.model.Model;
-import org.powerTools.engine.symbol.Scope;
+import org.powertools.engine.RunTime;
+import org.powertools.engine.sources.model.DoneException;
+import org.powertools.engine.sources.model.Model;
+import org.powertools.engine.symbol.Scope;
 
 
 /*
@@ -37,16 +37,11 @@ final class ModelTestSource extends TestSource {
 	final Model mModel;
 
 
-	ModelTestSource (String fileName, String selector, String doneCondition, Scope scope, RunTimeImpl runTime) {
+	ModelTestSource (String fileName, String selector, String doneCondition, Scope scope, RunTime runTime) {
 		super (scope);
 		mModel = new Model (fileName, selector, doneCondition, runTime);
 	}
 
-
-	@Override
-	public void initialize () {
-		;
-	}
 
 	@Override
 	public TestLineImpl getTestLine () {

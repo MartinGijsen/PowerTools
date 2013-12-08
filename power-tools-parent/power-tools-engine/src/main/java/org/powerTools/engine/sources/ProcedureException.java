@@ -16,12 +16,12 @@
  *	along with the PowerTools engine. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.powerTools.engine.sources;
+package org.powertools.engine.sources;
 
 public class ProcedureException extends RuntimeException {
 	private static final long serialVersionUID = 1L;
 	
-	private Procedure mProcedure;
+	private final Procedure mProcedure;
 
 	
 	public ProcedureException (Procedure procedure) {

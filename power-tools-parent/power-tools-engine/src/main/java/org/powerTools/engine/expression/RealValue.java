@@ -16,7 +16,7 @@
  *	along with the PowerTools engine. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.powerTools.engine.expression;
+package org.powertools.engine.expression;
 
 
 final class RealValue extends Value {
@@ -33,7 +33,7 @@ final class RealValue extends Value {
 	
 	
 	@Override
-	public String getType () {
+	String getType () {
 		return "real number";
 	}
 

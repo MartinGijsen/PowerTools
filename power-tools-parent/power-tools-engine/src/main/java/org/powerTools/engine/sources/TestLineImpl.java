@@ -16,11 +16,11 @@
  *	along with the PowerTools engine. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.powerTools.engine.sources;
+package org.powertools.engine.sources;
 
 import java.util.List;
 
-import org.powerTools.engine.TestLine;
+import org.powertools.engine.TestLine;
 
 
 public final class TestLineImpl implements TestLine {

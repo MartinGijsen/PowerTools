@@ -16,11 +16,11 @@
  *	along with the PowerTools engine. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.powerTools.engine.sources;
+package org.powertools.engine.sources;
 
-import org.powerTools.engine.ExecutionException;
-import org.powerTools.engine.reports.TestRunResultPublisher;
-import org.powerTools.engine.symbol.Scope;
+import org.powertools.engine.ExecutionException;
+import org.powertools.engine.reports.TestRunResultPublisher;
+import org.powertools.engine.symbol.Scope;
 
 
 /*
@@ -42,10 +42,17 @@ public abstract class TestSource {
 	}
 
 	
-	public abstract void initialize ();
-	public abstract TestLineImpl getTestLine ();
+	public void initialize () {
+		// empty
+	}
+	
+	public TestLineImpl getTestLine () {
+		return null;
+	}
 
-	public void cleanup () { }
+	public void cleanup () {
+		// empty
+	}
 	
 	
 	public final Scope getScope () {

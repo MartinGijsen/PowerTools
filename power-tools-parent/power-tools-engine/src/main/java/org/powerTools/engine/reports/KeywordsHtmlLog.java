@@ -16,11 +16,11 @@
  *	along with the PowerTools engine. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.powerTools.engine.reports;
+package org.powertools.engine.reports;
 
 import java.io.PrintWriter;
 
-import org.powerTools.engine.TestLine;
+import org.powertools.engine.TestLine;
 
 
 public class KeywordsHtmlLog extends BasicHtmlLog {
@@ -67,7 +67,9 @@ public class KeywordsHtmlLog extends BasicHtmlLog {
 	}
 
 	@Override
-	public void processEndSection () { }
+	public void processEndSection () {
+		// can be ignored
+	}
 
 
 	@Override

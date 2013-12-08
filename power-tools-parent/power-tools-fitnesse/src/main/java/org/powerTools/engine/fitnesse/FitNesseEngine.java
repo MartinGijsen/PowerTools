@@ -16,25 +16,25 @@
  *	along with the PowerTools engine. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.powerTools.engine.fitnesse;
+package org.powertools.engine.fitnesse;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-import org.powerTools.engine.Context;
-import org.powerTools.engine.core.BuiltinInstructions;
-import org.powerTools.engine.core.Engine;
-import org.powerTools.engine.core.RunTimeImpl;
-import org.powerTools.engine.reports.ReportFactory;
-import org.powerTools.engine.reports.TestRunResultPublisher;
+import org.powertools.engine.Context;
+import org.powertools.engine.core.BuiltinInstructions;
+import org.powertools.engine.core.Engine;
+import org.powertools.engine.core.RunTimeImpl;
+import org.powertools.engine.reports.ReportFactory;
+import org.powertools.engine.reports.TestRunResultPublisher;
 
 import fit.Parse;
 
 
 public final class FitNesseEngine extends Engine {
-	final static String ROOT_DIRECTORY = "FitNesseRoot/";
+	static final String ROOT_DIRECTORY = "FitNesseRoot/";
 	
 	private static final FitNesseEngine mTheOne = new FitNesseEngine ();
 	
@@ -92,7 +92,7 @@ public final class FitNesseEngine extends Engine {
 	}
 
 	public void run (TestCaseFixture fixture, Parse table) {
-		run (new TestCaseSource (fixture, table, mLogFilePath));
+		run (new TestCaseSource (fixture, table, mRunTime, mLogFilePath));
 	}
 
 	public void run (DataFixture fixture, Parse table) {

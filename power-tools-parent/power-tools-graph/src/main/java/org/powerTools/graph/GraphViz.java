@@ -16,7 +16,7 @@
  *	along with the PowerTools. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.powerTools.graph;
+package org.powertools.graph;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -25,7 +25,7 @@ import java.io.PrintWriter;
 
 
 public final class GraphViz implements Renderer {
-	private final static String DEFAULT_DEFAULT_TYPE = "png";
+	private static final String DEFAULT_DEFAULT_TYPE = "png";
 	
 	private final String path;
 

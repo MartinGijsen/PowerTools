@@ -16,15 +16,15 @@
  *	along with the PowerTools engine. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.powerTools.engine.instructions;
+package org.powertools.engine.instructions;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Calendar;
 import java.util.Date;
 
-import org.powerTools.engine.ExecutionException;
-import org.powerTools.engine.TestLine;
+import org.powertools.engine.ExecutionException;
+import org.powertools.engine.TestLine;
 
 
 class MethodExecutor implements Executor {
@@ -88,9 +88,9 @@ class MethodExecutor implements Executor {
 	}
 
 	private Object getBooleanArgument (String arg) {
-		if (arg.equalsIgnoreCase ("true")) {
+		if ("true".equalsIgnoreCase (arg)) {
 			return Boolean.TRUE;
-		} else if (arg.equalsIgnoreCase ("false")) {
+		} else if ("false".equalsIgnoreCase (arg)) {
 			return Boolean.FALSE;
 		} else {
 			throw new ExecutionException ("invalid boolean: " + arg);

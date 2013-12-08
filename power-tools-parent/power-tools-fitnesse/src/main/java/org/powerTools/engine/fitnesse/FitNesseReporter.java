@@ -16,11 +16,11 @@
  *	along with the PowerTools engine. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.powerTools.engine.fitnesse;
+package org.powertools.engine.fitnesse;
 
 import java.util.Date;
 
-import org.powerTools.engine.reports.TestResultSubscriber;
+import org.powertools.engine.reports.TestResultSubscriber;
 
 
 final class FitNesseReporter implements TestResultSubscriber {
@@ -67,9 +67,13 @@ final class FitNesseReporter implements TestResultSubscriber {
 
 	// ignored events
 	@Override
-	public void start (Date dateTime) { }
+	public void start (Date dateTime) {
+		// ignored
+	}
 	@Override
-	public void finish (Date dateTime) { }
+	public void finish (Date dateTime) {
+		// ignored
+	}
 
 	@Override
 	public void processIncreaseLevel () {
@@ -82,9 +86,17 @@ final class FitNesseReporter implements TestResultSubscriber {
 	}
 
 	@Override
-	public void processInfo (String message) { }
+	public void processInfo (String message) {
+		// ignored
+	}
+
 	@Override
-	public void processLink (String url) { }
+	public void processLink (String url) {
+		// ignored
+	}
+	
 	@Override
-	public void processWarning (String warning) { }
+	public void processWarning (String warning) {
+		// ignored
+	}
 }

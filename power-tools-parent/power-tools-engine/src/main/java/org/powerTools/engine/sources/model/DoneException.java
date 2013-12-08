@@ -1,4 +1,4 @@
-package org.powerTools.engine.sources.model;
+package org.powertools.engine.sources.model;
 
 
 public final class DoneException extends RuntimeException {

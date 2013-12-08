@@ -16,10 +16,10 @@
  *	along with the PowerTools engine. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.powerTools.engine.instructions;
+package org.powertools.engine.instructions;
 
-import org.powerTools.engine.sources.TestSource;
-import org.powerTools.engine.symbol.Scope;
+import org.powertools.engine.sources.TestSource;
+import org.powertools.engine.symbol.Scope;
 
 
 public interface ProcedureRunner {

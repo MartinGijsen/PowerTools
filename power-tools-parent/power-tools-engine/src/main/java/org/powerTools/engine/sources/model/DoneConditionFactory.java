@@ -16,11 +16,13 @@
  *	along with the PowerTools engine. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.powerTools.engine.sources.model;
+package org.powertools.engine.sources.model;
 
 
 final class DoneConditionFactory {
-	private DoneConditionFactory () { }
+	private DoneConditionFactory () {
+		// empty
+	}
 
 	static DoneCondition create (String conditionName, DirectedGraph graph) {
 		// TODO: pass end node label as parameter?

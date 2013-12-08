@@ -16,12 +16,12 @@
  *	along with the PowerTools engine. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.powerTools.engine.instructions;
+package org.powertools.engine.instructions;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import org.powerTools.engine.sources.Procedure;
+import org.powertools.engine.sources.Procedure;
 
 
 /**
@@ -51,7 +51,7 @@ public final class Procedures implements InstructionSet {
 	
 	@Override
 	public void setup () {
-		;
+		// empty
 	}
 
 	@Override
@@ -62,6 +62,6 @@ public final class Procedures implements InstructionSet {
 
 	@Override
 	public void cleanup () {
-		;
+		// empty
 	}
 }

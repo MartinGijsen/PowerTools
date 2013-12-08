@@ -1,4 +1,4 @@
-package org.powerTools.engine.instructions;
+package org.powertools.engine.instructions;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -8,8 +8,8 @@ import java.lang.reflect.Method;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.powerTools.engine.ExecutionException;
-import org.powerTools.engine.sources.TestLineImpl;
+import org.powertools.engine.ExecutionException;
+import org.powertools.engine.sources.TestLineImpl;
 
 
 public class MethodExecutorTest {

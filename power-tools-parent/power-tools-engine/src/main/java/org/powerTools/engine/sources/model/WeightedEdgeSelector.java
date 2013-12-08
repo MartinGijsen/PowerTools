@@ -16,7 +16,7 @@
  *	along with the PowerTools engine. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.powerTools.engine.sources.model;
+package org.powertools.engine.sources.model;
 
 import java.util.Random;
 import java.util.Set;
@@ -28,9 +28,9 @@ import java.util.Set;
  * Edges without a weight weigh: remaining weight / nr of edges without a weight.
  */
 final class WeightedEdgeSelector implements EdgeSelectionStrategy {
-	final static String NAME = "weighted";
+	static final String NAME = "weighted";
 
-	private final static String DESCRIPTION = "a higher weight outgoing edge is more likely to be selected";
+	private static final String DESCRIPTION = "a higher weight outgoing edge is more likely to be selected";
 
 
 	WeightedEdgeSelector () {

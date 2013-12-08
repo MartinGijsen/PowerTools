@@ -1,4 +1,4 @@
-package org.powerTools.engine.reports;
+package org.powertools.engine.reports;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -9,7 +9,7 @@ import java.util.GregorianCalendar;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.powerTools.engine.sources.TestLineImpl;
+import org.powertools.engine.sources.TestLineImpl;
 
 
 public class ConsoleTest {

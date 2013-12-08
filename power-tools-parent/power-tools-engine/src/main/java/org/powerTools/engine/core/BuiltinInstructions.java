@@ -16,21 +16,21 @@
  *	along with the PowerTools engine. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.powerTools.engine.core;
+package org.powertools.engine.core;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
-import org.powerTools.engine.BusinessDayChecker;
-import org.powerTools.engine.ExecutionException;
-import org.powerTools.engine.InstructionSet;
-import org.powerTools.engine.KeywordName;
-import org.powerTools.engine.ParameterOrder;
-import org.powerTools.engine.RunTime;
-import org.powerTools.engine.Symbol;
-import org.powerTools.engine.instructions.InstructionSetFactory;
-import org.powerTools.engine.symbol.BaseSequence;
-import org.powerTools.engine.symbol.Scope;
+import org.powertools.engine.BusinessDayChecker;
+import org.powertools.engine.ExecutionException;
+import org.powertools.engine.InstructionSet;
+import org.powertools.engine.KeywordName;
+import org.powertools.engine.ParameterOrder;
+import org.powertools.engine.RunTime;
+import org.powertools.engine.Symbol;
+import org.powertools.engine.instructions.InstructionSetFactory;
+import org.powertools.engine.symbol.BaseSequence;
+import org.powertools.engine.symbol.Scope;
 
 
 /**
@@ -67,12 +67,12 @@ public final class BuiltinInstructions implements InstructionSet {
 	
 	@Override
 	public void setup () {
-		;
+		// empty
 	}
 	
 	@Override
 	public void cleanup () {
-		;
+		// empty
 	}
 	
 	
@@ -104,24 +104,36 @@ public final class BuiltinInstructions implements InstructionSet {
 	}
 
 	private Object instantiateInstructionSet (String className) {
+		Class<?> theClass = getClass (className);
+		Object object = instantiateWithRunTimeParameter (theClass);
+		if (object == null) {
+			object = instantiateWithDefaultConstructor (theClass);
+		}
+		return object;
+	}
+	
+	private Object instantiateWithRunTimeParameter (Class<?> theClass) {
 		try {
-			Class<?> theClass = getClass (className);
-			try {
-				Constructor<?> constructor = theClass.getConstructor (new Class<?>[] { RunTime.class });
-				mRunTime.reportInfo ("using constructor with RunTime parameter");
-				return constructor.newInstance (mRunTime);
-			} catch (NoSuchMethodException nsme) {
-				mRunTime.reportInfo ("no constructor with RunTime parameter");
-			} catch (IllegalAccessException iae) {
-				mRunTime.reportWarning ("no access to constructor with RunTime parameter");
-			} catch (InstantiationException ie) {
-				mRunTime.reportWarning ("failed to call constructor with RunTime parameter");
-			}
-			mRunTime.reportInfo ("using default constructor");
-			return theClass.newInstance ();
+			Constructor<?> constructor = theClass.getConstructor (new Class<?>[] { RunTime.class });
+			mRunTime.reportInfo ("using constructor with RunTime parameter");
+			return constructor.newInstance (mRunTime);
+		} catch (NoSuchMethodException nsme) {
+			mRunTime.reportInfo ("no constructor with RunTime parameter");
+		} catch (IllegalAccessException iae) {
+			mRunTime.reportWarning ("no access to constructor with RunTime parameter");
+		} catch (InstantiationException ie) {
+			mRunTime.reportWarning ("failed to call constructor with RunTime parameter");
 		} catch (InvocationTargetException ite) {
 			mRunTime.reportError (ite.toString ());
 			throw new ExecutionException (ite.getCause ().toString ());
+		}
+		return null;
+	}
+
+	private Object instantiateWithDefaultConstructor (Class<?> theClass) {
+		try {
+			mRunTime.reportInfo ("using default constructor");
+			return theClass.newInstance ();
 		} catch (IllegalAccessException iae) {
 			throw new ExecutionException ("no access to default constructor");
 		} catch (InstantiationException ie) {
@@ -336,7 +348,7 @@ public final class BuiltinInstructions implements InstructionSet {
 	}
 
 	public boolean ToFields (String structure, String field1, String field2, String field3, String field4, String field5, String field6, String field7, String field8, String field9, String field10, String field11, String field12, String field13, String field14, String field15, String field16, String field17, String field18, String field19, String field20) {
-		if (!structure.isEmpty() && !structure.equalsIgnoreCase ("structure")) {
+		if (!structure.isEmpty() && !"structure".equalsIgnoreCase (structure)) {
 			throw new ExecutionException ("first argument must be empty or 'structure'");
 		} else {
 			mFieldNames[0]  = field1;

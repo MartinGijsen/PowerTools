@@ -16,10 +16,9 @@
  *	along with the PowerTools engine. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.powerTools.engine;
+package org.powertools.engine;
 
-import org.powerTools.engine.Roles;
-import org.powerTools.engine.symbol.Scope;
+import org.powertools.engine.symbol.Scope;
 
 
 /**
@@ -45,7 +44,7 @@ public interface RunTime {
 	 * Reports an incorrect value error message to the log (and any interested report(s))
 	 * @param	expression	the expression being considered
 	 * @param	actualValue	the actual value
-	 * @param	expextedValue	the expected value
+	 * @param	expectedValue	the expected value
 	 */
 	void reportValueError (String expression, String actualValue, String expectedValue);
 
@@ -169,7 +168,7 @@ public interface RunTime {
 	
 	/**
 	 * Sets the object that determines which are business days for
-	 * date calculations with business days (e.g. today + 1 business day)
+	 * date expressions with business days (e.g. 'today + 1 business day')
 	 * @param	checker	the business day checker to use
 	 */
 	void setBusinessDayChecker (BusinessDayChecker checker);

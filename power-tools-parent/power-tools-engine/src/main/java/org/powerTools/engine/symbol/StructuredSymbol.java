@@ -16,7 +16,7 @@
  *	along with the PowerTools engine. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.powerTools.engine.symbol;
+package org.powertools.engine.symbol;
 
 
 abstract class StructuredSymbol extends SymbolImpl {

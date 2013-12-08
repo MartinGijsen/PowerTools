@@ -16,7 +16,7 @@
  *	along with the PowerTools engine. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.powerTools.engine.symbol;
+package org.powertools.engine.symbol;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -25,8 +25,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.powerTools.engine.ExecutionException;
-import org.powerTools.engine.Symbol;
+import org.powertools.engine.ExecutionException;
+import org.powertools.engine.Symbol;
 
 
 public final class Util {
@@ -36,13 +36,15 @@ public final class Util {
 		final Map<String, String> results	= new HashMap<String, String> ();
 		process (sourceItem, namesList, results);
 		for (String key : results.keySet ()) {
-			targetSymbol.setValue ((targetName + "." + key), results.get (key));
+			targetSymbol.setValue (targetName + "." + key, results.get (key));
 		}
 	}
 
 
 	// private methods
-	private Util () { }
+	private Util () {
+		// empty
+	}
 	
 	private static Item getItem (Symbol symbol, String[] names) {
 		if (symbol instanceof Structure) {

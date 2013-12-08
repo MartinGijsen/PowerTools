@@ -16,7 +16,7 @@
  *	along with the PowerTools engine. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.powerTools.engine.reports;
+package org.powertools.engine.reports;
 
 
 public interface TestResultSubscriber extends TestSubscriber {

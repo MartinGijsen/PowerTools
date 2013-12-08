@@ -16,42 +16,97 @@
  *	along with the PowerTools engine. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.powerTools.engine.expression;
+package org.powertools.engine.expression;
 
-import org.powerTools.engine.ExecutionException;
+import org.powertools.engine.ExecutionException;
 
 
 abstract class Value {
 	private static final String INVALID_OPERAND_MESSAGE		= "invalid operand(s) for '%s'";
 	private static final String INVALID_CONVERSION_MESSAGE	= "cannot convert %s to %s";
 	
-	public abstract String getType ();
+	abstract String getType ();
 
-	public Value or (Value v)				{ return throwOperandException ("or"); }
-	public Value and (Value v)				{ return throwOperandException ("and"); }
-	public Value not ()						{ return throwOperandException ("not"); }
+	public Value or (Value v) {
+		return throwOperandException ("or");
+	}
+	
+	public Value and (Value v) {
+		return throwOperandException ("and");
+	}
+	
+	public Value not () {
+		return throwOperandException ("not");
+	}
+	
 	
 	public abstract Value equal (Value v);
 	public abstract Value unequal (Value v);
 
-	public Value lessThan (Value v)			{ return throwOperandException ("<"); }
-	public Value lessOrEqual (Value v)		{ return throwOperandException ("<="); }
-	public Value greaterThan (Value v)		{ return throwOperandException (">"); }
-	public Value greaterOrEqual (Value v)	{ return throwOperandException (">="); }
 	
-	public Value add (Value v)				{ return throwOperandException ("+"); }
-	public Value subtract (Value v)			{ return throwOperandException ("-"); }
-	public Value multiply (Value v)			{ return throwOperandException ("*"); }
-	public Value divide (Value v)			{ return throwOperandException ("/"); }
-	public Value negate ()					{ return throwOperandException ("-"); }
+	public Value lessThan (Value v) {
+		return throwOperandException ("<");
+	}
+	
+	public Value lessOrEqual (Value v) {
+		return throwOperandException ("<=");
+	}
+	
+	public Value greaterThan (Value v) {
+		return throwOperandException (">");
+	}
+	
+	public Value greaterOrEqual (Value v) {
+		return throwOperandException (">=");
+	}
 
-	public Value concatenate (Value v)		{ return throwOperandException ("++"); }
+	
+	public Value add (Value v) {
+		return throwOperandException ("+");
+	}
+	
+	public Value subtract (Value v) {
+		return throwOperandException ("-");
+	}
+	
+	public Value multiply (Value v) {
+		return throwOperandException ("*");
+	}
+	
+	public Value divide (Value v) {
+		return throwOperandException ("/");
+	}
+	
+	public Value negate () {
+		return throwOperandException ("-");
+	}
+	
 
+	public Value concatenate (Value v) {
+		return throwOperandException ("++");
+	}
+
+	
 	public abstract StringValue toStringValue ();
-	public RealValue toRealValue ()			{ throwConversionException (getType (), "real number");		return null; }
-	public IntegerValue toIntegerValue ()	{ throwConversionException (getType (), "integer number");	return null; }
-	public BooleanValue toBooleanValue ()	{ throwConversionException (getType (), "boolean");			return null; }
-	public DateValue toDateValue ()			{ throwConversionException (getType (), "date");			return null; }
+
+	public RealValue toRealValue () {
+		throwConversionException (getType (), "real number");
+		return null;
+	}
+	
+	public IntegerValue toIntegerValue () {
+		throwConversionException (getType (), "integer number");
+		return null;
+	}
+	
+	public BooleanValue toBooleanValue () {
+		throwConversionException (getType (), "boolean");
+		return null;
+	}
+	public DateValue toDateValue () {
+		throwConversionException (getType (), "date");
+		return null;
+	}
 
 	
 	protected void throwException (String message) {

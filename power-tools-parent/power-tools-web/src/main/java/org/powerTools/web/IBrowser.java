@@ -16,12 +16,12 @@
  *	along with the PowerTools engine. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.powerTools.web;
+package org.powertools.web;
 
 import java.util.Collection;
 
-import org.powerTools.web.WebLibrary.IBrowserType;
-import org.powerTools.web.WebLibrary.IKeyType;
+import org.powertools.web.WebLibrary.IBrowserType;
+import org.powertools.web.WebLibrary.IKeyType;
 
 
 public interface IBrowser {

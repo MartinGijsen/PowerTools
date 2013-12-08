@@ -1,4 +1,4 @@
-package org.powerTools.engine.reports;
+package org.powertools.engine.reports;
 
 import java.io.PrintStream;
 

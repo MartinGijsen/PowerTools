@@ -16,7 +16,7 @@
  *	along with the PowerTools engine. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.powerTools.engine.sources.model;
+package org.powertools.engine.sources.model;
 
 
 /*
@@ -24,9 +24,9 @@ package org.powerTools.engine.sources.model;
  * So it can ignore submodels and processed edges.
  */
 final class NeverDone extends DoneCondition {
-	final static String NAME = "never";
+	static final String NAME = "never";
 
-	private final static String DESCRIPTION = "never stop";
+	private static final String DESCRIPTION = "never stop";
 
 	
 	NeverDone () {
@@ -42,7 +42,7 @@ final class NeverDone extends DoneCondition {
 	
 	@Override
 	void addSubModelGraph (DirectedGraph graph) {
-		;
+		// empty
 	}
 
 	@Override
@@ -52,11 +52,11 @@ final class NeverDone extends DoneCondition {
 
 	@Override
 	void markEdge (Edge edge) {
-		;
+		// empty
 	}
 
 	@Override
 	void check () {
-		;
+		// empty
 	}
 }

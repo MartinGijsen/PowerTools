@@ -16,14 +16,14 @@
  *	along with the PowerTools engine. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.powerTools.engine.instructions;
+package org.powertools.engine.instructions;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 
-import org.powerTools.engine.ExecutionException;
-import org.powerTools.engine.KeywordName;
-import org.powerTools.engine.ParameterOrder;
+import org.powertools.engine.ExecutionException;
+import org.powertools.engine.KeywordName;
+import org.powertools.engine.ParameterOrder;
 
 
 /**
@@ -52,8 +52,8 @@ final class ClassInstructionSet implements InstructionSet {
 	
 	@Override
 	public void setup () {
-		if (mObject instanceof org.powerTools.engine.InstructionSet) {
-			((org.powerTools.engine.InstructionSet) mObject).setup ();
+		if (mObject instanceof org.powertools.engine.InstructionSet) {
+			((org.powertools.engine.InstructionSet) mObject).setup ();
 		}
 	}
 
@@ -71,7 +71,7 @@ final class ClassInstructionSet implements InstructionSet {
 	
 	private String getMethodName (String instructionName) {
 		try {
-			final StringBuffer sb	= new StringBuffer ();
+			final StringBuilder sb	= new StringBuilder ();
 			final String[] words	= instructionName.split (" ");
 			addWord (words[0], sb);
 
@@ -87,7 +87,7 @@ final class ClassInstructionSet implements InstructionSet {
 		}
 	}
 
-	private void addWord (String word, StringBuffer sb) {
+	private void addWord (String word, StringBuilder sb) {
 		sb.append (Character.toUpperCase (word.charAt (0)));
 		sb.append (word.substring (1));
 	}
@@ -110,8 +110,8 @@ final class ClassInstructionSet implements InstructionSet {
 
 	@Override
 	public void cleanup () {
-		if (mObject instanceof org.powerTools.engine.InstructionSet) {
-			((org.powerTools.engine.InstructionSet) mObject).setup ();
+		if (mObject instanceof org.powertools.engine.InstructionSet) {
+			((org.powertools.engine.InstructionSet) mObject).setup ();
 		}
 	}
 }

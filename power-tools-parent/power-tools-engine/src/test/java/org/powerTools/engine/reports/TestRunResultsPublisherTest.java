@@ -1,4 +1,4 @@
-package org.powerTools.engine.reports;
+package org.powertools.engine.reports;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -6,7 +6,7 @@ import static org.junit.Assert.assertNotNull;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.powerTools.engine.TestLine;
+import org.powertools.engine.TestLine;
 
 
 public class TestRunResultsPublisherTest {

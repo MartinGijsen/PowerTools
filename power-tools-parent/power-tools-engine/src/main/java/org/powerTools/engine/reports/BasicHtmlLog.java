@@ -1,4 +1,4 @@
-/*	Copyright 2012 by Martin Gijsen (www.DeAnalist.nl)
+/*	Copyright 2012-1013 by Martin Gijsen (www.DeAnalist.nl)
  *
  *	This file is part of the PowerTools engine.
  *
@@ -16,16 +16,19 @@
  *	along with the PowerTools engine. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.powerTools.engine.reports;
+package org.powertools.engine.reports;
 
 import java.io.PrintWriter;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-import org.powerTools.engine.TestLine;
+import org.powertools.engine.TestLine;
 
 
 public abstract class BasicHtmlLog implements TestLineSubscriber, TestResultSubscriber {
+	protected final SimpleDateFormat mDateFormat = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+
 	protected final PrintWriter mWriter;
 
 	protected int mLevel;
@@ -37,7 +40,7 @@ public abstract class BasicHtmlLog implements TestLineSubscriber, TestResultSubs
 		mLastId	= 0;
 		
 		mWriter = writer;
-		mWriter.format ("<HTML><HEAD><TITLE>%s</TITLE>", title).println ();
+		mWriter.format ("<HTML><HEAD><TITLE>%s</TITLE>\n", title);
 		mWriter.println ("<STYLE type=\"text/css\">");
 		mWriter.println ("table { border:1px solid black; border-collapse:collapse; }");
 		mWriter.println ("td { border:1px solid black; padding:3px; }");
@@ -49,9 +52,18 @@ public abstract class BasicHtmlLog implements TestLineSubscriber, TestResultSubs
 
 	// start and finish the test run
 	@Override
-	public void start (Date dateTime) { }
+	public void start (Date dateTime) {
+		writeTableRowStartWithTimestamp (mWriter);
+		mWriter.format ("<TD>started at %s</TD></TR></TABLE><BR/>\n", mDateFormat.format (dateTime));
+	}
+	
 	@Override
-	public void finish (Date dateTime) { }
+	public void finish (Date dateTime) {
+		writeTableRowStartWithTimestamp (mWriter);
+		mWriter.format ("<TD>finished at %s</TD></TR></TABLE>\n", mDateFormat.format (dateTime));
+		mWriter.println ("</BODY></HTML>");
+		mWriter.close ();
+	}
 
 	
 	protected final String getCell (TestLine testLine, int partNr) {

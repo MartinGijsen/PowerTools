@@ -16,11 +16,11 @@
  *	along with the PowerTools engine. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.powerTools.web;
+package org.powertools.web;
 
 import org.openqa.selenium.server.RemoteControlConfiguration;
 import org.openqa.selenium.server.SeleniumServer;
-import org.powerTools.engine.RunTime;
+import org.powertools.engine.RunTime;
 
 
 public final class SeleniumLibrary extends WebLibrary {

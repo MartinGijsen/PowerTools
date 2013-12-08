@@ -16,16 +16,16 @@
  *	along with the PowerTools engine. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.powerTools.engine.sources.model;
+package org.powertools.engine.sources.model;
 
 import java.util.HashSet;
 import java.util.Set;
 
 
 final class DoneWhenAllEdgesSeen extends DoneCondition {
-	final static String NAME = "all edges";
+	static final String NAME = "all edges";
 
-	private final static String DESCRIPTION = "stop after all edges have been traversed";
+	private static final String DESCRIPTION = "stop after all edges have been traversed";
 
 	private Set<Edge> mUnseenEdges;
 

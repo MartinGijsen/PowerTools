@@ -16,7 +16,7 @@
  *	along with the PowerTools engine. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.powerTools.engine.expression;
+package org.powertools.engine.expression;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -24,8 +24,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
-import org.powerTools.engine.BusinessDayChecker;
-import org.powerTools.engine.ExecutionException;
+import org.powertools.engine.BusinessDayChecker;
+import org.powertools.engine.ExecutionException;
 
 
 final class DateValue extends Value {
@@ -52,7 +52,7 @@ final class DateValue extends Value {
 	
 	
 	@Override
-	public String getType () {
+	String getType () {
 		return "date";
 	}
 
@@ -102,13 +102,13 @@ final class DateValue extends Value {
 	}
 
 	private Value addPeriod (int number, String period) {
-		if (period.equals ("days")) {
+		if ("days".equals (period)) {
 			mDate.add (Calendar.DAY_OF_MONTH, number);
-		} else if (period.equals ("weeks")) {
+		} else if ("weeks".equals (period)) {
 			mDate.add (Calendar.WEEK_OF_YEAR, number);
-		} else if (period.equals ("months")) {
+		} else if ("months".equals (period)) {
 			mDate.add (Calendar.MONTH, number);
-		} else if (period.equals ("years")) {
+		} else if ("years".equals (period)) {
 			mDate.add (Calendar.YEAR, number);
 		} else {
 			addBusinessDays (number);

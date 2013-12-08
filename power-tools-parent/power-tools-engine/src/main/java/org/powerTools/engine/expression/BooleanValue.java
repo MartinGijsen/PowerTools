@@ -16,14 +16,14 @@
  *	along with the PowerTools engine. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.powerTools.engine.expression;
+package org.powertools.engine.expression;
 
 
 final class BooleanValue extends Value {
 	private static final String TRUE_STRING		= "true";
 	private static final String FALSE_STRING	= "false";
 
-	private boolean mValue;
+	private final boolean mValue;
 
 	static final BooleanValue cTrueStringValue	= new BooleanValue (true);
 	static final BooleanValue cFalseStringValue	= new BooleanValue (false);	
@@ -42,7 +42,7 @@ final class BooleanValue extends Value {
 
 	
 	@Override
-	public String getType () {
+	String getType () {
 		return "boolean";
 	}
 

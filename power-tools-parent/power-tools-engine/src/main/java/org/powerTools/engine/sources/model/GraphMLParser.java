@@ -16,14 +16,15 @@
  *	along with the PowerTools engine. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.powerTools.engine.sources.model;
+package org.powertools.engine.sources.model;
 
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.Stack;
 
-import org.powerTools.engine.ExecutionException;
+import org.powertools.engine.ExecutionException;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -33,26 +34,26 @@ import org.xml.sax.helpers.XMLReaderFactory;
 
 
 final class GraphMLParser extends DefaultHandler {
-	private final static String NODE_KEY_TYPE				= "node";
-	private final static String EDGE_KEY_TYPE				= "edge";
+	private static final String NODE_KEY_TYPE				= "node";
+	private static final String EDGE_KEY_TYPE				= "edge";
 
-	private final static String CONDITION_KEY_NAME			= "Condition";
-	private final static String ACTION_KEY_NAME				= "Action";
-	private final static String DESCRIPTION_KEY_NAME		= "description";
+	private static final String CONDITION_KEY_NAME			= "Condition";
+	private static final String ACTION_KEY_NAME				= "Action";
+	private static final String DESCRIPTION_KEY_NAME		= "description";
 
-	private final static String KEY_NAME_ATTRIBUTE_NAME		= "attr.name";
-	private final static String KEY_DOMAIN_ATTRIBUTE_NAME	= "for";
-	private final static String KEY_ID_ATTRIBUTE_NAME		= "id";
+	private static final String KEY_NAME_ATTRIBUTE_NAME		= "attr.name";
+	private static final String KEY_DOMAIN_ATTRIBUTE_NAME	= "for";
+	private static final String KEY_ID_ATTRIBUTE_NAME		= "id";
 
 	// node
-	private final static String NODE_NAME_ATTRIBUTE_NAME	= "id";
+	private static final String NODE_NAME_ATTRIBUTE_NAME	= "id";
 	
 	// edge
-	private final static String EDGE_SOURCE_ATTRIBUTE_NAME	= "source";
-	private final static String EDGE_TARGET_ATTRIBUTE_NAME	= "target";
-//	private final static String NODE_DESCRIPTION_KEY_NAME	= "d5";
-//	private final static String EDGE_CONDITION_KEY_NAME		= "d8";
-//	private final static String EDGE_ACTION_KEY_NAME		= "d9";
+	private static final String EDGE_SOURCE_ATTRIBUTE_NAME	= "source";
+	private static final String EDGE_TARGET_ATTRIBUTE_NAME	= "target";
+//	private static final String NODE_DESCRIPTION_KEY_NAME	= "d5";
+//	private static final String EDGE_CONDITION_KEY_NAME		= "d8";
+//	private static final String EDGE_ACTION_KEY_NAME		= "d9";
 
 	private DirectedGraph mGraph;
 	private Stack<Element> mElementStack;
@@ -67,6 +68,34 @@ final class GraphMLParser extends DefaultHandler {
 	private Edge mLastEdge;
 	private String mKeyName;
 
+	private static final Set<String> knownElements = new HashSet<String> ();
+	static {
+		knownElements.add ("graphml");
+		knownElements.add ("graph");
+		knownElements.add ("ShapeNode");
+		knownElements.add ("Geometry");
+		knownElements.add ("Fill");
+		knownElements.add ("BorderStyle");
+		knownElements.add ("SmartNodeLabelModel");
+		knownElements.add ("ModeParameter");
+		knownElements.add ("PolyLineEdge");
+		knownElements.add ("Path");
+		knownElements.add ("default");
+		knownElements.add ("NodeLabel");
+		knownElements.add ("EdgeLabel");
+		knownElements.add ("Arrows");
+		knownElements.add ("BendStyle");
+		knownElements.add ("Resources");
+		knownElements.add ("PreferredPlacementDescriptor");
+		knownElements.add ("ModelParameter");
+		knownElements.add ("LineStyle");
+		knownElements.add ("SmartNodeLabelModelParameter");
+		knownElements.add ("SmartEdgeLabelModelParameter");
+		knownElements.add ("Shape");
+		knownElements.add ("Point");
+		knownElements.add ("SmartEdgeLabelModel");
+		knownElements.add ("LabelModel");
+	}
 
 	private class Element {
 		String mText;
@@ -81,7 +110,7 @@ final class GraphMLParser extends DefaultHandler {
 		super ();
 	}
 
-	DirectedGraph parse (DirectedGraph graph) throws FileNotFoundException, IOException, SAXException {
+	DirectedGraph parse (DirectedGraph graph) throws IOException, SAXException {
 		mGraph			= graph;
 		mElementStack	= new Stack<Element> ();
 
@@ -100,7 +129,7 @@ final class GraphMLParser extends DefaultHandler {
 			String keyType	= attributes.getValue (KEY_DOMAIN_ATTRIBUTE_NAME);
 			String keyId	= attributes.getValue (KEY_ID_ATTRIBUTE_NAME);
 			if (keyName == null) {
-				;
+				// ignore
 			} else if (keyType.equals (NODE_KEY_TYPE)) {
 				if (keyName.equals (DESCRIPTION_KEY_NAME)) {
 					mNodeDescriptionKeyId = keyId;
@@ -129,33 +158,7 @@ final class GraphMLParser extends DefaultHandler {
 			mLastEdge			= mGraph.addEdge (sourceName, targetName);
 		} else if ("data".equals (name)) {
 			mKeyName = attributes.getValue ("key");
-		} else if ("graphml".equals (name)
-				|| "graph".equals (name)
-				|| "ShapeNode".equals (name)
-				|| "Geometry".equals (name)
-				|| "Fill".equals (name)
-				|| "BorderStyle".equals (name)
-				|| "SmartNodeLabelModel".equals (name)
-				|| "ModeParameter".equals (name)
-				|| "PolyLineEdge".equals (name)
-				|| "Path".equals (name)
-				|| "default".equals (name)
-				|| "NodeLabel".equals (name)
-				|| "EdgeLabel".equals (name)
-				|| "Arrows".equals (name)
-				|| "BendStyle".equals (name)
-				|| "Resources".equals (name)
-				|| "PreferredPlacementDescriptor".equals (name)
-				|| "ModelParameter".equals (name)
-				|| "LineStyle".equals (name)
-				|| "SmartNodeLabelModelParameter".equals (name)
-				|| "SmartEdgeLabelModelParameter".equals (name)
-				|| "Shape".equals (name)
-				|| "Point".equals (name)
-				|| "SmartEdgeLabelModel".equals (name)
-				|| "LabelModel".equals (name)) {
-			;
-		} else {
+		} else if (!knownElements.contains (name)) {
 			throw new ExecutionException ("unsupported element: " + qName);
 		}
 	}

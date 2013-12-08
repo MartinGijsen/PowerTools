@@ -1,4 +1,4 @@
-package org.powerTools.engine.instructions;
+package org.powertools.engine.instructions;
 
 import java.util.Calendar;
 import java.util.Date;

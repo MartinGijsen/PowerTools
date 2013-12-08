@@ -16,16 +16,16 @@
  *	along with the PowerTools engine. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.powerTools.engine;
+package org.powertools.engine;
 
 
 public interface Roles {
-	public void addRole (String role, String domain, String username, String password);
-	public void addRole (String system, String role, String domain, String username, String password);
-	public String getDomain (String role);
-	public String getDomain (String system, String role);
-	public String getUsername (String role);
-	public String getUsername (String system, String role);
-	public String getPassword (String role);
-	public String getPassword (String system, String role);
+	void addRole (String role, String domain, String username, String password);
+	void addRole (String system, String role, String domain, String username, String password);
+	String getDomain (String role);
+	String getDomain (String system, String role);
+	String getUsername (String role);
+	String getUsername (String system, String role);
+	String getPassword (String role);
+	String getPassword (String system, String role);
 }

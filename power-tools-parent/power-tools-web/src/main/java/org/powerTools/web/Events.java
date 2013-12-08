@@ -16,7 +16,7 @@
  *	along with the PowerTools engine. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.powerTools.web;
+package org.powertools.web;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -24,7 +24,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.powerTools.engine.RunTime;
+import org.powertools.engine.RunTime;
 
 
 final class Events {
@@ -69,8 +69,8 @@ final class Events {
 
 
 	// private members
-	private final static Set<String> mEventNames			= new HashSet<String> ();
-	private final static Map<String, String> mAttributesMap	= new HashMap<String, String> ();
+	private static final Set<String> mEventNames			= new HashSet<String> ();
+	private static final Map<String, String> mAttributesMap	= new HashMap<String, String> ();
 	
 	static {
 		mAttributesMap.put ("prop9", "c9");
@@ -179,7 +179,7 @@ final class Events {
 	}
 
 	private String getParameters (Map<String, String> event) {
-		final StringBuffer sb = new StringBuffer ();
+		final StringBuilder sb = new StringBuilder ();
 		for (String attribute : event.keySet ()) {
 			sb.append (attribute).append ("='").append (event.get (attribute)).append ("' ");
 		}
@@ -187,7 +187,7 @@ final class Events {
 	}
 
 	private String getParameters (Set<String> attributeNames, Map<String, String> parameters) {
-		final StringBuffer sb = new StringBuffer ();
+		final StringBuilder sb = new StringBuilder ();
 		for (String attribute : attributeNames) {
 			sb.append (attribute).append ("='").append (parameters.get (mAttributesMap.get (attribute))).append ("' ");
 		}

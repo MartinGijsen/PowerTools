@@ -16,11 +16,11 @@
  *	along with the PowerTools engine. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.powerTools.web;
+package org.powertools.web;
 
-import org.powerTools.engine.RunTime;
-import org.powerTools.engine.reports.TestResultSubscriber;
-import org.powerTools.engine.reports.TestRunResultPublisher;
+import org.powertools.engine.RunTime;
+import org.powertools.engine.reports.TestResultSubscriber;
+import org.powertools.engine.reports.TestRunResultPublisher;
 
 
 public final class WebDriverLibrary extends WebLibrary {

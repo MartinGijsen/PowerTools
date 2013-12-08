@@ -16,12 +16,12 @@
  *	along with the PowerTools engine. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.powerTools.engine.symbol;
+package org.powertools.engine.symbol;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import org.powerTools.engine.ExecutionException;
+import org.powertools.engine.ExecutionException;
 
 
 final class SequenceItem extends Item {

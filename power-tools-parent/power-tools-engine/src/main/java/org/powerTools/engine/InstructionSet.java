@@ -16,7 +16,7 @@
  *	along with the PowerTools engine. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.powerTools.engine;
+package org.powertools.engine;
 
 /**
  * Interface for an instruction set that wants to select its own name

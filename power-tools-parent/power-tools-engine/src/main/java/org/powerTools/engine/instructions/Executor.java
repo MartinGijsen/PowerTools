@@ -16,9 +16,9 @@
  *	along with the PowerTools engine. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.powerTools.engine.instructions;
+package org.powertools.engine.instructions;
 
-import org.powerTools.engine.TestLine;
+import org.powertools.engine.TestLine;
 
 
 public interface Executor {

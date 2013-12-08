@@ -16,27 +16,26 @@
  *	along with the PowerTools engine. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.powerTools.engine.sources.model;
+package org.powertools.engine.sources.model;
 
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Random;
 import java.util.Set;
-
-import org.powerTools.engine.core.RunTimeImpl;
-import org.powerTools.engine.expression.ExpressionEvaluator;
+import org.powertools.engine.RunTime;
+import org.powertools.engine.expression.ExpressionEvaluator;
 
 
 final class RandomEdgeSelector implements EdgeSelectionStrategy {
-	final static String NAME = "random";
+	static final String NAME = "random";
 
-	private final static String DESCRIPTION	= "select a random outgoing edge";
-	private final static Random mRandom		= new Random ();
+	private static final String DESCRIPTION	= "select a random outgoing edge";
+	private static final Random mRandom		= new Random ();
 
-	private RunTimeImpl mRunTime;
+	private RunTime mRunTime;
 	
 	
-	RandomEdgeSelector (RunTimeImpl runTime) {
+	RandomEdgeSelector (RunTime runTime) {
 		super ();
 		mRunTime = runTime;
 	}
@@ -78,6 +77,6 @@ final class RandomEdgeSelector implements EdgeSelectionStrategy {
 
 	private boolean returnsTrue (String condition) {
 		String value = ExpressionEvaluator.evaluate (condition, mRunTime.getCurrentScope ());
-		return value.equals ("true");
+		return "true".equals (value);
 	}
 }

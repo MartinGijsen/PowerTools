@@ -16,13 +16,13 @@
  *	along with the PowerTools engine. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.powerTools.web;
+package org.powertools.web;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import org.powerTools.engine.InstructionSet;
-import org.powerTools.engine.RunTime;
+import org.powertools.engine.InstructionSet;
+import org.powertools.engine.RunTime;
 
 
 public abstract class WebLibrary implements InstructionSet {
@@ -70,7 +70,7 @@ public abstract class WebLibrary implements InstructionSet {
 	
 	@Override
 	public final void setup () {
-		;
+		// empty
 	}
 	
 	@Override
@@ -582,37 +582,37 @@ public abstract class WebLibrary implements InstructionSet {
 
 	// names for item types
 	protected interface IItemTypeName {
-		final static String cButton			= "button";
-		final static String cCheckbox		= "checkbox";
-		final static String cCombobox		= "combobox";
-		final static String cFrame			= "frame";
-		final static String cImage			= "image";
-		final static String cLink			= "link";
-		final static String cListbox		= "listbox";
-		final static String cListboxItem	= "listbox item";
-		final static String cRadioButton	= "radio button";
-		final static String cText			= "text input";
+		String cButton		= "button";
+		String cCheckbox	= "checkbox";
+		String cCombobox	= "combobox";
+		String cFrame		= "frame";
+		String cImage		= "image";
+		String cLink		= "link";
+		String cListbox		= "listbox";
+		String cListboxItem	= "listbox item";
+		String cRadioButton	= "radio button";
+		String cText		= "text input";
 	}
 
 	// names for key types
 	protected interface IKeyTypeName {
-		final static String cDom	= "dom";
-		final static String cId		= "id";
-		final static String cIndex	= "index";
-		final static String cName	= "name";
-		final static String cText	= "text";
-		final static String cValue	= "value";
-		final static String cXpath	= "xpath";
-		final static String cCss	= "css";
-		final static String cTag	= "tag";
+		String cDom		= "dom";
+		String cId		= "id";
+		String cIndex	= "index";
+		String cName	= "name";
+		String cText	= "text";
+		String cValue	= "value";
+		String cXpath	= "xpath";
+		String cCss		= "css";
+		String cTag		= "tag";
 	}
 	
 	// names for browsers
 	protected interface IBrowserName {
-		final static String cFirefox			= "firefox";
-		final static String cIe					= "ie";
-		final static String cInternetExplorer	= "internet explorer";
-		final static String cChrome				= "chrome";
+		String cFirefox				= "firefox";
+		String cIe					= "ie";
+		String cInternetExplorer	= "internet explorer";
+		String cChrome				= "chrome";
 	}
 
 	protected final RunTime mRunTime;
@@ -653,10 +653,10 @@ public abstract class WebLibrary implements InstructionSet {
 	
 	
 	private boolean makeBoolean(String text) {
-		if (text.equalsIgnoreCase("true") || text.equalsIgnoreCase("on")) {
+		if ("true".equalsIgnoreCase (text) || "on".equalsIgnoreCase (text)) {
 			return true;
 		}
-		if (text.equalsIgnoreCase("false") || text.equalsIgnoreCase("off")) {
+		if ("false".equalsIgnoreCase (text) || "off".equalsIgnoreCase (text)) {
 			return false;
 		}
 		String msg = "Invalid value: " + text + " valid values: true/false/on/off";

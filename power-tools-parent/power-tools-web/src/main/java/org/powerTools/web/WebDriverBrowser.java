@@ -16,7 +16,7 @@
  *	along with the PowerTools engine. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.powerTools.web;
+package org.powertools.web;
 
 import java.io.File;
 import java.io.IOException;
@@ -44,15 +44,15 @@ import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.Select;
-import org.powerTools.engine.ExecutionException;
-import org.powerTools.engine.RunTime;
-import org.powerTools.web.WebLibrary.IBrowserType;
-import org.powerTools.web.WebLibrary.IItemType;
-import org.powerTools.web.WebLibrary.IKeyType;
+import org.powertools.engine.ExecutionException;
+import org.powertools.engine.RunTime;
+import org.powertools.web.WebLibrary.IBrowserType;
+import org.powertools.web.WebLibrary.IItemType;
+import org.powertools.web.WebLibrary.IKeyType;
 
 
 class WebDriverBrowser implements IBrowser {
-	private final String CHROMEDRIVER_LOG_FILENAME = "chromedriver.log";
+	private static final String CHROMEDRIVER_LOG_FILENAME = "chromedriver.log";
 	
 	
 	public WebDriverBrowser (RunTime runTime) {
@@ -387,7 +387,7 @@ class WebDriverBrowser implements IBrowser {
 			WebElement theOne			= null;
 			for (WebElement option : choices) {
 				if (!option.getText ().contains (optionText)) {
-					;
+					// ignore: option does not contain the desired text
 				} else if (theOne == null) {
 					theOne = option;
 				} else {
@@ -704,7 +704,8 @@ class WebDriverBrowser implements IBrowser {
 
 			@Override
 			public boolean execute (WebElement element) throws WebDriverException, ExecutionException {
-				return true;			}
+				return true;
+			}
 		});
 	}
 	

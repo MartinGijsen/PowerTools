@@ -16,7 +16,7 @@
  *	along with the PowerTools engine. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.powerTools.engine.reports;
+package org.powertools.engine.reports;
 
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -25,7 +25,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-import org.powerTools.engine.TestLine;
+import org.powertools.engine.TestLine;
 
 
 /*

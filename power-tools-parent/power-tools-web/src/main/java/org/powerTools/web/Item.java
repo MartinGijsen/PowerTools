@@ -16,10 +16,10 @@
  *	along with the PowerTools engine. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.powerTools.web;
+package org.powertools.web;
 
-import org.powerTools.web.WebLibrary.IItemType;
-import org.powerTools.web.WebLibrary.IKeyType;
+import org.powertools.web.WebLibrary.IItemType;
+import org.powertools.web.WebLibrary.IKeyType;
 
 
 public class Item {

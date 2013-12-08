@@ -16,12 +16,12 @@
  *	along with the PowerTools engine. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.powerTools.engine.symbol;
+package org.powertools.engine.symbol;
 
 import java.util.regex.Pattern;
 
-import org.powerTools.engine.ExecutionException;
-import org.powerTools.engine.Symbol;
+import org.powertools.engine.ExecutionException;
+import org.powertools.engine.Symbol;
 
 
 // A Symbol is a named item, containing either a single value or any number of values.
