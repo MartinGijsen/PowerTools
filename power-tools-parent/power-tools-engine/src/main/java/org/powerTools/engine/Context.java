@@ -27,22 +27,28 @@ import java.util.GregorianCalendar;
  * The Context describes the static part of the environment where the test executes.
  */
 public class Context {
-	public final Date mStartTime;
-	public final String mResultsBaseDirectory;
-	public final String mResultsDirectory;
-	public final String mLogFileName;
-	public final String mFullLogFilePath;
+	protected static final SimpleDateFormat mDateFormat = new SimpleDateFormat ("yyyy.MM.dd-HH.mm.ss");
+
+	protected static String mDefaulBaseDirectory = null;
+	
+	protected final Date mStartTime;
+	protected final String mResultsBaseDirectory;
+	protected final String mResultsDirectory;
+	protected final String mLogFileName;
+	protected final String mFullLogFilePath;
 
 	static final String LOG_FILE_NAME = "log.html";
 
-	protected static final SimpleDateFormat mDateFormat = new SimpleDateFormat ("yyyy.MM.dd-HH.mm.ss");
-
-	private static String defaulBaseDirectory = null;
 	
-	public static void setAlternativeResultBaseDirectory (String baseDirectory) {
-		defaulBaseDirectory = baseDirectory;
+	@Deprecated
+	public static void setAlternativeResultBaseDirectory (String directory) {
+		setResultBaseDirectory (directory);
 	}
 	
+	public static void setResultBaseDirectory (String directory) {
+		mDefaulBaseDirectory = directory;
+	}
+
 	public Context (String resultsBaseDirectory) {
 		this (GregorianCalendar.getInstance ().getTime (), resultsBaseDirectory);
 	}
@@ -58,14 +64,34 @@ public class Context {
 	public Context (Date startTime, String resultsBaseDirectory, String logFileName) {
 		mStartTime				= startTime;
 		
-		if (defaulBaseDirectory == null) {
+		if (mDefaulBaseDirectory == null) {
 			mResultsBaseDirectory	= resultsBaseDirectory + "/";
 		} else	{
-			mResultsBaseDirectory	= defaulBaseDirectory + "/";
+			mResultsBaseDirectory	= mDefaulBaseDirectory + "/";
 		}
 		
 		mResultsDirectory		= mResultsBaseDirectory + mDateFormat.format (startTime) + "/";
 		mLogFileName			= logFileName;
 		mFullLogFilePath		= mResultsDirectory + logFileName;
+	}
+	
+	public Date getStartTime () {
+		return mStartTime;
+	}
+	
+	public String getResultsBaseDirectory () {
+		return mResultsBaseDirectory;
+	}
+	
+	public String getResultsDirectory () {
+		return mResultsDirectory;
+	}
+	
+	public String getLogFileName () {
+		return mLogFileName;
+	}
+	
+	public String getFullLogFilePath () {
+		return mFullLogFilePath;
 	}
 }

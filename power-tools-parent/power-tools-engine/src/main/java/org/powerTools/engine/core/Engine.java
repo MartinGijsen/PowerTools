@@ -61,7 +61,7 @@ public abstract class Engine {
 	}
 
 	protected final void run (TestSource source) {
-		mPublisher.start (mRunTime.getContext ().mStartTime);
+		mPublisher.start (mRunTime.getContext ().getStartTime ());
 		mRunTime.invokeSource (source);
 		run ();
 		mInstructions.cleanup ();
