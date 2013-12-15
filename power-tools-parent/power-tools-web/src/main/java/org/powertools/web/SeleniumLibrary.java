@@ -56,7 +56,7 @@ public final class SeleniumLibrary extends WebLibrary {
 			return false;
 		} else {
 			mBrowser = new SeleniumBrowser (mRunTime);
-			return mBrowser.open (getBrowserType (typeString), url, mRunTime.getContext ().mResultsDirectory);
+			return mBrowser.open (getBrowserType (typeString), url, mRunTime.getContext ().getResultsDirectory ());
 		}
 	}
 

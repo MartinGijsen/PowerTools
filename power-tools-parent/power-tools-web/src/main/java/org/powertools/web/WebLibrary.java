@@ -533,7 +533,7 @@ public abstract class WebLibrary implements InstructionSet {
 	
 	public final boolean MakeScreenshot () {
 		String filename = "screenshot" + ++mLastScreenshotNr + ".png";
-		String path	= mRunTime.getContext ().mResultsDirectory + filename;
+		String path	= mRunTime.getContext ().getResultsDirectory () + filename;
 		boolean ok	= mBrowser.makeScreenshot (path);
 		if (ok) {
 			mRunTime.reportLink (filename);

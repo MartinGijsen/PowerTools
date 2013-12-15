@@ -112,10 +112,7 @@ public interface IBrowser {
 	String getItemText (Item item);
 	String getItemText (IKeyType key, String value);
 
-	Collection<HtmlRequest> getNetworkTraffic ();
-	void clearNetworkTraffic ();
-
-	int getCount(Item item);
+	int getCount (Item item);
 	
 	boolean makeScreenshot (String path);
 

@@ -730,20 +730,6 @@ final class SeleniumBrowser implements IBrowser {
 		return false;
 	}
 
-
-	@Override
-	public Collection<HtmlRequest> getNetworkTraffic () {
-		return null;
-//		final Type collectionOfHTMLRequestsType = new TypeToken<Collection<HtmlRequest>> () {}.getType ();
-//		return new Gson ().fromJson (mSelenium.captureNetworkTraffic ("json"), collectionOfHTMLRequestsType);
-	}
-
-	@Override
-	public void clearNetworkTraffic () {
-		// TODO: reset without getting all that traffic?
-		getNetworkTraffic ();
-	}
-
 	
 	// private members
 	private final static int cDefaultPortNr			= 4444;

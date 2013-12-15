@@ -48,7 +48,7 @@ public final class WebDriverLibrary extends WebLibrary {
 			String urlToOpen			= url.isEmpty () ? "about:blank" : completeUrl (url);			
 			WebDriverBrowser myBrowser	= new WebDriverBrowser (mRunTime);
 			mBrowser					= myBrowser;
-			return myBrowser.open (browserType, browserVersion, urlToOpen, mRunTime.getContext ().mResultsDirectory, hubUrl);
+			return myBrowser.open (browserType, browserVersion, urlToOpen, mRunTime.getContext ().getResultsDirectory (), hubUrl);
 		}
 	}
 }

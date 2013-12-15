@@ -528,18 +528,6 @@ class WebDriverBrowser implements IBrowser {
 		return true;
 	}
 
-	public Collection<HtmlRequest> getNetworkTraffic () {
-		mRunTime.reportError ("not implemented");
-		return new LinkedList<HtmlRequest> ();
-//		final Type collectionOfHTMLRequestsType = new TypeToken<Collection<HtmlRequest>> () {}.getType ();
-//		return new Gson ().fromJson (mSelenium.captureNetworkTraffic ("json"), collectionOfHTMLRequestsType);
-	}
-
-	public void clearNetworkTraffic () {
-		// TODO: reset without getting all that traffic?
-		getNetworkTraffic ();
-	}
-
 
 	@Override
 	public void cleanup () {
