@@ -46,8 +46,7 @@ final class StringValue extends Value {
 	
 	@Override
 	public Value concatenate (Value v) {
-		mText += v.toStringValue ().mText;
-		return this;
+		return new StringValue (mText + v.toStringValue ().mText);
 	}
 
 	

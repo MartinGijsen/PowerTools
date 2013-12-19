@@ -164,7 +164,7 @@ final class GraphMLParser extends DefaultHandler {
 	}
 
 	@Override
-	public void characters (char chars[], int start, int length) {
+	public void characters (char[] chars, int start, int length) {
 		mElementStack.peek ().mText += new String (chars, start, length);
 	}
 

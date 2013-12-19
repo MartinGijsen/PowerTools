@@ -18,19 +18,21 @@
 
 package org.powertools.graph;
 
+import org.junit.Test;
+import static org.junit.Assert.assertEquals;
 
-public enum Font {
-	ARIAL ("Arial"),
-	HELVETICA ("Helvetica");
-	
-	private final String mName;
-	
-	private Font (String name) {
-		mName = name;
-	}
-	
-	@Override
-	public String toString () {
-		return mName;
+public class AttributesTest {
+	@Test
+	public void testSomeMethod() {
+		Attributes attributes = new Attributes ();
+		assertEquals (attributes.label, "");
+		assertEquals (attributes.shape, Shape.DEFAULT);
+		assertEquals (attributes.style, Style.DEFAULT);
+		assertEquals (attributes.lineColour, Colour.DEFAULT);
+		assertEquals (attributes.lineWidth, "");
+		assertEquals (attributes.fillColour, Colour.DEFAULT);
+		assertEquals (attributes.textColour, Colour.DEFAULT);
+		assertEquals (attributes.fontName, "");
+		assertEquals (attributes.fontSize, "");
 	}
 }

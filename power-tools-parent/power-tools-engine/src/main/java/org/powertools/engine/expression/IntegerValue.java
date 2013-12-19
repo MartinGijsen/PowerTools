@@ -18,6 +18,8 @@
 
 package org.powertools.engine.expression;
 
+import org.powertools.engine.ExecutionException;
+
 
 final class IntegerValue extends Value {
 	private int  mValue;
@@ -28,7 +30,11 @@ final class IntegerValue extends Value {
 	}
 	
 	public IntegerValue (String value) {
-		mValue = Integer.parseInt (value);
+		try {
+			mValue = Integer.parseInt (value);
+		} catch (NumberFormatException nfe) {
+			throw newException ("not an integer number: " + value);
+		}
 	}
 
 	
@@ -87,8 +93,7 @@ final class IntegerValue extends Value {
 	@Override
 	public Value add (Value v) {
 		if (v instanceof IntegerValue) {
-			mValue += v.toIntegerValue ().mValue;
-			return this;
+			return new IntegerValue (mValue + v.toIntegerValue ().mValue);
 		} else if (v instanceof RealValue) {
 			return this.toRealValue ().add (v);
 		} else {
@@ -99,8 +104,7 @@ final class IntegerValue extends Value {
 	@Override
 	public Value subtract (Value v) {
 		if (v instanceof IntegerValue) {
-			mValue -= v.toIntegerValue ().mValue;
-			return this;
+			return new IntegerValue (mValue - v.toIntegerValue ().mValue);
 		} else if (v instanceof RealValue) {
 			return this.toRealValue ().subtract(v);
 		} else {
@@ -111,8 +115,7 @@ final class IntegerValue extends Value {
 	@Override
 	public Value multiply (Value v) {
 		if (v instanceof IntegerValue) {
-			mValue *= v.toIntegerValue ().mValue;
-			return this;
+			return new IntegerValue (mValue * v.toIntegerValue ().mValue);
 		} else if (v instanceof RealValue) {
 			return this.toRealValue ().multiply (v.toRealValue ());
 		} else {
@@ -122,6 +125,14 @@ final class IntegerValue extends Value {
 	
 	@Override
 	public Value divide (Value v) {
+		try {
+			int integerValueOfV = v.toIntegerValue ().mValue;
+			if (mValue % integerValueOfV == 0) {
+				return new IntegerValue (mValue / integerValueOfV);
+			}
+		} catch (ExecutionException ee) {
+			// v was not an integer
+		}
 		return this.toRealValue ().divide (v);
 	}
 	
@@ -131,7 +142,6 @@ final class IntegerValue extends Value {
 		return this;
 	}
 
-	
 	@Override
 	public StringValue toStringValue () {
 		return new StringValue (Integer.toString (mValue));

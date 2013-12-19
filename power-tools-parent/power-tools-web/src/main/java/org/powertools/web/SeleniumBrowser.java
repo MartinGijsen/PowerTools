@@ -18,7 +18,6 @@
 
 package org.powertools.web;
 
-import java.util.Collection;
 import java.util.regex.Pattern;
 
 import org.powertools.engine.RunTime;
@@ -465,7 +464,7 @@ final class SeleniumBrowser implements IBrowser {
 	public boolean selectChoice (Item item) {
 		try {
 			if (!browserIsOpen()) {
-				;
+				// nothing
 			} else if (item.mType == WebLibrary.IItemType.cListboxItem) {
 				mSelenium.select (getLocator (item.mParent), getLocator (item));
 				return true;
@@ -732,9 +731,9 @@ final class SeleniumBrowser implements IBrowser {
 
 	
 	// private members
-	private final static int cDefaultPortNr			= 4444;
-	private final static int cOneSecondTimeout		= 1000;
-	private final static Pattern mAttributePattern	= Pattern.compile (".*/@\\w+");
+	private static final int cDefaultPortNr			= 4444;
+	private static final int cOneSecondTimeout		= 1000;
+	private static final Pattern mAttributePattern	= Pattern.compile (".*/@\\w+");
 	
 	private final RunTime mRunTime;
 
@@ -962,7 +961,4 @@ final class SeleniumBrowser implements IBrowser {
 	public Object getTestTool () {
 		return mSelenium;
 	}
-
-
-
 }

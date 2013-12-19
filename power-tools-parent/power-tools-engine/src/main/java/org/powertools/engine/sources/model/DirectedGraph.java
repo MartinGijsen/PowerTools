@@ -107,20 +107,19 @@ final class DirectedGraph {
 	}
 	
 	Edge getEdge (Node source, Node target) {
-		final Set<Edge> edges = mEdges.get (source);
-		if (edges == null) {
-			throw new RuntimeException ("edge does not exist");
-		}
-		for (Edge edge : edges) {
-			if (edge.mTarget == target) {
-				return edge;
+		Set<Edge> edges = mEdges.get (source);
+		if (edges != null) {
+			for (Edge edge : edges) {
+				if (edge.mTarget == target) {
+					return edge;
+				}
 			}
 		}
 		throw new RuntimeException ("edge does not exist");
 	}
 	
 	Set<Edge> getEdges (Node source) {
-		final Set<Edge> edges = mEdges.get (source);
+		Set<Edge> edges = mEdges.get (source);
 		if (edges == null) {
 			return new HashSet<Edge> ();
 		} else {

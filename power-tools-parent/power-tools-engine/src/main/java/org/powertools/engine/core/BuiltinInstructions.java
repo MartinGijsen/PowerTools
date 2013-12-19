@@ -160,10 +160,6 @@ public final class BuiltinInstructions implements InstructionSet {
 		return mRunTime.leaveTestCase ();
 	}
 	
-//	public boolean DefineAlias_For_ (String newInstructionName, String oldInstructionName) {
-//		return mLogic.defineAlias (newInstructionName, oldInstructionName);
-//	}
-
 	public boolean DefineNumberSequence_ (String name) {
 		return DefineNumberSequence_From_ (name, 1);
 	}
@@ -410,38 +406,4 @@ public final class BuiltinInstructions implements InstructionSet {
 			throw new ExecutionException ("value specified without a field name");
 		}
 	}
-
-//	private Constructor<?> getConstructorWithRuntimeParameter (Class<?> aClass) {
-//	try {
-//		return aClass.getConstructor (new Class<?>[] { RunTime.class });
-//	} catch (Exception e) {
-//		return null;
-//	}
-////	Constructor<?> constructors[] = aClass.getConstructors ();
-////    for (Constructor<?> constructor : constructors) {
-////    	Class<?>[] parameterTypes = constructor.getParameterTypes(); 
-////    	if (parameterTypes.length == 1 && parameterTypes[0] == RunTime.class) {
-////    		return constructor;
-////    	}
-////    }
-////    
-////    return null;
-//}
-
-
-//boolean defineAlias (String newInstructionName, String oldInstructionName) {
-//	if (containsInstructionSet (newInstructionName)) {
-//		throw new ExecutionException ("instruction set not allowed in alias name");
-//	} else if (mInstructions.getExecutor (newInstructionName) != null) {
-//		throw new ExecutionException ("alias already exists");
-//	} else {
-//		final Executor instructionExecutor = mInstructions.getExecutor (oldInstructionName);
-//		;
-//		return mInstructions.createAlias (newInstructionName, oldInstructionName);
-//	}
-//}
-
-//private boolean containsInstructionSet (String name) {
-//	return name.contains (".");
-//}
 }

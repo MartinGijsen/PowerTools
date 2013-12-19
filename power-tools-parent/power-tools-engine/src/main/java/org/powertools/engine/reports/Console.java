@@ -67,11 +67,12 @@ final class Console implements TestLineSubscriber, TestResultSubscriber {
 
 	@Override
 	public void processCommentLine (final TestLine testLine) {
-		mStream.print ("comment: ");
-		final int nrOfParts = testLine.getNrOfParts ();
+		StringBuilder builder = new StringBuilder ();
+		int nrOfParts = testLine.getNrOfParts ();
 		for (int partNr = 1; partNr < nrOfParts; ++partNr) {
-			mStream.print ("'" + testLine.getPart (partNr) + "' ");
+			builder.append ("'").append (testLine.getPart (partNr)).append ("' ");
 		}
+		processCommentLine (builder.toString ());
 	}
 
 

@@ -24,8 +24,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Collection;
-import java.util.LinkedList;
 import java.util.List;
 
 import org.openqa.selenium.By;
@@ -570,7 +568,7 @@ class WebDriverBrowser implements IBrowser {
 	
 	
 	// protected members
-	protected final static int cOneSecondTimeout = 1000;
+	protected static final int cOneSecondTimeout = 1000;
 
 	protected final RunTime mRunTime;
 

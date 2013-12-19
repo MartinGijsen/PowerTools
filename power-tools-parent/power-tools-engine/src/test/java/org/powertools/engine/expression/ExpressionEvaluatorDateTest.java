@@ -16,7 +16,7 @@
  *	along with the PowerTools engine. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.powertools.engine.expressions;
+package org.powertools.engine.expression;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -100,7 +100,7 @@ public class ExpressionEvaluatorDateTest {
 	}
 
 	@Test
-	public void testSubtractionNrOfDaysNegativAsSymbol () {
+	public void testSubtractionNrOfDaysNegativeAsSymbol () {
 		mScope.createVariable ("nrOfDays", "-12");
 		String result = ExpressionEvaluator.evaluate ("? today - nrOfDays days", mScope);
 		String expectation = getDateWithOffsetForToday (12);
@@ -108,7 +108,7 @@ public class ExpressionEvaluatorDateTest {
 	}
 	
 	@Test
-	public void testNrOfDaysNegativAsSymbol () {
+	public void testNrOfDaysNegativeAsSymbol () {
 		mScope.createVariable ("nrOfDays", "-12");
 		String result = ExpressionEvaluator.evaluate ("? today + nrOfDays days", mScope);
 		String expectation = getDateWithOffsetForToday (-12);

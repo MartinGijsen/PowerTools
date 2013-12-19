@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
+import java.util.HashSet;
 import java.util.Set;
 
 import org.powertools.engine.ExecutionException;
@@ -60,7 +61,7 @@ final class Client {
 	}
 
 	Set<String> getMethodNames () {
-		return null;
+		return new HashSet<String> ();
 	}
 
 	boolean execute (TestLine testLine) {

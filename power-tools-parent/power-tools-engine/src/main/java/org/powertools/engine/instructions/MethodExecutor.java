@@ -20,8 +20,6 @@ package org.powertools.engine.instructions;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Calendar;
-import java.util.Date;
 
 import org.powertools.engine.ExecutionException;
 import org.powertools.engine.TestLine;
@@ -78,10 +76,6 @@ class MethodExecutor implements Executor {
 			return getFloatArgument (arg);
 		} else if (parameterType == double.class) {
 			return getDoubleArgument (arg);
-		} else if (parameterType == Date.class) {
-			return getDateArgument (arg);
-		} else if (parameterType == Calendar.class) {
-			return getCalendarArgument (arg);
 		} else {
 			throw new ExecutionException ("unsupported parameter type");
 		}
@@ -127,24 +121,6 @@ class MethodExecutor implements Executor {
 		} catch (NumberFormatException nfe) {
 			throw new ExecutionException ("invalid double number: " + arg);
 		}
-	}
-	
-	private Object getDateArgument (String arg) {
-		return null;
-//		try {
-//			return new Date (arg);
-//		} catch (NumberFormatException nfe) {
-//			throw new ExecutionException ("invalid date: " + arg);
-//		}
-	}
-	
-	private Object getCalendarArgument (String arg) {
-		return null;
-//		try {
-//			return new GregorianCalendar ();
-//		} catch (NumberFormatException nfe) {
-//			throw new ExecutionException ("invalid calendar: " + arg);
-//		}
 	}
 	
 	private boolean invokeMethodAndHandleExceptions () {

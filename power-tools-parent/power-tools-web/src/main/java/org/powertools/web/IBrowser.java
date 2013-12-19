@@ -18,18 +18,11 @@
 
 package org.powertools.web;
 
-import java.util.Collection;
-
 import org.powertools.web.WebLibrary.IBrowserType;
 import org.powertools.web.WebLibrary.IKeyType;
 
 
 public interface IBrowser {
-	interface IMessages {
-		String cNoSuchElementErrorMsg		= "no element found named ";
-		String cMultipleElementsErrorMsg	= "multiple elements found named ";
-	}
-	
 	boolean setShortDefaultTimeout (int timeout);
 	boolean setLongDefaultTimeout (int timeout);
 	int getShortDefaultTimeoutAsInteger ();

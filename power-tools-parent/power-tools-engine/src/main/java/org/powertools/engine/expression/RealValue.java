@@ -28,7 +28,11 @@ final class RealValue extends Value {
 	}
 	
 	public RealValue (String value) {
-		mValue = Double.parseDouble (value);
+		try {
+			mValue = Double.parseDouble (value);
+		} catch (NumberFormatException nfe) {
+			throw newException ("not a real number: " + value);
+		}
 	}
 	
 	
@@ -70,26 +74,22 @@ final class RealValue extends Value {
 	
 	@Override
 	public Value add (Value v) {
-		mValue += v.toRealValue ().mValue;
-		return this;
+		return new RealValue (mValue + v.toRealValue ().mValue);
 	}
 	
 	@Override
 	public Value subtract (Value v) {
-		mValue -= v.toRealValue ().mValue;
-		return this;
+		return new RealValue (mValue - v.toRealValue ().mValue);
 	}
 	
 	@Override
 	public Value multiply (Value v) {
-		mValue *= v.toRealValue ().mValue;
-		return this;
+		return new RealValue (mValue * v.toRealValue ().mValue);
 	}
 	
 	@Override
 	public Value divide (Value v) {
-		mValue /= v.toRealValue ().mValue;
-		return this;
+		return new RealValue (mValue / v.toRealValue ().mValue);
 	}
 	
 	@Override

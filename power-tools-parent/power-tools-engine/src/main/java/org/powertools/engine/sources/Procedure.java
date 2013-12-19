@@ -29,6 +29,24 @@ import org.powertools.engine.symbol.Scope;
 
 // A Procedure is a scripted instruction.
 public final class Procedure {
+	private class Parameter {
+		private final String mName;
+		private final boolean mIsOutput;
+		
+		Parameter (String name, boolean isOutput) {
+			mName		= name;
+			mIsOutput	= isOutput;
+		}
+		
+		String getName () {
+			return mName;
+		}
+		
+		boolean isOutput () {
+			return mIsOutput;
+		}
+	}
+	
 	private final String mName;
 	private final List<Parameter> mParameters;
 	private final List<List<String>> mInstructions;
@@ -54,8 +72,8 @@ public final class Procedure {
 		}
 
 		for (Parameter parameter : mParameters) {
-			if (parameter.mName.equalsIgnoreCase (realName)) {
-				throw new ExecutionException (String.format ("duplicate parameter name '%s'", parameter.mName));
+			if (parameter.getName ().equalsIgnoreCase (realName)) {
+				throw new ExecutionException (String.format ("duplicate parameter name '%s'", parameter.getName ()));
 			}
 		}
 
@@ -72,10 +90,10 @@ public final class Procedure {
 		int partNr = 0;
 		for (Parameter parameter : mParameters) {
 			final String argument = testLine.getPart (++partNr);
-			if (parameter.mIsOutput) {
-				scope.createParameter (parameter.mName, argument);
+			if (parameter.isOutput ()) {
+				scope.createParameter (parameter.getName (), argument);
 			} else {
-				scope.createConstant (parameter.mName, argument);
+				scope.createConstant (parameter.getName (), argument);
 			}
 		}
 	}
@@ -85,17 +103,6 @@ public final class Procedure {
 	}
 
 
-	// private members
-	private class Parameter {
-		public final String mName;
-		public final boolean mIsOutput;
-		
-		public Parameter (String name, boolean isOutput) {
-			mName		= name;
-			mIsOutput	= isOutput;
-		}
-	}
-	
 	private void checkNrOfArguments (int nrOfArguments) {
 		final int nrOfParameters = mParameters.size ();
 		if (nrOfArguments != nrOfParameters) {

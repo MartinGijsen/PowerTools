@@ -66,7 +66,7 @@ final class InstructionSource extends BaseTestSource {
 			} else if (++position % 2 != 0) {
 				mParameterNames.add (text);
 				instructionName += " _";
-			} else {//if (!text.isEmpty ()) {
+			} else {
 				instructionName += " " + text;
 			}
 		}

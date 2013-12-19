@@ -645,9 +645,9 @@ public abstract class WebLibrary implements InstructionSet {
 
 	
 	// private members
-	private final static Map<String, IItemType> cItemTypesMap;
-	private final static Map<String, IBrowserType> cBrowserTypesMap;
-	private final static Map<String, IKeyType> cKeyTypesMap;
+	private static final Map<String, IItemType> cItemTypesMap;
+	private static final Map<String, IBrowserType> cBrowserTypesMap;
+	private static final Map<String, IKeyType> cKeyTypesMap;
 
 	private final Map<String, Item> mItemMap;
 	

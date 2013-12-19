@@ -28,8 +28,4 @@ public final class InstructionSetFactory {
 	public static InstructionSet createClassInstructionSet (String name, Object object) {
 		return new ClassInstructionSet (name, object);
 	}
-	
-//	public static InstructionSet createRemoteInstructionSet (String name, String hostName, int portNr) {
-//		return new RemoteInstructionSet (name, new Client (hostName, portNr));
-//	}
 }

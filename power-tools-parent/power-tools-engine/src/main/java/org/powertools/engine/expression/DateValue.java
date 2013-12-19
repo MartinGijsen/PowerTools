@@ -37,7 +37,7 @@ final class DateValue extends Value {
 
 	
 	public DateValue (Calendar date) {
-		mDate = date;
+		mDate = (Calendar) date.clone ();
 	}
 
 	public DateValue (String stringValue) {
@@ -64,18 +64,18 @@ final class DateValue extends Value {
 	
 	@Override
 	public Value unequal (Value v) {
-		return new BooleanValue (mDate.equals (v.toDateValue ().mDate));
+		return new BooleanValue (!mDate.equals (v.toDateValue ().mDate));
 	}
 	
 	
 	Value add (String number, String period) {
 		int nr = parseInteger (number);
-		return addPeriod(nr, period);
+		return addPeriod (nr, period);
 	}
 
 	Value subtract (String number, String period) {
 		int nr = parseInteger (number);
-		return addPeriod(-nr, period);
+		return addPeriod (-nr, period);
 	}
 
 	@Override
@@ -93,7 +93,7 @@ final class DateValue extends Value {
 		return mFormat.format (mDate.getTime ());
 	}
 	
-	private int parseInteger(String number) {
+	private int parseInteger (String number) {
 		try {
 			return Integer.parseInt (number);
 		} catch (NumberFormatException e) {
@@ -102,18 +102,19 @@ final class DateValue extends Value {
 	}
 
 	private Value addPeriod (int number, String period) {
+		DateValue newDate = new DateValue (mDate);
 		if ("days".equals (period)) {
-			mDate.add (Calendar.DAY_OF_MONTH, number);
+			newDate.mDate.add (Calendar.DAY_OF_MONTH, number);
 		} else if ("weeks".equals (period)) {
-			mDate.add (Calendar.WEEK_OF_YEAR, number);
+			newDate.mDate.add (Calendar.WEEK_OF_YEAR, number);
 		} else if ("months".equals (period)) {
-			mDate.add (Calendar.MONTH, number);
+			newDate.mDate.add (Calendar.MONTH, number);
 		} else if ("years".equals (period)) {
-			mDate.add (Calendar.YEAR, number);
+			newDate.mDate.add (Calendar.YEAR, number);
 		} else {
-			addBusinessDays (number);
+			newDate.addBusinessDays (number);
 		}
-		return this;
+		return newDate;
 	}
 	
 	private void addBusinessDays (int number) {

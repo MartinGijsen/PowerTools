@@ -35,7 +35,7 @@ final class BooleanValue extends Value {
 
 	public BooleanValue (String text) {
 		if (!text.equals (TRUE_STRING) && !text.equals (FALSE_STRING)) {
-			throwException ("not a boolean value: " + text);
+			throw newException ("not a boolean value: " + text);
 		}
 		mValue = text.equals (TRUE_STRING);
 	}
@@ -62,6 +62,7 @@ final class BooleanValue extends Value {
 		return !mValue ? cTrueStringValue : cFalseStringValue;
 	}
 	
+	
 	@Override
 	public Value equal (Value v) {
 		return mValue == v.toBooleanValue ().mValue ? cTrueStringValue : cFalseStringValue;
@@ -72,7 +73,7 @@ final class BooleanValue extends Value {
 		return mValue != v.toBooleanValue ().mValue ? cTrueStringValue : cFalseStringValue;
 	}
 
-
+	
 	@Override
 	public StringValue toStringValue () {
 		return new StringValue (toString ());

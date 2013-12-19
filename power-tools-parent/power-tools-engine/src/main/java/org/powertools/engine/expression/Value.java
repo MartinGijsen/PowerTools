@@ -28,15 +28,15 @@ abstract class Value {
 	abstract String getType ();
 
 	public Value or (Value v) {
-		return throwOperandException ("or");
+		throw newOperandException ("or");
 	}
 	
 	public Value and (Value v) {
-		return throwOperandException ("and");
+		throw newOperandException ("and");
 	}
 	
 	public Value not () {
-		return throwOperandException ("not");
+		throw newOperandException ("not");
 	}
 	
 	
@@ -45,80 +45,75 @@ abstract class Value {
 
 	
 	public Value lessThan (Value v) {
-		return throwOperandException ("<");
+		throw newOperandException ("<");
 	}
 	
 	public Value lessOrEqual (Value v) {
-		return throwOperandException ("<=");
+		throw newOperandException ("<=");
 	}
 	
 	public Value greaterThan (Value v) {
-		return throwOperandException (">");
+		throw newOperandException (">");
 	}
 	
 	public Value greaterOrEqual (Value v) {
-		return throwOperandException (">=");
+		throw newOperandException (">=");
 	}
 
 	
 	public Value add (Value v) {
-		return throwOperandException ("+");
+		throw newOperandException ("+");
 	}
 	
 	public Value subtract (Value v) {
-		return throwOperandException ("-");
+		throw newOperandException ("-");
 	}
 	
 	public Value multiply (Value v) {
-		return throwOperandException ("*");
+		throw newOperandException ("*");
 	}
 	
 	public Value divide (Value v) {
-		return throwOperandException ("/");
+		throw newOperandException ("/");
 	}
 	
 	public Value negate () {
-		return throwOperandException ("-");
+		throw newOperandException ("-");
 	}
 	
 
 	public Value concatenate (Value v) {
-		return throwOperandException ("++");
+		return new StringValue (toString () + v.toString ());
 	}
 
 	
 	public abstract StringValue toStringValue ();
 
 	public RealValue toRealValue () {
-		throwConversionException (getType (), "real number");
-		return null;
+		throw newConversionException (getType (), "real number");
 	}
 	
 	public IntegerValue toIntegerValue () {
-		throwConversionException (getType (), "integer number");
-		return null;
+		throw newConversionException (getType (), "integer number");
 	}
 	
 	public BooleanValue toBooleanValue () {
-		throwConversionException (getType (), "boolean");
-		return null;
+		throw newConversionException (getType (), "boolean");
 	}
 	public DateValue toDateValue () {
-		throwConversionException (getType (), "date");
-		return null;
+		throw newConversionException (getType (), "date");
 	}
 
 	
-	protected void throwException (String message) {
-		throw new ExecutionException (message);
+	protected ExecutionException newException (String message) {
+		return new ExecutionException (message);
 	}
 	
-	protected Value throwOperandException (String operator) {
-		throwException (String.format (INVALID_OPERAND_MESSAGE, operator));
-		return null;
+	protected ExecutionException newOperandException (String operator) {
+		return newException (String.format (INVALID_OPERAND_MESSAGE, operator));
 	}
 
-	protected void throwConversionException (String sourceType, String targetType) {
-		throwException (String.format (INVALID_CONVERSION_MESSAGE, sourceType, targetType));
+	protected ExecutionException newConversionException (String sourceType, String targetType) {
+		return new ExecutionException (String.format (INVALID_CONVERSION_MESSAGE, sourceType, targetType));
 	}
 }
