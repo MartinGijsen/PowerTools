@@ -33,6 +33,12 @@ public final class TestLineImpl implements TestLine {
 		mNrOfParts = 0;
 	}
 
+	public TestLineImpl (String[] parts) {
+		mParts			= parts.clone ();
+		mOriginalParts	= parts.clone ();
+		mNrOfParts		= parts.length;
+	}
+
 
 	public void setParts (List<String> list) {
 		mNrOfParts = list.size ();
@@ -56,23 +62,13 @@ public final class TestLineImpl implements TestLine {
 		}
 	}
 
-	public boolean setPart (int partNr, String value) {
-		try {
-			mParts[partNr] = value;
-			return true;
-		} catch (IndexOutOfBoundsException ioobe) {
-			return false;
-		}
+	public void setPart (int partNr, String value) {
+		mParts[partNr] = value;
 	}
 
-	public boolean setEvaluatedPart (int partNr, String value) {
-		try {
-			mOriginalParts[partNr]	= mParts[partNr];
-			mParts[partNr]			= value;
-			return true;
-		} catch (IndexOutOfBoundsException ioobe) {
-			return false;
-		}
+	public void setEvaluatedPart (int partNr, String value) {
+		mOriginalParts[partNr]	= mParts[partNr];
+		mParts[partNr]			= value;
 	}
 
 	@Override
@@ -82,12 +78,12 @@ public final class TestLineImpl implements TestLine {
 	
 	@Override
 	public String getPart (int partNr) {
-		return (partNr < 0 || partNr >= mNrOfParts) ? "" : mParts[partNr];
+		return (partNr >= mNrOfParts) ? "" : mParts[partNr];
 	}
 
 	@Override
 	public String getOriginalPart (int partNr) {
-		return (partNr < 0 || partNr >= mNrOfParts) ? null : mOriginalParts[partNr];
+		return (partNr >= mNrOfParts) ? null : mOriginalParts[partNr];
 	}
 
 	@Override

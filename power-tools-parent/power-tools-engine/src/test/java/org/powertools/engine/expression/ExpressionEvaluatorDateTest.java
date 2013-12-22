@@ -26,19 +26,18 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.powertools.engine.BusinessDayChecker;
-import org.powertools.engine.expression.ExpressionEvaluator;
 import org.powertools.engine.symbol.Scope;
 
 
 public class ExpressionEvaluatorDateTest {
-	private static SimpleDateFormat mFormat = new SimpleDateFormat ("dd-MM-yyyy");
+	private static final SimpleDateFormat mFormat = new SimpleDateFormat ("dd-MM-yyyy");
 	
 	private Scope mScope;
 
 
 	@Before
 	public void setUp () throws Exception {
-		mScope = new Scope (Scope.getGlobalScope ());
+		mScope = new Scope (null);
 	}
 
 	@After

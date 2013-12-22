@@ -22,7 +22,6 @@ import org.powertools.engine.ExecutionException;
 import org.powertools.engine.Roles;
 import org.powertools.engine.RunTime;
 import org.powertools.engine.Symbol;
-import org.powertools.engine.symbol.Scope;
 
 
 public final class RolesImpl implements Roles {
@@ -102,9 +101,9 @@ public final class RolesImpl implements Roles {
 		return getValue (SYMBOL_NAME + "." + system + "." + role + "." + PASSWORD_FIELD_NAME);
 	}
 
-	private String getValue (String role) {
+	private String getValue (String name) {
 		getRolesSymbol ();
-		return mSymbol.getValue (SYMBOL_NAME + "." + role + "." + DOMAIN_FIELD_NAME);
+		return mSymbol.getValue (name);
 	}
 
 	private void getRolesSymbol () {
@@ -113,7 +112,7 @@ public final class RolesImpl implements Roles {
 				mSymbol = mRunTime.getSymbol (SYMBOL_NAME);
 			}
 		} catch (ExecutionException ee) {
-			mSymbol = Scope.getGlobalScope ().createStructure (SYMBOL_NAME);
+			mSymbol = mRunTime.getGlobalScope ().createStructure (SYMBOL_NAME);
 		}
 	}
 }

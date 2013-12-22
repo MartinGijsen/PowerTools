@@ -75,6 +75,30 @@ public final class TestRunResultPublisher {
 		}
 	}
 	
+	private void subscribeToTestEvents (TestSubscriber subscriber) {
+		if (!mTestSubscribers.contains (subscriber)) {
+			mTestSubscribers.add (subscriber);
+		}
+	}
+
+	private void subscribeToTestCaseEvents (TestCaseSubscriber subscriber) {
+		if (!mTestCaseSubscribers.contains (subscriber)) {
+			mTestCaseSubscribers.add (subscriber);
+		}
+	}
+
+	private void subscribeToTestLineEvents (TestLineSubscriber subscriber) {
+		if (!mTestLineSubscribers.contains (subscriber)) {
+			mTestLineSubscribers.add (subscriber);
+		}
+	}
+
+	private void subscribeToTestResultEvents (TestResultSubscriber subscriber) {
+		if (!mTestResultSubscribers.contains (subscriber)) {
+			mTestResultSubscribers.add (subscriber);
+		}
+	}
+	
 	
 	// publish methods
 	public void publishCommentLine (String commentLine) {
@@ -102,7 +126,7 @@ public final class TestRunResultPublisher {
 	}
 
 	public void publishValueError (String expression, String actualValue, String expectedValue) {
-		final String message = "value of '" + expression + "' is '" + actualValue + "' (expected '" + expectedValue + "')";
+		String message = "value of '" + expression + "' is '" + actualValue + "' (expected '" + expectedValue + "')";
 		for (TestResultSubscriber subscriber : mTestResultSubscribers) {
 			subscriber.processError (message);
 		}
@@ -119,12 +143,34 @@ public final class TestRunResultPublisher {
 	}
 
 	public void publishStackTrace (Exception e) {
-		final String[] lines = createStackTraceLines (e);
+		String[] lines = createStackTraceLines (e);
 		for (TestResultSubscriber subscriber : mTestResultSubscribers) {
 			subscriber.processStackTrace (lines);
 		}
 	}
 
+	private String[] createStackTraceLines (Exception e) {
+		StackTraceElement[] elements	= e.getStackTrace ();
+		int nrOfElements				= elements.length;
+		List<String> lines				= new LinkedList<String> ();
+		for (int elementNr = 0; elementNr < nrOfElements; ++elementNr) {
+			if (!addElement (lines, elements[elementNr])) {
+				break;
+			}
+		}
+		return lines.toArray (new String[0]);
+	}
+	
+	private boolean addElement (List<String> lines, StackTraceElement element) {
+		int lineNr = element.getLineNumber ();
+		if (lineNr < 0) {
+			return false;
+		} else {
+			lines.add (element.getClassName () + "." + element.getMethodName () + "() line " + lineNr);
+			return true;
+		}
+	}
+	
 	public void publishWarning (String message) {
 		for (TestResultSubscriber subscriber : mTestResultSubscribers) {
 			subscriber.processWarning (message);
@@ -132,7 +178,7 @@ public final class TestRunResultPublisher {
 	}
 
 	public void publishValue (String expression, String value) {
-		final String message = String.format ("value of '%s' is '%s'", expression, value);
+		String message = String.format ("value of '%s' is '%s'", expression, value);
 		for (TestResultSubscriber subscriber : mTestResultSubscribers) {
 			subscriber.processInfo (message);
 		}
@@ -175,12 +221,10 @@ public final class TestRunResultPublisher {
 		}
 	}
 	
-	public boolean publishTestCaseEnd () {
-		boolean ok = true;
+	public void publishTestCaseEnd () {
 		for (TestCaseSubscriber subscriber : mTestCaseSubscribers) {
-			ok = subscriber.processEnd () && ok;
+			subscriber.processEnd ();
 		}
-		return ok;
 	}
 
 
@@ -198,52 +242,6 @@ public final class TestRunResultPublisher {
 	}
 
 
-	private void subscribeToTestEvents (TestSubscriber subscriber) {
-		if (!mTestSubscribers.contains (subscriber)) {
-			mTestSubscribers.add (subscriber);
-		}
-	}
-
-	private void subscribeToTestCaseEvents (TestCaseSubscriber subscriber) {
-		if (!mTestCaseSubscribers.contains (subscriber)) {
-			mTestCaseSubscribers.add (subscriber);
-		}
-	}
-
-	private void subscribeToTestLineEvents (TestLineSubscriber subscriber) {
-		if (!mTestLineSubscribers.contains (subscriber)) {
-			mTestLineSubscribers.add (subscriber);
-		}
-	}
-
-	private void subscribeToTestResultEvents (TestResultSubscriber subscriber) {
-		if (!mTestResultSubscribers.contains (subscriber)) {
-			mTestResultSubscribers.add (subscriber);
-		}
-	}
-	
-	private String[] createStackTraceLines (Exception e) {
-		final StackTraceElement[] elements	= e.getStackTrace ();
-		final int nrOfElements				= elements.length;
-		final List<String> lines			= new LinkedList<String> ();
-		for (int elementNr = 0; elementNr < nrOfElements; ++elementNr) {
-			if (!elementCanBeAdded (lines, elements[elementNr])) {
-				break;
-			}
-		}
-		return lines.toArray (new String[0]);
-	}
-	
-	private boolean elementCanBeAdded (List<String> lines, StackTraceElement element) {
-		final int lineNr = element.getLineNumber ();
-		if (lineNr < 0) {
-			return false;
-		} else {
-			lines.add (element.getClassName () + "." + element.getMethodName () + "() line " + lineNr);
-		}
-		return true;
-	}
-	
 	public void clear () {
 		mTestLineSubscribers.clear ();
 		mTestResultSubscribers.clear ();

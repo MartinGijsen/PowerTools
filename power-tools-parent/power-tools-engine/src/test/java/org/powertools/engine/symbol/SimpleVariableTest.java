@@ -21,7 +21,6 @@ package org.powertools.engine.symbol;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.powertools.engine.ExecutionException;
@@ -31,14 +30,8 @@ import org.powertools.engine.Symbol;
 public class SimpleVariableTest {
 	@Before
 	public void setUp () throws Exception {
-		mScope		= new Scope (Scope.getGlobalScope ());
+		mScope		= new Scope (null);
 		mVariable	= new SimpleVariable (NAME, mScope, VALUE1);
-	}
-
-	@After
-	public void tearDown () throws Exception {
-		mScope		= null;
-		mVariable	= null;
 	}
 
 	

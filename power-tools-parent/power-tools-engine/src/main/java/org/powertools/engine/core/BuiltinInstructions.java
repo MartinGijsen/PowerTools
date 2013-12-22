@@ -211,7 +211,7 @@ public final class BuiltinInstructions implements InstructionSet {
 
 	@KeywordName ("DefineGlobalStructure")
 	public boolean DefineGlobalStructure_ (String name) {
-		Scope.getGlobalScope ().createStructure (name);
+		mRunTime.getGlobalScope ().createStructure (name);
 		return true;
 	}
 

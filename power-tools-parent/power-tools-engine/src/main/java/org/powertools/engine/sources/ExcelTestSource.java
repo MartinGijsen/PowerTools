@@ -108,15 +108,18 @@ abstract class ExcelTestSource extends TestSource {
 	
 	private Procedure processProcedureHeader () {
 		mPublisher.publishTestLine (mTestLine);
-		final int nrOfParts = mTestLine.getNrOfParts ();
+		int nrOfParts = mTestLine.getNrOfParts ();
 		if (nrOfParts < 2 || mTestLine.getPart (1).isEmpty ()) {
 			mPublisher.publishError ("missing instruction name");
 			mPublisher.publishEndOfTestLine ();
 			return null;
 		} else {
-			final Procedure procedure = new Procedure (mTestLine.getPart (1));
+			Procedure procedure = new Procedure (mTestLine.getPart (1));
 			for (int partNr = 2; partNr < nrOfParts; ++partNr) {
-				procedure.addParameter (mTestLine.getPart (partNr), OUTPUT_PARAMETER_PREFIX);
+				String parameterName = mTestLine.getPart (partNr);
+				boolean isOutput = (parameterName.startsWith (OUTPUT_PARAMETER_PREFIX));
+				String realParameterName = (isOutput ? parameterName.substring (OUTPUT_PARAMETER_PREFIX.length ()).trim () : parameterName);
+				procedure.addParameter (realParameterName, isOutput);
 			}
 			mPublisher.publishEndOfTestLine ();
 			return procedure;

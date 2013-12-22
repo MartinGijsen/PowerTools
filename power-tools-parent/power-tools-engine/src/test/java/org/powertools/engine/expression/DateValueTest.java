@@ -22,7 +22,9 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 import org.junit.Before;
+import org.powertools.engine.ExecutionException;
 
 
 public class DateValueTest {
@@ -43,6 +45,16 @@ public class DateValueTest {
 		mOtherDate	= new DateValue (calendar);
 	}
 	
+	@Test
+	public void testDateValue () {
+		try {
+			new DateValue ("something invalid");
+			fail ("no exception");
+		} catch (ExecutionException ee) {
+			// ok
+		}
+	}
+
 	@Test
 	public void testGetType () {
 		assertEquals ("date", mDate.getType ());
@@ -66,6 +78,14 @@ public class DateValueTest {
 		assertEquals ("01-02-2000", mDate.add ("1", "months").toString ());
 		assertEquals ("01-01-2001", mDate.add ("1", "years").toString ());
 		assertEquals ("07-01-2000", mDate.add ("5", "business").toString ());
+		assertEquals ("01-01-2000", mDate.add ("0", "business").toString ());
+		
+		try {
+			mDate.add ("a", "days");
+			fail ("no exception");
+		} catch (ExecutionException ee) {
+			// ok
+		}
 	}
 
 	@Test

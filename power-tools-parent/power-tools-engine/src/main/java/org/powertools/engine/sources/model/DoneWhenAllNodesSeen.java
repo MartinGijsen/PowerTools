@@ -28,7 +28,7 @@ final class DoneWhenAllNodesSeen extends DoneCondition {
 	private static final String DESCRIPTION = "stop after all nodes have been traversed";
 
 	private boolean mDone;
-	private Set<Node> mUnseenNodes;
+	private final Set<Node> mUnseenNodes;
 
 	DoneWhenAllNodesSeen (DirectedGraph graph) {
 		super ();

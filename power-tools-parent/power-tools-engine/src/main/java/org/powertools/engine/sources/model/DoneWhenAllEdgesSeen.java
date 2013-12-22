@@ -27,7 +27,7 @@ final class DoneWhenAllEdgesSeen extends DoneCondition {
 
 	private static final String DESCRIPTION = "stop after all edges have been traversed";
 
-	private Set<Edge> mUnseenEdges;
+	private final Set<Edge> mUnseenEdges;
 
 	
 	DoneWhenAllEdgesSeen (DirectedGraph graph) {

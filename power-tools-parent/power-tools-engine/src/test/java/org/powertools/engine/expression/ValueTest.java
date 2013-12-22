@@ -29,6 +29,37 @@ public class ValueTest {
 
 
 	@Test
+	public void testOr () {
+		try {
+			mValue.or (mValue);
+			fail ("no exception");
+		} catch (ExecutionException ee) {
+			// ok
+		}
+	}
+	
+	@Test
+	public void testAnd () {
+		try {
+			mValue.and (mValue);
+			fail ("no exception");
+		} catch (ExecutionException ee) {
+			// ok
+		}
+	}
+	
+	@Test
+	public void testNot () {
+		try {
+			mValue.not ();
+			fail ("no exception");
+		} catch (ExecutionException ee) {
+			// ok
+		}
+	}
+
+	
+	@Test
 	public void testLessThan () {
 		try {
 			mValue.lessThan (mValue);

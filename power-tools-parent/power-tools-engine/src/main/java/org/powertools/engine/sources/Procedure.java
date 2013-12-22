@@ -64,13 +64,8 @@ public final class Procedure {
 	}
 	
 	
-	public void addParameter (String name, String outputPrefix) {
-		String realName			= name;
-		final boolean isOutput	= name.startsWith (outputPrefix);
-		if (isOutput) {
-			realName = name.substring (outputPrefix.length ()).trim ();
-		}
-
+	public void addParameter (String name, boolean isOutput) {
+		String realName = name;
 		for (Parameter parameter : mParameters) {
 			if (parameter.getName ().equalsIgnoreCase (realName)) {
 				throw new ExecutionException (String.format ("duplicate parameter name '%s'", parameter.getName ()));
@@ -89,7 +84,7 @@ public final class Procedure {
 
 		int partNr = 0;
 		for (Parameter parameter : mParameters) {
-			final String argument = testLine.getPart (++partNr);
+			String argument = testLine.getPart (++partNr);
 			if (parameter.isOutput ()) {
 				scope.createParameter (parameter.getName (), argument);
 			} else {
@@ -104,7 +99,7 @@ public final class Procedure {
 
 
 	private void checkNrOfArguments (int nrOfArguments) {
-		final int nrOfParameters = mParameters.size ();
+		int nrOfParameters = mParameters.size ();
 		if (nrOfArguments != nrOfParameters) {
 			throw new ExecutionException (String.format ("procedure %s expects %d arguments but receives %d", mName, nrOfParameters, nrOfArguments));
 		}

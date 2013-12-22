@@ -61,10 +61,9 @@ final class TestCaseReport implements TestCaseSubscriber, TestResultSubscriber {
 	}
 
 	@Override
-	public boolean processEnd () {
+	public void processEnd () {
 		writeCounters (mCounter, mId, mTestCaseCounters);
 		mInTestCase = false;
-		return true;
 	}
 
 	@Override

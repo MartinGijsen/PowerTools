@@ -26,6 +26,12 @@ import org.powertools.engine.Symbol;
 
 
 public final class Scope {
+	private static final Scope mGlobalScope = new Scope (null);
+	
+	private final Map<String, Symbol> mSymbols;
+	private final Scope mParent;
+
+
 	public static Scope getGlobalScope () {
 		return mGlobalScope;
 	}
@@ -97,12 +103,6 @@ public final class Scope {
 		return sequence;
 	}
 
-
-	// private members
-	private static final Scope mGlobalScope = new Scope (null);
-	
-	private final Map<String, Symbol> mSymbols;
-	private final Scope mParent;
 
 	private Symbol add (Symbol symbol) {
 		String name = symbol.getName ();

@@ -18,6 +18,8 @@
 
 package org.powertools.engine.expression;
 
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -51,5 +53,29 @@ public class StringValueTest {
 	@Test
 	public void testToStringValue () {
 		assertEquals ("a", mShortString.toStringValue ().toString ());
+	}
+
+	@Test
+	public void testToRealValue () {
+		assertEquals ("1.23", new StringValue ("1.23").toRealValue ().toString ());
+	}
+
+	@Test
+	public void testToIntegerValue () {
+		assertEquals ("123", new StringValue ("123").toIntegerValue ().toString ());
+	}
+
+	@Test
+	public void testToBooleanValue () {
+		assertEquals ("true", new StringValue ("true").toBooleanValue ().toString ());
+	}
+
+	@Test
+	public void testToDateValue () {
+		Calendar calendar = GregorianCalendar.getInstance ();
+		calendar.set (Calendar.YEAR, 2000);
+		calendar.set (Calendar.MONTH, 0);
+		calendar.set (Calendar.DAY_OF_MONTH, 1);		
+		assertEquals ("01-01-2000", new DateValue (calendar).toStringValue ().toString ());
 	}
 }

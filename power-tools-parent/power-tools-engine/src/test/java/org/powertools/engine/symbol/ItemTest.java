@@ -1,4 +1,4 @@
-/*	Copyright 2012 by Martin Gijsen (www.DeAnalist.nl)
+/*	Copyright 2013 by Martin Gijsen (www.DeAnalist.nl)
  *
  *	This file is part of the PowerTools engine.
  *
@@ -18,26 +18,37 @@
 
 package org.powertools.engine.symbol;
 
+import org.junit.Test;
+import static org.junit.Assert.*;
 
-abstract class StructuredSymbol extends SymbolImpl {
-	protected SequenceItem mRootItem;
 
-
-	protected StructuredSymbol (String name, Scope scope) {
-		super (name, scope);
+public class ItemTest {
+	@Test
+	public void testGetName() {
+		Item item = new ItemImpl ("something");
+		assertEquals ("something", item.getName ());
 	}
+
 	
-
-	@Override
-	public final String getValue (String name) {
-		return getItem (name.split (PERIOD)).getValue ();
-	}
-
-	protected final Item getItem (String[] names) {
-		Item item = mRootItem;
-		for (int i = 1; i < names.length; ++i) {
-			item = item.getChild (names[i]);
+	public class ItemImpl extends Item {
+		public ItemImpl (String name) {
+			super (name, null);
 		}
-		return item;
+
+		public Item getChild (String name) {
+			return null;
+		}
+
+		public String getValue () {
+			return "";
+		}
+
+		public void clear () {
+			// ignore
+		}
+
+		public LeafItem createLeaf (String[] names, int position) {
+			return null;
+		}
 	}
 }

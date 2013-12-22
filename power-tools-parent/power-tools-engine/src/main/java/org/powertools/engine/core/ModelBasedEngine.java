@@ -63,6 +63,6 @@ public class ModelBasedEngine extends Engine {
 	}
 
 	public final void run (String fileName, String selector, String condition) {
-		run (TestSourceFactory.createModelTestSource (fileName, selector, condition, Scope.getGlobalScope (), mRunTime));
+		run (TestSourceFactory.createModelTestSource (fileName, selector, condition, mRunTime.getGlobalScope (), mRunTime));
 	}
 }

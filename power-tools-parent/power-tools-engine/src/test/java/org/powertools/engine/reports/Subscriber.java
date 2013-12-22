@@ -134,9 +134,8 @@ final class Subscriber implements TestCaseSubscriber, TestLineSubscriber, TestRe
 	}
 
 	@Override
-	public boolean processEnd () {
+	public void processEnd () {
 		assignMethod (Method.PROCESS_END);
-		return true;
 	}
 	
 	private void assignMethod (Method method) {

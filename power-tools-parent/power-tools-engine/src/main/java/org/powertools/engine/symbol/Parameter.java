@@ -20,7 +20,7 @@ package org.powertools.engine.symbol;
 
 
 final class Parameter extends SymbolImpl {
-	private String mValue;
+	private final String mValue;
 
 	
 	Parameter (String name, Scope scope, String value) {

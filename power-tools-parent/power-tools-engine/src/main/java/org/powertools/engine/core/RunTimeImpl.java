@@ -57,7 +57,7 @@ public final class RunTimeImpl implements RunTime, ProcedureRunner {
 
 
 	public RunTimeImpl (Context context) {
-		mSourceStack	= new TestSourceStack ();
+		mSourceStack	= new TestSourceStack (getGlobalScope ());
 		mContext		= context;
 		mPublisher 		= TestRunResultPublisher.getInstance ();
 		mRoles			= new RolesImpl (this);
@@ -159,8 +159,8 @@ public final class RunTimeImpl implements RunTime, ProcedureRunner {
 	
 	@Override
 	public void copyStructure (String source, String target) {
-		final Symbol sourceSymbol = mSourceStack.getCurrentScope ().getSymbol (source);
-		final Symbol targetSymbol = mSourceStack.getCurrentScope ().getSymbol (target);
+		Symbol sourceSymbol = mSourceStack.getCurrentScope ().getSymbol (source);
+		Symbol targetSymbol = mSourceStack.getCurrentScope ().getSymbol (target);
 		Util.copy (sourceSymbol, targetSymbol, source.split (Symbol.PERIOD), target);
 	}
 
@@ -180,8 +180,8 @@ public final class RunTimeImpl implements RunTime, ProcedureRunner {
 	}
 
 	void evaluateExpressions (TestLineImpl testLine) {
-		final Scope scope	= getCurrentScope ();
-		final int nrOfParts	= testLine.getNrOfParts ();
+		Scope scope		= getCurrentScope ();
+		int nrOfParts	= testLine.getNrOfParts ();
 		for (int partNr = 0; partNr < nrOfParts; ++partNr) {
 			final String part = testLine.getPart (partNr);
 			if (part.startsWith ("?")) {

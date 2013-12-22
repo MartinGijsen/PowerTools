@@ -24,11 +24,11 @@ import java.util.Date;
 
 final class MethodExecutorObject {
 	MethodExecutorObject () {
-		;
+		// nothing
 	}
 	
 	void voidReturningMethod () {
-		;
+		// nothing
 	}
 	
 	boolean failingMethod () {

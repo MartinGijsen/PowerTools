@@ -21,5 +21,5 @@ package org.powertools.engine.reports;
 
 interface TestCaseSubscriber extends TestSubscriber {
 	void processBegin (String id, String description);
-	boolean processEnd ();
+	void processEnd ();
 }

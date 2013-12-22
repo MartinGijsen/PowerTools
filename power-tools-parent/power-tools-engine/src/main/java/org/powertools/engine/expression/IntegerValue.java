@@ -18,8 +18,6 @@
 
 package org.powertools.engine.expression;
 
-import org.powertools.engine.ExecutionException;
-
 
 final class IntegerValue extends Value {
 	private int  mValue;
@@ -59,7 +57,7 @@ final class IntegerValue extends Value {
 		if (v instanceof IntegerValue) {
 			return new BooleanValue (mValue < v.toIntegerValue ().mValue);
 		} else {
-			return this.toRealValue ().lessThan (v);
+			return toRealValue ().lessThan (v);
 		}
 	}
 	
@@ -68,7 +66,7 @@ final class IntegerValue extends Value {
 		if (v instanceof IntegerValue) {
 			return new BooleanValue (mValue <= v.toIntegerValue ().mValue);
 		} else {
-			return this.toRealValue ().lessOrEqual (v);
+			return toRealValue ().lessOrEqual (v);
 		}
 	}
 	
@@ -77,7 +75,7 @@ final class IntegerValue extends Value {
 		if (v instanceof IntegerValue) {
 			return new BooleanValue (mValue > v.toIntegerValue ().mValue);
 		} else {
-			return this.toRealValue ().greaterThan (v);
+			return toRealValue ().greaterThan (v);
 		}
 	}
 	
@@ -86,7 +84,7 @@ final class IntegerValue extends Value {
 		if (v instanceof IntegerValue) {
 			return new BooleanValue (mValue >= v.toIntegerValue ().mValue);
 		} else {
-			return this.toRealValue ().greaterOrEqual (v);
+			return toRealValue ().greaterOrEqual (v);
 		}
 	}
 	
@@ -95,7 +93,7 @@ final class IntegerValue extends Value {
 		if (v instanceof IntegerValue) {
 			return new IntegerValue (mValue + v.toIntegerValue ().mValue);
 		} else if (v instanceof RealValue) {
-			return this.toRealValue ().add (v);
+			return toRealValue ().add (v);
 		} else {
 			return super.add (v);
 		}
@@ -106,7 +104,7 @@ final class IntegerValue extends Value {
 		if (v instanceof IntegerValue) {
 			return new IntegerValue (mValue - v.toIntegerValue ().mValue);
 		} else if (v instanceof RealValue) {
-			return this.toRealValue ().subtract(v);
+			return toRealValue ().subtract(v);
 		} else {
 			return super.subtract (v);
 		}
@@ -117,7 +115,7 @@ final class IntegerValue extends Value {
 		if (v instanceof IntegerValue) {
 			return new IntegerValue (mValue * v.toIntegerValue ().mValue);
 		} else if (v instanceof RealValue) {
-			return this.toRealValue ().multiply (v.toRealValue ());
+			return toRealValue ().multiply (v);
 		} else {
 			return super.multiply (v);
 		}
@@ -125,21 +123,20 @@ final class IntegerValue extends Value {
 	
 	@Override
 	public Value divide (Value v) {
-		try {
+		if (v instanceof IntegerValue) {
 			int integerValueOfV = v.toIntegerValue ().mValue;
 			if (mValue % integerValueOfV == 0) {
 				return new IntegerValue (mValue / integerValueOfV);
 			}
-		} catch (ExecutionException ee) {
-			// v was not an integer
+		} else if (!(v instanceof RealValue)) {
+			return super.divide (v);
 		}
-		return this.toRealValue ().divide (v);
+		return toRealValue ().divide (v);
 	}
 	
 	@Override
 	public Value negate () {
-		mValue = -mValue;
-		return this;
+		return new IntegerValue (-mValue);
 	}
 
 	@Override

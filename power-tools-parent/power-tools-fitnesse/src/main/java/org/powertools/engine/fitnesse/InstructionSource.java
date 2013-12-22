@@ -78,7 +78,9 @@ final class InstructionSource extends BaseTestSource {
 		mProcedure = new Procedure (instructionName);
 
 		for (String parameterName : mParameterNames) {
-			mProcedure.addParameter (parameterName, OUTPUT_PARAMETER_PREFIX);
+			boolean isOutput = (parameterName.startsWith (OUTPUT_PARAMETER_PREFIX));
+			String realParameterName = (isOutput ? parameterName.substring (OUTPUT_PARAMETER_PREFIX.length ()).trim () : parameterName);
+			mProcedure.addParameter (realParameterName, isOutput);
 		}
 	}
 	

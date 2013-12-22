@@ -23,8 +23,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.lang.reflect.Method;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import org.powertools.engine.ExecutionException;
 import org.powertools.engine.sources.TestLineImpl;
@@ -34,21 +32,6 @@ public class MethodExecutorTest {
 	private static final Object mObject = new MethodExecutorObject ();
 	
 	
-	@Before
-	public void setUp () throws Exception {
-		;
-	}
-
-	@After
-	public void tearDown () throws Exception {
-		;
-	}
-
-//	@Test
-//	public void testMethodExecutor () {
-//		assertNotNull (new MethodExecutor (null, null));
-//	}
-
 	@Test
 	public void testExecuteVoidReturningMethod () throws SecurityException, NoSuchMethodException {
 		Method method = mObject.getClass ().getDeclaredMethod ("voidReturningMethod");
@@ -192,46 +175,6 @@ public class MethodExecutorTest {
 		testLine.setPart (1, "something");
 		executor.execute (testLine);
 	}
-
-//	@Test
-//	public void testExecuteDateMethod () throws SecurityException, NoSuchMethodException {
-//		Method method = mObject.getClass ().getDeclaredMethod ("dateParameterMethod", new Class<?>[] { Date.class });
-//		MethodExecutor executor = new MethodExecutor (mObject, method);
-//		TestLineImpl testLine = new TestLineImpl ();
-//		testLine.createParts (2);
-//		testLine.setPart (1, "a date");
-//		assertTrue (executor.execute (testLine));
-//	}
-//
-//	@Test (expected=ExecutionException.class)
-//	public void testExecuteDateMethodInvalid () throws SecurityException, NoSuchMethodException {
-//		Method method = mObject.getClass ().getDeclaredMethod ("dateParameterMethod", new Class<?>[] { Date.class });
-//		MethodExecutor executor = new MethodExecutor (mObject, method);
-//		TestLineImpl testLine = new TestLineImpl ();
-//		testLine.createParts (2);
-//		testLine.setPart (1, "something");
-//		executor.execute (testLine);
-//	}
-//
-//	@Test
-//	public void testExecuteCalendarMethod () throws SecurityException, NoSuchMethodException {
-//		Method method = mObject.getClass ().getDeclaredMethod ("calendarParameterMethod", new Class<?>[] { Calendar.class });
-//		MethodExecutor executor = new MethodExecutor (mObject, method);
-//		TestLineImpl testLine = new TestLineImpl ();
-//		testLine.createParts (2);
-//		testLine.setPart (1, "a date");
-//		assertTrue (executor.execute (testLine));
-//	}
-//
-//	@Test (expected=ExecutionException.class)
-//	public void testExecuteCalendarMethodInvalid () throws SecurityException, NoSuchMethodException {
-//		Method method = mObject.getClass ().getDeclaredMethod ("calendarParameterMethod", new Class<?>[] { Calendar.class });
-//		MethodExecutor executor = new MethodExecutor (mObject, method);
-//		TestLineImpl testLine = new TestLineImpl ();
-//		testLine.createParts (2);
-//		testLine.setPart (1, "something");
-//		executor.execute (testLine);
-//	}
 
 	@Test (expected=ExecutionException.class)
 	public void testExecuteInvalidParameterMethod () throws SecurityException, NoSuchMethodException {

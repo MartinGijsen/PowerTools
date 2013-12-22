@@ -16,28 +16,15 @@
  *	along with the PowerTools engine. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.powertools.engine.symbol;
+package org.powertools.graph;
+
+import org.junit.Test;
+import static org.junit.Assert.assertEquals;
 
 
-abstract class StructuredSymbol extends SymbolImpl {
-	protected SequenceItem mRootItem;
-
-
-	protected StructuredSymbol (String name, Scope scope) {
-		super (name, scope);
-	}
-	
-
-	@Override
-	public final String getValue (String name) {
-		return getItem (name.split (PERIOD)).getValue ();
-	}
-
-	protected final Item getItem (String[] names) {
-		Item item = mRootItem;
-		for (int i = 1; i < names.length; ++i) {
-			item = item.getChild (names[i]);
-		}
-		return item;
+public class FontTest {
+	@Test
+	public void testToString() {
+		assertEquals ("Arial", Font.ARIAL.toString ());
 	}
 }

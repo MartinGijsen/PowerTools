@@ -169,8 +169,22 @@ public class TestRunResultsPublisherTest {
 	@Test
 	public void testPublishStackTrace () {
 		mPublisher.subscribeToTestResults (mTestResultsSubscriber);
+		StackTraceElement[] stackTrace = new StackTraceElement[1];
+		stackTrace[0] = new StackTraceElement ("", "", "", 0);
 		Exception e = new Exception ();
-		mPublisher.publishStackTrace (new Exception ());
+		e.setStackTrace (stackTrace);
+		mPublisher.publishStackTrace (e);
+		assertEquals (Subscriber.Method.PROCESS_STACK_TRACE, mTestResultsSubscriber.getLastMethod ());
+	}
+
+	@Test
+	public void testPublishStackTraceNoLineNr () {
+		mPublisher.subscribeToTestResults (mTestResultsSubscriber);
+		StackTraceElement[] stackTrace = new StackTraceElement[1];
+		stackTrace[0] = new StackTraceElement ("", "", "", -1);
+		Exception e = new Exception ();
+		e.setStackTrace (stackTrace);
+		mPublisher.publishStackTrace (e);
 		assertEquals (Subscriber.Method.PROCESS_STACK_TRACE, mTestResultsSubscriber.getLastMethod ());
 	}
 

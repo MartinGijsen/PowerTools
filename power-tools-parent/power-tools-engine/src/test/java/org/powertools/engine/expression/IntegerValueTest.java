@@ -26,10 +26,13 @@ import org.powertools.engine.ExecutionException;
 
 public class IntegerValueTest {
 	private final Value mPositiveValue = new IntegerValue (123);
-	private final Value mOneValue		 = new IntegerValue (1);
+	private final Value mOneValue	   = new IntegerValue (1);
 	private final Value mZeroValue     = new IntegerValue (0);
 	private final Value mMinusOneValue = new IntegerValue (-1);
 	private final Value mNegativeValue = new IntegerValue (-123);
+	
+	private final Value mRealOneValue		= new RealValue (1.0);
+	private final Value mRealMinusOneValue  = new RealValue (-1.0);
 
 	
 	@Test
@@ -88,6 +91,9 @@ public class IntegerValueTest {
 		assertEquals ("false", mPositiveValue.lessThan (mZeroValue).toString ());
 		assertEquals ("false", mPositiveValue.lessThan (mNegativeValue).toString ());
 		assertEquals ("false", mZeroValue.lessThan (mNegativeValue).toString ());
+		
+		assertEquals ("true", mZeroValue.lessThan (mRealOneValue).toString ());
+		assertEquals ("false", mZeroValue.lessThan (mRealMinusOneValue).toString ());
 	}
 
 	@Test
@@ -99,6 +105,9 @@ public class IntegerValueTest {
 		assertEquals ("true", mZeroValue.lessOrEqual (mPositiveValue).toString ());
 		assertEquals ("false", mPositiveValue.lessOrEqual (mZeroValue).toString ());
 		assertEquals ("true", mPositiveValue.lessOrEqual (mPositiveValue).toString ());
+		
+		assertEquals ("true", mZeroValue.lessOrEqual (mRealOneValue).toString ());
+		assertEquals ("false", mZeroValue.lessOrEqual (mRealMinusOneValue).toString ());
 	}
 
 	@Test
@@ -109,6 +118,9 @@ public class IntegerValueTest {
 		assertEquals ("true", mPositiveValue.greaterThan (mNegativeValue).toString ());
 		assertEquals ("true", mPositiveValue.greaterThan (mZeroValue).toString ());
 		assertEquals ("false", mPositiveValue.greaterThan (mPositiveValue).toString ());
+		
+		assertEquals ("true", mZeroValue.greaterThan (mRealMinusOneValue).toString ());
+		assertEquals ("false", mZeroValue.greaterThan (mRealOneValue).toString ());
 	}
 
 	@Test
@@ -120,6 +132,9 @@ public class IntegerValueTest {
 		assertEquals ("false", mZeroValue.greaterOrEqual (mPositiveValue).toString ());
 		assertEquals ("true", mPositiveValue.greaterOrEqual (mZeroValue).toString ());
 		assertEquals ("true", mPositiveValue.greaterOrEqual (mPositiveValue).toString ());
+		
+		assertEquals ("true", mZeroValue.greaterOrEqual (mRealMinusOneValue).toString ());
+		assertEquals ("false", mZeroValue.greaterOrEqual (mRealOneValue).toString ());
 	}
 
 	@Test
@@ -127,6 +142,15 @@ public class IntegerValueTest {
 		assertEquals ("0", mPositiveValue.add (mNegativeValue).toString ());
 		assertEquals ("123", mPositiveValue.add (mZeroValue).toString ());
 		assertEquals ("-123", mZeroValue.add (mNegativeValue).toString ());
+		
+		assertEquals ("1.0", mZeroValue.add (mRealOneValue).toString ());
+		
+		try {
+			mZeroValue.add (new BooleanValue (true));
+			fail ("no exception");
+		} catch (ExecutionException ee) {
+			// ok
+		}
 	}
 
 	@Test
@@ -134,6 +158,15 @@ public class IntegerValueTest {
 		assertEquals ("0", mPositiveValue.subtract (mPositiveValue).toString ());
 		assertEquals ("123", mZeroValue.subtract (mNegativeValue).toString ());
 		assertEquals ("-123", mZeroValue.subtract (mPositiveValue).toString ());
+		
+		assertEquals ("-1.0", mZeroValue.subtract (mRealOneValue).toString ());
+		
+		try {
+			mZeroValue.subtract (new BooleanValue (true));
+			fail ("no exception");
+		} catch (ExecutionException ee) {
+			// ok
+		}
 	}
 
 	@Test
@@ -142,6 +175,15 @@ public class IntegerValueTest {
 		assertEquals ("123", mOneValue.multiply (mPositiveValue).toString ());
 		assertEquals ("-123", mMinusOneValue.multiply (mPositiveValue).toString ());
 		assertEquals ("123", mMinusOneValue.multiply (mNegativeValue).toString ());
+		
+		assertEquals ("1.0", mOneValue.multiply (mRealOneValue).toString ());
+		
+		try {
+			mZeroValue.multiply (new BooleanValue (true));
+			fail ("no exception");
+		} catch (ExecutionException ee) {
+			// ok
+		}
 	}
 
 	@Test
@@ -155,6 +197,15 @@ public class IntegerValueTest {
 		assertEquals ("-2", divide (6, -3));
 		assertEquals ("-2", divide (-6, 3));
 		assertEquals ("2", divide (-6, -3));
+		
+		assertEquals ("1.0", mOneValue.divide (mRealOneValue).toString ());
+
+		try {
+			mZeroValue.divide (new BooleanValue (true));
+			fail ("no exception");
+		} catch (ExecutionException ee) {
+			// ok
+		}
 	}
 
 	private String divide (int value1, int value2) {

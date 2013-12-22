@@ -118,15 +118,11 @@ final class DateValue extends Value {
 	}
 	
 	private void addBusinessDays (int number) {
-		if (mBusinessDayChecker == null) {
-			throw new ExecutionException ("no business day checker selected");
-		} else if (number != 0) {
-			int step = (number < 0 ? -1 : 1);
-			for (int counter = 0; counter != number; counter += step) {
-				do {
-					mDate.add (Calendar.DAY_OF_MONTH, step);
-				} while (!mBusinessDayChecker.isBusinessDay (mDate));
-			}
+		int step = (number < 0 ? -1 : 1);
+		for (int counter = 0; counter != number; counter += step) {
+			do {
+				mDate.add (Calendar.DAY_OF_MONTH, step);
+			} while (!mBusinessDayChecker.isBusinessDay (mDate));
 		}
 	}
 }

@@ -68,7 +68,7 @@ public abstract class BasicHtmlLog implements TestLineSubscriber, TestResultSubs
 	
 	protected final String getCell (TestLine testLine, int partNr) {
 		String originalPart	= testLine.getOriginalPart (partNr);
-		String firstHalf	= originalPart == null ? "" : originalPart + "<HR/>";
+		String firstHalf	= (originalPart == null ? "" : originalPart + "<HR/>");
 		return firstHalf + testLine.getPart (partNr);
 	}
 

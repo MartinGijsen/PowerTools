@@ -126,14 +126,14 @@ public final class DirectedGraph {
 		if (this.nodes.containsKey (name)) {
 			throw new GraphException (String.format ("node name %s not unique", name));
 		} else {
-			final Node node = new Node (name);
+			Node node = new Node (name);
 			this.nodes.put (name, node);
 			return node;
 		}
 	}
 	
 	public Node addNode (String name, Cluster cluster) {
-		final Node node = addNode (name);
+		Node node = addNode (name);
 		cluster.add (node);
 		return node;
 	}
@@ -181,17 +181,21 @@ public final class DirectedGraph {
 		if (edgesFromSameSource == null) {
 			edgesFromSameSource = new HashSet<Edge> ();
 			this.edges.put (source, edgesFromSameSource);
-		} else if (edgesFromSameSource.contains (target)) {
-			throw new GraphException ("edge already exists");
+		} else {
+			for (Edge edge : edgesFromSameSource) {
+				if (edge.target == target) {
+					throw new GraphException ("edge already exists");
+				}
+			}
 		}
 
-		final Edge edge = new Edge (source, target);
+		Edge edge = new Edge (source, target);
 		edgesFromSameSource.add (edge);
 		return edge;
 	}
 	
 	public Edge getEdge (Node source, Node target) {
-		final Set<Edge> edgesFromSameSource = this.edges.get (source);
+		Set<Edge> edgesFromSameSource = this.edges.get (source);
 		if (edgesFromSameSource == null) {
 			throw new GraphException ("edge does not exist");
 		}
@@ -209,7 +213,7 @@ public final class DirectedGraph {
 	}
 
 	public Cluster addCluster (String label) {
-		final Cluster cluster = new Cluster (label);
+		Cluster cluster = new Cluster (label);
 		this.clusters.add (cluster);
 		return cluster;
 	}
@@ -227,7 +231,7 @@ public final class DirectedGraph {
 		if (this.ranks.containsKey (name)) {
 			throw new GraphException (String.format ("rank name %s not unique", name));
 		} else {
-			final Rank rank = new Rank (name, type);
+			Rank rank = new Rank (name, type);
 			this.ranks.put (name, rank);
 			return rank;
 		}

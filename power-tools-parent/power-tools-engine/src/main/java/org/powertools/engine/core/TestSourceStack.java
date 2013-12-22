@@ -34,13 +34,15 @@ import org.powertools.engine.symbol.Scope;
  */
 final class TestSourceStack {
 	private final Stack<TestSource> mSourceStack;
+	private final Scope mGlobalScope;
 	
 	private boolean mInATestCase;
 
 	
-	TestSourceStack () {
+	TestSourceStack (Scope globalScope) {
 		mSourceStack = new Stack<TestSource> ();
 		mInATestCase = false;
+		mGlobalScope = globalScope;
 	}
 
 
@@ -56,7 +58,7 @@ final class TestSourceStack {
 		try {
 			return mSourceStack.peek ().getScope ();
 		} catch (EmptyStackException ese) {
-			return Scope.getGlobalScope ();
+			return mGlobalScope;
 		}
 	}
 

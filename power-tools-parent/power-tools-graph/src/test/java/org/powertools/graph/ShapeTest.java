@@ -1,4 +1,4 @@
-/*	Copyright 2012 by Martin Gijsen (www.DeAnalist.nl)
+/*	Copyright 2013 by Martin Gijsen (www.DeAnalist.nl)
  *
  *	This file is part of the PowerTools engine.
  *
@@ -16,28 +16,15 @@
  *	along with the PowerTools engine. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.powertools.engine.symbol;
+package org.powertools.graph;
+
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 
-abstract class StructuredSymbol extends SymbolImpl {
-	protected SequenceItem mRootItem;
-
-
-	protected StructuredSymbol (String name, Scope scope) {
-		super (name, scope);
-	}
-	
-
-	@Override
-	public final String getValue (String name) {
-		return getItem (name.split (PERIOD)).getValue ();
-	}
-
-	protected final Item getItem (String[] names) {
-		Item item = mRootItem;
-		for (int i = 1; i < names.length; ++i) {
-			item = item.getChild (names[i]);
-		}
-		return item;
+public class ShapeTest {
+	@Test
+	public void testToString () {
+		assertEquals ("polygon", Shape.POLYGON.toString ());
 	}
 }
