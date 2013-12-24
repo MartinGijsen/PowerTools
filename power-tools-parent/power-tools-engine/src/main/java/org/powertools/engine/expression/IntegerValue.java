@@ -95,7 +95,7 @@ final class IntegerValue extends Value {
 		} else if (v instanceof RealValue) {
 			return toRealValue ().add (v);
 		} else {
-			return super.add (v);
+			throw newOperandException ("+");
 		}
 	}
 	
@@ -106,7 +106,7 @@ final class IntegerValue extends Value {
 		} else if (v instanceof RealValue) {
 			return toRealValue ().subtract(v);
 		} else {
-			return super.subtract (v);
+			throw newOperandException ("-");
 		}
 	}
 	
@@ -117,7 +117,7 @@ final class IntegerValue extends Value {
 		} else if (v instanceof RealValue) {
 			return toRealValue ().multiply (v);
 		} else {
-			return super.multiply (v);
+			throw newOperandException ("*");
 		}
 	}
 	
@@ -129,7 +129,7 @@ final class IntegerValue extends Value {
 				return new IntegerValue (mValue / integerValueOfV);
 			}
 		} else if (!(v instanceof RealValue)) {
-			return super.divide (v);
+			throw newOperandException ("/");
 		}
 		return toRealValue ().divide (v);
 	}

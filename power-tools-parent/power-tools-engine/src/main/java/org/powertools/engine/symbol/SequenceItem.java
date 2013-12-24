@@ -36,27 +36,9 @@ final class SequenceItem extends Item {
 	}
 
 	
-	void add (String name, Item newItem) {
-		final Item oldItem = mChildren.get (name);
-		if (oldItem != null) {
-			throw new ExecutionException ("structure field already exists");
-		} else {
-			final Boolean isNumber = Character.isDigit (name.charAt (0));
-			if (mNumbersOnly == null) {
-				mChildren.put (name, newItem);
-				mNumbersOnly = isNumber;
-			} else if (mNumbersOnly.equals (isNumber)){
-				mChildren.put (name, newItem);
-			} else {
-				throw new ExecutionException ("mixing item names and indexes");
-			}
-		}
-	}
-
-	
 	@Override
 	Item getChild (String name) {
-		final Item child = mChildren.get (name);
+		Item child = mChildren.get (name);
 		if (child != null) {
 			return child;
 		} else {
@@ -91,6 +73,23 @@ final class SequenceItem extends Item {
 				SequenceItem child = new SequenceItem (names[positionToCreate], this);
 				add (nextName, child);
 				return child.createLeaf (names, positionToCreate + 1);
+			}
+		}
+	}
+
+	private void add (String name, Item newItem) {
+		Item oldItem = mChildren.get (name);
+		if (oldItem != null) {
+			throw new ExecutionException ("structure field already exists");
+		} else {
+			Boolean isNumber = Character.isDigit (name.charAt (0));
+			if (mNumbersOnly == null) {
+				mChildren.put (name, newItem);
+				mNumbersOnly = isNumber;
+			} else if (mNumbersOnly.equals (isNumber)){
+				mChildren.put (name, newItem);
+			} else {
+				throw new ExecutionException ("mixing item names and indexes");
 			}
 		}
 	}

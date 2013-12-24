@@ -133,35 +133,35 @@ public final class GraphViz implements Renderer {
 		int counter = 0;
 		for (Cluster cluster : graph.clusters) {
 			this.writer.println ("\tsubgraph cluster_" + Integer.toString (++counter) + " {");
-			if (!cluster.label.isEmpty ()) {
-				writeClusterAttribute ("label", "\"" + cluster.label + "\"");
+			if (!cluster.getLabel ().isEmpty ()) {
+				writeClusterAttribute ("label", "\"" + cluster.getLabel () + "\"");
 			}
-			if (cluster.attributes.style != Style.DEFAULT) {
-				writeClusterAttribute ("style", cluster.attributes.style.toString ());
+			if (cluster.getStyle () != Style.DEFAULT) {
+				writeClusterAttribute ("style", cluster.getStyle ().toString ());
 			}
-			if (cluster.attributes.lineColour != Colour.DEFAULT) {
-				writeClusterAttribute ("color", cluster.attributes.lineColour.toString ());
+			if (cluster.getLineColour () != Colour.DEFAULT) {
+				writeClusterAttribute ("color", cluster.getLineColour ().toString ());
 			}
-			if (!cluster.attributes.lineWidth.isEmpty ()) {
-				writeClusterAttribute ("penwidth", cluster.attributes.lineWidth);
+			if (!cluster.getLineWidth ().isEmpty ()) {
+				writeClusterAttribute ("penwidth", cluster.getLineWidth ());
 			}
-			if (cluster.attributes.fillColour != Colour.DEFAULT) {
-				writeClusterAttribute ("fillcolor", cluster.attributes.fillColour.toString ());
+			if (cluster.getFillColour () != Colour.DEFAULT) {
+				writeClusterAttribute ("fillcolor", cluster.getFillColour ().toString ());
 			}
-			if (cluster.attributes.textColour != Colour.DEFAULT) {
-				writeClusterAttribute ("fontcolor", cluster.attributes.textColour.toString ());
+			if (cluster.getTextColour () != Colour.DEFAULT) {
+				writeClusterAttribute ("fontcolor", cluster.getTextColour ().toString ());
 			}
-			if (!cluster.attributes.fontName.isEmpty ()) {
-				writeClusterAttribute ("fontname", cluster.attributes.fontName);
+			if (!cluster.getFontName ().isEmpty ()) {
+				writeClusterAttribute ("fontname", cluster.getFontName ());
 			}
-			if (!cluster.attributes.fontSize.isEmpty ()) {
-				writeClusterAttribute ("fontsize", cluster.attributes.fontSize);
+			if (!cluster.getFontSize ().isEmpty ()) {
+				writeClusterAttribute ("fontsize", cluster.getFontSize ());
 			}
 
 			writeDefaultNodeAttributes (cluster.defaultNodeAttributes);
 			
-			for (Node node : cluster.nodes) {
-				this.writer.println ("\t\t\"" + node.name + "\";");
+			for (Node node : cluster.getNodes ()) {
+				this.writer.println ("\t\t\"" + node.getName () + "\";");
 			}
 			this.writer.println ("\t}");
 		}
@@ -173,64 +173,64 @@ public final class GraphViz implements Renderer {
 
 	private void writeNodes (DirectedGraph graph) {
 		for (Node node : graph.nodes.values ()) {
-			if (!node.attributes.label.isEmpty ()) {
-				writeNodeAttribute (node, "label", node.attributes.label);
+			if (!node.getLabel ().isEmpty ()) {
+				writeNodeAttribute (node, "label", node.getLabel ());
 			}
-			if (node.attributes.shape != Shape.DEFAULT) {
-				writeNodeAttribute (node, "shape", node.attributes.shape.toString ());
+			if (node.getShape () != Shape.DEFAULT) {
+				writeNodeAttribute (node, "shape", node.getShape ().toString ());
 			}
-			if (node.attributes.style != Style.DEFAULT) {
-				writeNodeAttribute (node, "style", node.attributes.style.toString ());
+			if (node.getStyle () != Style.DEFAULT) {
+				writeNodeAttribute (node, "style", node.getStyle ().toString ());
 			}
-			if (node.attributes.lineColour != Colour.DEFAULT) {
-				writeNodeAttribute (node, "color", node.attributes.lineColour.toString ());
+			if (node.getLineColour () != Colour.DEFAULT) {
+				writeNodeAttribute (node, "color", node.getLineColour ().toString ());
 			}
-			if (!node.attributes.lineWidth.isEmpty ()) {
-				writeNodeAttribute (node, "penwidth", node.attributes.lineWidth);
+			if (!node.getLineWidth ().isEmpty ()) {
+				writeNodeAttribute (node, "penwidth", node.getLineWidth ());
 			}
-			if (node.attributes.fillColour != Colour.DEFAULT) {
-				writeNodeAttribute (node, "fillcolor", node.attributes.fillColour.toString ());
+			if (node.getFillColour () != Colour.DEFAULT) {
+				writeNodeAttribute (node, "fillcolor", node.getFillColour ().toString ());
 			}
-			if (node.attributes.textColour != Colour.DEFAULT) {
-				writeNodeAttribute (node, "fontcolor", node.attributes.textColour.toString ());
+			if (node.getTextColour () != Colour.DEFAULT) {
+				writeNodeAttribute (node, "fontcolor", node.getTextColour ().toString ());
 			}
-			if (!node.attributes.fontName.isEmpty ()) {
-				writeNodeAttribute (node, "fontname", node.attributes.fontName);
+			if (!node.getFontName ().isEmpty ()) {
+				writeNodeAttribute (node, "fontname", node.getFontName ());
 			}
-			if (!node.attributes.fontSize.isEmpty ()) {
-				writeNodeAttribute (node, "fontsize", node.attributes.fontSize);
+			if (!node.getFontSize ().isEmpty ()) {
+				writeNodeAttribute (node, "fontsize", node.getFontSize ());
 			}
 		}
 	}
 
 	private void writeNodeAttribute (Node node, String attributeName, String value) {
-		this.writer.println (String.format ("\t\"%s\" [ %s = %s ];", node.name, attributeName, value));
+		this.writer.println (String.format ("\t\"%s\" [ %s = %s ];", node.getName (), attributeName, value));
 	}
 	
 	private void writeEdges (DirectedGraph graph) {
 		for (Node node : graph.nodes.values ()) {
 			for (Edge edge : graph.getEdges (node)) {
-				this.writer.append (String.format ("\t\"%s\" -> \"%s\"", edge.source.name, edge.target.name));
-				if (edge.attributes.style != Style.DEFAULT) {
-					writeEdgeAttribute ("style", edge.attributes.style.toString ());
+				this.writer.append (String.format ("\t\"%s\" -> \"%s\"", edge.getSource ().getName (), edge.getTarget ().getName ()));
+				if (edge.getStyle () != Style.DEFAULT) {
+					writeEdgeAttribute ("style", edge.getStyle ().toString ());
 				}
-				if (edge.attributes.lineColour != Colour.DEFAULT) {
-					writeEdgeAttribute ("color", edge.attributes.lineColour.toString ());
+				if (edge.getLineColour () != Colour.DEFAULT) {
+					writeEdgeAttribute ("color", edge.getLineColour ().toString ());
 				}
-				if (!edge.attributes.lineWidth.isEmpty ()) {
-					writeEdgeAttribute ("penwidth", edge.attributes.lineWidth);
+				if (!edge.getLineWidth ().isEmpty ()) {
+					writeEdgeAttribute ("penwidth", edge.getLineWidth ());
 				}
-				if (edge.attributes.fillColour != Colour.DEFAULT) {
-					writeEdgeAttribute ("fillcolor", edge.attributes.fillColour.toString ());
+				if (edge.getFillColour () != Colour.DEFAULT) {
+					writeEdgeAttribute ("fillcolor", edge.getFillColour ().toString ());
 				}
-				if (edge.attributes.textColour != Colour.DEFAULT) {
-					writeEdgeAttribute ("fontcolor", edge.attributes.textColour.toString ());
+				if (edge.getTextColour () != Colour.DEFAULT) {
+					writeEdgeAttribute ("fontcolor", edge.getTextColour ().toString ());
 				}
-				if (!edge.attributes.fontName.isEmpty ()) {
-					writeEdgeAttribute ("fontname", edge.attributes.fontName);
+				if (!edge.getFontName ().isEmpty ()) {
+					writeEdgeAttribute ("fontname", edge.getFontName ());
 				}
-				if (!edge.attributes.fontSize.isEmpty ()) {
-					writeEdgeAttribute ("fontsize", edge.attributes.fontSize);
+				if (!edge.getFontSize ().isEmpty ()) {
+					writeEdgeAttribute ("fontsize", edge.getFontSize ());
 				}
 				this.writer.println (";");
 			}
@@ -278,7 +278,7 @@ public final class GraphViz implements Renderer {
 				this.writer.append ("\t{");
 				this.writer.println (String.format (" rank = %s ;", rank.type));
 				for (Node node : rank.nodes) {
-					this.writer.println (String.format (" \"%s\" ;", node.name));
+					this.writer.println (String.format (" \"%s\" ;", node.getName ()));
 				}
 				this.writer.println (" }");
 			}

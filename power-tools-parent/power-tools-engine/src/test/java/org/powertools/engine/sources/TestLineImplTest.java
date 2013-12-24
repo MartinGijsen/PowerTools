@@ -22,6 +22,7 @@ import java.util.LinkedList;
 import java.util.List;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.powertools.engine.ExecutionException;
 
 
 public class TestLineImplTest {
@@ -68,6 +69,13 @@ public class TestLineImplTest {
 		testLine.setEvaluatedPart (0, "something else");
 		assertEquals ("something", testLine.getOriginalPart (0));
 		assertEquals ("something else", testLine.getPart (0));
+	}
+
+	@Test
+	public void testGetOriginalPartThatDoesNotExist () {
+		TestLineImpl testLine = new TestLineImpl ();
+		testLine.createParts (1);
+		assertNull (testLine.getOriginalPart (1));
 	}
 
 	@Test

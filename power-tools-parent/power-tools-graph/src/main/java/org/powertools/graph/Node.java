@@ -20,13 +20,13 @@ package org.powertools.graph;
 
 
 public final class Node {
-	final String name;
-	final Attributes attributes;
+	private final String name;
+	private final Attributes attributes;
 
 
 	Node (String name) {
 		if (name == null || name.isEmpty ()) {
-			throw new RuntimeException ("empty node name");
+			throw new GraphException ("empty node name");
 		}
 		this.name		= name;
 		this.attributes	= new Attributes ();
@@ -72,8 +72,8 @@ public final class Node {
 		this.attributes.lineWidth = Integer.toString (width);
 	}
 
-	public int getWidth () {
-		return Integer.parseInt (this.attributes.lineWidth);
+	public String getLineWidth () {
+		return this.attributes.lineWidth;
 	}
 
 	public void setFillColour (Colour colour) {
@@ -104,7 +104,7 @@ public final class Node {
 		this.attributes.fontSize = Integer.toString (fontSize);
 	}
 
-	public int getFontSize () {
-		return Integer.parseInt (this.attributes.fontSize);
+	public String getFontSize () {
+		return this.attributes.fontSize;
 	}
 }

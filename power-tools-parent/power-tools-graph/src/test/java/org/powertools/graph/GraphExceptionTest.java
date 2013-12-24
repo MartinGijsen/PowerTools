@@ -16,44 +16,20 @@
  *	along with the PowerTools engine. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.powertools.engine.symbol;
+package org.powertools.graph;
 
-import org.powertools.engine.ExecutionException;
-
-
-final class LeafItem extends Item {
-	String mValue;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 
-	LeafItem (String name, Item parent) {
-		super (name, parent);
-	}
-
-	
-	@Override
-	Item getChild (String name) {
-		throw new ExecutionException ("leaf item has no children");
-	}
-
-	@Override
-	void clear () {
-		throw new ExecutionException ("symbol is not a structure");
-	}
-	
-	@Override
-	LeafItem createLeaf (String[] names, int position) {
-		if (position != names.length) {
-			throw new ExecutionException ("leaf item cannot have children");
+public class GraphExceptionTest {
+	@Test
+	public void testGraphException () {
+		String message = "some message";
+		try {
+			throw new GraphException (message);
+		} catch (GraphException ge) {
+			assertEquals (message, ge.getMessage ());
 		}
-		return this;
-	}
-	
-	@Override
-	String getValue () {
-		return mValue;
-	}
-
-	void setValue (String value) {
-		mValue = value;
-	}
+	}	
 }

@@ -41,6 +41,7 @@ import org.powertools.engine.sources.TestLineImpl;
  * Most of the test state is contained in the RunTime,
  * so that it can be accessed by (user defined) instruction sets.
  */
+
 public abstract class Engine {
 	protected final RunTimeImpl mRunTime;
 	protected final TestRunResultPublisher mPublisher;

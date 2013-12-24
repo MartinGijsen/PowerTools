@@ -19,15 +19,16 @@
 package org.powertools.graph;
 
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 
 public final class Cluster {
-	final Attributes attributes;
+	private final Attributes attributes;
 	final Attributes defaultNodeAttributes;
 	
-	String label;
-	final Set<Node> nodes;
+	private String label;
+	private final Set<Node> nodes;
 
 
 	Cluster (String label) {
@@ -41,32 +42,64 @@ public final class Cluster {
 		this.label = label;
 	}
 
+	public String getLabel () {
+		return this.label;
+	}
+
 	public void setStyle (Style style) {
 		this.attributes.style = style;
+	}
+
+	public Style getStyle () {
+		return this.attributes.style;
 	}
 
 	public void setLineColour (Colour colour) {
 		this.attributes.lineColour = colour;
 	}
 
+	public Colour getLineColour () {
+		return this.attributes.lineColour;
+	}
+
 	public void setLineWidth (int width) {
 		this.attributes.lineWidth = Integer.toString (width);
+	}
+
+	public String getLineWidth () {
+		return this.attributes.lineWidth;
 	}
 
 	public void setFillColour (Colour colour) {
 		this.attributes.fillColour = colour;
 	}
 
+	public Colour getFillColour () {
+		return this.attributes.fillColour;
+	}
+
 	public void setTextColour (Colour colour) {
 		this.attributes.textColour = colour;
+	}
+	
+	public Colour getTextColour () {
+		return this.attributes.textColour;
 	}
 	
 	public void setFontName (String fontName) {
 		this.attributes.fontName = fontName;
 	}
 	
+	public String getFontName () {
+		return this.attributes.fontName;
+	}
+	
 	public void setFontSize (int fontSize) {
 		this.attributes.fontSize = Integer.toString (fontSize);
+	}
+
+	public String getFontSize () {
+		return this.attributes.fontSize;
 	}
 
 	
@@ -74,36 +107,71 @@ public final class Cluster {
 		this.defaultNodeAttributes.shape = shape;
 	}
 
+	public Shape getDefaultNodeShape () {
+		return this.defaultNodeAttributes.shape;
+	}
+
 	public void setDefaultNodeStyle (Style style) {
 		this.defaultNodeAttributes.style = style;
+	}
+	
+	public Style getDefaultNodeStyle () {
+		return this.defaultNodeAttributes.style;
 	}
 	
 	public void setDefaultNodeLineColour (Colour colour) {
 		this.defaultNodeAttributes.lineColour = colour;
 	}
 	
+	public Colour getDefaultNodeLineColour () {
+		return this.defaultNodeAttributes.lineColour;
+	}
+	
 	public void setDefaultNodeLineWidth (int width) {
 		this.defaultNodeAttributes.lineWidth = Integer.toString (width);
+	}
+	
+	public String getDefaultNodeLineWidth () {
+		return this.defaultNodeAttributes.lineWidth;
 	}
 	
 	public void setDefaultNodeFillColour (Colour colour) {
 		this.defaultNodeAttributes.fillColour = colour;
 	}
 	
+	public Colour getDefaultNodeFillColour () {
+		return this.defaultNodeAttributes.fillColour;
+	}
+	
 	public void setDefaultNodeTextColour (Colour colour) {
 		this.defaultNodeAttributes.textColour = colour;
+	}
+	
+	public Colour getDefaultNodeTextColour () {
+		return this.defaultNodeAttributes.textColour;
 	}
 	
 	public void setDefaultNodeFontName (String fontName) {
 		this.defaultNodeAttributes.fontName = fontName;
 	}
 	
+	public String getDefaultNodeFontName () {
+		return this.defaultNodeAttributes.fontName;
+	}
+	
 	public void setDefaultNodeFontSize (String fontSize) {
 		this.defaultNodeAttributes.fontSize = fontSize;
+	}
+	public String getDefaultNodeFontSize () {
+		return this.defaultNodeAttributes.fontSize;
 	}
 
 	
 	void add (Node node) {
 		this.nodes.add (node);
+	}
+	
+	Set<Node> getNodes () {
+		return nodes;
 	}
 }

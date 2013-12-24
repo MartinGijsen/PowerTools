@@ -31,9 +31,9 @@ import org.powertools.engine.Symbol;
 
 public final class Util {
 	public static void copy (Symbol sourceSymbol, Symbol targetSymbol, String[] sourceNames, String targetName) {
-		final Item sourceItem				= getItem (sourceSymbol, sourceNames);
-		final List<String> namesList		= new LinkedList<String> ();
-		final Map<String, String> results	= new HashMap<String, String> ();
+		Item sourceItem				= getItem (sourceSymbol, sourceNames);
+		List<String> namesList		= new LinkedList<String> ();
+		Map<String, String> results	= new HashMap<String, String> ();
 		process (sourceItem, namesList, results);
 		for (String key : results.keySet ()) {
 			targetSymbol.setValue (targetName + "." + key, results.get (key));
@@ -67,8 +67,8 @@ public final class Util {
 	}
 	
 	private static String join (Collection<String> s) {
-		final StringBuilder builder = new StringBuilder ();
-		final Iterator<String> iter = s.iterator();
+		StringBuilder builder = new StringBuilder ();
+		Iterator<String> iter = s.iterator();
 		while (iter.hasNext ()) {
 			builder.append (iter.next ());
 			if (!iter.hasNext ()) {

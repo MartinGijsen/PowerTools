@@ -183,7 +183,7 @@ public final class DirectedGraph {
 			this.edges.put (source, edgesFromSameSource);
 		} else {
 			for (Edge edge : edgesFromSameSource) {
-				if (edge.target == target) {
+				if (edge.getTarget () == target) {
 					throw new GraphException ("edge already exists");
 				}
 			}
@@ -200,7 +200,7 @@ public final class DirectedGraph {
 			throw new GraphException ("edge does not exist");
 		}
 		for (Edge edge : edgesFromSameSource) {
-			if (edge.target == target) {
+			if (edge.getTarget () == target) {
 				return edge;
 			}
 		}
@@ -220,7 +220,7 @@ public final class DirectedGraph {
 
 	public Cluster getCluster (String label) {
 		for (Cluster cluster : this.clusters) {
-			if (cluster.label.equals (label)) {
+			if (cluster.getLabel ().equals (label)) {
 				return cluster;
 			}
 		}

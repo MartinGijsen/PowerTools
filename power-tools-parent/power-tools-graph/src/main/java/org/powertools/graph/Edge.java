@@ -20,9 +20,9 @@ package org.powertools.graph;
 
 
 public final class Edge {
-	final Node source;
-	final Node target;
-	final Attributes attributes;
+	private final Node source;
+	private final Node target;
+	private final Attributes attributes;
 
 
 	Edge (Node source, Node target) {
@@ -43,27 +43,55 @@ public final class Edge {
 		this.attributes.style = style;
 	}
 	
+	public Style getStyle () {
+		return this.attributes.style;
+	}
+	
 	public void setLineColour (Colour colour) {
 		this.attributes.lineColour = colour;
+	}
+	
+	public Colour getLineColour () {
+		return this.attributes.lineColour;
 	}
 	
 	public void setLineWidth (int width) {
 		this.attributes.lineWidth = Integer.toString (width);
 	}
 	
+	public String getLineWidth () {
+		return this.attributes.lineWidth;
+	}
+	
 	public void setFillColour (Colour colour) {
 		this.attributes.fillColour = colour;
+	}
+
+	public Colour getFillColour () {
+		return this.attributes.fillColour;
 	}
 
 	public void setTextColour (Colour colour) {
 		this.attributes.textColour = colour;
 	}
 
+	public Colour getTextColour () {
+		return this.attributes.textColour;
+	}
+
 	public void setFontName (String fontName) {
 		this.attributes.fontName = fontName;
 	}
 
+	public String getFontName () {
+		return this.attributes.fontName;
+	}
+
 	public void setFontSize (int fontSize) {
 		this.attributes.fontSize = Integer.toString (fontSize);
+	}
+
+	public String getFontSize () {
+		return this.attributes.fontSize;
 	}
 }
