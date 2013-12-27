@@ -1,4 +1,4 @@
-/*	Copyright 2012 by Martin Gijsen (www.DeAnalist.nl)
+/*	Copyright 2012-2013 by Martin Gijsen (www.DeAnalist.nl)
  *
  *	This file is part of the PowerTools engine.
  *
@@ -45,6 +45,10 @@ public final class ExpressionEvaluator {
 		DateValue.mBusinessDayChecker = checker;
 	}
 	
+	public static BusinessDayChecker getBusinessDayChecker () {
+		return DateValue.mBusinessDayChecker;
+	}
+	
 	public static String evaluate (String expression, Scope scope) {
 		try {
 			// parse the expression, create AST (Abstract Syntax Tree)
@@ -56,8 +60,6 @@ public final class ExpressionEvaluator {
 			ExpressionTreeWalker walker = new ExpressionTreeWalker (new CommonTreeNodeStream (tree));
 			return walker.main (scope).toString ();
 		} catch (RecognitionException re) {
-			throw new ExecutionException ("invalid expression: " + expression);
-		} catch (NullPointerException npe) {
 			throw new ExecutionException ("invalid expression: " + expression);
 		}
 	}

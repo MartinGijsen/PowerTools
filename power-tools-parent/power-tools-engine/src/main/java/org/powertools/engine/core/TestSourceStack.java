@@ -50,10 +50,6 @@ final class TestSourceStack {
 		return mSourceStack.peek ();
 	}
 
-	boolean inATestCase () {
-		return mInATestCase;
-	}
-	
 	Scope getCurrentScope () {
 		try {
 			return mSourceStack.peek ().getScope ();
@@ -73,6 +69,18 @@ final class TestSourceStack {
 		initAndPush (mSourceStack.peek ().create (fileName));
 	}
 
+	TestLineImpl getTestLine () {
+		while (!mSourceStack.isEmpty ()) {
+			TestLineImpl testLine = mSourceStack.peek ().getTestLine ();
+			if (testLine != null) {
+				return testLine;
+			} else {
+				popTestSource ();
+			}
+		}
+		return null;
+	}
+	
 	boolean createAndPushTestCase (String name, String description) {
 		if (!mInATestCase) {
 			// can push immediately
@@ -87,20 +95,14 @@ final class TestSourceStack {
 		return true;
 	}
 
-	TestLineImpl getTestLine () {
-		while (!mSourceStack.isEmpty ()) {
-			TestLineImpl testLine = mSourceStack.peek ().getTestLine ();
-			if (testLine != null) {
-				return testLine;
-			} else {
-				popTestSource ();
-			}
-		}
-		return null;
+	boolean inATestCase () {
+		return mInATestCase;
 	}
 	
 	void popTestCase () {
-		if (!(mSourceStack.peek () instanceof TestCaseTestSource)) {
+		if (mSourceStack.isEmpty ()) {
+			throw new ExecutionException ("no current test source");
+		} else if (!(mSourceStack.peek () instanceof TestCaseTestSource)) {
 			throw new ExecutionException ("not in a test case (in this test line source)");
 		} else {
 			popTestSource ();

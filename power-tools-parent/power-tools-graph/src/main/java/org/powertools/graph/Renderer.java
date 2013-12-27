@@ -18,12 +18,15 @@
 
 package org.powertools.graph;
 
+import java.io.PrintWriter;
+
 
 public interface Renderer {
 	void setCleanup (boolean value);
 	void setDefaultType (String type);
 	void write (String filename, DirectedGraph graph);
 	void write (String filename, String type, DirectedGraph graph);
-	void writeDirected (String filename, DirectedGraph graph);
-	void writeDirected (String filename, String type, DirectedGraph graph);
+	void writeDirected (DirectedGraph graph, PrintWriter writer);
+	void writeDirected (DirectedGraph graph, String filename);
+	void writeDirected (DirectedGraph graph, String filename, String type);
 }

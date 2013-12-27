@@ -1,4 +1,4 @@
-/*	Copyright 2012 by Martin Gijsen (www.DeAnalist.nl)
+/*	Copyright 2013 by Martin Gijsen (www.DeAnalist.nl)
  *
  *	This file is part of the PowerTools engine.
  *
@@ -37,13 +37,13 @@ final class DoneWhenInEndNode extends DoneCondition {
 
 	
 	@Override
-	DoneCondition create (DirectedGraph graph) {
+	DoneCondition create (DirectedGraphImpl graph) {
 		return new DoneWhenInEndNode (this.mEndNodeLabel);
 	}
 	
 
 	@Override
-	void addSubModelGraph (DirectedGraph graph) {
+	void addSubModelGraph (DirectedGraphImpl graph) {
 		// TODO?
 	}
 	

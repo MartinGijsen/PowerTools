@@ -38,6 +38,12 @@ package org.powertools.engine.expression;
 package org.powertools.engine.expression;
 }
 
+@rulecatch {
+	catch (RecognitionException e) {
+		throw e;
+	}
+}
+
 root
 	:	'?'! expr EOF!
 	;

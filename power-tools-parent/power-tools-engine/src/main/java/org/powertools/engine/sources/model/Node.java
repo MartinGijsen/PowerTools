@@ -1,4 +1,4 @@
-/*	Copyright 2012 by Martin Gijsen (www.DeAnalist.nl)
+/*	Copyright 2013 by Martin Gijsen (www.DeAnalist.nl)
  *
  *	This file is part of the PowerTools engine.
  *
@@ -20,14 +20,14 @@ package org.powertools.engine.sources.model;
 
 
 final class Node {
-	final DirectedGraph	mGraph;
+	final DirectedGraphImpl	mGraph;
 	final String		mName;
 	
 	String				mLabel;
 	String				mAction;
 	
 
-	Node (String name, DirectedGraph graph) {
+	Node (String name, DirectedGraphImpl graph) {
 		if (name == null || name.isEmpty ()) {
 			throw new RuntimeException ("empty node name");
 		}

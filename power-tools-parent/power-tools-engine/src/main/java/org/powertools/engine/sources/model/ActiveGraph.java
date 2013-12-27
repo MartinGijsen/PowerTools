@@ -1,4 +1,4 @@
-/*	Copyright 2012 by Martin Gijsen (www.DeAnalist.nl)
+/*	Copyright 2013 by Martin Gijsen (www.DeAnalist.nl)
  *
  *	This file is part of the PowerTools engine.
  *
@@ -20,10 +20,10 @@ package org.powertools.engine.sources.model;
 
 
 final class ActiveGraph {
-	DirectedGraph	mGraph;
+	DirectedGraphImpl	mGraph;
 	Node			mCurrentNode;
 	
-	ActiveGraph (DirectedGraph graph) {
+	ActiveGraph (DirectedGraphImpl graph) {
 		mGraph			= graph;
 		mCurrentNode	= graph.getRoot ();
 	}

@@ -19,62 +19,17 @@
 package org.powertools.graph;
 
 import org.junit.Test;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 
 public class EdgeTest {
-	private final String SOURCE_NAME = "source name";
-	private final String TARGET_NAME = "target name";
-	
-	private final Node mSource = new Node (SOURCE_NAME);
-	private final Node mTarget = new Node (TARGET_NAME);
-	private final Edge mEdge   = new Edge (mSource, mTarget);
-
 	@Test
 	public void testGetSourceGetTarget () {
+		Node mSource = new Node ("source name");
+		Node mTarget = new Node ("target name");
+		Edge mEdge   = new Edge (mSource, mTarget);
+
 		assertEquals (mSource, mEdge.getSource ());
 		assertEquals (mTarget, mEdge.getTarget ());
-	}
-
-	@Test
-	public void testSetStyleGetStyle () {
-		mEdge.setStyle (Style.BOLD);
-		assertEquals (Style.BOLD, mEdge.getStyle ());
-	}
-
-	@Test
-	public void testSetLineColourGetLineColour () {
-		mEdge.setLineColour (Colour.ALICE_BLUE);
-		assertEquals (Colour.ALICE_BLUE, mEdge.getLineColour ());
-	}
-
-	@Test
-	public void testSetLineWidthGetLineWidth () {
-		mEdge.setLineWidth (3);
-		assertEquals ("3", mEdge.getLineWidth ());
-	}
-
-	@Test
-	public void testSetFillColourGetFillColour () {
-		mEdge.setFillColour (Colour.ALICE_BLUE);
-		assertEquals (Colour.ALICE_BLUE, mEdge.getFillColour ());
-	}
-
-	@Test
-	public void testSetTextColourGetTextColour () {
-		mEdge.setTextColour (Colour.ALICE_BLUE);
-		assertEquals (Colour.ALICE_BLUE, mEdge.getTextColour ());
-	}
-
-	@Test
-	public void testSetFontNameGetFontName () {
-		mEdge.setFontName ("Arial");
-		assertEquals ("Arial", mEdge.getFontName ());
-	}
-
-	@Test
-	public void testSetFontSizeGetFontSize () {
-		mEdge.setFontSize (17);
-		assertEquals ("17", mEdge.getFontSize ());
 	}
 }

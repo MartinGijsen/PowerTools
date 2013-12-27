@@ -29,7 +29,7 @@ import org.powertools.engine.symbol.Scope;
  * The test case has its own scope.
  * It does not nest and must terminate before the test source does.
  */
-public final class TestCaseTestSource extends TestSource {
+public class TestCaseTestSource extends TestSource {
 	private final TestSource mParent;
 
 	

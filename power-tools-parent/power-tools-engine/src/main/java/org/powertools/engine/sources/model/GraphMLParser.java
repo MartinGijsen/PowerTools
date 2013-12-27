@@ -1,4 +1,4 @@
-/*	Copyright 2012 by Martin Gijsen (www.DeAnalist.nl)
+/*	Copyright 2013 by Martin Gijsen (www.DeAnalist.nl)
  *
  *	This file is part of the PowerTools engine.
  *
@@ -55,7 +55,7 @@ final class GraphMLParser extends DefaultHandler {
 //	private static final String EDGE_CONDITION_KEY_NAME		= "d8";
 //	private static final String EDGE_ACTION_KEY_NAME		= "d9";
 
-	private DirectedGraph mGraph;
+	private DirectedGraphImpl mGraph;
 	private Stack<Element> mElementStack;
 
 	private String mNodeDescriptionKeyId;
@@ -110,7 +110,7 @@ final class GraphMLParser extends DefaultHandler {
 		super ();
 	}
 
-	DirectedGraph parse (DirectedGraph graph) throws IOException, SAXException {
+	DirectedGraphImpl parse (DirectedGraphImpl graph) throws IOException, SAXException {
 		mGraph			= graph;
 		mElementStack	= new Stack<Element> ();
 

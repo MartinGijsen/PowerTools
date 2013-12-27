@@ -21,18 +21,23 @@ package org.powertools.graph;
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 
-public class AttributesTest {
+
+public class AttributeSet2Test {
+	private final AttributeSet2Impl mAttributeSet = new AttributeSet2Impl ();
+	
 	@Test
-	public void testSomeMethod() {
-		Attributes attributes = new Attributes ();
-		assertEquals (attributes.label, "");
-		assertEquals (attributes.shape, Shape.DEFAULT);
-		assertEquals (attributes.style, Style.DEFAULT);
-		assertEquals (attributes.lineColour, Colour.DEFAULT);
-		assertEquals (attributes.lineWidth, "");
-		assertEquals (attributes.fillColour, Colour.DEFAULT);
-		assertEquals (attributes.textColour, Colour.DEFAULT);
-		assertEquals (attributes.fontName, "");
-		assertEquals (attributes.fontSize, "");
+	public void testSetLineColourGetLineColour () {
+		mAttributeSet.setLineColour (Colour.ALICE_BLUE);
+		assertEquals (Colour.ALICE_BLUE, mAttributeSet.getLineColour ());
+	}
+
+	@Test
+	public void testSetLineWidthGetLineWidth () {
+		mAttributeSet.setLineWidth (3);
+		assertEquals ("3", mAttributeSet.getLineWidth ());
+	}
+
+
+	private final class AttributeSet2Impl extends AttributeSet2 {
 	}
 }

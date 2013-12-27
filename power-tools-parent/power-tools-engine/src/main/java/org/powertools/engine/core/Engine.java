@@ -1,4 +1,4 @@
-/*	Copyright 2012 by Martin Gijsen (www.DeAnalist.nl)
+/*	Copyright 2012-2013 by Martin Gijsen (www.DeAnalist.nl)
  *
  *	This file is part of the PowerTools engine.
  *
@@ -41,13 +41,13 @@ import org.powertools.engine.sources.TestLineImpl;
  * Most of the test state is contained in the RunTime,
  * so that it can be accessed by (user defined) instruction sets.
  */
-
 public abstract class Engine {
 	protected final RunTimeImpl mRunTime;
 	protected final TestRunResultPublisher mPublisher;
-	protected final Instructions mInstructions;
 
 	protected TestLineImpl mTestLine;
+
+	private final Instructions mInstructions;
 
 
 	protected Engine (RunTimeImpl runTime) {
@@ -56,9 +56,13 @@ public abstract class Engine {
 		mPublisher		= TestRunResultPublisher.getInstance ();
 	}
 
+	protected final void registerBuiltinInstructions () {
+		BuiltinInstructions.register (mRunTime, mInstructions);
+	}
+
 
 	public void run (String sourceName) {
-		throw new RuntimeException ("not supported by this engine");
+		throw new ExecutionException ("not supported by this engine");
 	}
 
 	protected final void run (TestSource source) {

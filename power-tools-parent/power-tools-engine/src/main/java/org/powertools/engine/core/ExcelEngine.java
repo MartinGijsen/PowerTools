@@ -55,7 +55,7 @@ public class ExcelEngine extends Engine {
 			System.err.println ("could not open test case report");
 		}
 
-		BuiltinInstructions.register (runTime, mInstructions);
+		registerBuiltinInstructions ();
 	}
 
 	@Override

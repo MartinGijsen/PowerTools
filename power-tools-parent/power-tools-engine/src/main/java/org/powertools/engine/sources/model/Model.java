@@ -1,4 +1,4 @@
-/*	Copyright 2012 by Martin Gijsen (www.DeAnalist.nl)
+/*	Copyright 2013 by Martin Gijsen (www.DeAnalist.nl)
  *
  *	This file is part of the PowerTools engine.
  *
@@ -44,7 +44,7 @@ public final class Model {
 	private final EdgeSelectionStrategy			mSelector;
 	private final DoneCondition					mDoneCondition;
 	private final Stack<ActiveGraph>			mGraphStack;
-	private final Map<String, DirectedGraph>	mSubModels;
+	private final Map<String, DirectedGraphImpl>	mSubModels;
 	
 	private boolean								mDoneConditionSatisfied;
 
@@ -52,13 +52,13 @@ public final class Model {
 	public Model (String name, String selector, String doneCondition, RunTime runTime) {
 		mPublisher				= TestRunResultPublisher.getInstance ();
 		mDoneConditionSatisfied	= false;
-		mSubModels				= new HashMap<String, DirectedGraph> ();
+		mSubModels				= new HashMap<String, DirectedGraphImpl> ();
 		
 		mSelector = EdgeSelectionStrategyFactory.create (selector, runTime);
 		mPublisher.publishCommentLine ("edge selection: " + mSelector.getDescription ());
 
 		mGraphStack				= new Stack<ActiveGraph> ();
-		DirectedGraph mainGraph	= DirectedGraph.createGraph (name);
+		DirectedGraphImpl mainGraph	= DirectedGraphImpl.createGraph (name);
 		ActiveGraph activeGraph = new ActiveGraph (mainGraph);
 		mGraphStack.push (activeGraph);
 		mDoneCondition	= DoneConditionFactory.create (doneCondition, mainGraph);
@@ -107,10 +107,10 @@ public final class Model {
 		return mDoneConditionSatisfied;
 	}
 	
-	private DirectedGraph getGraph (String name) {
-		DirectedGraph subModel = mSubModels.get (name);
+	private DirectedGraphImpl getGraph (String name) {
+		DirectedGraphImpl subModel = mSubModels.get (name);
 		if (subModel == null) {
-			subModel = DirectedGraph.createGraph (name);
+			subModel = DirectedGraphImpl.createGraph (name);
 			mDoneCondition.addSubModelGraph (subModel);
 			mSubModels.put (name, subModel);
 		}

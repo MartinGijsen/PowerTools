@@ -25,18 +25,16 @@ import java.util.Map;
 import java.util.Set;
 
 
-public final class DirectedGraph {
-	final Map<String, Node> nodes;
-	final Set<Cluster> clusters;
-	final Map<String, Rank> ranks;
-	final Attributes attributes;
-	final Attributes defaultNodeAttributes;
+public final class DirectedGraph extends AttributeSet3 {
+	final Map<String, Node> mNodes;
+	final Set<Cluster> mClusters;
+	final Map<String, Rank> mRanks;
 
-	boolean concentrateEdges;
-	Direction direction;
-	int distanceBetweenRanks;
+	private boolean mConcentrateEdges;
+	private Direction mDirection;
+	private int mDistanceBetweenRanks;
 
-	private Map<Node, Set<Edge>> edges;
+	private Map<Node, Set<Edge>> mEdges;
 	
 	
 	public DirectedGraph () {
@@ -44,102 +42,64 @@ public final class DirectedGraph {
 	}
 
 	public DirectedGraph (boolean concentrateEdges) {
-		this.nodes		= new HashMap<String, Node> ();
-		this.edges		= new HashMap<Node, Set<Edge>> ();
-		this.clusters	= new HashSet<Cluster> ();
-		this.ranks		= new HashMap<String, Rank> ();
+		super ();
+		mNodes		= new HashMap<String, Node> ();
+		mEdges		= new HashMap<Node, Set<Edge>> ();
+		mClusters	= new HashSet<Cluster> ();
+		mRanks		= new HashMap<String, Rank> ();
 		
-		this.concentrateEdges		= concentrateEdges;
-		this.direction				= Direction.DEFAULT;
-		this.distanceBetweenRanks	= 0;
-		this.attributes				= new Attributes ();
-		this.defaultNodeAttributes	= new Attributes ();
+		mConcentrateEdges		= concentrateEdges;
+		mDirection				= Direction.DEFAULT;
+		mDistanceBetweenRanks	= 0;
 	}
 
-	
+
 	public void setConcentrateEdges (boolean value) {
-		this.concentrateEdges = value;
+		mConcentrateEdges = value;
+	}
+	
+	public boolean getConcentrateEdges () {
+		return mConcentrateEdges;
 	}
 	
 	public void setDirection (Direction direction) {
-		this.direction = direction;
+		mDirection = direction;
+	}
+	
+	public Direction getDirection () {
+		return mDirection;
 	}
 	
 	public void setDistanceBetweenRanks (int distance) {
-		this.distanceBetweenRanks = distance;
+		mDistanceBetweenRanks = distance;
+	}
+	public int getDistanceBetweenRanks () {
+		return mDistanceBetweenRanks;
 	}
 	
-	public void setLabel (String label) {
-		this.attributes.label = label;
-	}
-	
-	public void setFillColour (Colour colour) {
-		this.attributes.fillColour = colour;
-	}
-	
-	public void setTextColour (Colour colour) {
-		this.attributes.textColour = colour;
-	}
-	
-	public void setFontName (String fontName) {
-		this.attributes.fontName = fontName;
-	}
-	
-	public void setFontSize (int fontSize) {
-		this.attributes.fontSize = Integer.toString (fontSize);
-	}
-	
-	public void setDefaultNodeShape (Shape shape) {
-		this.defaultNodeAttributes.shape = shape;
-	}
-
-	public void setDefaultNodeStyle (Style style) {
-		this.defaultNodeAttributes.style = style;
-	}
-	
-	public void setDefaultNodeLineColour (Colour colour) {
-		this.defaultNodeAttributes.lineColour = colour;
-	}
-	
-	public void setDefaultNodeLineWidth (int width) {
-		this.defaultNodeAttributes.lineWidth = Integer.toString (width);
-	}
-	
-	public void setDefaultNodeFillColour (Colour colour) {
-		this.defaultNodeAttributes.fillColour = colour;
-	}
-	
-	public void setDefaultNodeTextColour (Colour colour) {
-		this.defaultNodeAttributes.textColour = colour;
-	}
-	
-	public void setDefaultNodeFontName (String fontName) {
-		this.defaultNodeAttributes.fontName = fontName;
-	}
-	
-	public void setDefaultNodeFontSize (String fontSize) {
-		this.defaultNodeAttributes.fontSize = fontSize;
-	}
-
 
 	public Node addNode (String name) {
-		if (this.nodes.containsKey (name)) {
+		if (mNodes.containsKey (name)) {
 			throw new GraphException (String.format ("node name %s not unique", name));
 		} else {
 			Node node = new Node (name);
-			this.nodes.put (name, node);
+			mNodes.put (name, node);
 			return node;
 		}
 	}
 	
 	public Node addNode (String name, Cluster cluster) {
 		Node node = addNode (name);
-		cluster.add (node);
+		cluster.addNode (node);
 		return node;
 	}
 
+	public boolean hasNode (String name) {
+		return mNodes.get (name) != null;
+	}
+
 	public Node getNode (String name) {
-		Node node = this.nodes.get (name);
+		Node node = mNodes.get (name);
 		if (node == null) {
 			throw new GraphException ("unknown node: " + name);
 		}
@@ -148,10 +108,12 @@ public final class DirectedGraph {
 
 	public Node getRoot () {
 		Set<Node> startNodes = new HashSet<Node> ();
-		startNodes.addAll (this.nodes.values ());
+		startNodes.addAll (mNodes.values ());
 
-		for (Set<Edge> edgeSet : this.edges.values ()) {
-			startNodes.removeAll (edgeSet);
+		for (Set<Edge> edgeSet : mEdges.values ()) {
+			for (Edge edge : edgeSet) {
+				startNodes.remove (edge.getTarget ());
+			}
 		}
 
 		switch (startNodes.size ()) {
@@ -177,10 +139,10 @@ public final class DirectedGraph {
 	}
 
 	public Edge addEdge (Node source, Node target) {
-		Set<Edge> edgesFromSameSource = this.edges.get (source);
+		Set<Edge> edgesFromSameSource = mEdges.get (source);
 		if (edgesFromSameSource == null) {
 			edgesFromSameSource = new HashSet<Edge> ();
-			this.edges.put (source, edgesFromSameSource);
+			mEdges.put (source, edgesFromSameSource);
 		} else {
 			for (Edge edge : edgesFromSameSource) {
 				if (edge.getTarget () == target) {
@@ -194,32 +156,40 @@ public final class DirectedGraph {
 		return edge;
 	}
 	
-	public Edge getEdge (Node source, Node target) {
-		Set<Edge> edgesFromSameSource = this.edges.get (source);
-		if (edgesFromSameSource == null) {
-			throw new GraphException ("edge does not exist");
+	public boolean hasEdge (Node source, Node target) {
+		try {
+			getEdge (source, target);
+			return true;
+		} catch (GraphException ge) {
+			return false;
 		}
-		for (Edge edge : edgesFromSameSource) {
-			if (edge.getTarget () == target) {
-				return edge;
+	}
+
+	public Edge getEdge (Node source, Node target) {
+		Set<Edge> edgesFromSameSource = mEdges.get (source);
+		if (edgesFromSameSource != null) {
+			for (Edge edge : edgesFromSameSource) {
+				if (edge.getTarget () == target) {
+					return edge;
+				}
 			}
 		}
 		throw new GraphException ("edge does not exist");
 	}
 
 	public Set<Edge> getEdges (Node source) {
-		Set<Edge> edgesFromSameSource = this.edges.get (source);
+		Set<Edge> edgesFromSameSource = mEdges.get (source);
 		return edgesFromSameSource == null ? new HashSet<Edge> () : edgesFromSameSource;
 	}
 
 	public Cluster addCluster (String label) {
 		Cluster cluster = new Cluster (label);
-		this.clusters.add (cluster);
+		mClusters.add (cluster);
 		return cluster;
 	}
 
 	public Cluster getCluster (String label) {
-		for (Cluster cluster : this.clusters) {
+		for (Cluster cluster : mClusters) {
 			if (cluster.getLabel ().equals (label)) {
 				return cluster;
 			}
@@ -228,20 +198,20 @@ public final class DirectedGraph {
 	}
 	
 	public Rank addRank (String name, RankType type) {
-		if (this.ranks.containsKey (name)) {
+		if (mRanks.containsKey (name)) {
 			throw new GraphException (String.format ("rank name %s not unique", name));
 		} else {
 			Rank rank = new Rank (name, type);
-			this.ranks.put (name, rank);
+			mRanks.put (name, rank);
 			return rank;
 		}
 	}
 
 	public Rank getRank (String name) {
-		return this.ranks.get (name);
+		return mRanks.get (name);
 	}
 	
 	public Iterator<Node> nodeIterator () {
-		return this.nodes.values ().iterator ();
+		return mNodes.values ().iterator ();
 	}
 }

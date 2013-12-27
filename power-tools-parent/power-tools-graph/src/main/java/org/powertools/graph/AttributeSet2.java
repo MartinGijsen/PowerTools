@@ -19,26 +19,29 @@
 package org.powertools.graph;
 
 
-final class Attributes {
-	String label;
-	Shape shape;
-	Style style;
-	Colour lineColour;
-	String lineWidth;
-	Colour fillColour;
-	Colour textColour;
-	String fontName;
-	String fontSize;
+abstract class AttributeSet2 extends AttributeSet1 {
+	protected Colour mLineColour;
+	protected String mLineWidth;
 	
-	Attributes () {
-		this.label		= "";
-		this.shape		= Shape.DEFAULT;
-		this.style		= Style.DEFAULT;
-		this.lineColour	= Colour.DEFAULT;
-		this.lineWidth	= "";
-		this.fillColour	= Colour.DEFAULT;
-		this.textColour	= Colour.DEFAULT;
-		this.fontName	= "";
-		this.fontSize	= "";
+	protected AttributeSet2 () {
+		super ();
+		mLineColour	= Colour.DEFAULT;
+		mLineWidth	= "";
+	}
+
+	public void setLineColour (Colour colour) {
+		mLineColour = colour;
+	}
+
+	public Colour getLineColour () {
+		return mLineColour;
+	}
+	
+	public void setLineWidth (int width) {
+		mLineWidth = Integer.toString (width);
+	}
+
+	public String getLineWidth () {
+		return mLineWidth;
 	}
 }

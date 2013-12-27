@@ -30,7 +30,6 @@ import org.powertools.engine.RunTime;
 import org.powertools.engine.Symbol;
 import org.powertools.engine.instructions.InstructionSetFactory;
 import org.powertools.engine.symbol.BaseSequence;
-import org.powertools.engine.symbol.Scope;
 
 
 /**

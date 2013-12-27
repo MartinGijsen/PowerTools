@@ -1,4 +1,4 @@
-/*	Copyright 2012 by Martin Gijsen (www.DeAnalist.nl)
+/*	Copyright 2013 by Martin Gijsen (www.DeAnalist.nl)
  *
  *	This file is part of the PowerTools engine.
  *
@@ -30,7 +30,7 @@ final class DoneWhenAllEdgesSeen extends DoneCondition {
 	private final Set<Edge> mUnseenEdges;
 
 	
-	DoneWhenAllEdgesSeen (DirectedGraph graph) {
+	DoneWhenAllEdgesSeen (DirectedGraphImpl graph) {
 		super ();
 		mUnseenEdges = new HashSet<Edge> ();
 		for (Set<Edge> edges : graph.mEdges.values ()) {
@@ -40,14 +40,14 @@ final class DoneWhenAllEdgesSeen extends DoneCondition {
 
 	
 	@Override
-	void addSubModelGraph (DirectedGraph graph) {
+	void addSubModelGraph (DirectedGraphImpl graph) {
 		for (Set<Edge> edges : graph.mEdges.values ()) {
 			mUnseenEdges.addAll (edges);
 		}
 	}
 
 	@Override
-	DoneCondition create (DirectedGraph graph) {
+	DoneCondition create (DirectedGraphImpl graph) {
 		return new DoneWhenAllEdgesSeen (graph);
 	}
 

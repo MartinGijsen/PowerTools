@@ -1,4 +1,4 @@
-/*	Copyright 2012 by Martin Gijsen (www.DeAnalist.nl)
+/*	Copyright 2012-2013 by Martin Gijsen (www.DeAnalist.nl)
  *
  *	This file is part of the PowerTools engine.
  *
@@ -54,7 +54,7 @@ public final class FitNesseEngine extends Engine {
 		mFitNesseReporter = new FitNesseReporter ();
 		mPublisher.subscribeToTestResults (mFitNesseReporter);
 
-		BuiltinInstructions.register (mRunTime, mInstructions);
+		registerBuiltinInstructions ();
 		
 		mPublisher.start (mRunTime.getContext ().getStartTime ());
 		// TODO: send stop signal also, once integration with Fit is improved

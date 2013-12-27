@@ -27,12 +27,12 @@ import java.io.PrintWriter;
 public final class GraphViz implements Renderer {
 	private static final String DEFAULT_DEFAULT_TYPE = "png";
 	
-	private final String path;
+	private final String mPath;
 
-	private File file;
-	private PrintWriter writer;
-	private String defaultType;
-	private boolean doCleanup;
+	private File mFile;
+	private PrintWriter mWriter;
+	private String mDefaultType;
+	private boolean mDoCleanup;
 	
 	
 	public GraphViz (String path) {	
@@ -40,24 +40,24 @@ public final class GraphViz implements Renderer {
 	}
 
 	public GraphViz (String path, String defaultType) {
-		this.path			= path;
-		this.defaultType	= defaultType;
-		this.doCleanup		= true;
+		mPath			= path;
+		mDefaultType	= defaultType;
+		mDoCleanup		= true;
 	}
 
 	@Override
 	public void setCleanup (boolean value) {
-		this.doCleanup = value;
+		mDoCleanup = value;
 	}
 
 	@Override
 	public void setDefaultType (String type) {
-		this.defaultType = type;
+		mDefaultType = type;
 	}
 
 	@Override
 	public void write (String filename, DirectedGraph graph) {
-		write (filename, this.defaultType, graph);
+		write (filename, mDefaultType, graph);
 	}
 
 	@Override
@@ -67,75 +67,94 @@ public final class GraphViz implements Renderer {
 	}
 
 	@Override
-	public void writeDirected (String filename, DirectedGraph graph) {
-		writeDirected (filename, this.defaultType, graph);
+	public void writeDirected (DirectedGraph graph, PrintWriter writer) {
+		mWriter = writer;
+		writeDotFile (graph);
 	}
 
 	@Override
-	public void writeDirected (String filename, String type, DirectedGraph graph) {
+	public void writeDirected (DirectedGraph graph, String filename) {
+		writeDirected (graph, filename, mDefaultType);
+	}
+
+	@Override
+	public void writeDirected (DirectedGraph graph, String filename, String type) {
+		openDotFile ();
 		writeDotFile (graph);
 		generateImageDirected (filename, type);
 	}
 
 	private void writeDotFile (DirectedGraph graph) {
-		createDotFile (graph);
+		startDotFile ();
+		writeGraph (graph);
 		writeClusters (graph);
 		writeNodes (graph);
 		writeEdges (graph);
 		writeRanks (graph);
-		closeFile ();
+		closeDotFile ();
 	}
 	
-	private void createDotFile (DirectedGraph graph) {
+	private void openDotFile () {
 		try {
-			this.file	= File.createTempFile ("PowerTools", ".dot");
-			this.writer	= new PrintWriter (new FileOutputStream (this.file));
-			this.writer.println ("digraph G {");
-//			if (graph.distanceBetweenRanks > 0) {
-//				writeGraphAttribute ("ranksep", Integer.toString (graph.distanceBetweenRanks));
-//			}
-			if (graph.concentrateEdges) {
-				writeGraphAttribute ("concentrate", "true");
-			}
-			if (graph.direction != Direction.DEFAULT) {
-				writeGraphAttribute ("rankdir", graph.direction.toString ());
-			}
-			if (!graph.attributes.label.isEmpty ()) {
-				writeGraphAttribute ("label", graph.attributes.label);
-			}
-			if (graph.attributes.style != Style.DEFAULT) {
-				writeGraphAttribute ("style", graph.attributes.style.toString ());
-			}
-			if (graph.attributes.fillColour != Colour.DEFAULT) {
-				writeGraphAttribute ("bgcolor", graph.attributes.fillColour.toString ());
-			}
-			if (graph.attributes.textColour != Colour.DEFAULT) {
-				writeGraphAttribute ("fontcolor", graph.attributes.textColour.toString ());
-			}
-			if (!graph.attributes.fontName.isEmpty ()) {
-				writeGraphAttribute ("fontname", graph.attributes.fontName);
-			}
-			if (!graph.attributes.fontSize.isEmpty ()) {
-				writeGraphAttribute ("fontsize", graph.attributes.fontSize);
-			}
-			
-			writeDefaultNodeAttributes (graph.defaultNodeAttributes);
+			mFile	= File.createTempFile ("PowerTools", ".dot");
+			mWriter	= new PrintWriter (new FileOutputStream (mFile));
 		} catch (IOException ioe) {
 			throw new GraphException ("failed to create temporary file");
 		}
 	}
 
+	private void startDotFile () {
+		try {
+			mFile	= File.createTempFile ("PowerTools", ".dot");
+			mWriter	= new PrintWriter (new FileOutputStream (mFile));
+			mWriter.println ("digraph G {");
+		} catch (IOException ioe) {
+			throw new GraphException ("failed to create temporary file");
+		}
+	}
+
+	private void writeGraph (DirectedGraph graph) {
+		if (graph.getConcentrateEdges ()) {
+			writeGraphAttribute ("concentrate", "true");
+		}
+		if (graph.getDirection () != Direction.DEFAULT) {
+			writeGraphAttribute ("rankdir", graph.getDirection ().toString ());
+		}
+
+		if (!graph.getLabel ().isEmpty ()) {
+			writeGraphAttribute ("label", graph.getLabel ());
+		}
+		if (graph.getStyle () != Style.DEFAULT) {
+			writeGraphAttribute ("style", graph.getStyle ().toString ());
+		}
+		if (graph.getFillColour () != Colour.DEFAULT) {
+			writeGraphAttribute ("bgcolor", graph.getFillColour ().toString ());
+		}
+		if (graph.getTextColour () != Colour.DEFAULT) {
+			writeGraphAttribute ("fontcolor", graph.getTextColour ().toString ());
+		}
+		if (!graph.getFontName ().isEmpty ()) {
+			writeGraphAttribute ("fontname", graph.getFontName ());
+		}
+		if (!graph.getFontSize ().isEmpty ()) {
+			writeGraphAttribute ("fontsize", graph.getFontSize ());
+		}
+
+		writeDefaultNodeAttributes (graph);
+	}
+
 	private void writeGraphAttribute (String attributeName, String value) {
-		this.writer.println (String.format ("\t%s = %s;", attributeName, value));
+		mWriter.println (String.format ("\t%s = %s;", attributeName, value));
 	}
 
 	private void writeClusters (DirectedGraph graph) {
 		int counter = 0;
-		for (Cluster cluster : graph.clusters) {
-			this.writer.println ("\tsubgraph cluster_" + Integer.toString (++counter) + " {");
+		for (Cluster cluster : graph.mClusters) {
+			mWriter.println ("\tsubgraph cluster_" + Integer.toString (++counter) + " {");
 			if (!cluster.getLabel ().isEmpty ()) {
 				writeClusterAttribute ("label", "\"" + cluster.getLabel () + "\"");
 			}
+
 			if (cluster.getStyle () != Style.DEFAULT) {
 				writeClusterAttribute ("style", cluster.getStyle ().toString ());
 			}
@@ -158,27 +177,28 @@ public final class GraphViz implements Renderer {
 				writeClusterAttribute ("fontsize", cluster.getFontSize ());
 			}
 
-			writeDefaultNodeAttributes (cluster.defaultNodeAttributes);
+			writeDefaultNodeAttributes (cluster);
 			
 			for (Node node : cluster.getNodes ()) {
-				this.writer.println ("\t\t\"" + node.getName () + "\";");
+				mWriter.println ("\t\t\"" + node.getName () + "\";");
 			}
-			this.writer.println ("\t}");
+			mWriter.println ("\t}");
 		}
 	}
 
 	private void writeClusterAttribute (String attributeName, String value) {
-		this.writer.println (String.format ("\t\t%s = %s;", attributeName, value));
+		mWriter.println (String.format ("\t\t%s = %s;", attributeName, value));
 	}
 
 	private void writeNodes (DirectedGraph graph) {
-		for (Node node : graph.nodes.values ()) {
+		for (Node node : graph.mNodes.values ()) {
 			if (!node.getLabel ().isEmpty ()) {
 				writeNodeAttribute (node, "label", node.getLabel ());
 			}
 			if (node.getShape () != Shape.DEFAULT) {
 				writeNodeAttribute (node, "shape", node.getShape ().toString ());
 			}
+			
 			if (node.getStyle () != Style.DEFAULT) {
 				writeNodeAttribute (node, "style", node.getStyle ().toString ());
 			}
@@ -204,13 +224,17 @@ public final class GraphViz implements Renderer {
 	}
 
 	private void writeNodeAttribute (Node node, String attributeName, String value) {
-		this.writer.println (String.format ("\t\"%s\" [ %s = %s ];", node.getName (), attributeName, value));
+		mWriter.println (String.format ("\t\"%s\" [ %s = %s ];", node.getName (), attributeName, value));
 	}
 	
 	private void writeEdges (DirectedGraph graph) {
-		for (Node node : graph.nodes.values ()) {
+		for (Node node : graph.mNodes.values ()) {
 			for (Edge edge : graph.getEdges (node)) {
-				this.writer.append (String.format ("\t\"%s\" -> \"%s\"", edge.getSource ().getName (), edge.getTarget ().getName ()));
+				mWriter.append (String.format ("\t\"%s\" -> \"%s\"", edge.getSource ().getName (), edge.getTarget ().getName ()));
+				if (!edge.getLabel ().isEmpty ()) {
+					writeEdgeAttribute ("label", edge.getLabel ());
+				}
+
 				if (edge.getStyle () != Style.DEFAULT) {
 					writeEdgeAttribute ("style", edge.getStyle ().toString ());
 				}
@@ -232,62 +256,63 @@ public final class GraphViz implements Renderer {
 				if (!edge.getFontSize ().isEmpty ()) {
 					writeEdgeAttribute ("fontsize", edge.getFontSize ());
 				}
-				this.writer.println (";");
+				mWriter.println (";");
 			}
 		}
 	}
 	
 	private void writeEdgeAttribute (String attributeName, String value) {
-		this.writer.append (String.format (" [ %s = %s ]", attributeName, value));
+		mWriter.append (String.format (" [ %s = %s ]", attributeName, value));
 	}
 	
-	private void writeDefaultNodeAttributes (Attributes attributes) {
-		if (attributes.shape != Shape.DEFAULT) {
-			writeDefaultNodeAttribute ("shape", attributes.shape.toString ());
+	private void writeDefaultNodeAttributes (AttributeSet3 attributes) {
+		if (attributes.getDefaultNodeShape () != Shape.DEFAULT) {
+			writeDefaultNodeAttribute ("shape", attributes.getDefaultNodeShape ().toString ());
 		}
-		if (attributes.style != Style.DEFAULT) {
-			writeDefaultNodeAttribute ("style", attributes.style.toString ());
+
+		if (attributes.getDefaultNodeStyle () != Style.DEFAULT) {
+			writeDefaultNodeAttribute ("style", attributes.getDefaultNodeStyle ().toString ());
 		}
-		if (attributes.lineColour != Colour.DEFAULT) {
-			writeDefaultNodeAttribute ("color", attributes.lineColour.toString ());
+		if (attributes.getDefaultNodeLineColour () != Colour.DEFAULT) {
+			writeDefaultNodeAttribute ("color", attributes.getDefaultNodeLineColour ().toString ());
 		}
-		if (!attributes.lineWidth.isEmpty ()) {
-			writeDefaultNodeAttribute ("penwidth", attributes.lineWidth);
+		if (!attributes.getDefaultNodeLineWidth ().isEmpty ()) {
+			writeDefaultNodeAttribute ("penwidth", attributes.getDefaultNodeLineWidth ());
 		}
-		if (attributes.fillColour != Colour.DEFAULT) {
-			writeDefaultNodeAttribute ("fillcolor", attributes.fillColour.toString ());
+		if (attributes.getDefaultNodeFillColour () != Colour.DEFAULT) {
+			writeDefaultNodeAttribute ("fillcolor", attributes.getDefaultNodeFillColour ().toString ());
 		}
-		if (attributes.textColour != Colour.DEFAULT) {
-			writeDefaultNodeAttribute ("fontcolor", attributes.textColour.toString ());
+		if (attributes.getDefaultNodeTextColour () != Colour.DEFAULT) {
+			writeDefaultNodeAttribute ("fontcolor", attributes.getDefaultNodeTextColour ().toString ());
 		}
-		if (!attributes.fontName.isEmpty ()) {
-			writeDefaultNodeAttribute ("fontname", attributes.fontName);
+		if (!attributes.getDefaultNodeFontName ().isEmpty ()) {
+			writeDefaultNodeAttribute ("fontname", attributes.getDefaultNodeFontName ());
 		}
-		if (!attributes.fontSize.isEmpty ()) {
-			writeDefaultNodeAttribute ("fontsize", attributes.fontSize);
+		if (!attributes.getDefaultNodeFontSize ().isEmpty ()) {
+			writeDefaultNodeAttribute ("fontsize", attributes.getDefaultNodeFontSize ());
 		}
 	}
 	
 	private void writeDefaultNodeAttribute (String attributeName, String value) {
-		this.writer.println (String.format ("\t\tnode [ %s = %s ];", attributeName, value));
+		mWriter.println (String.format ("\t\tnode [ %s = %s ];", attributeName, value));
 	}
 	
 	private void writeRanks (DirectedGraph graph) {
-		for (Rank rank : graph.ranks.values ()) {
+		for (Rank rank : graph.mRanks.values ()) {
 			if (!rank.nodes.isEmpty ()) {
-				this.writer.append ("\t{");
-				this.writer.println (String.format (" rank = %s ;", rank.type));
+				mWriter.append ("\t{");
+				mWriter.println (String.format (" rank = %s ;", rank.type));
 				for (Node node : rank.nodes) {
-					this.writer.println (String.format (" \"%s\" ;", node.getName ()));
+					mWriter.println (String.format (" \"%s\" ;", node.getName ()));
 				}
-				this.writer.println (" }");
+				mWriter.println (" }");
 			}
 		}
 	}
 
-	private void closeFile () {
-		this.writer.println ("}");
-		this.writer.close ();
+	private void closeDotFile () {
+		mWriter.println ("}");
+		mWriter.close ();
 	}
 	
 	private void generateImage (String filename, String type) {
@@ -302,11 +327,11 @@ public final class GraphViz implements Renderer {
 	
 	private void runTool (String tool, String filename, String type) {
 		try {
-			String command = String.format ("\"%s/%s\" -Tpng -o %s.%s.%s %s", path, tool, filename, tool, type, this.file.getPath ());
+			String command = String.format ("\"%s/%s\" -Tpng -o %s.%s.%s %s", mPath, tool, filename, tool, type, mFile.getPath ());
 //			System.out.println (command);
 			Runtime.getRuntime ().exec (command).waitFor ();
-			if (this.doCleanup) {
-				this.file.delete ();
+			if (mDoCleanup) {
+				mFile.delete ();
 			}
 		} catch (IOException ioe) {
 			throw new GraphException ("failed to generate picture");

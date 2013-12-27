@@ -1,4 +1,4 @@
-/*	Copyright 2012 by Martin Gijsen (www.DeAnalist.nl)
+/*	Copyright 2013 by Martin Gijsen (www.DeAnalist.nl)
  *
  *	This file is part of the PowerTools engine.
  *
@@ -23,8 +23,8 @@ package org.powertools.engine.sources.model;
  * Determines when the model (including any submodels) has been processed
  */
 abstract class DoneCondition {
-	abstract DoneCondition create (DirectedGraph graph);
-	abstract void addSubModelGraph (DirectedGraph graph);
+	abstract DoneCondition create (DirectedGraphImpl graph);
+	abstract void addSubModelGraph (DirectedGraphImpl graph);
 	abstract String getDescription ();
 	abstract void markEdge (Edge edge);
 	abstract void check ();

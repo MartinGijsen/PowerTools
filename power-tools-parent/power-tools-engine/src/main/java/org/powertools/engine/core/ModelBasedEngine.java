@@ -1,4 +1,4 @@
-/*	Copyright 2012 by Martin Gijsen (www.DeAnalist.nl)
+/*	Copyright 2013 by Martin Gijsen (www.DeAnalist.nl)
  *
  *	This file is part of the PowerTools engine.
  *
@@ -21,7 +21,6 @@ package org.powertools.engine.core;
 import org.powertools.engine.Context;
 import org.powertools.engine.reports.ReportFactory;
 import org.powertools.engine.sources.TestSourceFactory;
-import org.powertools.engine.symbol.Scope;
 
 
 /**
@@ -54,7 +53,7 @@ public class ModelBasedEngine extends Engine {
 			mPublisher.publishError ("could not open HTML log");
 		}
 
-		BuiltinInstructions.register (runTime, mInstructions);
+		registerBuiltinInstructions ();
 	}
 
 	@Override

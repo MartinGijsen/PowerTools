@@ -19,159 +19,53 @@
 package org.powertools.graph;
 
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
 
-public final class Cluster {
-	private final Attributes attributes;
-	final Attributes defaultNodeAttributes;
-	
-	private String label;
-	private final Set<Node> nodes;
+public final class Cluster extends AttributeSet3 {
+	private Colour mLineColour;
+	private String mLineWidth;
+	private final Set<Node> mNodes;
 
 
 	Cluster (String label) {
-		this.label					= label;
-		this.attributes				= new Attributes ();
-		this.defaultNodeAttributes	= new Attributes ();
-		this.nodes					= new HashSet<Node> ();
-	}
-
-	public void setLabel (String label) {
-		this.label = label;
-	}
-
-	public String getLabel () {
-		return this.label;
-	}
-
-	public void setStyle (Style style) {
-		this.attributes.style = style;
-	}
-
-	public Style getStyle () {
-		return this.attributes.style;
+		super ();
+		mLabel		= label;
+		mLineColour	= Colour.DEFAULT;
+		mLineWidth	= "";
+		mNodes		= new HashSet<Node> ();
 	}
 
 	public void setLineColour (Colour colour) {
-		this.attributes.lineColour = colour;
+		mLineColour = colour;
 	}
 
 	public Colour getLineColour () {
-		return this.attributes.lineColour;
+		return mLineColour;
 	}
-
+	
 	public void setLineWidth (int width) {
-		this.attributes.lineWidth = Integer.toString (width);
+		mLineWidth = Integer.toString (width);
 	}
 
 	public String getLineWidth () {
-		return this.attributes.lineWidth;
+		return mLineWidth;
 	}
 
-	public void setFillColour (Colour colour) {
-		this.attributes.fillColour = colour;
-	}
-
-	public Colour getFillColour () {
-		return this.attributes.fillColour;
-	}
-
-	public void setTextColour (Colour colour) {
-		this.attributes.textColour = colour;
+	void addNode (Node node) {
+		mNodes.add (node);
 	}
 	
-	public Colour getTextColour () {
-		return this.attributes.textColour;
-	}
-	
-	public void setFontName (String fontName) {
-		this.attributes.fontName = fontName;
-	}
-	
-	public String getFontName () {
-		return this.attributes.fontName;
-	}
-	
-	public void setFontSize (int fontSize) {
-		this.attributes.fontSize = Integer.toString (fontSize);
-	}
-
-	public String getFontSize () {
-		return this.attributes.fontSize;
-	}
-
-	
-	public void setDefaultNodeShape (Shape shape) {
-		this.defaultNodeAttributes.shape = shape;
-	}
-
-	public Shape getDefaultNodeShape () {
-		return this.defaultNodeAttributes.shape;
-	}
-
-	public void setDefaultNodeStyle (Style style) {
-		this.defaultNodeAttributes.style = style;
-	}
-	
-	public Style getDefaultNodeStyle () {
-		return this.defaultNodeAttributes.style;
-	}
-	
-	public void setDefaultNodeLineColour (Colour colour) {
-		this.defaultNodeAttributes.lineColour = colour;
-	}
-	
-	public Colour getDefaultNodeLineColour () {
-		return this.defaultNodeAttributes.lineColour;
-	}
-	
-	public void setDefaultNodeLineWidth (int width) {
-		this.defaultNodeAttributes.lineWidth = Integer.toString (width);
-	}
-	
-	public String getDefaultNodeLineWidth () {
-		return this.defaultNodeAttributes.lineWidth;
-	}
-	
-	public void setDefaultNodeFillColour (Colour colour) {
-		this.defaultNodeAttributes.fillColour = colour;
-	}
-	
-	public Colour getDefaultNodeFillColour () {
-		return this.defaultNodeAttributes.fillColour;
-	}
-	
-	public void setDefaultNodeTextColour (Colour colour) {
-		this.defaultNodeAttributes.textColour = colour;
-	}
-	
-	public Colour getDefaultNodeTextColour () {
-		return this.defaultNodeAttributes.textColour;
-	}
-	
-	public void setDefaultNodeFontName (String fontName) {
-		this.defaultNodeAttributes.fontName = fontName;
-	}
-	
-	public String getDefaultNodeFontName () {
-		return this.defaultNodeAttributes.fontName;
-	}
-	
-	public void setDefaultNodeFontSize (String fontSize) {
-		this.defaultNodeAttributes.fontSize = fontSize;
-	}
-	public String getDefaultNodeFontSize () {
-		return this.defaultNodeAttributes.fontSize;
-	}
-
-	
-	void add (Node node) {
-		this.nodes.add (node);
+	Node getNode (String name) {
+		for (Node node : mNodes) {
+			if (node.getName ().equals (name)) {
+				return node;
+			}
+		}
+		return null;
 	}
 	
 	Set<Node> getNodes () {
-		return nodes;
+		return mNodes;
 	}
 }

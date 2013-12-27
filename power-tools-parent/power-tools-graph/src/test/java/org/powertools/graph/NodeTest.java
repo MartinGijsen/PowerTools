@@ -50,56 +50,8 @@ public class NodeTest {
 	}
 
 	@Test
-	public void testSetLabelGetLabel () {
-		mNode.setLabel ("some label");
-		assertEquals ("some label", mNode.getLabel ());
-	}
-
-	@Test
 	public void testSetShapeGetShape () {
 		mNode.setShape (Shape.CIRCLE);
 		assertEquals (Shape.CIRCLE, mNode.getShape ());
-	}
-
-	@Test
-	public void testSetStyleGetStyle () {
-		mNode.setStyle (Style.BOLD);
-		assertEquals (Style.BOLD, mNode.getStyle ());
-	}
-
-	@Test
-	public void testSetLineColourGetLineColour () {
-		mNode.setLineColour (Colour.ALICE_BLUE);
-		assertEquals (Colour.ALICE_BLUE, mNode.getLineColour ());
-	}
-
-	@Test
-	public void testSetLineWidthGetLineWidth () {
-		mNode.setLineWidth (3);
-		assertEquals ("3", mNode.getLineWidth ());
-	}
-
-	@Test
-	public void testSetFillColourGetFillColour () {
-		mNode.setFillColour (Colour.ALICE_BLUE);
-		assertEquals (Colour.ALICE_BLUE, mNode.getFillColour ());
-	}
-
-	@Test
-	public void testSetTextColourGetTextColour () {
-		mNode.setTextColour (Colour.ALICE_BLUE);
-		assertEquals (Colour.ALICE_BLUE, mNode.getTextColour ());
-	}
-
-	@Test
-	public void testSetFontNameGetFontName () {
-		mNode.setFontName ("Arial");
-		assertEquals ("Arial", mNode.getFontName ());
-	}
-
-	@Test
-	public void testSetFontSizeGetFontSize () {
-		mNode.setFontSize (17);
-		assertEquals ("17", mNode.getFontSize ());
 	}
 }

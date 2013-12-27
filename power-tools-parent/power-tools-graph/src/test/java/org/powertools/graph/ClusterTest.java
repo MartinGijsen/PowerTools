@@ -29,12 +29,6 @@ public class ClusterTest {
 	
 	
 	@Test
-	public void testSetLabelGetLabel () {
-		mCluster.setLabel ("some label");
-		assertEquals (LABEL, mCluster.getLabel ());
-	}
-
-	@Test
 	public void testSetStyleGetStyle () {
 		mCluster.setStyle (Style.BOLD);
 		assertEquals (Style.BOLD, mCluster.getStyle ());
@@ -52,83 +46,16 @@ public class ClusterTest {
 		assertEquals ("3", mCluster.getLineWidth ());
 	}
 
-	@Test
-	public void testSetFillColourGetFillColour () {
-		mCluster.setFillColour (Colour.ALICE_BLUE);
-		assertEquals (Colour.ALICE_BLUE, mCluster.getFillColour ());
-	}
-
-	@Test
-	public void testSetTextColourGetTextColour () {
-		mCluster.setTextColour (Colour.ALICE_BLUE);
-		assertEquals (Colour.ALICE_BLUE, mCluster.getTextColour ());
-	}
-
-	@Test
-	public void testSetFontNameGetFontName () {
-		mCluster.setFontName ("Arial");
-		assertEquals ("Arial", mCluster.getFontName ());
-	}
-
-	@Test
-	public void testSetFontSizeGetFontSize () {
-		mCluster.setFontSize (17);
-		assertEquals ("17", mCluster.getFontSize ());
-	}
-
-	@Test
-	public void testSetDefaultNodeShapeGetDefaultNodeShape() {
-		mCluster.setDefaultNodeShape (Shape.CIRCLE);
-		assertEquals (Shape.CIRCLE, mCluster.getDefaultNodeShape ());
-	}
-
-	@Test
-	public void testSetDefaultNodeStyleGetDefaultNodeStyle () {
-		mCluster.setDefaultNodeStyle (Style.BOLD);
-		assertEquals (Style.BOLD, mCluster.getDefaultNodeStyle ());
-	}
-
-	@Test
-	public void testSetDefaultNodeLineColourGetDefaultNodeLineColour () {
-		mCluster.setDefaultNodeLineColour (Colour.ALICE_BLUE);
-		assertEquals (Colour.ALICE_BLUE, mCluster.getDefaultNodeLineColour ());
-	}
-
-	@Test
-	public void testSetDefaultNodeLineWidthGetDefaultNodeLineWidth () {
-		mCluster.setDefaultNodeLineWidth (3);
-		assertEquals ("3", mCluster.getDefaultNodeLineWidth ());
-	}
-
-	@Test
-	public void testSetDefaultNodeFillColourGetDefaultNodeFillColour () {
-		mCluster.setDefaultNodeFillColour (Colour.ALICE_BLUE);
-		assertEquals (Colour.ALICE_BLUE, mCluster.getDefaultNodeFillColour ());
-	}
-
-	@Test
-	public void testSetDefaultNodeTextColourGetDefaultNodeTextColour () {
-		mCluster.setDefaultNodeTextColour (Colour.ALICE_BLUE);
-		assertEquals (Colour.ALICE_BLUE, mCluster.getDefaultNodeTextColour ());
-	}
-
-	@Test
-	public void testSetDefaultNodeFontNameGetDefaultNodeFontName () {
-		mCluster.setDefaultNodeFontName ("Arial");
-		assertEquals ("Arial", mCluster.getDefaultNodeFontName ());
-	}
-
-	@Test
-	public void testSetDefaultNodeFontSizeGetDefaultNodeFontSize () {
-		mCluster.setDefaultNodeFontSize ("17");
-		assertEquals ("17", mCluster.getDefaultNodeFontSize ());
-	}
 	
 	@Test
-	public void testAdd () {
-		Node node = new Node ("node name");
+	public void testAddNodeGetNode () {
+		String NODE_NAME = "node name";
 		assertTrue (mCluster.getNodes ().isEmpty ());
-		mCluster.add (node);
+		mCluster.addNode (new Node ("some name"));
+		assertNull (mCluster.getNode (NODE_NAME));
+		Node node = new Node (NODE_NAME);
+		mCluster.addNode (node);
+		assertEquals (node, mCluster.getNode (NODE_NAME));
 		assertTrue (mCluster.getNodes ().contains (node));
 	}	
 }

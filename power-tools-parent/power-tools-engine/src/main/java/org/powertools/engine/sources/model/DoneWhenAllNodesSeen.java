@@ -1,4 +1,4 @@
-/*	Copyright 2012 by Martin Gijsen (www.DeAnalist.nl)
+/*	Copyright 2013 by Martin Gijsen (www.DeAnalist.nl)
  *
  *	This file is part of the PowerTools engine.
  *
@@ -30,7 +30,7 @@ final class DoneWhenAllNodesSeen extends DoneCondition {
 	private boolean mDone;
 	private final Set<Node> mUnseenNodes;
 
-	DoneWhenAllNodesSeen (DirectedGraph graph) {
+	DoneWhenAllNodesSeen (DirectedGraphImpl graph) {
 		super ();
 		mDone			= false;
 		mUnseenNodes	= new HashSet<Node> (graph.mNodes.values ());
@@ -39,13 +39,13 @@ final class DoneWhenAllNodesSeen extends DoneCondition {
 	
 
 	@Override
-	DoneCondition create (DirectedGraph graph) {
+	DoneCondition create (DirectedGraphImpl graph) {
 		return new DoneWhenAllNodesSeen (graph);
 	}
 
 	
 	@Override
-	void addSubModelGraph (DirectedGraph graph) {
+	void addSubModelGraph (DirectedGraphImpl graph) {
 		mUnseenNodes.addAll (graph.mNodes.values ());
 	}
 	

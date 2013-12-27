@@ -1,4 +1,4 @@
-/*	Copyright 2012 by Martin Gijsen (www.DeAnalist.nl)
+/*	Copyright 2013 by Martin Gijsen (www.DeAnalist.nl)
  *
  *	This file is part of the PowerTools engine.
  *
@@ -43,7 +43,7 @@ final class WeightedEdgeSelector implements EdgeSelectionStrategy {
 	}
 
 	@Override
-	public Edge selectEdge (DirectedGraph graph, Node currentNode) {
+	public Edge selectEdge (DirectedGraphImpl graph, Node currentNode) {
 		final Set<Edge> edges = graph.getEdges (currentNode);
 		if (!edges.isEmpty ()) {
 			return selectEdge (edges);
