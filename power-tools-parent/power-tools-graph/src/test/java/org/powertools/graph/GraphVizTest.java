@@ -42,6 +42,8 @@ public class GraphVizTest {
 			"	nodesep = 0.5;\r\n" +
 			"	label = graph label;\r\n" +
 			"	style = dashed;\r\n" +
+			"	color = lime;\r\n" +
+			"	penwidth = 1;\r\n" +
 			"	bgcolor = aqua;\r\n" +
 			"	fontcolor = red;\r\n" +
 			"	fontname = Arial;\r\n" +
@@ -49,7 +51,7 @@ public class GraphVizTest {
 			"		node [ shape = diamond ];\r\n" +
 			"		node [ style = dashed ];\r\n" +
 			"		node [ color = red ];\r\n" +
-			"		node [ penwidth = 1 ];\r\n" +
+			"		node [ penwidth = 2 ];\r\n" +
 			"		node [ fillcolor = beige ];\r\n" +
 			"		node [ fontcolor = black ];\r\n" +
 			"		node [ fontname = Times-Roman ];\r\n" +
@@ -58,7 +60,7 @@ public class GraphVizTest {
 			"		label = \"cluster label\";\r\n" +
 			"		style = bold;\r\n" +
 			"		color = azure;\r\n" +
-			"		penwidth = 2;\r\n" +
+			"		penwidth = 3;\r\n" +
 			"		fillcolor = blue;\r\n" +
 			"		fontcolor = brown;\r\n" +
 			"		fontname = Cambria;\r\n" +
@@ -66,7 +68,7 @@ public class GraphVizTest {
 			"		node [ shape = hexagon ];\r\n" +
 			"		node [ style = dotted ];\r\n" +
 			"		node [ color = coral ];\r\n" +
-			"		node [ penwidth = 3 ];\r\n" +
+			"		node [ penwidth = 4 ];\r\n" +
 			"		node [ fillcolor = crimson ];\r\n" +
 			"		node [ fontcolor = cyan ];\r\n" +
 			"		node [ fontname = Courier new ];\r\n" +
@@ -77,12 +79,12 @@ public class GraphVizTest {
 			"	\"node1\" [ shape = octagon ];\r\n" +
 			"	\"node1\" [ style = filled ];\r\n" +
 			"	\"node1\" [ color = fuchsia ];\r\n" +
-			"	\"node1\" [ penwidth = 4 ];\r\n" +
+			"	\"node1\" [ penwidth = 5 ];\r\n" +
 			"	\"node1\" [ fillcolor = gold ];\r\n" +
 			"	\"node1\" [ fontcolor = gray ];\r\n" +
 			"	\"node1\" [ fontname = Something ];\r\n" +
 			"	\"node1\" [ fontsize = 12 ];\r\n" +
-			"	\"node1\" -> \"node2\" [ label = edge label ] [ style = invis ] [ color = green ] [ penwidth = 5 ] [ fillcolor = indigo ] [ fontcolor = ivory ] [ fontname = Something else ] [ fontsize = 13 ];\r\n" +
+			"	\"node1\" -> \"node2\" [ label = edge label ] [ style = invis ] [ color = green ] [ penwidth = 6 ] [ fillcolor = indigo ] [ fontcolor = ivory ] [ fontname = Something else ] [ fontsize = 13 ];\r\n" +
 			"}\r\n";
 
 	@Test
@@ -132,6 +134,8 @@ public class GraphVizTest {
 		graph.setDistanceBetweenNodes (0.5f);
 		graph.setLabel ("graph label");
 		graph.setStyle (Style.DASHED);
+		graph.setLineColour (Colour.LIME);
+		graph.setLineWidth (1);
 		graph.setFillColour (Colour.AQUA);
 		graph.setTextColour (Colour.RED);
 		graph.setFontName ("Arial");
@@ -140,17 +144,17 @@ public class GraphVizTest {
 		graph.setDefaultNodeShape (Shape.DIAMOND);
 		graph.setDefaultNodeStyle (Style.DASHED);
 		graph.setDefaultNodeLineColour (Colour.RED);
-		graph.setDefaultNodeLineWidth (1);
+		graph.setDefaultNodeLineWidth (2);
 		graph.setDefaultNodeFillColour (Colour.BEIGE);
 		graph.setDefaultNodeTextColour (Colour.BLACK);
 		graph.setDefaultNodeFontName ("Times-Roman");
 		graph.setDefaultNodeFontSize (9);
 		
-		Cluster cluster = graph.addCluster ("cluster");
+        Cluster cluster = graph.addCluster ("cluster");
 		cluster.setLabel ("cluster label");
 		cluster.setStyle (Style.BOLD);
 		cluster.setLineColour (Colour.AZURE);
-		cluster.setLineWidth (2);
+		cluster.setLineWidth (3);
 		cluster.setFillColour (Colour.BLUE);
 		cluster.setTextColour (Colour.BROWN);
 		cluster.setFontName ("Cambria");
@@ -159,7 +163,7 @@ public class GraphVizTest {
 		cluster.setDefaultNodeShape (Shape.HEXAGON);
 		cluster.setDefaultNodeStyle (Style.DOTTED);
 		cluster.setDefaultNodeLineColour (Colour.CORAL);
-		cluster.setDefaultNodeLineWidth (3);
+		cluster.setDefaultNodeLineWidth (4);
 		cluster.setDefaultNodeFillColour (Colour.CRIMSON);
 		cluster.setDefaultNodeTextColour (Colour.CYAN);
 		cluster.setDefaultNodeFontName ("Courier new");
@@ -170,7 +174,7 @@ public class GraphVizTest {
 		node1.setShape (Shape.OCTAGON);
 		node1.setStyle (Style.FILLED);
 		node1.setLineColour (Colour.FUCHSIA);
-		node1.setLineWidth (4);
+		node1.setLineWidth (5);
 		node1.setFillColour (Colour.GOLD);
 		node1.setTextColour (Colour.GRAY);
 		node1.setFontName ("Something");
@@ -182,7 +186,7 @@ public class GraphVizTest {
 		edge.setLabel ("edge label");
 		edge.setStyle (Style.INVISIBLE);
 		edge.setLineColour (Colour.GREEN);
-		edge.setLineWidth (5);
+		edge.setLineWidth (6);
 		edge.setFillColour (Colour.INDIGO);
 		edge.setTextColour (Colour.IVORY);
 		edge.setFontName ("Something else");

@@ -29,25 +29,6 @@ public class ClusterTest {
 	
 	
 	@Test
-	public void testSetStyleGetStyle () {
-		mCluster.setStyle (Style.BOLD);
-		assertEquals (Style.BOLD, mCluster.getStyle ());
-	}
-
-	@Test
-	public void testSetLineColourGetLineColour () {
-		mCluster.setLineColour (Colour.ALICE_BLUE);
-		assertEquals (Colour.ALICE_BLUE, mCluster.getLineColour ());
-	}
-
-	@Test
-	public void testSetLineWidthGetLineWidth () {
-		mCluster.setLineWidth (3);
-		assertEquals ("3", mCluster.getLineWidth ());
-	}
-
-	
-	@Test
 	public void testAddNodeGetNode () {
 		String NODE_NAME = "node name";
 		assertTrue (mCluster.getNodes ().isEmpty ());

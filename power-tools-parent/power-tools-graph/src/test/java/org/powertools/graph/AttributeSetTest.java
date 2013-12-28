@@ -22,9 +22,23 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 
 
-public class AttributeSet2Test {
-	private final AttributeSet2Impl mAttributeSet = new AttributeSet2Impl ();
+public class AttributeSetTest {
+	private final AttributeSetImpl mAttributeSet = new AttributeSetImpl ();
+
 	
+	@Test
+	public void testSetLabelGetLabel () {
+		mAttributeSet.setLabel ("some label");
+		assertEquals ("some label", mAttributeSet.getLabel ());
+	}
+
+	
+	@Test
+	public void testSetStyleGetStyle () {
+		mAttributeSet.setStyle (Style.BOLD);
+		assertEquals (Style.BOLD, mAttributeSet.getStyle ());
+	}
+
 	@Test
 	public void testSetLineColourGetLineColour () {
 		mAttributeSet.setLineColour (Colour.ALICE_BLUE);
@@ -37,7 +51,31 @@ public class AttributeSet2Test {
 		assertEquals ("3", mAttributeSet.getLineWidth ());
 	}
 
+    @Test
+	public void testSetFillColourGetFillColour () {
+		mAttributeSet.setFillColour (Colour.ALICE_BLUE);
+		assertEquals (Colour.ALICE_BLUE, mAttributeSet.getFillColour ());
+	}
 
-	private final class AttributeSet2Impl extends AttributeSet2 {
+	@Test
+	public void testSetTextColourGetTextColour () {
+		mAttributeSet.setTextColour (Colour.ALICE_BLUE);
+		assertEquals (Colour.ALICE_BLUE, mAttributeSet.getTextColour ());
+	}
+
+	@Test
+	public void testSetFontNameGetFontName () {
+		mAttributeSet.setFontName ("Arial");
+		assertEquals ("Arial", mAttributeSet.getFontName ());
+	}
+
+	@Test
+	public void testSetFontSizeGetFontSize () {
+		mAttributeSet.setFontSize (17);
+		assertEquals ("17", mAttributeSet.getFontSize ());
+	}
+
+	
+	private final class AttributeSetImpl extends AttributeSet {
 	}
 }

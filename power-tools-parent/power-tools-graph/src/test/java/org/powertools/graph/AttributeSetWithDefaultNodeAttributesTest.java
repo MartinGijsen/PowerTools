@@ -22,8 +22,8 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 
-public class AttributeSet3Test {
-	private AttributeSet3Impl mAttributeSet = new AttributeSet3Impl ();
+public class AttributeSetWithDefaultNodeAttributesTest {
+	private final AttributeSet3Impl mAttributeSet = new AttributeSet3Impl ();
 	
 	@Test
 	public void testSetDefaultNodeShapeGetDefaultNodeShape() {
@@ -74,6 +74,6 @@ public class AttributeSet3Test {
 	}
 	
 	
-	private final class AttributeSet3Impl extends AttributeSet3 {
+	private final class AttributeSet3Impl extends AttributeSetWithDefaultNodeAttributes {
 	}
 }
