@@ -19,7 +19,7 @@
 package org.powertools.graph;
 
 
-public enum Direction {
+public enum RankDirection {
 	DEFAULT ("<default>"),
 	TOP_TO_BOTTOM ("TB"),
 	BOTTOM_TO_TOP ("BT"),
@@ -28,7 +28,7 @@ public enum Direction {
 	
 	private String text;
 	
-	private Direction (String text) {
+	private RankDirection (String text) {
 		this.text = text;
 	}
 	

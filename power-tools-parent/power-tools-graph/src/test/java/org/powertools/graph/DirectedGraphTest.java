@@ -47,15 +47,21 @@ public class DirectedGraphTest {
 	}
 
 	@Test
-	public void testSetDirectionGetDirection () {
-		mGraph.setDirection (Direction.BOTTOM_TO_TOP);
-		assertEquals (Direction.BOTTOM_TO_TOP, mGraph.getDirection ());
+	public void testSetRankDirectionGetRankDirection () {
+		mGraph.setRankDirection (RankDirection.BOTTOM_TO_TOP);
+		assertEquals (RankDirection.BOTTOM_TO_TOP, mGraph.getRankDirection ());
 	}
 
 	@Test
 	public void testSetDistanceBetweenRanksGetDistanceBetweenRanks () {
 		mGraph.setDistanceBetweenRanks (7);
-		assertEquals (7, mGraph.getDistanceBetweenRanks ());
+		assertEquals (7.0f, mGraph.getDistanceBetweenRanks (), 0.001f);
+	}
+
+	@Test
+	public void testSetDistanceBetweenNodesGetDistanceBetweenNodes () {
+		mGraph.setDistanceBetweenNodes (7);
+		assertEquals (7.0f, mGraph.getDistanceBetweenNodes (), 0.001f);
 	}
 
 	@Test

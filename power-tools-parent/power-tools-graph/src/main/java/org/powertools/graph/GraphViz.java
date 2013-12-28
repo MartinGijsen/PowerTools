@@ -31,7 +31,7 @@ public final class GraphViz implements Renderer {
 
 	private File mFile;
 	private PrintWriter mWriter;
-	private String mDefaultType;
+	private String mDefaultFileType;
 	private boolean mDoCleanup;
 	
 	
@@ -41,7 +41,7 @@ public final class GraphViz implements Renderer {
 
 	public GraphViz (String path, String defaultType) {
 		mPath			= path;
-		mDefaultType	= defaultType;
+		mDefaultFileType	= defaultType;
 		mDoCleanup		= true;
 	}
 
@@ -51,19 +51,24 @@ public final class GraphViz implements Renderer {
 	}
 
 	@Override
-	public void setDefaultType (String type) {
-		mDefaultType = type;
+	public void setDefaultFileType (String fileType) {
+		mDefaultFileType = fileType;
+	}
+
+	@Override
+	public String getDefaultFileType () {
+		return mDefaultFileType;
 	}
 
 	@Override
 	public void write (String filename, DirectedGraph graph) {
-		write (filename, mDefaultType, graph);
+		write (filename, mDefaultFileType, graph);
 	}
 
 	@Override
-	public void write (String filename, String type, DirectedGraph graph) {
+	public void write (String filename, String fileType, DirectedGraph graph) {
 		writeDotFile (graph);
-		generateImage (filename, type);
+		generateImages (filename, fileType);
 	}
 
 	@Override
@@ -74,14 +79,14 @@ public final class GraphViz implements Renderer {
 
 	@Override
 	public void writeDirected (DirectedGraph graph, String filename) {
-		writeDirected (graph, filename, mDefaultType);
+		writeDirected (graph, filename, mDefaultFileType);
 	}
 
 	@Override
-	public void writeDirected (DirectedGraph graph, String filename, String type) {
+	public void writeDirected (DirectedGraph graph, String filename, String fileType) {
 		openDotFile ();
 		writeDotFile (graph);
-		generateImageDirected (filename, type);
+		generateImageDirected (filename, fileType);
 	}
 
 	private void writeDotFile (DirectedGraph graph) {
@@ -111,8 +116,14 @@ public final class GraphViz implements Renderer {
 		if (graph.getConcentrateEdges ()) {
 			writeGraphAttribute ("concentrate", "true");
 		}
-		if (graph.getDirection () != Direction.DEFAULT) {
-			writeGraphAttribute ("rankdir", graph.getDirection ().toString ());
+		if (graph.getRankDirection () != RankDirection.DEFAULT) {
+			writeGraphAttribute ("rankdir", graph.getRankDirection ().toString ());
+		}
+		if (graph.getDistanceBetweenRanks () >= 0) {
+			writeGraphAttribute ("ranksep", "" + graph.getDistanceBetweenRanks ());
+		}
+		if (graph.getDistanceBetweenNodes () >= 0) {
+			writeGraphAttribute ("nodesep", "" + graph.getDistanceBetweenNodes ());
 		}
 
 		if (!graph.getLabel ().isEmpty ()) {
@@ -310,19 +321,19 @@ public final class GraphViz implements Renderer {
 		mWriter.close ();
 	}
 	
-	private void generateImage (String filename, String type) {
-		runTool ("dot", filename, type);
-		runTool ("neato", filename, type);
-		runTool ("twopi", filename, type);
+	private void generateImages (String filename, String fileType) {
+		runTool ("dot", filename, fileType);
+		runTool ("neato", filename, fileType);
+		runTool ("twopi", filename, fileType);
 	}
 	
-	private void generateImageDirected (String filename, String type) {
-		runTool ("dot", filename, type);
+	private void generateImageDirected (String filename, String fileType) {
+		runTool ("dot", filename, fileType);
 	}
 	
-	private void runTool (String tool, String filename, String type) {
+	private void runTool (String tool, String filename, String fileType) {
 		try {
-			String command = String.format ("\"%s/%s\" -Tpng -o %s.%s.%s %s", mPath, tool, filename, tool, type, mFile.getPath ());
+			String command = String.format ("\"%s/%s\" -Tpng -o %s.%s.%s %s", mPath, tool, filename, tool, fileType, mFile.getPath ());
 //			System.out.println (command);
 			Runtime.getRuntime ().exec (command).waitFor ();
 			if (mDoCleanup) {

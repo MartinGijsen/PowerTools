@@ -36,6 +36,9 @@ public class GraphVizTest {
 	private final String DOT_FILE_FOR_SIMPLE_GRAPH_WITH_NO_DEFAULT_VALUES =
 			"digraph G {\r\n" +
 			"	concentrate = true;\r\n" +
+			"	rankdir = LR;\r\n" +
+			"	ranksep = 1.5;\r\n" +
+			"	nodesep = 0.5;\r\n" +
 			"	label = graph label;\r\n" +
 			"	style = dashed;\r\n" +
 			"	bgcolor = aqua;\r\n" +
@@ -81,95 +84,13 @@ public class GraphVizTest {
 			"	\"node1\" -> \"node2\" [ label = edge label ] [ style = invis ] [ color = green ] [ penwidth = 5 ] [ fillcolor = indigo ] [ fontcolor = ivory ] [ fontname = Something else ] [ fontsize = 13 ];\r\n" +
 			"}\r\n";
 
-//	
-//	public GraphVizTest() {
-//	}
-//	
-//	@BeforeClass
-//	public static void setUpClass() {
-//	}
-//	
-//	@AfterClass
-//	public static void tearDownClass() {
-//	}
-//	
-//	@Before
-//	public void setUp() {
-//	}
-//	
-//	@After
-//	public void tearDown() {
-//	}
-
-//	@Test
-//	public void testSetDefaultType() {
-//		System.out.println("setDefaultType");
-//		String type = "";
-//		GraphViz instance = null;
-//		instance.setDefaultType(type);
-//		fail("The test case is a prototype.");
-//	}
-//
-//	@Test
-//	public void testWrite_String_DirectedGraph() {
-//		System.out.println("write");
-//		String filename = "";
-//		DirectedGraph graph = null;
-//		GraphViz instance = null;
-//		instance.write(filename, graph);
-//		fail("The test case is a prototype.");
-//	}
-//
-//	@Test
-//	public void testWrite_3args() {
-//		System.out.println("write");
-//		String filename = "";
-//		String type = "";
-//		DirectedGraph graph = null;
-//		GraphViz instance = null;
-//		instance.write(filename, type, graph);
-//		fail("The test case is a prototype.");
-//	}
-//
-//	@Test
-//	public void testSetCleanup() {
-//		System.out.println("setCleanup");
-//		boolean value = false;
-//		GraphViz instance = null;
-//		instance.setCleanup(value);
-//		fail("The test case is a prototype.");
-//	}
-//
-//	@Test
-//	public void testWriteDirected_DirectedGraph_PrintWriter() {
-//		System.out.println("writeDirected");
-//		DirectedGraph graph = null;
-//		PrintWriter writer = null;
-//		GraphViz instance = null;
-//		instance.writeDirected(graph, writer);
-//		fail("The test case is a prototype.");
-//	}
-//
-//	@Test
-//	public void testWriteDirected_DirectedGraph_String() {
-//		System.out.println("writeDirected");
-//		DirectedGraph graph = null;
-//		String filename = "";
-//		GraphViz instance = null;
-//		instance.writeDirected(graph, filename);
-//		fail("The test case is a prototype.");
-//	}
-//
-//	@Test
-//	public void testWriteDirected_3args() {
-//		System.out.println("writeDirected");
-//		DirectedGraph graph = null;
-//		String filename = "";
-//		String type = "";
-//		GraphViz instance = null;
-//		instance.writeDirected(graph, filename, type);
-//		fail("The test case is a prototype.");
-//	}
+	@Test
+	public void testSetDefaultType () {
+		String fileType = "png";
+		GraphViz graphViz = new GraphViz ("");
+		graphViz.setDefaultFileType (fileType);
+		assertEquals (fileType, graphViz.getDefaultFileType ());
+	}
 
 	@Test
 	public void testWriteSimpleGraphWithOnlyDefaultValues () {
@@ -201,6 +122,9 @@ public class GraphVizTest {
 	private DirectedGraph generateSimpleGraphWithNoDefaultValues () {
 		DirectedGraph graph = new DirectedGraph ();
 		graph.setConcentrateEdges (true);
+		graph.setRankDirection (RankDirection.LEFT_TO_RIGHT);
+		graph.setDistanceBetweenRanks (1.5f);
+		graph.setDistanceBetweenNodes (0.5f);
 		graph.setLabel ("graph label");
 		graph.setStyle (Style.DASHED);
 		graph.setFillColour (Colour.AQUA);
@@ -262,4 +186,66 @@ public class GraphVizTest {
 		cluster.addNode (node1);
 		return graph;
 	}
+
+//	@Test
+//	public void testWrite_String_DirectedGraph() {
+//		System.out.println("write");
+//		String filename = "";
+//		DirectedGraph graph = null;
+//		GraphViz instance = null;
+//		instance.write(filename, graph);
+//		fail("The test case is a prototype.");
+//	}
+//
+//	@Test
+//	public void testWrite_3args() {
+//		System.out.println("write");
+//		String filename = "";
+//		String type = "";
+//		DirectedGraph graph = null;
+//		GraphViz instance = null;
+//		instance.write(filename, type, graph);
+//		fail("The test case is a prototype.");
+//	}
+//
+//	@Test
+//	public void testSetCleanup() {
+//		System.out.println("setCleanup");
+//		boolean value = false;
+//		GraphViz instance = null;
+//		instance.setCleanup(value);
+//		fail("The test case is a prototype.");
+//	}
+//
+//	@Test
+//	public void testWriteDirected_DirectedGraph_PrintWriter() {
+//		System.out.println("writeDirected");
+//		DirectedGraph graph = null;
+//		PrintWriter writer = null;
+//		GraphViz instance = null;
+//		instance.writeDirected(graph, writer);
+//		fail("The test case is a prototype.");
+//	}
+//
+//	@Test
+//	public void testWriteDirected_DirectedGraph_String() {
+//		System.out.println("writeDirected");
+//		DirectedGraph graph = null;
+//		String filename = "";
+//		GraphViz instance = null;
+//		instance.writeDirected(graph, filename);
+//		fail("The test case is a prototype.");
+//	}
+//
+//	@Test
+//	public void testWriteDirected_3args() {
+//		System.out.println("writeDirected");
+//		DirectedGraph graph = null;
+//		String filename = "";
+//		String type = "";
+//		GraphViz instance = null;
+//		instance.writeDirected(graph, filename, type);
+//		fail("The test case is a prototype.");
+//	}
+
 }

@@ -31,8 +31,9 @@ public final class DirectedGraph extends AttributeSet3 {
 	final Map<String, Rank> mRanks;
 
 	private boolean mConcentrateEdges;
-	private Direction mDirection;
-	private int mDistanceBetweenRanks;
+	private RankDirection mRankDirection;
+	private float mDistanceBetweenRanks;
+	private float mDistanceBetweenNodes;
 
 	private Map<Node, Set<Edge>> mEdges;
 	
@@ -49,8 +50,9 @@ public final class DirectedGraph extends AttributeSet3 {
 		mRanks		= new HashMap<String, Rank> ();
 		
 		mConcentrateEdges		= concentrateEdges;
-		mDirection				= Direction.DEFAULT;
-		mDistanceBetweenRanks	= 0;
+		mRankDirection			= RankDirection.DEFAULT;
+		mDistanceBetweenRanks	= -1;
+		mDistanceBetweenNodes	= -1;
 	}
 
 
@@ -62,19 +64,28 @@ public final class DirectedGraph extends AttributeSet3 {
 		return mConcentrateEdges;
 	}
 	
-	public void setDirection (Direction direction) {
-		mDirection = direction;
+	public void setRankDirection (RankDirection direction) {
+		mRankDirection = direction;
 	}
 	
-	public Direction getDirection () {
-		return mDirection;
+	public RankDirection getRankDirection () {
+		return mRankDirection;
 	}
 	
-	public void setDistanceBetweenRanks (int distance) {
+	public void setDistanceBetweenRanks (float distance) {
 		mDistanceBetweenRanks = distance;
 	}
-	public int getDistanceBetweenRanks () {
+	
+	public float getDistanceBetweenRanks () {
 		return mDistanceBetweenRanks;
+	}
+	
+	public void setDistanceBetweenNodes (float distance) {
+		mDistanceBetweenNodes = distance;
+	}
+	
+	public float getDistanceBetweenNodes () {
+		return mDistanceBetweenNodes;
 	}
 	
 

@@ -25,6 +25,6 @@ import static org.junit.Assert.assertEquals;
 public class DirectionTest {
 	@Test
 	public void testToString() {
-		assertEquals ("TB", Direction.TOP_TO_BOTTOM.toString ());
+		assertEquals ("TB", RankDirection.TOP_TO_BOTTOM.toString ());
 	}
 }

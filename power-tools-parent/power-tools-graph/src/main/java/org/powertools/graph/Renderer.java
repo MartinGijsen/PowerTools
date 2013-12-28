@@ -23,7 +23,8 @@ import java.io.PrintWriter;
 
 public interface Renderer {
 	void setCleanup (boolean value);
-	void setDefaultType (String type);
+	void setDefaultFileType (String type);
+	String getDefaultFileType ();
 	void write (String filename, DirectedGraph graph);
 	void write (String filename, String type, DirectedGraph graph);
 	void writeDirected (DirectedGraph graph, PrintWriter writer);
