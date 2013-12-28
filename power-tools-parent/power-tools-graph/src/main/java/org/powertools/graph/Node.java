@@ -19,7 +19,7 @@
 package org.powertools.graph;
 
 
-public final class Node extends AttributeSet2 {
+public final class Node extends AttributeSet {
 	private final String mName;
 
 	private Shape mShape;

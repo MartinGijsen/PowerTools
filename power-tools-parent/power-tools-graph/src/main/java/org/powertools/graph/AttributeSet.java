@@ -19,14 +19,41 @@
 package org.powertools.graph;
 
 
-abstract class AttributeSet2 extends AttributeSet1 {
+abstract class AttributeSet {
+	protected String mLabel;
+	protected Style mStyle;
 	protected Colour mLineColour;
 	protected String mLineWidth;
+	protected Colour mFillColour;
+	protected Colour mTextColour;
+	protected String mFontName;
+	protected String mFontSize;
 	
-	protected AttributeSet2 () {
-		super ();
+	protected AttributeSet () {
+		mLabel		= "";
+		mStyle		= Style.DEFAULT;
 		mLineColour	= Colour.DEFAULT;
 		mLineWidth	= "";
+		mFillColour	= Colour.DEFAULT;
+		mTextColour	= Colour.DEFAULT;
+		mFontName	= "";
+		mFontSize	= "";
+	}
+
+	public void setLabel (String label) {
+		mLabel = label;
+	}
+
+	public String getLabel () {
+		return mLabel;
+	}
+	
+	public void setStyle (Style style) {
+		mStyle = style;
+	}
+
+	public Style getStyle () {
+		return mStyle;
 	}
 
 	public void setLineColour (Colour colour) {
@@ -43,5 +70,37 @@ abstract class AttributeSet2 extends AttributeSet1 {
 
 	public String getLineWidth () {
 		return mLineWidth;
+	}
+
+    public void setFillColour (Colour colour) {
+		mFillColour = colour;
+	}
+
+	public Colour getFillColour () {
+		return mFillColour;
+	}
+
+	public void setTextColour (Colour colour) {
+		mTextColour = colour;
+	}
+
+	public Colour getTextColour () {
+		return mTextColour;
+	}
+
+	public void setFontName (String fontName) {
+		mFontName = fontName;
+	}
+
+	public String getFontName () {
+		return mFontName;
+	}
+
+	public void setFontSize (int fontSize) {
+		mFontSize = Integer.toString (fontSize);
+	}
+
+	public String getFontSize () {
+		return mFontSize;
 	}
 }

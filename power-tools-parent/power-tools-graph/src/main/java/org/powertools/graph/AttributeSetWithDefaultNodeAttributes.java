@@ -19,7 +19,7 @@
 package org.powertools.graph;
 
 
-abstract class AttributeSet3 extends AttributeSet1 {
+abstract class AttributeSetWithDefaultNodeAttributes extends AttributeSet {
 	protected Shape mDefaultNodeShape;
 	protected Style mDefaultNodeStyle;
 	protected Colour mDefaultNodeLineColour;
@@ -29,7 +29,7 @@ abstract class AttributeSet3 extends AttributeSet1 {
 	protected String mDefaultNodeFontName;
 	protected String mDefaultNodeFontSize;
 	
-	protected AttributeSet3 () {
+	protected AttributeSetWithDefaultNodeAttributes () {
 		super ();
 		mDefaultNodeShape		= Shape.DEFAULT;
 		mDefaultNodeStyle		= Style.DEFAULT;

@@ -113,194 +113,120 @@ public final class GraphViz implements Renderer {
 	}
 
 	private void writeGraph (DirectedGraph graph) {
-		if (graph.getConcentrateEdges ()) {
-			writeGraphAttribute ("concentrate", "true");
-		}
-		if (graph.getRankDirection () != RankDirection.DEFAULT) {
-			writeGraphAttribute ("rankdir", graph.getRankDirection ().toString ());
-		}
-		if (graph.getDistanceBetweenRanks () >= 0) {
-			writeGraphAttribute ("ranksep", "" + graph.getDistanceBetweenRanks ());
-		}
-		if (graph.getDistanceBetweenNodes () >= 0) {
-			writeGraphAttribute ("nodesep", "" + graph.getDistanceBetweenNodes ());
-		}
+		writeGraphAttribute (graph.getConcentrateEdges (), "concentrate", "true");
+		writeGraphAttribute (graph.getRankDirection () != RankDirection.DEFAULT, "rankdir", graph.getRankDirection ().toString ());
+		writeGraphAttribute (graph.getDistanceBetweenRanks () >= 0, "ranksep", "" + graph.getDistanceBetweenRanks ());
+		writeGraphAttribute (graph.getDistanceBetweenNodes () >= 0, "nodesep", "" + graph.getDistanceBetweenNodes ());
 
-		if (!graph.getLabel ().isEmpty ()) {
-			writeGraphAttribute ("label", graph.getLabel ());
-		}
-		if (graph.getStyle () != Style.DEFAULT) {
-			writeGraphAttribute ("style", graph.getStyle ().toString ());
-		}
-		if (graph.getFillColour () != Colour.DEFAULT) {
-			writeGraphAttribute ("bgcolor", graph.getFillColour ().toString ());
-		}
-		if (graph.getTextColour () != Colour.DEFAULT) {
-			writeGraphAttribute ("fontcolor", graph.getTextColour ().toString ());
-		}
-		if (!graph.getFontName ().isEmpty ()) {
-			writeGraphAttribute ("fontname", graph.getFontName ());
-		}
-		if (!graph.getFontSize ().isEmpty ()) {
-			writeGraphAttribute ("fontsize", graph.getFontSize ());
-		}
+		writeGraphAttribute (!graph.getLabel ().isEmpty (), "label", graph.getLabel ());
+		writeGraphAttribute (graph.getStyle () != Style.DEFAULT, "style", graph.getStyle ().toString ());
+		writeGraphAttribute (graph.getLineColour () != Colour.DEFAULT, "color", graph.getLineColour ().toString ());
+		writeGraphAttribute (!graph.getLineWidth ().isEmpty (), "penwidth", graph.getLineWidth ());
+		writeGraphAttribute (graph.getFillColour () != Colour.DEFAULT, "bgcolor", graph.getFillColour ().toString ());
+		writeGraphAttribute (graph.getTextColour () != Colour.DEFAULT, "fontcolor", graph.getTextColour ().toString ());
+		writeGraphAttribute (!graph.getFontName ().isEmpty (), "fontname", graph.getFontName ());
+		writeGraphAttribute (!graph.getFontSize ().isEmpty (), "fontsize", graph.getFontSize ());
 
 		writeDefaultNodeAttributes (graph);
 	}
 
-	private void writeGraphAttribute (String attributeName, String value) {
-		mWriter.println (String.format ("\t%s = %s;", attributeName, value));
+	private void writeGraphAttribute (boolean condition, String attributeName, String value) {
+        if (condition) {
+    		mWriter.println (String.format ("\t%s = %s;", attributeName, value));
+        }
 	}
 
 	private void writeClusters (DirectedGraph graph) {
 		int counter = 0;
 		for (Cluster cluster : graph.mClusters) {
 			mWriter.println ("\tsubgraph cluster_" + Integer.toString (++counter) + " {");
-			if (!cluster.getLabel ().isEmpty ()) {
-				writeClusterAttribute ("label", "\"" + cluster.getLabel () + "\"");
-			}
+			writeClusterAttribute (!cluster.getLabel ().isEmpty (), "label", "\"" + cluster.getLabel () + "\"");
 
-			if (cluster.getStyle () != Style.DEFAULT) {
-				writeClusterAttribute ("style", cluster.getStyle ().toString ());
-			}
-			if (cluster.getLineColour () != Colour.DEFAULT) {
-				writeClusterAttribute ("color", cluster.getLineColour ().toString ());
-			}
-			if (!cluster.getLineWidth ().isEmpty ()) {
-				writeClusterAttribute ("penwidth", cluster.getLineWidth ());
-			}
-			if (cluster.getFillColour () != Colour.DEFAULT) {
-				writeClusterAttribute ("fillcolor", cluster.getFillColour ().toString ());
-			}
-			if (cluster.getTextColour () != Colour.DEFAULT) {
-				writeClusterAttribute ("fontcolor", cluster.getTextColour ().toString ());
-			}
-			if (!cluster.getFontName ().isEmpty ()) {
-				writeClusterAttribute ("fontname", cluster.getFontName ());
-			}
-			if (!cluster.getFontSize ().isEmpty ()) {
-				writeClusterAttribute ("fontsize", cluster.getFontSize ());
-			}
+			writeClusterAttribute (cluster.getStyle () != Style.DEFAULT, "style", cluster.getStyle ().toString ());
+			writeClusterAttribute (cluster.getLineColour () != Colour.DEFAULT, "color", cluster.getLineColour ().toString ());
+			writeClusterAttribute (!cluster.getLineWidth ().isEmpty (), "penwidth", cluster.getLineWidth ());
+			writeClusterAttribute (cluster.getFillColour () != Colour.DEFAULT, "fillcolor", cluster.getFillColour ().toString ());
+			writeClusterAttribute (cluster.getTextColour () != Colour.DEFAULT, "fontcolor", cluster.getTextColour ().toString ());
+			writeClusterAttribute (!cluster.getFontName ().isEmpty (), "fontname", cluster.getFontName ());
+			writeClusterAttribute (!cluster.getFontSize ().isEmpty (), "fontsize", cluster.getFontSize ());
 
 			writeDefaultNodeAttributes (cluster);
 			
 			for (Node node : cluster.getNodes ()) {
-				mWriter.println ("\t\t\"" + node.getName () + "\";");
+        		mWriter.println (String.format ("\t\t\"%s\";", node.getName ()));
 			}
 			mWriter.println ("\t}");
 		}
 	}
 
-	private void writeClusterAttribute (String attributeName, String value) {
-		mWriter.println (String.format ("\t\t%s = %s;", attributeName, value));
+	private void writeClusterAttribute (boolean condition, String attributeName, String value) {
+        if (condition) {
+    		mWriter.println (String.format ("\t\t%s = %s;", attributeName, value));
+        }
 	}
 
 	private void writeNodes (DirectedGraph graph) {
 		for (Node node : graph.mNodes.values ()) {
 			// TO DO: make sure node is written if it is not on any edge or in a cluster or has an attribute
-			if (!node.getLabel ().isEmpty ()) {
-				writeNodeAttribute (node, "label", node.getLabel ());
-			}
-			if (node.getShape () != Shape.DEFAULT) {
-				writeNodeAttribute (node, "shape", node.getShape ().toString ());
-			}
+			writeNodeAttribute (!node.getLabel ().isEmpty (), node, "label", node.getLabel ());
+			writeNodeAttribute (node.getShape () != Shape.DEFAULT, node, "shape", node.getShape ().toString ());
 			
-			if (node.getStyle () != Style.DEFAULT) {
-				writeNodeAttribute (node, "style", node.getStyle ().toString ());
-			}
-			if (node.getLineColour () != Colour.DEFAULT) {
-				writeNodeAttribute (node, "color", node.getLineColour ().toString ());
-			}
-			if (!node.getLineWidth ().isEmpty ()) {
-				writeNodeAttribute (node, "penwidth", node.getLineWidth ());
-			}
-			if (node.getFillColour () != Colour.DEFAULT) {
-				writeNodeAttribute (node, "fillcolor", node.getFillColour ().toString ());
-			}
-			if (node.getTextColour () != Colour.DEFAULT) {
-				writeNodeAttribute (node, "fontcolor", node.getTextColour ().toString ());
-			}
-			if (!node.getFontName ().isEmpty ()) {
-				writeNodeAttribute (node, "fontname", node.getFontName ());
-			}
-			if (!node.getFontSize ().isEmpty ()) {
-				writeNodeAttribute (node, "fontsize", node.getFontSize ());
-			}
+			writeNodeAttribute (node.getStyle () != Style.DEFAULT, node, "style", node.getStyle ().toString ());
+			writeNodeAttribute (node.getLineColour () != Colour.DEFAULT, node, "color", node.getLineColour ().toString ());
+			writeNodeAttribute (!node.getLineWidth ().isEmpty (), node, "penwidth", node.getLineWidth ());
+			writeNodeAttribute (node.getFillColour () != Colour.DEFAULT, node, "fillcolor", node.getFillColour ().toString ());
+			writeNodeAttribute (node.getTextColour () != Colour.DEFAULT, node, "fontcolor", node.getTextColour ().toString ());
+			writeNodeAttribute (!node.getFontName ().isEmpty (), node, "fontname", node.getFontName ());
+			writeNodeAttribute (!node.getFontSize ().isEmpty (), node, "fontsize", node.getFontSize ());
 		}
 	}
 
-	private void writeNodeAttribute (Node node, String attributeName, String value) {
-		mWriter.println (String.format ("\t\"%s\" [ %s = %s ];", node.getName (), attributeName, value));
+	private void writeNodeAttribute (boolean condition, Node node, String attributeName, String value) {
+        if (condition) {
+    		mWriter.println (String.format ("\t\"%s\" [ %s = %s ];", node.getName (), attributeName, value));
+        }
 	}
 	
 	private void writeEdges (DirectedGraph graph) {
 		for (Node node : graph.mNodes.values ()) {
 			for (Edge edge : graph.getEdges (node)) {
 				mWriter.append (String.format ("\t\"%s\" -> \"%s\"", edge.getSource ().getName (), edge.getTarget ().getName ()));
-				if (!edge.getLabel ().isEmpty ()) {
-					writeEdgeAttribute ("label", edge.getLabel ());
-				}
+				writeEdgeAttribute (!edge.getLabel ().isEmpty (), "label", edge.getLabel ());
 
-				if (edge.getStyle () != Style.DEFAULT) {
-					writeEdgeAttribute ("style", edge.getStyle ().toString ());
-				}
-				if (edge.getLineColour () != Colour.DEFAULT) {
-					writeEdgeAttribute ("color", edge.getLineColour ().toString ());
-				}
-				if (!edge.getLineWidth ().isEmpty ()) {
-					writeEdgeAttribute ("penwidth", edge.getLineWidth ());
-				}
-				if (edge.getFillColour () != Colour.DEFAULT) {
-					writeEdgeAttribute ("fillcolor", edge.getFillColour ().toString ());
-				}
-				if (edge.getTextColour () != Colour.DEFAULT) {
-					writeEdgeAttribute ("fontcolor", edge.getTextColour ().toString ());
-				}
-				if (!edge.getFontName ().isEmpty ()) {
-					writeEdgeAttribute ("fontname", edge.getFontName ());
-				}
-				if (!edge.getFontSize ().isEmpty ()) {
-					writeEdgeAttribute ("fontsize", edge.getFontSize ());
-				}
+				writeEdgeAttribute (edge.getStyle () != Style.DEFAULT, "style", edge.getStyle ().toString ());
+				writeEdgeAttribute (edge.getLineColour () != Colour.DEFAULT, "color", edge.getLineColour ().toString ());
+				writeEdgeAttribute (!edge.getLineWidth ().isEmpty (), "penwidth", edge.getLineWidth ());
+				writeEdgeAttribute (edge.getFillColour () != Colour.DEFAULT, "fillcolor", edge.getFillColour ().toString ());
+				writeEdgeAttribute (edge.getTextColour () != Colour.DEFAULT, "fontcolor", edge.getTextColour ().toString ());
+				writeEdgeAttribute (!edge.getFontName ().isEmpty (), "fontname", edge.getFontName ());
+				writeEdgeAttribute (!edge.getFontSize ().isEmpty (), "fontsize", edge.getFontSize ());
 				mWriter.println (";");
 			}
 		}
 	}
 	
-	private void writeEdgeAttribute (String attributeName, String value) {
-		mWriter.append (String.format (" [ %s = %s ]", attributeName, value));
+	private void writeEdgeAttribute (boolean condition, String attributeName, String value) {
+        if (condition) {
+    		mWriter.append (String.format (" [ %s = %s ]", attributeName, value));
+        }
 	}
 	
-	private void writeDefaultNodeAttributes (AttributeSet3 attributes) {
-		if (attributes.getDefaultNodeShape () != Shape.DEFAULT) {
-			writeDefaultNodeAttribute ("shape", attributes.getDefaultNodeShape ().toString ());
-		}
+	private void writeDefaultNodeAttributes (AttributeSetWithDefaultNodeAttributes attributes) {
+		writeDefaultNodeAttribute (attributes.getDefaultNodeShape () != Shape.DEFAULT, "shape", attributes.getDefaultNodeShape ().toString ());
 
-		if (attributes.getDefaultNodeStyle () != Style.DEFAULT) {
-			writeDefaultNodeAttribute ("style", attributes.getDefaultNodeStyle ().toString ());
-		}
-		if (attributes.getDefaultNodeLineColour () != Colour.DEFAULT) {
-			writeDefaultNodeAttribute ("color", attributes.getDefaultNodeLineColour ().toString ());
-		}
-		if (!attributes.getDefaultNodeLineWidth ().isEmpty ()) {
-			writeDefaultNodeAttribute ("penwidth", attributes.getDefaultNodeLineWidth ());
-		}
-		if (attributes.getDefaultNodeFillColour () != Colour.DEFAULT) {
-			writeDefaultNodeAttribute ("fillcolor", attributes.getDefaultNodeFillColour ().toString ());
-		}
-		if (attributes.getDefaultNodeTextColour () != Colour.DEFAULT) {
-			writeDefaultNodeAttribute ("fontcolor", attributes.getDefaultNodeTextColour ().toString ());
-		}
-		if (!attributes.getDefaultNodeFontName ().isEmpty ()) {
-			writeDefaultNodeAttribute ("fontname", attributes.getDefaultNodeFontName ());
-		}
-		if (!attributes.getDefaultNodeFontSize ().isEmpty ()) {
-			writeDefaultNodeAttribute ("fontsize", attributes.getDefaultNodeFontSize ());
-		}
+		writeDefaultNodeAttribute (attributes.getDefaultNodeStyle () != Style.DEFAULT, "style", attributes.getDefaultNodeStyle ().toString ());
+		writeDefaultNodeAttribute (attributes.getDefaultNodeLineColour () != Colour.DEFAULT, "color", attributes.getDefaultNodeLineColour ().toString ());
+		writeDefaultNodeAttribute (!attributes.getDefaultNodeLineWidth ().isEmpty (), "penwidth", attributes.getDefaultNodeLineWidth ());
+		writeDefaultNodeAttribute (attributes.getDefaultNodeFillColour () != Colour.DEFAULT, "fillcolor", attributes.getDefaultNodeFillColour ().toString ());
+		writeDefaultNodeAttribute (attributes.getDefaultNodeTextColour () != Colour.DEFAULT, "fontcolor", attributes.getDefaultNodeTextColour ().toString ());
+		writeDefaultNodeAttribute (!attributes.getDefaultNodeFontName ().isEmpty (), "fontname", attributes.getDefaultNodeFontName ());
+		writeDefaultNodeAttribute (!attributes.getDefaultNodeFontSize ().isEmpty (), "fontsize", attributes.getDefaultNodeFontSize ());
 	}
 	
-	private void writeDefaultNodeAttribute (String attributeName, String value) {
-		mWriter.println (String.format ("\t\tnode [ %s = %s ];", attributeName, value));
+	private void writeDefaultNodeAttribute (boolean condition, String attributeName, String value) {
+        if (condition) {
+    		mWriter.println (String.format ("\t\tnode [ %s = %s ];", attributeName, value));
+        }
 	}
 	
 	private void writeRanks (DirectedGraph graph) {

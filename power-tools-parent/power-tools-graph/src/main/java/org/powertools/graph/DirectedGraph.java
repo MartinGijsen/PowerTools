@@ -25,7 +25,7 @@ import java.util.Map;
 import java.util.Set;
 
 
-public final class DirectedGraph extends AttributeSet3 {
+public final class DirectedGraph extends AttributeSetWithDefaultNodeAttributes {
 	final Map<String, Node> mNodes;
 	final Set<Cluster> mClusters;
 	final Map<String, Rank> mRanks;

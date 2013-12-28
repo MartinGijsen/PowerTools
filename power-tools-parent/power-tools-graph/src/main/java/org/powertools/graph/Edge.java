@@ -19,7 +19,7 @@
 package org.powertools.graph;
 
 
-public final class Edge extends AttributeSet2 {
+public final class Edge extends AttributeSet {
 	private final Node mSource;
 	private final Node mTarget;
 

@@ -22,9 +22,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 
-public final class Cluster extends AttributeSet3 {
-	private Colour mLineColour;
-	private String mLineWidth;
+public final class Cluster extends AttributeSetWithDefaultNodeAttributes {
 	private final Set<Node> mNodes;
 
 
@@ -34,22 +32,6 @@ public final class Cluster extends AttributeSet3 {
 		mLineColour	= Colour.DEFAULT;
 		mLineWidth	= "";
 		mNodes		= new HashSet<Node> ();
-	}
-
-	public void setLineColour (Colour colour) {
-		mLineColour = colour;
-	}
-
-	public Colour getLineColour () {
-		return mLineColour;
-	}
-	
-	public void setLineWidth (int width) {
-		mLineWidth = Integer.toString (width);
-	}
-
-	public String getLineWidth () {
-		return mLineWidth;
 	}
 
 	void addNode (Node node) {
