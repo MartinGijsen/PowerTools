@@ -40,9 +40,9 @@ public final class GraphViz implements Renderer {
 	}
 
 	public GraphViz (String path, String defaultType) {
-		mPath			= path;
+		mPath               = path;
 		mDefaultFileType	= defaultType;
-		mDoCleanup		= true;
+		mDoCleanup          = true;
 	}
 
 	@Override
@@ -307,9 +307,9 @@ public final class GraphViz implements Renderer {
 		for (Rank rank : graph.mRanks.values ()) {
 			if (!rank.nodes.isEmpty ()) {
 				mWriter.append ("\t{");
-				mWriter.println (String.format (" rank = %s ;", rank.type));
+				mWriter.print (String.format (" rank = %s ;", rank.type));
 				for (Node node : rank.nodes) {
-					mWriter.println (String.format (" \"%s\" ;", node.getName ()));
+					mWriter.print (String.format (" \"%s\" ;", node.getName ()));
 				}
 				mWriter.println (" }");
 			}

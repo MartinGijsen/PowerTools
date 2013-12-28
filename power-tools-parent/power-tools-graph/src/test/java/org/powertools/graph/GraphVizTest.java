@@ -32,6 +32,7 @@ public class GraphVizTest {
 			"		\"node1\";\r\n" +
 			"	}\r\n" +
 			"	\"node1\" -> \"node2\";\r\n" +
+			"	{ rank = same ; \"node2\" ; }\r\n" +
 			"}\r\n";
 	private final String DOT_FILE_FOR_SIMPLE_GRAPH_WITH_NO_DEFAULT_VALUES =
 			"digraph G {\r\n" +
@@ -108,6 +109,10 @@ public class GraphVizTest {
 		
 		Cluster cluster = graph.addCluster ("cluster");
 		cluster.addNode (node1);
+        
+        Rank emptyNameRank = graph.addRank ("", RankType.SAME);
+        Rank rank = graph.addRank ("rank name", RankType.SAME);
+        rank.add (node2);
 		return graph;
 	}
 
