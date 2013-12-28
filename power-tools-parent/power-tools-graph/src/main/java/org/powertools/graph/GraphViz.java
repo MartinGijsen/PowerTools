@@ -104,13 +104,7 @@ public final class GraphViz implements Renderer {
 	}
 
 	private void startDotFile () {
-		try {
-			mFile	= File.createTempFile ("PowerTools", ".dot");
-			mWriter	= new PrintWriter (new FileOutputStream (mFile));
-			mWriter.println ("digraph G {");
-		} catch (IOException ioe) {
-			throw new GraphException ("failed to create temporary file");
-		}
+		mWriter.println ("digraph G {");
 	}
 
 	private void writeGraph (DirectedGraph graph) {
@@ -192,6 +186,7 @@ public final class GraphViz implements Renderer {
 
 	private void writeNodes (DirectedGraph graph) {
 		for (Node node : graph.mNodes.values ()) {
+			// TO DO: make sure node is written if it is not on any edge or in a cluster or has an attribute
 			if (!node.getLabel ().isEmpty ()) {
 				writeNodeAttribute (node, "label", node.getLabel ());
 			}
@@ -334,7 +329,7 @@ public final class GraphViz implements Renderer {
 				mFile.delete ();
 			}
 		} catch (IOException ioe) {
-			throw new GraphException ("failed to generate picture");
+			throw new GraphException ("could not write picture");
 		} catch (InterruptedException ie) {
 			throw new GraphException ("wait interrupted");
 		}

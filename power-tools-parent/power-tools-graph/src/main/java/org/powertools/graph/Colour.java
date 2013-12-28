@@ -25,7 +25,7 @@ public enum Colour {
 
 	ALICE_BLUE				("aliceblue"),
 	ANTIQUE_WHITE			("antiquewhite"),
-	AQUE					("aqua"),
+	AQUA					("aqua"),
 	AQUAMARINE				("aquamarine"),
 	AZURE					("azure"),
 	BEIGE					("beige"),
