@@ -20,6 +20,7 @@ package org.powertools.engine.sources.model;
 
 import java.util.Random;
 import java.util.Set;
+import org.powertools.engine.ExecutionException;
 
 
 /*
@@ -50,7 +51,7 @@ final class WeightedEdgeSelector implements EdgeSelectionStrategy {
 //		} else if (model.mCurrentNode.mLabel.equals (Model.END_NODE_LABEL)) {
 //			throw new Model.DoneException ();
 		} else {
-			throw new RuntimeException (String.format ("no edges out of node %s", currentNode.mName));
+			throw new ExecutionException (String.format ("no edges out of node %s", currentNode.getName ()));
 		}
 	}
 	
@@ -63,6 +64,6 @@ final class WeightedEdgeSelector implements EdgeSelectionStrategy {
 				return edge;
 			}
 		}
-		throw new RuntimeException ("did not find find an edge for weight " + selectedWeight);
+		throw new ExecutionException ("did not find find an edge for weight " + selectedWeight);
 	}
 }

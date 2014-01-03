@@ -19,6 +19,7 @@
 package org.powertools.engine.core;
 
 import org.powertools.engine.Context;
+import org.powertools.engine.ExecutionException;
 import org.powertools.engine.reports.ReportFactory;
 import org.powertools.engine.sources.TestSourceFactory;
 
@@ -37,31 +38,37 @@ public class ModelBasedEngine extends Engine {
 			new ModelBasedEngine (args[0]).run (args[1], args[2], args[3]);
 			break;
 		default:
-			System.err.println ("Please specify a directory, model name, selection strategy and stop condition");
+			System.err.println ("Please specify a directory, model file name, selection strategy and stop condition");
+			System.err.println ("\tselection strategies: random, weighted");
+			System.err.println ("\tstop conditions: all nodes, all edges, end node, never");
 		}
 	}
 
 
-	public ModelBasedEngine (String resultsDirectory) {
+	protected ModelBasedEngine (String resultsDirectory) {
 		this (new RunTimeImpl (new Context (resultsDirectory)));
 	}
 
-	public ModelBasedEngine (RunTimeImpl runTime) {
-		super (runTime);
+    protected ModelBasedEngine (RunTimeImpl runTime) {
+        super (runTime);
 
-		if (!ReportFactory.createKeywordsHtmlLog (runTime.getContext ())) {
-			mPublisher.publishError ("could not open HTML log");
-		}
+        if (!ReportFactory.createKeywordsHtmlLog (runTime.getContext ())) {
+            mPublisher.publishError ("could not open HTML log");
+        }
 
-		registerBuiltinInstructions ();
-	}
+        registerBuiltinInstructions ();
+    }
 
-	@Override
-	public final void run (String fileName) {
-		run (fileName, "random", "all edges");
-	}
+    @Override
+    public final void run (String fileName) {
+        run (fileName, "random", "all edges");
+    }
 
-	public final void run (String fileName, String selector, String condition) {
-		run (TestSourceFactory.createModelTestSource (fileName, selector, condition, mRunTime.getGlobalScope (), mRunTime));
-	}
+    protected void run (String fileName, String selector, String condition) {
+        try {
+            run (TestSourceFactory.createModelTestSource (fileName, selector, condition, mRunTime.getGlobalScope (), mRunTime));
+        } catch (ExecutionException ee) {
+			System.err.println ("error: " + ee.getMessage ());
+        }
+    }
 }

@@ -34,6 +34,8 @@ import org.xml.sax.helpers.XMLReaderFactory;
 
 
 final class GraphMLParser extends DefaultHandler {
+    private static final String GRAPHML_EXTENSION           = ".graphml";
+    
 	private static final String NODE_KEY_TYPE				= "node";
 	private static final String EDGE_KEY_TYPE				= "edge";
 
@@ -110,15 +112,19 @@ final class GraphMLParser extends DefaultHandler {
 		super ();
 	}
 
-	DirectedGraphImpl parse (DirectedGraphImpl graph) throws IOException, SAXException {
-		mGraph			= graph;
-		mElementStack	= new Stack<Element> ();
+    DirectedGraphImpl parse (DirectedGraphImpl graph) throws IOException, SAXException {
+        mGraph        = graph;
+        mElementStack = new Stack<Element> ();
 
-		final XMLReader reader = XMLReaderFactory.createXMLReader ();
-		reader.setContentHandler (this);
-		reader.parse (new InputSource (new FileReader (graph.mName + ".graphml")));
-		return mGraph;
-	}
+        XMLReader reader = XMLReaderFactory.createXMLReader ();
+        reader.setContentHandler (this);
+        String filename = graph.mName;
+        if (!filename.endsWith (GRAPHML_EXTENSION)) {
+            filename += GRAPHML_EXTENSION;
+        }
+        reader.parse (new InputSource (new FileReader (filename)));
+        return mGraph;
+    }
 
 
 	@Override
@@ -170,13 +176,13 @@ final class GraphMLParser extends DefaultHandler {
 
 	@Override
 	public void endElement (String uri, String name, String qName) {
-		final String text = mElementStack.peek ().mText.trim ();
+		String text = mElementStack.peek ().mText.trim ();
 		if ("data".equals (name)) {
-			if (mNodeActionKeyId.equals (mKeyName)) {
+			if (mNodeActionKeyId != null && mNodeActionKeyId.equals (mKeyName)) {
 				mLastNode.mAction = text;
-			} else if (mEdgeConditionKeyId.equals (mKeyName)) {
+			} else if (mEdgeConditionKeyId != null && mEdgeConditionKeyId.equals (mKeyName)) {
 				mLastEdge.mCondition = text;
-			} else if (mEdgeActionKeyId.equals (mKeyName)) {
+			} else if (mEdgeActionKeyId != null && mEdgeActionKeyId.equals (mKeyName)) {
 				mLastEdge.mAction = text;
 			}
 			mKeyName = null;

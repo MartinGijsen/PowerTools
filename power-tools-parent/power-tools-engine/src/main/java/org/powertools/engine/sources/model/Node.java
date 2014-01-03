@@ -18,26 +18,32 @@
 
 package org.powertools.engine.sources.model;
 
+import org.powertools.engine.ExecutionException;
+
 
 final class Node {
-	final DirectedGraphImpl	mGraph;
-	final String		mName;
-	
-	String				mLabel;
-	String				mAction;
-	
+    final DirectedGraphImpl mGraph;
+    private final String    mName;
 
-	Node (String name, DirectedGraphImpl graph) {
-		if (name == null || name.isEmpty ()) {
-			throw new RuntimeException ("empty node name");
-		}
-		mName	= name;
-		mGraph	= graph;
-		mLabel	= "";
-		mAction	= "";
-	}
-	
-	String getDescription () {
-		return mGraph.mName + "." + (mLabel.isEmpty () ? mName : mLabel + " (" + mName + ")");
-	}
+    String                  mLabel;
+    String                  mAction;
+
+
+    Node (String name, DirectedGraphImpl graph) {
+        if (name == null || name.isEmpty ()) {
+            throw new ExecutionException ("empty node name");
+        }
+        mName   = name;
+        mGraph  = graph;
+        mLabel  = "";
+        mAction = "";
+    }
+
+    String getName () {
+        return (mLabel.isEmpty () ? mName : mLabel + " (" + mName + ")");
+    }
+
+    String getDescription () {
+        return mGraph.mName + "." + getName ();
+    }
 }

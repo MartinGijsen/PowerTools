@@ -56,7 +56,7 @@ final class DirectedGraphImpl implements DirectedGraph {
 	
 	public Node addNode (String name) {
 		if (mNodes.containsKey (name)) {
-			throw new RuntimeException (String.format ("node name %s not unique", name));
+			throw new ExecutionException (String.format ("node name %s not unique", name));
 		} else {
 			Node node = new Node (name, this);
 			mNodes.put (name, node);
@@ -71,17 +71,17 @@ final class DirectedGraphImpl implements DirectedGraph {
 	public Node getRoot () {
 		Node root = null;
 		for (Node node : mNodes.values ()) {
-			if (!node.mLabel.equals (Model.START_NODE_LABEL)) {
+			if (!node.mLabel.equalsIgnoreCase (Model.START_NODE_LABEL)) {
 				// this is not a start node and can be ignored
 			} else if (root != null) {
-				throw new RuntimeException ("multiple start nodes");
+				throw new ExecutionException ("multiple start nodes");
 			} else {
 				root = node;
 			}
 		}
 
 		if (root == null) {
-			throw new RuntimeException ("no start node");
+			throw new ExecutionException ("no start node");
 		}
 		return root;
 	}
@@ -99,7 +99,7 @@ final class DirectedGraphImpl implements DirectedGraph {
 
 		for (Edge edge : edges) {
 			if (edge.mTarget == target) {
-				throw new RuntimeException ("edge already exists");
+				throw new ExecutionException ("edge already exists");
 			}
 		}
 
@@ -117,7 +117,7 @@ final class DirectedGraphImpl implements DirectedGraph {
 				}
 			}
 		}
-		throw new RuntimeException ("edge does not exist");
+		throw new ExecutionException ("edge does not exist");
 	}
 	
 	public Set<Edge> getEdges (Node source) {

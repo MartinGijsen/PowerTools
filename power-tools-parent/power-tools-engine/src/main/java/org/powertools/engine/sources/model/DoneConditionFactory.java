@@ -18,6 +18,8 @@
 
 package org.powertools.engine.sources.model;
 
+import org.powertools.engine.ExecutionException;
+
 
 final class DoneConditionFactory {
 	private DoneConditionFactory () {
@@ -35,7 +37,7 @@ final class DoneConditionFactory {
 		} else if (DoneWhenInEndNode.NAME.equals (conditionName)) {
 			return new DoneWhenInEndNode (Model.END_NODE_LABEL);
 		} else {
-			throw new RuntimeException (String.format ("unknown condition: %s", conditionName));
+			throw new ExecutionException (String.format ("unknown condition: %s", conditionName));
 		}
 	}
 }

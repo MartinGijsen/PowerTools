@@ -18,6 +18,7 @@
 
 package org.powertools.engine.sources.model;
 
+import org.powertools.engine.ExecutionException;
 import org.powertools.engine.RunTime;
 
 
@@ -32,7 +33,7 @@ final class EdgeSelectionStrategyFactory {
 		} else if (WeightedEdgeSelector.NAME.equals (selector)) {
 			return new WeightedEdgeSelector ();
 		} else {
-			throw new RuntimeException (String.format ("unknown edge selection strategy: %s", selector));
+			throw new ExecutionException (String.format ("unknown edge selection strategy: %s", selector));
 		}
 	}
 }

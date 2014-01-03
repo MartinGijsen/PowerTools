@@ -22,6 +22,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Random;
 import java.util.Set;
+import org.powertools.engine.ExecutionException;
 import org.powertools.engine.RunTime;
 import org.powertools.engine.expression.ExpressionEvaluator;
 
@@ -60,7 +61,7 @@ final class RandomEdgeSelector implements EdgeSelectionStrategy {
 			return graph.addEdge (currentNode, graph.getRoot ());
 		} else {
 			// TODO check at the start (remove exception?)
-			throw new RuntimeException (String.format ("no edges out of node %s", currentNode.mName));
+			throw new ExecutionException (String.format ("no edges out of node %s", currentNode.getName ()));
 		}
 	}
 
