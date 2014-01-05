@@ -131,30 +131,7 @@ final class GraphMLParser extends DefaultHandler {
 	public void startElement (String uri, String name, String qName, Attributes attributes) {
 		mElementStack.push (new Element ());
 		if ("key".equals (name)) {
-			String keyName	= attributes.getValue (KEY_NAME_ATTRIBUTE_NAME);
-			String keyType	= attributes.getValue (KEY_DOMAIN_ATTRIBUTE_NAME);
-			String keyId	= attributes.getValue (KEY_ID_ATTRIBUTE_NAME);
-			if (keyName == null) {
-				// ignore
-			} else if (keyType.equals (NODE_KEY_TYPE)) {
-				if (keyName.equals (DESCRIPTION_KEY_NAME)) {
-					mNodeDescriptionKeyId = keyId;
-				} else if (keyName.equals (ACTION_KEY_NAME)) {
-					mNodeActionKeyId = keyId;
-				} else {
-					// error
-				}
-			} else if (keyType.equals (EDGE_KEY_TYPE)) {
-				if (keyName.equals (DESCRIPTION_KEY_NAME)) {
-					mEdgeDescriptionKeyId = keyId;
-				} else if (keyName.equals (ACTION_KEY_NAME)) {
-					mEdgeActionKeyId = keyId;
-				} else if (keyName.equals (CONDITION_KEY_NAME)) {
-					mEdgeConditionKeyId = keyId;
-				} else {
-					// error
-				}
-			}
+            handleKey (attributes);
 		} else if ("node".equals (name)) {
 			String nodeName	= attributes.getValue (NODE_NAME_ATTRIBUTE_NAME);
 			mLastNode		= mGraph.addNode (nodeName);
@@ -169,7 +146,42 @@ final class GraphMLParser extends DefaultHandler {
 		}
 	}
 
-	@Override
+    private void handleKey (Attributes attributes) {
+        String keyName = attributes.getValue (KEY_NAME_ATTRIBUTE_NAME);
+        String keyType = attributes.getValue (KEY_DOMAIN_ATTRIBUTE_NAME);
+        String keyId   = attributes.getValue (KEY_ID_ATTRIBUTE_NAME);
+        if (keyName == null) {
+            // ignore
+        } else if (keyType.equals (NODE_KEY_TYPE)) {
+            handleNodeKey (keyName, keyId);
+        } else if (keyType.equals (EDGE_KEY_TYPE)) {
+            handleEdgeKey (keyName, keyId);
+        }
+    }
+
+    private void handleNodeKey (String keyName, String keyId) {
+        if (keyName.equals (DESCRIPTION_KEY_NAME)) {
+            mNodeDescriptionKeyId = keyId;
+        } else if (keyName.equals (ACTION_KEY_NAME)) {
+            mNodeActionKeyId = keyId;
+        } else {
+            // error
+        }
+    }
+
+    private void handleEdgeKey (String keyName, String keyId) {
+        if (keyName.equals (DESCRIPTION_KEY_NAME)) {
+            mEdgeDescriptionKeyId = keyId;
+        } else if (keyName.equals (ACTION_KEY_NAME)) {
+            mEdgeActionKeyId = keyId;
+        } else if (keyName.equals (CONDITION_KEY_NAME)) {
+            mEdgeConditionKeyId = keyId;
+        } else {
+            // error
+        }
+    }
+    
+    @Override
 	public void characters (char[] chars, int start, int length) {
 		mElementStack.peek ().mText += new String (chars, start, length);
 	}
