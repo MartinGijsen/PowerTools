@@ -26,7 +26,7 @@ final class BooleanValue extends Value {
     private final boolean mValue;
 
     static final BooleanValue cTrueStringValue  = new BooleanValue (true);
-    static final BooleanValue cFalseStringValue = new BooleanValue (false);	
+    static final BooleanValue cFalseStringValue = new BooleanValue (false);
 
 
     public BooleanValue (boolean value) {

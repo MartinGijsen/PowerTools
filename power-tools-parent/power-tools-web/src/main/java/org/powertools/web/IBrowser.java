@@ -1,19 +1,19 @@
-/*	Copyright 2012 by Martin Gijsen (www.DeAnalist.nl)
+/* Copyright 2012 by Martin Gijsen (www.DeAnalist.nl)
  *
- *	This file is part of the PowerTools engine.
+ * This file is part of the PowerTools engine.
  *
- *	The PowerTools engine is free software: you can redistribute it and/or
- *	modify it under the terms of the GNU Affero General Public License as
- *	published by the Free Software Foundation, either version 3 of the License,
- *	or (at your option) any later version.
+ * The PowerTools engine is free software: you can redistribute it and/or
+ * modify it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  *
- *	The PowerTools engine is distributed in the hope that it will be useful,
- *	but WITHOUT ANY WARRANTY; without even the implied warranty of
- *	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- *	GNU Affero General Public License for more details.
+ * The PowerTools engine is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Affero General Public License for more details.
  *
- *	You should have received a copy of the GNU Affero General Public License
- *	along with the PowerTools engine. If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU Affero General Public License
+ * along with the PowerTools engine. If not, see <http://www.gnu.org/licenses/>.
  */
 
 package org.powertools.web;
@@ -23,94 +23,94 @@ import org.powertools.web.WebLibrary.IKeyType;
 
 
 public interface IBrowser {
-	boolean setShortDefaultTimeout (int timeout);
-	boolean setLongDefaultTimeout (int timeout);
-	int getShortDefaultTimeoutAsInteger ();
-	int getLongDefaultTimeoutAsInteger ();
-	String getShortDefaultTimeoutAsString ();
-	String getLongDefaultTimeoutAsString ();
-	
-	boolean open (IBrowserType type, String url, String logDirectory);
-	boolean close ();
-	boolean maximize ();
-	boolean minimize ();
-	
-	boolean openUrl (String url);	
-	String getUrl ();
-	boolean refreshPage ();
+    boolean setShortDefaultTimeout (int timeout);
+    boolean setLongDefaultTimeout (int timeout);
+    int getShortDefaultTimeoutAsInteger ();
+    int getLongDefaultTimeoutAsInteger ();
+    String getShortDefaultTimeoutAsString ();
+    String getLongDefaultTimeoutAsString ();
 
-	String getPageTitle ();	
+    boolean open (IBrowserType type, String url, String logDirectory);
+    boolean close ();
+    boolean maximize ();
+    boolean minimize ();
 
-	boolean selectFrame (Item item);
-	boolean selectFrame (IKeyType keyType, String value);
-	boolean selectDefaultFrame ();
-	
-	boolean type (Item item, String text);
-	boolean type (IKeyType keyType, String value, String text);
+    boolean openUrl (String url);
+    String getUrl ();
+    boolean refreshPage ();
 
-	boolean fireEvent (Item item, String event);
+    String getPageTitle ();
 
-	boolean setCheckboxValue(Item item, boolean value);
-	boolean setCheckboxValue(IKeyType keyType, String value, boolean checkValue);
+    boolean selectFrame (Item item);
+    boolean selectFrame (IKeyType keyType, String value);
+    boolean selectDefaultFrame ();
 
-	boolean itemExists (Item item);
-	boolean itemExists (IKeyType keyType, String value);
-	int countItems (Item item);
-	
-	boolean click (Item item);
-	boolean click (IKeyType keyType, String value);
-	boolean clickAndWait (Item item);
-	boolean clickAndWait (Item item, int timeout);
-	boolean clickAndWait (IKeyType keyType, String value);
-	boolean clickAndWait (IKeyType keyType, String value, int timeout);
+    boolean type (Item item, String text);
+    boolean type (IKeyType keyType, String value, String text);
 
-	boolean clickLink (Item item);
-	boolean clickLink (String text);
-	boolean clickLink (IKeyType key, String value);
+    boolean fireEvent (Item item, String event);
 
-	boolean clickAcceptInAlert();
+    boolean setCheckboxValue(Item item, boolean value);
+    boolean setCheckboxValue(IKeyType keyType, String value, boolean checkValue);
 
-	boolean selectChoice (Item item);
-	boolean selectChoiceByText (Item item, String text);
-	boolean selectChoiceByPartialText (Item item, String text);
-	
-	boolean mouseOver (Item item);
-	
-	boolean waitUntilTextIsPresent (String text);
-	boolean waitUntilTextIsPresent (String text, int timeout);
-	boolean waitUntilTextIsNotPresent (String text);
-	boolean waitUntilTextIsNotPresent (String text, int timeout);
+    boolean itemExists (Item item);
+    boolean itemExists (IKeyType keyType, String value);
+    int countItems (Item item);
 
-	boolean waitUntilItemIsPresent (Item item);
-	boolean waitUntilItemIsPresent (Item item, int timeout);
-	boolean waitUntilItemIsNotPresent (Item item);
-	boolean waitUntilItemIsNotPresent (Item item, int timeout);
+    boolean click (Item item);
+    boolean click (IKeyType keyType, String value);
+    boolean clickAndWait (Item item);
+    boolean clickAndWait (Item item, int timeout);
+    boolean clickAndWait (IKeyType keyType, String value);
+    boolean clickAndWait (IKeyType keyType, String value, int timeout);
 
-	boolean waitUntilItemIsFilled (Item item);
-	boolean waitUntilItemIsFilled (Item item, int timeout);
-	boolean waitUntilItemIsEmpty (Item item);
-	boolean waitUntilItemIsEmpty (Item item, int timeout);
+    boolean clickLink (Item item);
+    boolean clickLink (String text);
+    boolean clickLink (IKeyType key, String value);
 
-	boolean waitUntilItemIsVisible (Item item);
-	boolean waitUntilItemIsVisible (Item item, int timeout);
-	boolean waitUntilItemIsNotVisible (Item item);
-	boolean waitUntilItemIsNotVisible (Item item, int timeout);
+    boolean clickAcceptInAlert();
 
-	boolean waitUntilItemIsEnabled (Item item);
-	boolean waitUntilItemIsEnabled (Item item, int timeout);
-	boolean waitUntilItemIsDisabled (Item item);
-	boolean waitUntilItemIsDisabled (Item item, int timeout);
+    boolean selectChoice (Item item);
+    boolean selectChoiceByText (Item item, String text);
+    boolean selectChoiceByPartialText (Item item, String text);
 
-	boolean checkForText (String text);
-	String getItemText (Item item);
-	String getItemText (IKeyType key, String value);
+    boolean mouseOver (Item item);
 
-	int getCount (Item item);
-	
-	boolean makeScreenshot (String path);
+    boolean waitUntilTextIsPresent (String text);
+    boolean waitUntilTextIsPresent (String text, int timeout);
+    boolean waitUntilTextIsNotPresent (String text);
+    boolean waitUntilTextIsNotPresent (String text, int timeout);
 
-	void cleanup ();
+    boolean waitUntilItemIsPresent (Item item);
+    boolean waitUntilItemIsPresent (Item item, int timeout);
+    boolean waitUntilItemIsNotPresent (Item item);
+    boolean waitUntilItemIsNotPresent (Item item, int timeout);
 
-	@Deprecated
-	Object getTestTool ();
+    boolean waitUntilItemIsFilled (Item item);
+    boolean waitUntilItemIsFilled (Item item, int timeout);
+    boolean waitUntilItemIsEmpty (Item item);
+    boolean waitUntilItemIsEmpty (Item item, int timeout);
+
+    boolean waitUntilItemIsVisible (Item item);
+    boolean waitUntilItemIsVisible (Item item, int timeout);
+    boolean waitUntilItemIsNotVisible (Item item);
+    boolean waitUntilItemIsNotVisible (Item item, int timeout);
+
+    boolean waitUntilItemIsEnabled (Item item);
+    boolean waitUntilItemIsEnabled (Item item, int timeout);
+    boolean waitUntilItemIsDisabled (Item item);
+    boolean waitUntilItemIsDisabled (Item item, int timeout);
+
+    boolean checkForText (String text);
+    String getItemText (Item item);
+    String getItemText (IKeyType key, String value);
+
+    int getCount (Item item);
+
+    boolean makeScreenshot (String path);
+
+    void cleanup ();
+
+    @Deprecated
+    Object getTestTool ();
 }

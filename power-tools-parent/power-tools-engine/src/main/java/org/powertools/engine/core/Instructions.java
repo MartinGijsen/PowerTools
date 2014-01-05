@@ -81,8 +81,8 @@ final class Instructions {
         if (position < 0) {
             return findMethodAndCreateExecutor (instructionName);
         } else {
-            String instructionSetName	= instructionName.substring (0, position);
-            String realInstructionName	= instructionName.substring (position + 1);
+            String instructionSetName  = instructionName.substring (0, position);
+            String realInstructionName = instructionName.substring (position + 1);
             return createExecutor (instructionSetName, realInstructionName);
         }
     }

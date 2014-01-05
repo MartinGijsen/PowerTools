@@ -66,7 +66,7 @@ public class Context {
 
         if (mDefaulBaseDirectory == null) {
             mResultsBaseDirectory = resultsBaseDirectory + "/";
-        } else	{
+        } else {
             mResultsBaseDirectory = mDefaulBaseDirectory + "/";
         }
 

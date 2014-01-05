@@ -1,19 +1,19 @@
-/*	Copyright 2013 by Martin Gijsen (www.DeAnalist.nl)
+/* Copyright 2013 by Martin Gijsen (www.DeAnalist.nl)
  *
- *	This file is part of the PowerTools engine.
+ * This file is part of the PowerTools engine.
  *
- *	The PowerTools engine is free software: you can redistribute it and/or
- *	modify it under the terms of the GNU Affero General Public License as
- *	published by the Free Software Foundation, either version 3 of the License,
- *	or (at your option) any later version.
+ * The PowerTools engine is free software: you can redistribute it and/or
+ * modify it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  *
- *	The PowerTools engine is distributed in the hope that it will be useful,
- *	but WITHOUT ANY WARRANTY; without even the implied warranty of
- *	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- *	GNU Affero General Public License for more details.
+ * The PowerTools engine is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Affero General Public License for more details.
  *
- *	You should have received a copy of the GNU Affero General Public License
- *	along with the PowerTools engine. If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU Affero General Public License
+ * along with the PowerTools engine. If not, see <http://www.gnu.org/licenses/>.
  */
 
 package org.powertools.engine.sources.model;
@@ -29,41 +29,41 @@ import org.powertools.engine.ExecutionException;
  * Edges without a weight weigh: remaining weight / nr of edges without a weight.
  */
 final class WeightedEdgeSelector implements EdgeSelectionStrategy {
-	static final String NAME = "weighted";
+    static final String NAME = "weighted";
 
-	private static final String DESCRIPTION = "a higher weight outgoing edge is more likely to be selected";
+    private static final String DESCRIPTION = "a higher weight outgoing edge is more likely to be selected";
 
 
-	WeightedEdgeSelector () {
-		super ();
-	}
-	
-	@Override
-	public String getDescription() {
-		return NAME + " (" + DESCRIPTION + ")";
-	}
+    WeightedEdgeSelector () {
+        super ();
+    }
 
-	@Override
-	public Edge selectEdge (DirectedGraphImpl graph, Node currentNode) {
-		final Set<Edge> edges = graph.getEdges (currentNode);
-		if (!edges.isEmpty ()) {
-			return selectEdge (edges);
-//		} else if (model.mCurrentNode.mLabel.equals (Model.END_NODE_LABEL)) {
-//			throw new Model.DoneException ();
-		} else {
-			throw new ExecutionException (String.format ("no edges out of node %s", currentNode.getName ()));
-		}
-	}
-	
-	private Edge selectEdge (Set<Edge> edges) {
-		int selectedWeight	= new Random ().nextInt (1000);
-		int currentWeight	= 0;
-		for (Edge edge : edges) {
-			currentWeight += edge.mWeight;
-			if (currentWeight > selectedWeight) {
-				return edge;
-			}
-		}
-		throw new ExecutionException ("did not find find an edge for weight " + selectedWeight);
-	}
+    @Override
+    public String getDescription() {
+        return NAME + " (" + DESCRIPTION + ")";
+    }
+
+    @Override
+    public Edge selectEdge (DirectedGraphImpl graph, Node currentNode) {
+        Set<Edge> edges = graph.getEdges (currentNode);
+        if (!edges.isEmpty ()) {
+            return selectEdge (edges);
+//      } else if (model.mCurrentNode.mLabel.equals (Model.END_NODE_LABEL)) {
+//          throw new Model.DoneException ();
+        } else {
+            throw new ExecutionException (String.format ("no edges out of node %s", currentNode.getName ()));
+        }
+    }
+
+    private Edge selectEdge (Set<Edge> edges) {
+        int selectedWeight = new Random ().nextInt (1000);
+        int currentWeight  = 0;
+        for (Edge edge : edges) {
+            currentWeight += edge.mWeight;
+            if (currentWeight > selectedWeight) {
+                return edge;
+            }
+        }
+        throw new ExecutionException ("did not find find an edge for weight " + selectedWeight);
+    }
 }
