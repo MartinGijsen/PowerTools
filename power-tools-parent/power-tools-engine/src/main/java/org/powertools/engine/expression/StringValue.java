@@ -20,58 +20,58 @@ package org.powertools.engine.expression;
 
 
 final class StringValue extends Value {
-	private String mText;
+    private final String mText;
 
-	
-	public StringValue (String text) {
-		mText = text;
-	}
-	
-	
-	@Override
-	String getType () {
-		return "string";
-	}
 
-	
-	@Override
-	public Value equal (Value v) {
-		return new BooleanValue (mText.equals (v.toStringValue ().mText));
-	}
-	
-	@Override
-	public Value unequal (Value v) {
-		return new BooleanValue (!mText.equals (v.toStringValue ().mText));
-	}
-	
-	@Override
-	public Value concatenate (Value v) {
-		return new StringValue (mText + v.toStringValue ().mText);
-	}
+    public StringValue (String text) {
+        mText = text;
+    }
 
-	
-	@Override
-	public IntegerValue toIntegerValue () {
-		return new IntegerValue (Integer.parseInt (mText));
-	}
 
-	@Override
-	public RealValue toRealValue () {
-		return new RealValue (Double.parseDouble (mText));
-	}
+    @Override
+    String getType () {
+        return "string";
+    }
 
-	@Override
-	public StringValue toStringValue () {
-		return this;
-	}
-	
-	@Override
-	public String toString () {
-		return mText;
-	}
-	
-	@Override
-	public BooleanValue toBooleanValue () {
-		return new BooleanValue (mText);
-	}
+
+    @Override
+    public Value equal (Value v) {
+        return new BooleanValue (mText.equals (v.toStringValue ().mText));
+    }
+
+    @Override
+    public Value unequal (Value v) {
+        return new BooleanValue (!mText.equals (v.toStringValue ().mText));
+    }
+
+    @Override
+    public Value concatenate (Value v) {
+        return new StringValue (mText + v.toStringValue ().mText);
+    }
+
+
+    @Override
+    public IntegerValue toIntegerValue () {
+        return new IntegerValue (Integer.parseInt (mText));
+    }
+
+    @Override
+    public RealValue toRealValue () {
+        return new RealValue (Double.parseDouble (mText));
+    }
+
+    @Override
+    public StringValue toStringValue () {
+        return this;
+    }
+
+    @Override
+    public String toString () {
+        return mText;
+    }
+
+    @Override
+    public BooleanValue toBooleanValue () {
+        return new BooleanValue (mText);
+    }
 }

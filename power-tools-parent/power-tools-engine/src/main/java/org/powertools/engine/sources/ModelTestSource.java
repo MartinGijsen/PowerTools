@@ -24,7 +24,6 @@ import java.util.List;
 import org.powertools.engine.RunTime;
 import org.powertools.engine.sources.model.DoneException;
 import org.powertools.engine.sources.model.Model;
-import org.powertools.engine.symbol.Scope;
 
 
 /*
@@ -36,12 +35,25 @@ import org.powertools.engine.symbol.Scope;
 final class ModelTestSource extends TestSource {
 	final Model mModel;
 
+    private final String mFileName;
+    private final String mSelector;
+    private final String mDoneCondition;
+    private final RunTime mRunTime;
 
-	ModelTestSource (String fileName, String selector, String doneCondition, Scope scope, RunTime runTime) {
-		super (scope);
-		mModel = new Model (fileName, selector, doneCondition, runTime);
+
+	ModelTestSource (String fileName, String selector, String doneCondition, RunTime runTime) {
+		super (runTime.getGlobalScope ());
+		mModel         = new Model ();
+        mFileName      = fileName;
+        mSelector      = selector;
+        mDoneCondition = doneCondition;
+        mRunTime       = runTime;
 	}
 
+    @Override
+	public void initialize () {
+		mModel.initialize (mFileName, mSelector, mDoneCondition, mRunTime);
+	}
 
 	@Override
 	public TestLineImpl getTestLine () {

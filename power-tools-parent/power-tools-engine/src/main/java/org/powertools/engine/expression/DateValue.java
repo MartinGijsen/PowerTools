@@ -29,100 +29,100 @@ import org.powertools.engine.ExecutionException;
 
 
 final class DateValue extends Value {
-	static BusinessDayChecker mBusinessDayChecker = new BusinessDayChecker ();
-	
-	private static SimpleDateFormat mFormat = new SimpleDateFormat ("dd-MM-yyyy");
-	
-	private Calendar mDate;
+    static BusinessDayChecker mBusinessDayChecker = new BusinessDayChecker ();
 
-	
-	public DateValue (Calendar date) {
-		mDate = (Calendar) date.clone ();
-	}
+    private static SimpleDateFormat mFormat = new SimpleDateFormat ("dd-MM-yyyy");
 
-	public DateValue (String stringValue) {
-		try {
-			Date date = mFormat.parse (stringValue);
-			mDate = GregorianCalendar.getInstance ();
-			mDate.setTime (date);
-		} catch (ParseException e) {
-			throw new ExecutionException ("Date parse error: " + stringValue);
-		}
-	}
-	
-	
-	@Override
-	String getType () {
-		return "date";
-	}
+    private Calendar mDate;
 
-	
-	@Override
-	public Value equal (Value v) {
-		return new BooleanValue (mDate.equals (v.toDateValue ().mDate));
-	}
-	
-	@Override
-	public Value unequal (Value v) {
-		return new BooleanValue (!mDate.equals (v.toDateValue ().mDate));
-	}
-	
-	
-	Value add (String number, String period) {
-		int nr = parseInteger (number);
-		return addPeriod (nr, period);
-	}
 
-	Value subtract (String number, String period) {
-		int nr = parseInteger (number);
-		return addPeriod (-nr, period);
-	}
+    public DateValue (Calendar date) {
+        mDate = (Calendar) date.clone ();
+    }
 
-	@Override
-	public StringValue toStringValue () {
-		return new StringValue (toString());
-	}
-	
-	@Override
-	public DateValue toDateValue () {
-		return this;
-	}
+    public DateValue (String stringValue) {
+        try {
+            Date date = mFormat.parse (stringValue);
+            mDate = GregorianCalendar.getInstance ();
+            mDate.setTime (date);
+        } catch (ParseException e) {
+            throw new ExecutionException ("Date parse error: " + stringValue);
+        }
+    }
 
-	@Override
-	public String toString () {
-		return mFormat.format (mDate.getTime ());
-	}
-	
-	private int parseInteger (String number) {
-		try {
-			return Integer.parseInt (number);
-		} catch (NumberFormatException e) {
-			throw new ExecutionException ("Number parse error: " + number);
-		}
-	}
 
-	private Value addPeriod (int number, String period) {
-		DateValue newDate = new DateValue (mDate);
-		if ("days".equals (period)) {
-			newDate.mDate.add (Calendar.DAY_OF_MONTH, number);
-		} else if ("weeks".equals (period)) {
-			newDate.mDate.add (Calendar.WEEK_OF_YEAR, number);
-		} else if ("months".equals (period)) {
-			newDate.mDate.add (Calendar.MONTH, number);
-		} else if ("years".equals (period)) {
-			newDate.mDate.add (Calendar.YEAR, number);
-		} else {
-			newDate.addBusinessDays (number);
-		}
-		return newDate;
-	}
-	
-	private void addBusinessDays (int number) {
-		int step = (number < 0 ? -1 : 1);
-		for (int counter = 0; counter != number; counter += step) {
-			do {
-				mDate.add (Calendar.DAY_OF_MONTH, step);
-			} while (!mBusinessDayChecker.isBusinessDay (mDate));
-		}
-	}
+    @Override
+    String getType () {
+        return "date";
+    }
+
+
+    @Override
+    public Value equal (Value v) {
+        return new BooleanValue (mDate.equals (v.toDateValue ().mDate));
+    }
+
+    @Override
+    public Value unequal (Value v) {
+        return new BooleanValue (!mDate.equals (v.toDateValue ().mDate));
+    }
+
+
+    Value add (String number, String period) {
+        int nr = parseInteger (number);
+        return addPeriod (nr, period);
+    }
+
+    Value subtract (String number, String period) {
+        int nr = parseInteger (number);
+        return addPeriod (-nr, period);
+    }
+
+    @Override
+    public StringValue toStringValue () {
+        return new StringValue (toString());
+    }
+
+    @Override
+    public DateValue toDateValue () {
+        return this;
+    }
+
+    @Override
+    public String toString () {
+        return mFormat.format (mDate.getTime ());
+    }
+
+    private int parseInteger (String number) {
+        try {
+            return Integer.parseInt (number);
+        } catch (NumberFormatException e) {
+            throw new ExecutionException ("Number parse error: " + number);
+        }
+    }
+
+    private Value addPeriod (int number, String period) {
+        DateValue newDate = new DateValue (mDate);
+        if ("days".equals (period)) {
+            newDate.mDate.add (Calendar.DAY_OF_MONTH, number);
+        } else if ("weeks".equals (period)) {
+            newDate.mDate.add (Calendar.WEEK_OF_YEAR, number);
+        } else if ("months".equals (period)) {
+            newDate.mDate.add (Calendar.MONTH, number);
+        } else if ("years".equals (period)) {
+            newDate.mDate.add (Calendar.YEAR, number);
+        } else {
+            newDate.addBusinessDays (number);
+        }
+        return newDate;
+    }
+
+    private void addBusinessDays (int number) {
+        int step = (number < 0 ? -1 : 1);
+        for (int counter = 0; counter != number; counter += step) {
+            do {
+                mDate.add (Calendar.DAY_OF_MONTH, step);
+            } while (!mBusinessDayChecker.isBusinessDay (mDate));
+        }
+    }
 }

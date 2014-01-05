@@ -26,8 +26,8 @@ package org.powertools.engine;
  * for instance to create an instruction name from several parts.<BR/>
  */
 public interface TestLine {
-	int getNrOfParts ();
-	String getOriginalPart (int partNr);
-	String getPart (int partNr);
-	boolean isEmpty ();
+    int getNrOfParts ();
+    String getOriginalPart (int partNr);
+    String getPart (int partNr);
+    boolean isEmpty ();
 }

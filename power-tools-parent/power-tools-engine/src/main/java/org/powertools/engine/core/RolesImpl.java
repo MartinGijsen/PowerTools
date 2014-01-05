@@ -25,94 +25,94 @@ import org.powertools.engine.Symbol;
 
 
 public final class RolesImpl implements Roles {
-	private static final String SYMBOL_NAME			= "roles";
-	private static final String DOMAIN_FIELD_NAME	= "domain";
-	private static final String USERNAME_FIELD_NAME	= "username";
-	private static final String PASSWORD_FIELD_NAME	= "password";
+    private static final String SYMBOL_NAME         = "roles";
+    private static final String DOMAIN_FIELD_NAME   = "domain";
+    private static final String USERNAME_FIELD_NAME = "username";
+    private static final String PASSWORD_FIELD_NAME = "password";
 
-	private final RunTime mRunTime;
+    private final RunTime mRunTime;
 
-	private Symbol mSymbol;
+    private Symbol mSymbol;
 
 
-	RolesImpl (RunTime runTime) {
-		 mRunTime = runTime;
-	}
+    RolesImpl (RunTime runTime) {
+        mRunTime = runTime;
+    }
 
-	@Override
-	public void addRole (String role, String domain, String username, String password) {
-		checkAndAddRole (SYMBOL_NAME + "." + role + ".", role, domain, username, password);
-	}
+    @Override
+    public void addRole (String role, String domain, String username, String password) {
+        checkAndAddRole (SYMBOL_NAME + "." + role + ".", role, domain, username, password);
+    }
 
-	@Override
-	public void addRole (String system, String role, String domain, String username, String password) {
-		if (system.isEmpty ()) {
-			addRole (role, domain, username, password);
-		} else {
-			checkAndAddRole (SYMBOL_NAME + "." + system + "." + role + ".", role, domain, username, password);
-		}
-	}
+    @Override
+    public void addRole (String system, String role, String domain, String username, String password) {
+        if (system.isEmpty ()) {
+            addRole (role, domain, username, password);
+        } else {
+            checkAndAddRole (SYMBOL_NAME + "." + system + "." + role + ".", role, domain, username, password);
+        }
+    }
 
-	private void checkAndAddRole (String prefix, String role, String domain, String username, String password) {
-		checkValues (role, username, password);
-		getRolesSymbol ();
-		mSymbol.setValue (prefix + DOMAIN_FIELD_NAME, domain);
-		mSymbol.setValue (prefix + USERNAME_FIELD_NAME, username);
-		mSymbol.setValue (prefix + PASSWORD_FIELD_NAME, password);
-	}
+    private void checkAndAddRole (String prefix, String role, String domain, String username, String password) {
+        checkValues (role, username, password);
+        getRolesSymbol ();
+        mSymbol.setValue (prefix + DOMAIN_FIELD_NAME, domain);
+        mSymbol.setValue (prefix + USERNAME_FIELD_NAME, username);
+        mSymbol.setValue (prefix + PASSWORD_FIELD_NAME, password);
+    }
 
-	private void checkValues (String role, String username, String password) {
-		if (role.isEmpty ()) {
-			throw new ExecutionException ("role name is empty");
-		} else if (username.isEmpty ()) {
-			throw new ExecutionException ("user name is empty");
-		} else if (password.isEmpty ()) {
-			mRunTime.reportWarning ("password is empty");
-		}
-	}
-	
-	@Override
-	public String getDomain (String role) {
-		return getValue (SYMBOL_NAME + "." + role + "." + DOMAIN_FIELD_NAME);
-	}
-	
-	@Override
-	public String getDomain (String system, String role) {
-		return getValue (SYMBOL_NAME + "." + system + "." + role + "." + DOMAIN_FIELD_NAME);
-	}
-	
-	@Override
-	public String getUsername (String role) {
-		return getValue (SYMBOL_NAME + "." + role + "." + USERNAME_FIELD_NAME);
-	}
+    private void checkValues (String role, String username, String password) {
+        if (role.isEmpty ()) {
+            throw new ExecutionException ("role name is empty");
+        } else if (username.isEmpty ()) {
+            throw new ExecutionException ("user name is empty");
+        } else if (password.isEmpty ()) {
+            mRunTime.reportWarning ("password is empty");
+        }
+    }
 
-	@Override
-	public String getUsername (String system, String role) {
-		return getValue (SYMBOL_NAME + "." + system + "." + role + "." + USERNAME_FIELD_NAME);
-	}
-	
-	@Override
-	public String getPassword (String role) {
-		return getValue (SYMBOL_NAME + "." + role + "." + PASSWORD_FIELD_NAME);
-	}
+    @Override
+    public String getDomain (String role) {
+        return getValue (SYMBOL_NAME + "." + role + "." + DOMAIN_FIELD_NAME);
+    }
 
-	@Override
-	public String getPassword (String system, String role) {
-		return getValue (SYMBOL_NAME + "." + system + "." + role + "." + PASSWORD_FIELD_NAME);
-	}
+    @Override
+    public String getDomain (String system, String role) {
+        return getValue (SYMBOL_NAME + "." + system + "." + role + "." + DOMAIN_FIELD_NAME);
+    }
 
-	private String getValue (String name) {
-		getRolesSymbol ();
-		return mSymbol.getValue (name);
-	}
+    @Override
+    public String getUsername (String role) {
+        return getValue (SYMBOL_NAME + "." + role + "." + USERNAME_FIELD_NAME);
+    }
 
-	private void getRolesSymbol () {
-		try {
-			if (mSymbol == null) {
-				mSymbol = mRunTime.getSymbol (SYMBOL_NAME);
-			}
-		} catch (ExecutionException ee) {
-			mSymbol = mRunTime.getGlobalScope ().createStructure (SYMBOL_NAME);
-		}
-	}
+    @Override
+    public String getUsername (String system, String role) {
+        return getValue (SYMBOL_NAME + "." + system + "." + role + "." + USERNAME_FIELD_NAME);
+    }
+
+    @Override
+    public String getPassword (String role) {
+        return getValue (SYMBOL_NAME + "." + role + "." + PASSWORD_FIELD_NAME);
+    }
+
+    @Override
+    public String getPassword (String system, String role) {
+        return getValue (SYMBOL_NAME + "." + system + "." + role + "." + PASSWORD_FIELD_NAME);
+    }
+
+    private String getValue (String name) {
+        getRolesSymbol ();
+        return mSymbol.getValue (name);
+    }
+
+    private void getRolesSymbol () {
+        try {
+            if (mSymbol == null) {
+                mSymbol = mRunTime.getSymbol (SYMBOL_NAME);
+            }
+        } catch (ExecutionException ee) {
+            mSymbol = mRunTime.getGlobalScope ().createStructure (SYMBOL_NAME);
+        }
+    }
 }

@@ -33,34 +33,34 @@ import org.powertools.engine.symbol.Scope;
  * This AST is then evaluated by a tree walker (also a kind of parser).
  */
 public final class ExpressionEvaluator {
-	private static final ExpressionLexer mLexer   = new ExpressionLexer ();
-	private static final ExpressionParser mParser = new ExpressionParser (new CommonTokenStream (mLexer));
+    private static final ExpressionLexer mLexer   = new ExpressionLexer ();
+    private static final ExpressionParser mParser = new ExpressionParser (new CommonTokenStream (mLexer));
 
 
-	private ExpressionEvaluator () {
-		// empty
-	}
+    private ExpressionEvaluator () {
+        // empty
+    }
 
-	public static void setBusinessDayChecker (BusinessDayChecker checker) {
-		DateValue.mBusinessDayChecker = checker;
-	}
-	
-	public static BusinessDayChecker getBusinessDayChecker () {
-		return DateValue.mBusinessDayChecker;
-	}
-	
-	public static String evaluate (String expression, Scope scope) {
-		try {
-			// parse the expression, create AST (Abstract Syntax Tree)
-			mLexer.setCharStream (new ANTLRStringStream (expression));
-			mParser.setTokenStream (new CommonTokenStream (mLexer));
-			CommonTree tree = (CommonTree) mParser.root ().getTree ();
+    public static void setBusinessDayChecker (BusinessDayChecker checker) {
+        DateValue.mBusinessDayChecker = checker;
+    }
 
-			// evaluate the AST using a tree walker parser
-			ExpressionTreeWalker walker = new ExpressionTreeWalker (new CommonTreeNodeStream (tree));
-			return walker.main (scope).toString ();
-		} catch (RecognitionException re) {
-			throw new ExecutionException ("invalid expression: " + expression);
-		}
-	}
+    public static BusinessDayChecker getBusinessDayChecker () {
+        return DateValue.mBusinessDayChecker;
+    }
+
+    public static String evaluate (String expression, Scope scope) {
+        try {
+            // parse the expression, create AST (Abstract Syntax Tree)
+            mLexer.setCharStream (new ANTLRStringStream (expression));
+            mParser.setTokenStream (new CommonTokenStream (mLexer));
+            CommonTree tree = (CommonTree) mParser.root ().getTree ();
+
+            // evaluate the AST using a tree walker parser
+            ExpressionTreeWalker walker = new ExpressionTreeWalker (new CommonTreeNodeStream (tree));
+            return walker.main (scope).toString ();
+        } catch (RecognitionException re) {
+            throw new ExecutionException ("invalid expression: " + expression);
+        }
+    }
 }

@@ -20,97 +20,97 @@ package org.powertools.engine.expression;
 
 
 final class RealValue extends Value {
-	private double mValue;
+    private double mValue;
 
-	
-	public RealValue (double value) {
-		mValue = value;
-	}
-	
-	public RealValue (String value) {
-		try {
-			mValue = Double.parseDouble (value);
-		} catch (NumberFormatException nfe) {
-			throw newException ("not a real number: " + value);
-		}
-	}
-	
-	
-	@Override
-	String getType () {
-		return "real number";
-	}
 
-	
-	@Override
-	public Value equal (Value v) {
-		return new BooleanValue (mValue == v.toRealValue ().mValue);
-	}
-	
-	@Override
-	public Value unequal (Value v) {
-		return new BooleanValue (mValue == v.toRealValue ().mValue);
-	}
-	
-	@Override
-	public Value lessThan (Value v) {
-		return new BooleanValue (mValue < v.toRealValue ().mValue);
-	}
-	
-	@Override
-	public Value lessOrEqual (Value v) {
-		return new BooleanValue (mValue <= v.toRealValue ().mValue);
-	}
-	
-	@Override
-	public Value greaterThan (Value v) {
-		return new BooleanValue (mValue > v.toRealValue ().mValue);
-	}
-	
-	@Override
-	public Value greaterOrEqual (Value v) {
-		return new BooleanValue (mValue >= v.toRealValue ().mValue);
-	}
-	
-	@Override
-	public Value add (Value v) {
-		return new RealValue (mValue + v.toRealValue ().mValue);
-	}
-	
-	@Override
-	public Value subtract (Value v) {
-		return new RealValue (mValue - v.toRealValue ().mValue);
-	}
-	
-	@Override
-	public Value multiply (Value v) {
-		return new RealValue (mValue * v.toRealValue ().mValue);
-	}
-	
-	@Override
-	public Value divide (Value v) {
-		return new RealValue (mValue / v.toRealValue ().mValue);
-	}
-	
-	@Override
-	public Value negate () {
-		mValue = -mValue;
-		return this;
-	}
+    public RealValue (double value) {
+        mValue = value;
+    }
 
-	
-	@Override
-	public StringValue toStringValue () {
-		return new StringValue (Double.toString (mValue));
-	}
+    public RealValue (String value) {
+        try {
+            mValue = Double.parseDouble (value);
+        } catch (NumberFormatException nfe) {
+            throw newException ("not a real number: " + value);
+        }
+    }
 
-	@Override
-	public RealValue toRealValue () {
-		return this;
-	}
 
-	@Override
-	public String toString () {
-		return Double.toString (mValue);
-	}
+    @Override
+    String getType () {
+        return "real number";
+    }
+
+
+    @Override
+    public Value equal (Value v) {
+        return new BooleanValue (mValue == v.toRealValue ().mValue);
+    }
+
+    @Override
+    public Value unequal (Value v) {
+        return new BooleanValue (mValue == v.toRealValue ().mValue);
+    }
+
+    @Override
+    public Value lessThan (Value v) {
+        return new BooleanValue (mValue < v.toRealValue ().mValue);
+    }
+
+    @Override
+    public Value lessOrEqual (Value v) {
+        return new BooleanValue (mValue <= v.toRealValue ().mValue);
+    }
+
+    @Override
+    public Value greaterThan (Value v) {
+        return new BooleanValue (mValue > v.toRealValue ().mValue);
+    }
+
+    @Override
+    public Value greaterOrEqual (Value v) {
+        return new BooleanValue (mValue >= v.toRealValue ().mValue);
+    }
+
+    @Override
+    public Value add (Value v) {
+        return new RealValue (mValue + v.toRealValue ().mValue);
+    }
+
+    @Override
+    public Value subtract (Value v) {
+        return new RealValue (mValue - v.toRealValue ().mValue);
+    }
+
+    @Override
+    public Value multiply (Value v) {
+        return new RealValue (mValue * v.toRealValue ().mValue);
+    }
+
+    @Override
+    public Value divide (Value v) {
+        return new RealValue (mValue / v.toRealValue ().mValue);
+    }
+
+    @Override
+    public Value negate () {
+        mValue = -mValue;
+        return this;
+    }
+
+
+    @Override
+    public StringValue toStringValue () {
+        return new StringValue (Double.toString (mValue));
+    }
+
+    @Override
+    public RealValue toRealValue () {
+        return this;
+    }
+
+    @Override
+    public String toString () {
+        return Double.toString (mValue);
+    }
 }

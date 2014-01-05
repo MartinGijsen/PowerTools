@@ -32,34 +32,34 @@ import org.powertools.engine.sources.TestSourceFactory;
  * instruction sets using 'use instruction set'.
  */
 public class ExcelEngine extends Engine {
-	public static void main (String[] args) {
-		if (args.length != 2) {
-			System.err.println ("Please specify a directory and a file");
-		} else {
-			new ExcelEngine (args[0]).run (args[1]);
-		}
-	}
+    public static void main (String[] args) {
+        if (args.length != 2) {
+            System.err.println ("Please specify a directory and a file");
+        } else {
+            new ExcelEngine (args[0]).run (args[1]);
+        }
+    }
 
 
-	public ExcelEngine (String resultsDirectory) {
-		this (new RunTimeImpl (new Context (resultsDirectory)));
-	}
+    public ExcelEngine (String resultsDirectory) {
+        this (new RunTimeImpl (new Context (resultsDirectory)));
+    }
 
-	public ExcelEngine (RunTimeImpl runTime) {
-		super (runTime);
+    public ExcelEngine (RunTimeImpl runTime) {
+        super (runTime);
 
-		if (!ReportFactory.createKeywordsHtmlLog (runTime.getContext ())) {
-			System.err.println ("could not open HTML log");
-		}
-		if (!ReportFactory.createTestCaseReport (runTime.getContext ())) {
-			System.err.println ("could not open test case report");
-		}
+        if (!ReportFactory.createKeywordsHtmlLog (runTime.getContext ())) {
+            System.err.println ("could not open HTML log");
+        }
+        if (!ReportFactory.createTestCaseReport (runTime.getContext ())) {
+            System.err.println ("could not open test case report");
+        }
 
-		registerBuiltinInstructions ();
-	}
+        registerBuiltinInstructions ();
+    }
 
-	@Override
-	public final void run (String sourceName) {
-		run (TestSourceFactory.createExcelTestSource (sourceName));
-	}
+    @Override
+    public final void run (String sourceName) {
+        run (TestSourceFactory.createExcelTestSource (sourceName));
+    }
 }

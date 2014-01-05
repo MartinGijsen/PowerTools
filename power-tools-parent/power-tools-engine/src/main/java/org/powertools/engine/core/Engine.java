@@ -42,116 +42,116 @@ import org.powertools.engine.sources.TestLineImpl;
  * so that it can be accessed by (user defined) instruction sets.
  */
 public abstract class Engine {
-	protected final RunTimeImpl mRunTime;
-	protected final TestRunResultPublisher mPublisher;
+    protected final RunTimeImpl mRunTime;
+    protected final TestRunResultPublisher mPublisher;
 
-	protected TestLineImpl mTestLine;
+    protected TestLineImpl mTestLine;
 
-	private final Instructions mInstructions;
-
-
-	protected Engine (RunTimeImpl runTime) {
-		mRunTime		= runTime;
-		mInstructions	= new Instructions (runTime);
-		mPublisher		= TestRunResultPublisher.getInstance ();
-	}
-
-	protected final void registerBuiltinInstructions () {
-		BuiltinInstructions.register (mRunTime, mInstructions);
-	}
+    private final Instructions mInstructions;
 
 
-	public void run (String sourceName) {
-		throw new ExecutionException ("not supported by this engine");
-	}
+    protected Engine (RunTimeImpl runTime) {
+        mRunTime      = runTime;
+        mInstructions = new Instructions (runTime);
+        mPublisher    = TestRunResultPublisher.getInstance ();
+    }
 
-	protected final void run (TestSource source) {
-		mPublisher.start (mRunTime.getContext ().getStartTime ());
-		mRunTime.invokeSource (source);
-		run ();
-		mInstructions.cleanup ();
-		mPublisher.finish ();
-	}
+    protected final void registerBuiltinInstructions () {
+        BuiltinInstructions.register (mRunTime, mInstructions);
+    }
 
-	protected final void run () {
-		while (getTestLine ()) {
-			if (evaluateTestLine ()) {
-				if (isAnInstruction ()) {
-					processTestLine ();
-				} else {
-					processComment ();
-				}
-			}
-		}
-		mPublisher.publishEndOfSection ();
-	}
 
-	private boolean getTestLine () {
-		while (true) {
-			try {
-				mTestLine = mRunTime.mSourceStack.getTestLine ();
-				return mTestLine != null;
-			} catch (ProcedureException pe) {
-				addProcedure (pe.getProcedure ());
-			}
-		}
-	}
+    public void run (String sourceName) {
+        throw new ExecutionException ("not supported by this engine");
+    }
 
-	protected final void addProcedure (Procedure procedure) {
-		mInstructions.addProcedure (procedure);
-	}
-	
-	protected final boolean evaluateTestLine () {
-		try {
-			mRunTime.evaluateExpressions (mTestLine);
-			return true;
-		} catch (ExecutionException ee) {
-			mPublisher.publishTestLine (mTestLine);
-			mPublisher.publishError (ee.getMessage ());
-			mPublisher.publishEndOfTestLine ();
-			return false;
-		}
-	}
-	
-	private boolean isAnInstruction () {
-		return !mTestLine.getPart (0).isEmpty ();
-	}
-	
-	private void processTestLine () {
-		try {
-			executeInstruction ();
-		} catch (ExecutionException ee) {
-			handleEngineException (ee);
-		} catch (Exception e) {
-			handleOtherException (e);
-		}
-		mPublisher.publishEndOfTestLine ();
-	}
+    protected final void run (TestSource source) {
+        mPublisher.start (mRunTime.getContext ().getStartTime ());
+        mRunTime.invokeSource (source);
+        run ();
+        mInstructions.cleanup ();
+        mPublisher.finish ();
+    }
 
-	private void executeInstruction () {
-		mPublisher.publishTestLine (mTestLine);
-		if (!mInstructions.getExecutor (mTestLine.getPart (0)).execute (mTestLine)) {
-			mPublisher.publishError ("instruction returned 'false'");
-		}
-	}
+    protected final void run () {
+        while (getTestLine ()) {
+            if (evaluateTestLine ()) {
+                if (isAnInstruction ()) {
+                    processTestLine ();
+                } else {
+                    processComment ();
+                }
+            }
+        }
+        mPublisher.publishEndOfSection ();
+    }
 
-	private void handleEngineException (ExecutionException ee) {
-		mPublisher.publishError (ee.getMessage ());
-		if (ee.hasStackTrace ()) {
-			mPublisher.publishStackTrace (ee);
-		}
-	}
+    private boolean getTestLine () {
+        while (true) {
+            try {
+                mTestLine = mRunTime.mSourceStack.getTestLine ();
+                return mTestLine != null;
+            } catch (ProcedureException pe) {
+                addProcedure (pe.getProcedure ());
+            }
+        }
+    }
 
-	private void handleOtherException (Exception e) {
-		mPublisher.publishError (e.toString () + " caught: " + e.getMessage ());
-		if (e.getStackTrace () != null) {
-			mPublisher.publishStackTrace (e);
-		}
-	}
+    protected final void addProcedure (Procedure procedure) {
+        mInstructions.addProcedure (procedure);
+    }
 
-	private void processComment () {
-		if (!mTestLine.isEmpty ()) {
-			mPublisher.publishCommentLine (mTestLine);
-		}
-	}
+    protected final boolean evaluateTestLine () {
+        try {
+            mRunTime.evaluateExpressions (mTestLine);
+            return true;
+        } catch (ExecutionException ee) {
+            mPublisher.publishTestLine (mTestLine);
+            mPublisher.publishError (ee.getMessage ());
+            mPublisher.publishEndOfTestLine ();
+            return false;
+        }
+    }
+
+    private boolean isAnInstruction () {
+        return !mTestLine.getPart (0).isEmpty ();
+    }
+
+    private void processTestLine () {
+        try {
+            executeInstruction ();
+        } catch (ExecutionException ee) {
+            handleEngineException (ee);
+        } catch (Exception e) {
+            handleOtherException (e);
+        }
+        mPublisher.publishEndOfTestLine ();
+    }
+
+    private void executeInstruction () {
+        mPublisher.publishTestLine (mTestLine);
+        if (!mInstructions.getExecutor (mTestLine.getPart (0)).execute (mTestLine)) {
+            mPublisher.publishError ("instruction returned 'false'");
+        }
+    }
+
+    private void handleEngineException (ExecutionException ee) {
+        mPublisher.publishError (ee.getMessage ());
+        if (ee.hasStackTrace ()) {
+            mPublisher.publishStackTrace (ee);
+        }
+    }
+
+    private void handleOtherException (Exception e) {
+        mPublisher.publishError (e.toString () + " caught: " + e.getMessage ());
+        if (e.getStackTrace () != null) {
+            mPublisher.publishStackTrace (e);
+        }
+    }
+
+    private void processComment () {
+        if (!mTestLine.isEmpty ()) {
+            mPublisher.publishCommentLine (mTestLine);
+        }
+    }
 }

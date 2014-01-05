@@ -33,84 +33,84 @@ import org.powertools.engine.symbol.Scope;
  * test line. It automatically pops a test source when it is depleted.
  */
 final class TestSourceStack {
-	private final Stack<TestSource> mSourceStack;
-	private final Scope mGlobalScope;
-	
-	private boolean mInATestCase;
+    private final Stack<TestSource> mSourceStack;
+    private final Scope mGlobalScope;
 
-	
-	TestSourceStack (Scope globalScope) {
-		mSourceStack = new Stack<TestSource> ();
-		mInATestCase = false;
-		mGlobalScope = globalScope;
-	}
+    private boolean mInATestCase;
 
 
-	TestSource getCurrentTestSource () {
-		return mSourceStack.peek ();
-	}
-
-	Scope getCurrentScope () {
-		try {
-			return mSourceStack.peek ().getScope ();
-		} catch (EmptyStackException ese) {
-			return mGlobalScope;
-		}
-	}
+    TestSourceStack (Scope globalScope) {
+        mSourceStack = new Stack<TestSource> ();
+        mInATestCase = false;
+        mGlobalScope = globalScope;
+    }
 
 
-	void initAndPush (TestSource source) {
-		source.initialize ();
-		mSourceStack.push (source);
-	}
-	
-	
-	void run (String fileName) {
-		initAndPush (mSourceStack.peek ().create (fileName));
-	}
+    TestSource getCurrentTestSource () {
+        return mSourceStack.peek ();
+    }
 
-	TestLineImpl getTestLine () {
-		while (!mSourceStack.isEmpty ()) {
-			TestLineImpl testLine = mSourceStack.peek ().getTestLine ();
-			if (testLine != null) {
-				return testLine;
-			} else {
-				popTestSource ();
-			}
-		}
-		return null;
-	}
-	
-	boolean createAndPushTestCase (String name, String description) {
-		if (!mInATestCase) {
-			// can push immediately
-		} else if (mSourceStack.peek () instanceof TestCaseTestSource) {
-			popTestSource ();
-		} else {
-			return false;
-		}
+    Scope getCurrentScope () {
+        try {
+            return mSourceStack.peek ().getScope ();
+        } catch (EmptyStackException ese) {
+            return mGlobalScope;
+        }
+    }
 
-		initAndPush (mSourceStack.peek ().createTestCase (name, description));
-		mInATestCase = true;
-		return true;
-	}
 
-	boolean inATestCase () {
-		return mInATestCase;
-	}
-	
-	void popTestCase () {
-		if (mSourceStack.isEmpty ()) {
-			throw new ExecutionException ("no current test source");
-		} else if (!(mSourceStack.peek () instanceof TestCaseTestSource)) {
-			throw new ExecutionException ("not in a test case (in this test line source)");
-		} else {
-			popTestSource ();
-			mInATestCase = false;
-		}
-	}
-	
-	private void popTestSource () {
-		mSourceStack.pop ().cleanup ();
-	}
+    void initAndPush (TestSource source) {
+        source.initialize ();
+        mSourceStack.push (source);
+    }
+
+
+    void run (String fileName) {
+        initAndPush (mSourceStack.peek ().create (fileName));
+    }
+
+    TestLineImpl getTestLine () {
+        while (!mSourceStack.isEmpty ()) {
+            TestLineImpl testLine = mSourceStack.peek ().getTestLine ();
+            if (testLine != null) {
+                return testLine;
+            } else {
+                popTestSource ();
+            }
+        }
+        return null;
+    }
+
+    boolean createAndPushTestCase (String name, String description) {
+        if (!mInATestCase) {
+            // can push immediately
+        } else if (mSourceStack.peek () instanceof TestCaseTestSource) {
+            popTestSource ();
+        } else {
+            return false;
+        }
+
+        initAndPush (mSourceStack.peek ().createTestCase (name, description));
+        mInATestCase = true;
+        return true;
+    }
+
+    boolean inATestCase () {
+        return mInATestCase;
+    }
+
+    void popTestCase () {
+        if (mSourceStack.isEmpty ()) {
+            throw new ExecutionException ("no current test source");
+        } else if (!(mSourceStack.peek () instanceof TestCaseTestSource)) {
+            throw new ExecutionException ("not in a test case (in this test line source)");
+        } else {
+            popTestSource ();
+            mInATestCase = false;
+        }
+    }
+
+    private void popTestSource () {
+        mSourceStack.pop ().cleanup ();
+    }
 }

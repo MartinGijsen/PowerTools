@@ -29,25 +29,25 @@ import org.powertools.engine.sources.TestSourceFactory;
  * It reports to an HTML log.
  */
 public class ModelBasedEngine extends Engine {
-	public static void main (String[] args) {
-		switch (args.length) {
-		case 2:
-			new ModelBasedEngine (args[0]).run (args[1]);
-			break;
-		case 4:
-			new ModelBasedEngine (args[0]).run (args[1], args[2], args[3]);
-			break;
-		default:
-			System.err.println ("Please specify a directory, model file name, selection strategy and stop condition");
-			System.err.println ("\tselection strategies: random, weighted");
-			System.err.println ("\tstop conditions: all nodes, all edges, end node, never");
-		}
-	}
+    public static void main (String[] args) {
+        switch (args.length) {
+        case 2:
+            new ModelBasedEngine (args[0]).run (args[1]);
+            break;
+        case 4:
+            new ModelBasedEngine (args[0]).run (args[1], args[2], args[3]);
+            break;
+        default:
+            System.err.println ("Please specify a directory, model file name, selection strategy and stop condition");
+            System.err.println ("\tselection strategies: random, weighted");
+            System.err.println ("\tstop conditions: all nodes, all edges, end node, never");
+        }
+    }
 
 
-	protected ModelBasedEngine (String resultsDirectory) {
-		this (new RunTimeImpl (new Context (resultsDirectory)));
-	}
+    protected ModelBasedEngine (String resultsDirectory) {
+        this (new RunTimeImpl (new Context (resultsDirectory)));
+    }
 
     protected ModelBasedEngine (RunTimeImpl runTime) {
         super (runTime);
@@ -66,9 +66,9 @@ public class ModelBasedEngine extends Engine {
 
     protected void run (String fileName, String selector, String condition) {
         try {
-            run (TestSourceFactory.createModelTestSource (fileName, selector, condition, mRunTime.getGlobalScope (), mRunTime));
+            run (TestSourceFactory.createModelTestSource (fileName, selector, condition, mRunTime));
         } catch (ExecutionException ee) {
-			System.err.println ("error: " + ee.getMessage ());
+            System.err.println ("error: " + ee.getMessage ());
         }
     }
 }

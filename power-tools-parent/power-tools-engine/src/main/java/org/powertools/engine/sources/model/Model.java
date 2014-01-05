@@ -41,27 +41,29 @@ public final class Model {
     static final String SUBMODEL_ACTION_PREFIX = "submodel ";
 	
     private final TestRunResultPublisher         mPublisher;
-
-    private final EdgeSelectionStrategy          mSelector;
-    private final DoneCondition                  mDoneCondition;
     private final Stack<ActiveGraph>             mGraphStack;
     private final Map<String, DirectedGraphImpl> mSubModels;
 
+    private EdgeSelectionStrategy                mSelector;
+    private DoneCondition                        mDoneCondition;
     private boolean                              mDoneConditionSatisfied;
 
 
-    public Model (String name, String selector, String doneCondition, RunTime runTime) {
+    public Model () {
         mPublisher              = TestRunResultPublisher.getInstance ();
         mDoneConditionSatisfied = false;
         mSubModels              = new HashMap<String, DirectedGraphImpl> ();
+        mGraphStack             = new Stack<ActiveGraph> ();
+    }
+
+    public void initialize (String name, String selector, String doneCondition, RunTime runTime) {
+        DirectedGraphImpl mainGraph = DirectedGraphImpl.createGraph (name);
+        ActiveGraph activeGraph     = new ActiveGraph (mainGraph);
+        mGraphStack.push (activeGraph);
 
         mSelector = EdgeSelectionStrategyFactory.create (selector, runTime);
         mPublisher.publishCommentLine ("edge selection: " + mSelector.getDescription ());
 
-        mGraphStack                 = new Stack<ActiveGraph> ();
-        DirectedGraphImpl mainGraph = DirectedGraphImpl.createGraph (name);
-        ActiveGraph activeGraph     = new ActiveGraph (mainGraph);
-        mGraphStack.push (activeGraph);
         mDoneCondition = DoneConditionFactory.create (doneCondition, mainGraph);
         mPublisher.publishCommentLine ("stop condition: " + mDoneCondition.getDescription ());
 

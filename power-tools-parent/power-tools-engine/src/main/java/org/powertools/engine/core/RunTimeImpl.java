@@ -48,155 +48,155 @@ import org.powertools.engine.symbol.Util;
  * Shared objects are used to exchange information between instruction sets.
  */
 public final class RunTimeImpl implements RunTime, ProcedureRunner {
-	final TestSourceStack mSourceStack;
+    final TestSourceStack mSourceStack;
 
-	private final Context mContext;
-	private final TestRunResultPublisher mPublisher;
-	private final RolesImpl mRoles;
-	private final Map<String, Object> mSharedObjects;
-
-
-	public RunTimeImpl (Context context) {
-		mSourceStack	= new TestSourceStack (getGlobalScope ());
-		mContext		= context;
-		mPublisher 		= TestRunResultPublisher.getInstance ();
-		mRoles			= new RolesImpl (this);
-		mSharedObjects	= new HashMap<String, Object> ();
-	}
+    private final Context mContext;
+    private final TestRunResultPublisher mPublisher;
+    private final RolesImpl mRoles;
+    private final Map<String, Object> mSharedObjects;
 
 
-	@Override
-	public Context getContext () {
-		return mContext;
-	}
-
-	
-	@Override
-	public boolean enterTestCase (String name, String description) {
-		mSourceStack.createAndPushTestCase (name, description);
-		mPublisher.publishTestCaseBegin (name, description);
-		return true;
-	}
-
-	@Override
-	public boolean leaveTestCase () {
-		mSourceStack.popTestCase ();
-		mPublisher.publishTestCaseEnd ();
-		return true;
-	}
+    public RunTimeImpl (Context context) {
+        mSourceStack   = new TestSourceStack (getGlobalScope ());
+        mContext       = context;
+        mPublisher     = TestRunResultPublisher.getInstance ();
+        mRoles         = new RolesImpl (this);
+        mSharedObjects = new HashMap<String, Object> ();
+    }
 
 
-	@Override
-	public boolean addSharedObject (String name, Object object) {
-		if (mSharedObjects.containsKey (name)) {
-			return false;
-		} else {
-			mSharedObjects.put (name, object);
-			return true;
-		}
-	}
-
-	@Override
-	public Object getSharedObject (String name) {
-		if (mSharedObjects.containsKey (name)) {
-			return mSharedObjects.get (name);
-		} else {
-			return null;
-		}
-	}
+    @Override
+    public Context getContext () {
+        return mContext;
+    }
 
 
-	@Override
-	public void reportValueError (String expression, String actualValue, String expectedValue) {
-		mPublisher.publishValueError (expression, actualValue, expectedValue);
-	}
+    @Override
+    public boolean enterTestCase (String name, String description) {
+        mSourceStack.createAndPushTestCase (name, description);
+        mPublisher.publishTestCaseBegin (name, description);
+        return true;
+    }
 
-	@Override
-	public void reportError (String message) {
-		mPublisher.publishError (message);
-	}
-
-	@Override
-	public void reportStackTrace (Exception e) {
-		mPublisher.publishStackTrace (e);
-	}
-
-	@Override
-	public void reportWarning (String message) {
-		mPublisher.publishWarning (message);
-	}
-
-	@Override
-	public void reportValue(String expression, String value) {
-		mPublisher.publishValue (expression, value);
-	}
-	
-	@Override
-	public void reportInfo (String message) {
-		mPublisher.publishInfo (message);
-	}
-	
-	@Override
-	public void reportLink (String url) {
-		mPublisher.publishLink (url);
-	}
-
-	
-	@Override
-	public Scope getGlobalScope () {
-		return Scope.getGlobalScope ();
-	}
-	
-	@Override
-	public Symbol getSymbol (String name) {
-		return mSourceStack.getCurrentScope ().getSymbol (name);
-	}
-
-	@Override
-	public void setValue (String name, String value) {
-		mSourceStack.getCurrentScope ().getSymbol (name).setValue (value);
-	}
-	
-	@Override
-	public void copyStructure (String source, String target) {
-		Symbol sourceSymbol = mSourceStack.getCurrentScope ().getSymbol (source);
-		Symbol targetSymbol = mSourceStack.getCurrentScope ().getSymbol (target);
-		Util.copy (sourceSymbol, targetSymbol, source.split (Symbol.PERIOD), target);
-	}
-
-	@Override
-	public void clearStructure (String name) {
-		mSourceStack.getCurrentScope ().getSymbol (name).clear (name);
-	}
+    @Override
+    public boolean leaveTestCase () {
+        mSourceStack.popTestCase ();
+        mPublisher.publishTestCaseEnd ();
+        return true;
+    }
 
 
-	@Override
-	public Scope getCurrentScope () {
-		return mSourceStack.getCurrentScope ();
-	}
+    @Override
+    public boolean addSharedObject (String name, Object object) {
+        if (mSharedObjects.containsKey (name)) {
+            return false;
+        } else {
+            mSharedObjects.put (name, object);
+            return true;
+        }
+    }
 
-	public void invokeSource (TestSource source) {
-		mSourceStack.initAndPush (source);
-	}
+    @Override
+    public Object getSharedObject (String name) {
+        if (mSharedObjects.containsKey (name)) {
+            return mSharedObjects.get (name);
+        } else {
+            return null;
+        }
+    }
 
-	void evaluateExpressions (TestLineImpl testLine) {
-		Scope scope		= getCurrentScope ();
-		int nrOfParts	= testLine.getNrOfParts ();
-		for (int partNr = 0; partNr < nrOfParts; ++partNr) {
-			final String part = testLine.getPart (partNr);
-			if (part.startsWith ("?")) {
-				testLine.setEvaluatedPart (partNr, ExpressionEvaluator.evaluate (part, scope));
-			}
-		}
-	}
 
-	@Override
-	public Roles getRoles () {
-		return mRoles;
-	}
+    @Override
+    public void reportValueError (String expression, String actualValue, String expectedValue) {
+        mPublisher.publishValueError (expression, actualValue, expectedValue);
+    }
 
-	@Override
-	public void setBusinessDayChecker (BusinessDayChecker checker) {
-		ExpressionEvaluator.setBusinessDayChecker (checker);
-	}
+    @Override
+    public void reportError (String message) {
+        mPublisher.publishError (message);
+    }
+
+    @Override
+    public void reportStackTrace (Exception e) {
+        mPublisher.publishStackTrace (e);
+    }
+
+    @Override
+    public void reportWarning (String message) {
+        mPublisher.publishWarning (message);
+    }
+
+    @Override
+    public void reportValue(String expression, String value) {
+        mPublisher.publishValue (expression, value);
+    }
+
+    @Override
+    public void reportInfo (String message) {
+        mPublisher.publishInfo (message);
+    }
+
+    @Override
+    public void reportLink (String url) {
+        mPublisher.publishLink (url);
+    }
+
+
+    @Override
+    public Scope getGlobalScope () {
+        return Scope.getGlobalScope ();
+    }
+
+    @Override
+    public Symbol getSymbol (String name) {
+        return mSourceStack.getCurrentScope ().getSymbol (name);
+    }
+
+    @Override
+    public void setValue (String name, String value) {
+        mSourceStack.getCurrentScope ().getSymbol (name).setValue (value);
+    }
+
+    @Override
+    public void copyStructure (String source, String target) {
+        Symbol sourceSymbol = mSourceStack.getCurrentScope ().getSymbol (source);
+        Symbol targetSymbol = mSourceStack.getCurrentScope ().getSymbol (target);
+        Util.copy (sourceSymbol, targetSymbol, source.split (Symbol.PERIOD), target);
+    }
+
+    @Override
+    public void clearStructure (String name) {
+        mSourceStack.getCurrentScope ().getSymbol (name).clear (name);
+    }
+
+
+    @Override
+    public Scope getCurrentScope () {
+        return mSourceStack.getCurrentScope ();
+    }
+
+    public void invokeSource (TestSource source) {
+        mSourceStack.initAndPush (source);
+    }
+
+    void evaluateExpressions (TestLineImpl testLine) {
+        Scope scope   = getCurrentScope ();
+        int nrOfParts = testLine.getNrOfParts ();
+        for (int partNr = 0; partNr < nrOfParts; ++partNr) {
+            final String part = testLine.getPart (partNr);
+            if (part.startsWith ("?")) {
+                testLine.setEvaluatedPart (partNr, ExpressionEvaluator.evaluate (part, scope));
+            }
+        }
+    }
+
+    @Override
+    public Roles getRoles () {
+        return mRoles;
+    }
+
+    @Override
+    public void setBusinessDayChecker (BusinessDayChecker checker) {
+        ExpressionEvaluator.setBusinessDayChecker (checker);
+    }
 }

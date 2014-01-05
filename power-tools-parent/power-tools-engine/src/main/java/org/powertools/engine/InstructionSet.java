@@ -23,7 +23,7 @@ package org.powertools.engine;
  * or have a setup or cleanup method called by the engine.
  */
 public interface InstructionSet {
-	String getName ();
-	void setup ();
-	void cleanup ();
+    String getName ();
+    void setup ();
+    void cleanup ();
 }

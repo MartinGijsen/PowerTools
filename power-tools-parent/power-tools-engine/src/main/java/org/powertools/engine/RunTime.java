@@ -32,144 +32,144 @@ import org.powertools.engine.symbol.Scope;
  * so data or logic can be shared between instruction sets.
  */
 public interface RunTime {
-	/**
-	 * Returns the Context that describes the context in which a test runs,
-	 * including the start time, the results directory and the log file path.
-	 * @return	the context for the test run
-	 */
-	Context getContext ();
+    /**
+     * Returns the Context that describes the context in which a test runs,
+     * including the start time, the results directory and the log file path.
+     * @return	the context for the test run
+     */
+    Context getContext ();
 
-	
-	/**
-	 * Reports an incorrect value error message to the log (and any interested report(s))
-	 * @param	expression	the expression being considered
-	 * @param	actualValue	the actual value
-	 * @param	expectedValue	the expected value
-	 */
-	void reportValueError (String expression, String actualValue, String expectedValue);
 
-	/**
-	 * Reports an error message to the log (and any interested report(s))
-	 * @param	message	the message to report
-	 */
-	void reportError (String message);
+    /**
+     * Reports an incorrect value error message to the log (and any interested report(s))
+     * @param	expression	the expression being considered
+     * @param	actualValue	the actual value
+     * @param	expectedValue	the expected value
+     */
+    void reportValueError (String expression, String actualValue, String expectedValue);
 
-	/**
-	 * Reports an exception stack trace to the log (and any interested report(s))
-	 * @param	e	the exception to report the stack trace of
-	 */
-	void reportStackTrace (Exception e);
+    /**
+     * Reports an error message to the log (and any interested report(s))
+     * @param	message	the message to report
+     */
+    void reportError (String message);
 
-	/**
-	 * Reports an warning message to the log (and any interested report(s))
-	 * @param	message	the message to report
-	 */
-	void reportWarning (String message);
+    /**
+     * Reports an exception stack trace to the log (and any interested report(s))
+     * @param	e	the exception to report the stack trace of
+     */
+    void reportStackTrace (Exception e);
 
-	/**
-	 * Reports a value to the log (and any interested report(s))
-	 * @param	expression	the expression being considered
-	 * @param	value	the value of the expression
-	 */
-	void reportValue (String expression, String value);
+    /**
+     * Reports an warning message to the log (and any interested report(s))
+     * @param	message	the message to report
+     */
+    void reportWarning (String message);
 
-	/**
-	 * Reports an info message to the log (and any interested report(s))
-	 * @param	message	the message to report
-	 */
-	void reportInfo (String message);
+    /**
+     * Reports a value to the log (and any interested report(s))
+     * @param	expression	the expression being considered
+     * @param	value	the value of the expression
+     */
+    void reportValue (String expression, String value);
 
-	/**
-	 * Reports a URL in an info message to the log (and any interested report(s))
-	 * so that it can be rendered in a clickable way
-	 * @param	url	the URL to report
-	 */
-	void reportLink (String url);
+    /**
+     * Reports an info message to the log (and any interested report(s))
+     * @param	message	the message to report
+     */
+    void reportInfo (String message);
 
-	
-	/**
-	 * Returns the global scope for getting and setting global symbols
-	 * @return	the global scope
-	 */
-	Scope getGlobalScope ();
+    /**
+     * Reports a URL in an info message to the log (and any interested report(s))
+     * so that it can be rendered in a clickable way
+     * @param	url	the URL to report
+     */
+    void reportLink (String url);
 
-	/**
-	 * Returns the current local scope for getting and setting symbols
-	 * @return	the current local scope
-	 */
-	Scope getCurrentScope ();
 
-	
-	/**
-	 * Returns the first symbol found with the specified name,
-	 * starting to look in the local scope
-	 * @param	name	the symbol name
-	 * @return	the first symbol with the specified name
-	 */
-	Symbol getSymbol (String name);
+    /**
+     * Returns the global scope for getting and setting global symbols
+     * @return	the global scope
+     */
+    Scope getGlobalScope ();
 
-	/**
-	 * Sets the value of a symbol to the specified value
-	 * @param	name	the name of the symbol to set
-	 * @param	value	the value to set the symbol to
-	 */
-	void setValue (String name, String value);
+    /**
+     * Returns the current local scope for getting and setting symbols
+     * @return	the current local scope
+     */
+    Scope getCurrentScope ();
 
-	/**
-	 * Copies all fields of a (sub)structure to another (sub)structure
-	 * @param	target	the name of the (sub)structure to set
-	 * @param	source	the name of the (sub)structure to copy from
-	 */
-	void copyStructure (String target, String source);
 
-	/**
-	 * Clears a (sub)structure of all fields
-	 * @param	name	the name of the (sub)structure to clear
-	 */
-	void clearStructure (String name);
+    /**
+     * Returns the first symbol found with the specified name,
+     * starting to look in the local scope
+     * @param	name	the symbol name
+     * @return	the first symbol with the specified name
+     */
+    Symbol getSymbol (String name);
 
-	
-	/**
-	 * Returns the roles object that contains registered user names and passwords
-	 * @return	the roles object
-	 */
-	Roles getRoles ();
-	
+    /**
+     * Sets the value of a symbol to the specified value
+     * @param	name	the name of the symbol to set
+     * @param	value	the value to set the symbol to
+     */
+    void setValue (String name, String value);
 
-	/**
-	 * Enters a test case, creating a new scope for variables.
-	 * @param	name	the (unique) name of the test case
-	 * @param	description	a description of the test case
-	 * @return	true
-	 */
-	boolean enterTestCase (String name, String description);
+    /**
+     * Copies all fields of a (sub)structure to another (sub)structure
+     * @param	target	the name of the (sub)structure to set
+     * @param	source	the name of the (sub)structure to copy from
+     */
+    void copyStructure (String target, String source);
 
-	/**
-	 * Leaves the test case and deletes its scope and the variables in it
-	 * @return	false if not in a test case, true otherwise
-	 */
-	boolean leaveTestCase ();
-	
+    /**
+     * Clears a (sub)structure of all fields
+     * @param	name	the name of the (sub)structure to clear
+     */
+    void clearStructure (String name);
 
-	/**
-	 * Makes an object available to other instruction sets
-	 * @param	name	the name of the object
-	 * @param	object	the object to share
-	 * @return	false if an object of the specified name already exists, true otherwise
-	 */
-	boolean addSharedObject (String name, Object object);
 
-	/**
-	 * Returns an object available to other instruction sets
-	 * @param	name	the name of the object to get
-	 * @return	the specified shared object
-	 */
-	Object getSharedObject (String name);
-	
-	/**
-	 * Sets the object that determines which are business days for
-	 * date expressions with business days (e.g. 'today + 1 business day')
-	 * @param	checker	the business day checker to use
-	 */
-	void setBusinessDayChecker (BusinessDayChecker checker);
+    /**
+     * Returns the roles object that contains registered user names and passwords
+     * @return	the roles object
+     */
+    Roles getRoles ();
+
+
+    /**
+     * Enters a test case, creating a new scope for variables.
+     * @param	name	the (unique) name of the test case
+     * @param	description	a description of the test case
+     * @return	true
+     */
+    boolean enterTestCase (String name, String description);
+
+    /**
+     * Leaves the test case and deletes its scope and the variables in it
+     * @return	false if not in a test case, true otherwise
+     */
+    boolean leaveTestCase ();
+
+
+    /**
+     * Makes an object available to other instruction sets
+     * @param	name	the name of the object
+     * @param	object	the object to share
+     * @return	false if an object of the specified name already exists, true otherwise
+     */
+    boolean addSharedObject (String name, Object object);
+
+    /**
+     * Returns an object available to other instruction sets
+     * @param	name	the name of the object to get
+     * @return	the specified shared object
+     */
+    Object getSharedObject (String name);
+
+    /**
+     * Sets the object that determines which are business days for
+     * date expressions with business days (e.g. 'today + 1 business day')
+     * @param	checker	the business day checker to use
+     */
+    void setBusinessDayChecker (BusinessDayChecker checker);
 }

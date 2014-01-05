@@ -25,24 +25,24 @@ package org.powertools.engine;
  * A stack trace is only rarely relevant and specified explicitly if it is.
  */
 public final class ExecutionException extends RuntimeException {
-	private static final long serialVersionUID = 1L;
-	
-	private final boolean mHasStackTrace;
+    private static final long serialVersionUID = 1L;
 
-	
-	public ExecutionException (String errorMessage) {
-		super (errorMessage);
-		mHasStackTrace = false;
-	}
+    private final boolean mHasStackTrace;
 
-	public ExecutionException (String errorMessage, StackTraceElement[] stackTrace) {
-		super (errorMessage);
-		setStackTrace (stackTrace);
-		mHasStackTrace = true;
-	}
-	
-	
-	public boolean hasStackTrace () {
-		return mHasStackTrace;
-	}
+
+    public ExecutionException (String errorMessage) {
+        super (errorMessage);
+        mHasStackTrace = false;
+    }
+
+    public ExecutionException (String errorMessage, StackTraceElement[] stackTrace) {
+        super (errorMessage);
+        setStackTrace (stackTrace);
+        mHasStackTrace = true;
+    }
+
+
+    public boolean hasStackTrace () {
+        return mHasStackTrace;
+    }
 }

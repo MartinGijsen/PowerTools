@@ -20,12 +20,12 @@ package org.powertools.engine;
 
 
 public interface Roles {
-	void addRole (String role, String domain, String username, String password);
-	void addRole (String system, String role, String domain, String username, String password);
-	String getDomain (String role);
-	String getDomain (String system, String role);
-	String getUsername (String role);
-	String getUsername (String system, String role);
-	String getPassword (String role);
-	String getPassword (String system, String role);
+    void addRole (String role, String domain, String username, String password);
+    void addRole (String system, String role, String domain, String username, String password);
+    String getDomain (String role);
+    String getDomain (String system, String role);
+    String getUsername (String role);
+    String getUsername (String system, String role);
+    String getPassword (String role);
+    String getPassword (String system, String role);
 }

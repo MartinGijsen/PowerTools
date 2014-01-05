@@ -44,8 +44,8 @@ public final class TestSourceFactory {
 		}
 	}
 
-	public static TestSource createModelTestSource (String fileName, String selector, String doneCondition, Scope scope, RunTime runTime) {
-		return new ModelTestSource (fileName, selector, doneCondition, scope, runTime);
+	public static TestSource createModelTestSource (String fileName, String selector, String doneCondition, RunTime runTime) {
+		return new ModelTestSource (fileName, selector, doneCondition, runTime);
 	}
 	
 	public static TestSource createProcedureTestSource (Procedure procedure, Scope parentScope, TestLine testLine) {

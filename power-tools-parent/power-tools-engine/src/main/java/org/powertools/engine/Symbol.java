@@ -30,17 +30,17 @@ package org.powertools.engine;
  * A (field in a) structure can be cleared, removing all the fields it contains. 
  */
 public interface Symbol {
-	String PERIOD = "\\.";
+    String PERIOD = "\\.";
 
-	
-	String getName ();
 
-	void setValue (String value);
-	void setValue (String name, String value);
+    String getName ();
 
-	String getValue ();
-	String getValue (String name);
+    void setValue (String value);
+    void setValue (String name, String value);
 
-	void clear (String[] names);
-	void clear (String name);
+    String getValue ();
+    String getValue (String name);
+
+    void clear (String[] names);
+    void clear (String name);
 }
