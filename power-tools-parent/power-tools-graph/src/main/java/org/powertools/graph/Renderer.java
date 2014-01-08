@@ -1,4 +1,4 @@
-/* Copyright 2013 by Martin Gijsen (www.DeAnalist.nl)
+/* Copyright 2013-2014 by Martin Gijsen (www.DeAnalist.nl)
  *
  * This file is part of the PowerTools.
  *
@@ -22,7 +22,6 @@ import java.io.PrintWriter;
 
 
 public interface Renderer {
-    void setCleanup (boolean value);
     void setDefaultFileType (String type);
     String getDefaultFileType ();
     void write (String filename, DirectedGraph graph);

@@ -1,4 +1,4 @@
-/* Copyright 2013 by Martin Gijsen (www.DeAnalist.nl)
+/* Copyright 2013-2014 by Martin Gijsen (www.DeAnalist.nl)
  *
  * This file is part of the PowerTools.
  *
@@ -112,7 +112,7 @@ public final class DirectedGraph extends AttributeSetWithDefaultNodeAttributes {
     public Node getNode (String name) {
         Node node = mNodes.get (name);
         if (node == null) {
-            throw new GraphException ("unknown node: " + name);
+            throw new GraphException (String.format ("node %s does not exist", name));
         }
         return node;
     }
@@ -185,7 +185,7 @@ public final class DirectedGraph extends AttributeSetWithDefaultNodeAttributes {
                 }
             }
         }
-        throw new GraphException ("edge does not exist");
+        throw new GraphException (String.format ("edge from %s to %s does not exist", source.getName (), target.getName ()));
     }
 
     public Set<Edge> getEdges (Node source) {

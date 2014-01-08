@@ -1,4 +1,4 @@
-/* Copyright 2013 by Martin Gijsen (www.DeAnalist.nl)
+/* Copyright 2013-2014 by Martin Gijsen (www.DeAnalist.nl)
  *
  * This file is part of the PowerTools engine.
  *
@@ -20,6 +20,7 @@ package org.powertools.engine.sources.model;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.Stack;
 
 import org.powertools.engine.RunTime;
@@ -68,10 +69,23 @@ public final class Model {
         mPublisher.publishCommentLine ("stop condition: " + mDoneCondition.getDescription ());
 
         mPublisher.publishCommentLine ("start node: " + activeGraph.mCurrentNode.getDescription ());
+        
+        reportEdges ();
     }
 
+    private void reportEdges () {
+        DirectedGraphImpl graph = mGraphStack.peek ().mGraph;
+        for (Set<Edge> set : graph.mEdges.values ()) {
+            for (Edge edge : set) {
+                mPublisher.publishNewEdge (edge.mSource.getName (), edge.mTarget.getName ());
+            }
+        }
+    }
+    
     public String getNextAction () {
-        return getNextEdge ().mAction;
+        Edge edge = getNextEdge ();
+        mPublisher.publishAtEdge (edge.mSource.getName (), edge.mTarget.getName ());
+        return edge.mAction;
     }
 
     private Edge getNextEdge () {

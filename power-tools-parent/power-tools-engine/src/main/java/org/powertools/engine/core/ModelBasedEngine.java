@@ -1,4 +1,4 @@
-/* Copyright 2013 by Martin Gijsen (www.DeAnalist.nl)
+/* Copyright 2013-2014 by Martin Gijsen (www.DeAnalist.nl)
  *
  * This file is part of the PowerTools engine.
  *
@@ -22,6 +22,7 @@ import org.powertools.engine.Context;
 import org.powertools.engine.ExecutionException;
 import org.powertools.engine.reports.ReportFactory;
 import org.powertools.engine.sources.TestSourceFactory;
+import org.powertools.graph.GraphException;
 
 
 /**
@@ -55,6 +56,7 @@ public class ModelBasedEngine extends Engine {
         if (!ReportFactory.createKeywordsHtmlLog (runTime.getContext ())) {
             mPublisher.publishError ("could not open HTML log");
         }
+        ReportFactory.createModelCoverageGraph (mRunTime.getContext ().getResultsDirectory ());
 
         registerBuiltinInstructions ();
     }
@@ -67,6 +69,8 @@ public class ModelBasedEngine extends Engine {
     protected void run (String fileName, String selector, String condition) {
         try {
             run (TestSourceFactory.createModelTestSource (fileName, selector, condition, mRunTime));
+        } catch (GraphException ee) {
+            System.err.println ("error: " + ee.getMessage ());
         } catch (ExecutionException ee) {
             System.err.println ("error: " + ee.getMessage ());
         }

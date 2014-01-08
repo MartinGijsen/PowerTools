@@ -1,4 +1,4 @@
-/* Copyright 2012 by Martin Gijsen (www.DeAnalist.nl)
+/* Copyright 2012-2014 by Martin Gijsen (www.DeAnalist.nl)
  *
  * This file is part of the PowerTools engine.
  *
@@ -65,5 +65,11 @@ public final class ReportFactory {
         TestRunResultPublisher publisher = TestRunResultPublisher.getInstance ();
         publisher.subscribeToTestLines (console);
         publisher.subscribeToTestResults (console);
+    }
+
+    public static void createModelCoverageGraph (String resultsDirectory) {
+        ModelCoverageGraph graph         = new ModelCoverageGraph (resultsDirectory);
+        TestRunResultPublisher publisher = TestRunResultPublisher.getInstance ();
+        publisher.subscribeToModel (graph);
     }
 }

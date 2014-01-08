@@ -1,4 +1,4 @@
-/*	Copyright 2013 by Martin Gijsen (www.DeAnalist.nl)
+/*	Copyright 2013-2014 by Martin Gijsen (www.DeAnalist.nl)
  *
  *	This file is part of the PowerTools engine.
  *
@@ -36,63 +36,71 @@ public class GraphVizTest {
 			"}\r\n";
 	private final String DOT_FILE_FOR_SIMPLE_GRAPH_WITH_NO_DEFAULT_VALUES =
 			"digraph G {\r\n" +
-			"	concentrate = true;\r\n" +
-			"	rankdir = LR;\r\n" +
-			"	ranksep = 1.5;\r\n" +
-			"	nodesep = 0.5;\r\n" +
-			"	label = graph label;\r\n" +
-			"	style = dashed;\r\n" +
-			"	color = lime;\r\n" +
-			"	penwidth = 1;\r\n" +
-			"	bgcolor = aqua;\r\n" +
-			"	fontcolor = red;\r\n" +
-			"	fontname = Arial;\r\n" +
-			"	fontsize = 8;\r\n" +
-			"		node [ shape = diamond ];\r\n" +
-			"		node [ style = dashed ];\r\n" +
-			"		node [ color = red ];\r\n" +
-			"		node [ penwidth = 2 ];\r\n" +
-			"		node [ fillcolor = beige ];\r\n" +
-			"		node [ fontcolor = black ];\r\n" +
-			"		node [ fontname = Times-Roman ];\r\n" +
-			"		node [ fontsize = 9 ];\r\n" +
+			"	concentrate = \"true\";\r\n" +
+			"	rankdir = \"LR\";\r\n" +
+			"	ranksep = \"1.5\";\r\n" +
+			"	nodesep = \"0.5\";\r\n" +
+			"	label = \"graph label\";\r\n" +
+			"	style = \"dashed\";\r\n" +
+			"	color = \"lime\";\r\n" +
+			"	penwidth = \"1\";\r\n" +
+			"	bgcolor = \"aqua\";\r\n" +
+			"	fontcolor = \"red\";\r\n" +
+			"	fontname = \"Arial\";\r\n" +
+			"	fontsize = \"8\";\r\n" +
+			"		node [ shape = \"diamond\" ];\r\n" +
+			"		node [ style = \"dashed\" ];\r\n" +
+			"		node [ color = \"red\" ];\r\n" +
+			"		node [ penwidth = \"2\" ];\r\n" +
+			"		node [ fillcolor = \"beige\" ];\r\n" +
+			"		node [ fontcolor = \"black\" ];\r\n" +
+			"		node [ fontname = \"Times-Roman\" ];\r\n" +
+			"		node [ fontsize = \"9\" ];\r\n" +
 			"	subgraph cluster_1 {\r\n" +
 			"		label = \"cluster label\";\r\n" +
-			"		style = bold;\r\n" +
-			"		color = azure;\r\n" +
-			"		penwidth = 3;\r\n" +
-			"		fillcolor = blue;\r\n" +
-			"		fontcolor = brown;\r\n" +
-			"		fontname = Cambria;\r\n" +
-			"		fontsize = 10;\r\n" +
-			"		node [ shape = hexagon ];\r\n" +
-			"		node [ style = dotted ];\r\n" +
-			"		node [ color = coral ];\r\n" +
-			"		node [ penwidth = 4 ];\r\n" +
-			"		node [ fillcolor = crimson ];\r\n" +
-			"		node [ fontcolor = cyan ];\r\n" +
-			"		node [ fontname = Courier new ];\r\n" +
-			"		node [ fontsize = 11 ];\r\n" +
+			"		style = \"bold\";\r\n" +
+			"		color = \"azure\";\r\n" +
+			"		penwidth = \"3\";\r\n" +
+			"		fillcolor = \"blue\";\r\n" +
+			"		fontcolor = \"brown\";\r\n" +
+			"		fontname = \"Cambria\";\r\n" +
+			"		fontsize = \"10\";\r\n" +
+			"		node [ shape = \"hexagon\" ];\r\n" +
+			"		node [ style = \"dotted\" ];\r\n" +
+			"		node [ color = \"coral\" ];\r\n" +
+			"		node [ penwidth = \"4\" ];\r\n" +
+			"		node [ fillcolor = \"crimson\" ];\r\n" +
+			"		node [ fontcolor = \"cyan\" ];\r\n" +
+			"		node [ fontname = \"Courier new\" ];\r\n" +
+			"		node [ fontsize = \"11\" ];\r\n" +
 			"		\"node1\";\r\n" +
 			"	}\r\n" +
-			"	\"node1\" [ label = edge label ];\r\n" +
-			"	\"node1\" [ shape = octagon ];\r\n" +
-			"	\"node1\" [ style = filled ];\r\n" +
-			"	\"node1\" [ color = fuchsia ];\r\n" +
-			"	\"node1\" [ penwidth = 5 ];\r\n" +
-			"	\"node1\" [ fillcolor = gold ];\r\n" +
-			"	\"node1\" [ fontcolor = gray ];\r\n" +
-			"	\"node1\" [ fontname = Something ];\r\n" +
-			"	\"node1\" [ fontsize = 12 ];\r\n" +
-			"	\"node1\" -> \"node2\" [ label = edge label ] [ style = invis ] [ color = green ] [ penwidth = 6 ] [ fillcolor = indigo ] [ fontcolor = ivory ] [ fontname = Something else ] [ fontsize = 13 ];\r\n" +
+			"	\"node1\" [ label = \"edge label\" ];\r\n" +
+			"	\"node1\" [ shape = \"octagon\" ];\r\n" +
+			"	\"node1\" [ style = \"filled\" ];\r\n" +
+			"	\"node1\" [ color = \"fuchsia\" ];\r\n" +
+			"	\"node1\" [ penwidth = \"5\" ];\r\n" +
+			"	\"node1\" [ fillcolor = \"gold\" ];\r\n" +
+			"	\"node1\" [ fontcolor = \"gray\" ];\r\n" +
+			"	\"node1\" [ fontname = \"Something\" ];\r\n" +
+			"	\"node1\" [ fontsize = \"12\" ];\r\n" +
+			"	\"node1\" -> \"node2\" [ label = \"edge label\" ] [ style = \"invis\" ] [ color = \"green\" ] [ penwidth = \"6\" ] [ fillcolor = \"indigo\" ] [ fontcolor = \"ivory\" ] [ fontname = \"Something else\" ] [ fontsize = \"13\" ];\r\n" +
 			"}\r\n";
 
 	@Test
-	public void testSetDefaultType () {
+	public void testSetGetDefaultType () {
 		String fileType = "png";
 		GraphViz graphViz = new GraphViz ("");
 		graphViz.setDefaultFileType (fileType);
 		assertEquals (fileType, graphViz.getDefaultFileType ());
+	}
+
+	@Test
+	public void testSetDebugMode () {
+		GraphViz graphViz = new GraphViz ("");
+		assertFalse (graphViz.inDebugMode ());
+		graphViz.setDebugMode (true);
+		assertTrue (graphViz.inDebugMode ());
 	}
 
 	@Test
@@ -214,15 +222,6 @@ public class GraphVizTest {
 //		DirectedGraph graph = null;
 //		GraphViz instance = null;
 //		instance.write(filename, type, graph);
-//		fail("The test case is a prototype.");
-//	}
-//
-//	@Test
-//	public void testSetCleanup() {
-//		System.out.println("setCleanup");
-//		boolean value = false;
-//		GraphViz instance = null;
-//		instance.setCleanup(value);
 //		fail("The test case is a prototype.");
 //	}
 //

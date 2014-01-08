@@ -1,4 +1,4 @@
-/* Copyright 2013 by Martin Gijsen (www.DeAnalist.nl)
+/* Copyright 2013-2014 by Martin Gijsen (www.DeAnalist.nl)
  *
  * This file is part of the PowerTools engine.
  *
@@ -57,10 +57,8 @@ final class RandomEdgeSelector implements EdgeSelectionStrategy {
         }
 
         if (currentNode.mLabel.equals (Model.END_NODE_LABEL)) {
-            // TODO prepare at the start
             return graph.addEdge (currentNode, graph.getRoot ());
         } else {
-            // TODO check at the start (remove exception?)
             throw new ExecutionException (String.format ("no edges out of node %s", currentNode.getName ()));
         }
     }

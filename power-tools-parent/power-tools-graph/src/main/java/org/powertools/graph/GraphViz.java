@@ -1,4 +1,4 @@
-/* Copyright 2013 by Martin Gijsen (www.DeAnalist.nl)
+/* Copyright 2013-2014 by Martin Gijsen (www.DeAnalist.nl)
  *
  * This file is part of the PowerTools.
  *
@@ -32,7 +32,7 @@ public final class GraphViz implements Renderer {
     private File mFile;
     private PrintWriter mWriter;
     private String mDefaultFileType;
-    private boolean mDoCleanup;
+    private boolean mInDebugMode;
 
 
     public GraphViz (String path) {
@@ -42,14 +42,17 @@ public final class GraphViz implements Renderer {
     public GraphViz (String path, String defaultType) {
         mPath            = path;
         mDefaultFileType = defaultType;
-        mDoCleanup       = true;
+        mInDebugMode     = false;
     }
 
-    @Override
-    public void setCleanup (boolean value) {
-        mDoCleanup = value;
+    public void setDebugMode (boolean value) {
+        mInDebugMode = value;
     }
 
+    public boolean inDebugMode () {
+        return mInDebugMode;
+    }
+    
     @Override
     public void setDefaultFileType (String fileType) {
         mDefaultFileType = fileType;
@@ -101,7 +104,7 @@ public final class GraphViz implements Renderer {
 
     private void openDotFile () {
         try {
-            mFile   = File.createTempFile ("PowerTools", ".dot");
+            mFile   = File.createTempFile ("PowerTools", ".dot", new File ("."));
             mWriter = new PrintWriter (new FileOutputStream (mFile));
         } catch (IOException ioe) {
             throw new GraphException ("failed to create temporary file");
@@ -132,7 +135,7 @@ public final class GraphViz implements Renderer {
 
     private void writeGraphAttribute (boolean condition, String attributeName, String value) {
         if (condition) {
-            mWriter.println (String.format ("\t%s = %s;", attributeName, value));
+            mWriter.println (String.format ("\t%s = \"%s\";", attributeName, value));
         }
     }
 
@@ -140,7 +143,7 @@ public final class GraphViz implements Renderer {
         int counter = 0;
         for (Cluster cluster : graph.mClusters) {
             mWriter.println ("\tsubgraph cluster_" + Integer.toString (++counter) + " {");
-            writeClusterAttribute (!cluster.getLabel ().isEmpty (), "label", "\"" + cluster.getLabel () + "\"");
+            writeClusterAttribute (!cluster.getLabel ().isEmpty (), "label", cluster.getLabel ());
 
             writeClusterAttribute (cluster.getStyle () != Style.DEFAULT, "style", cluster.getStyle ().toString ());
             writeClusterAttribute (cluster.getLineColour () != Colour.DEFAULT, "color", cluster.getLineColour ().toString ());
@@ -161,7 +164,7 @@ public final class GraphViz implements Renderer {
 
     private void writeClusterAttribute (boolean condition, String attributeName, String value) {
         if (condition) {
-            mWriter.println (String.format ("\t\t%s = %s;", attributeName, value));
+            mWriter.println (String.format ("\t\t%s = \"%s\";", attributeName, value));
         }
     }
 
@@ -183,7 +186,7 @@ public final class GraphViz implements Renderer {
 
     private void writeNodeAttribute (boolean condition, Node node, String attributeName, String value) {
         if (condition) {
-            mWriter.println (String.format ("\t\"%s\" [ %s = %s ];", node.getName (), attributeName, value));
+            mWriter.println (String.format ("\t\"%s\" [ %s = \"%s\" ];", node.getName (), attributeName, value));
         }
     }
 
@@ -207,7 +210,7 @@ public final class GraphViz implements Renderer {
 
     private void writeEdgeAttribute (boolean condition, String attributeName, String value) {
         if (condition) {
-            mWriter.append (String.format (" [ %s = %s ]", attributeName, value));
+            mWriter.append (String.format (" [ %s = \"%s\" ]", attributeName, value));
         }
     }
 
@@ -225,7 +228,7 @@ public final class GraphViz implements Renderer {
 
     private void writeDefaultNodeAttribute (boolean condition, String attributeName, String value) {
         if (condition) {
-            mWriter.println (String.format ("\t\tnode [ %s = %s ];", attributeName, value));
+            mWriter.println (String.format ("\t\tnode [ %s = \"%s\" ];", attributeName, value));
         }
     }
 
@@ -262,7 +265,7 @@ public final class GraphViz implements Renderer {
             String command = String.format ("\"%s/%s\" -Tpng -o %s.%s.%s %s", mPath, tool, filename, tool, fileType, mFile.getPath ());
 //          System.out.println (command);
             Runtime.getRuntime ().exec (command).waitFor ();
-            if (mDoCleanup) {
+            if (!mInDebugMode) {
                 mFile.delete ();
             }
         } catch (IOException ioe) {
