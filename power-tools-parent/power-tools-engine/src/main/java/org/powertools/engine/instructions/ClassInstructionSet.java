@@ -19,6 +19,7 @@
 package org.powertools.engine.instructions;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import org.powertools.engine.ExecutionException;
@@ -54,6 +55,8 @@ final class ClassInstructionSet implements InstructionSet {
     public void setup () {
         if (mObject instanceof org.powertools.engine.InstructionSet) {
             ((org.powertools.engine.InstructionSet) mObject).setup ();
+        } else {
+            runMethod ("setup");
         }
     }
 
@@ -70,9 +73,11 @@ final class ClassInstructionSet implements InstructionSet {
     }
 
     private String getMethodName (String instructionName) {
-        try {
+        String[] words = instructionName.split (" ");
+        if (words.length == 0) {
+            throw new ExecutionException ("invalid instruction name");
+        } else {
             StringBuilder sb = new StringBuilder ();
-            String[] words   = instructionName.split (" ");
             addWord (words[0], sb);
 
             for (int partNr = 1; partNr < words.length; ++partNr) {
@@ -82,8 +87,6 @@ final class ClassInstructionSet implements InstructionSet {
                 }
             }
             return sb.toString();
-        } catch (IndexOutOfBoundsException ioobe) {
-            throw new ExecutionException ("invalid instruction name");
         }
     }
 
@@ -94,8 +97,9 @@ final class ClassInstructionSet implements InstructionSet {
 
     private Method getMethod (String methodName) {
         for (Method method : mObject.getClass ().getMethods ()) {
-            if (   method.getName ().equals (methodName)
-                || isAnnotatedWithKeyword (method, methodName)) {
+            if (method.getName ().equals (methodName)) {
+                return method;
+            } else if (isAnnotatedWithKeyword (method, methodName)) {
                 return method;
             }
         }
@@ -105,13 +109,32 @@ final class ClassInstructionSet implements InstructionSet {
 
     private boolean isAnnotatedWithKeyword (Method method, String methodName) {
         Annotation annotation = method.getAnnotation (KeywordName.class);
-        return annotation != null && ((KeywordName) annotation).value ().equals (methodName);
+        return annotation == null ? false : ((KeywordName) annotation).value ().equals (methodName);
     }
 
     @Override
     public void cleanup () {
         if (mObject instanceof org.powertools.engine.InstructionSet) {
-            ((org.powertools.engine.InstructionSet) mObject).setup ();
+            ((org.powertools.engine.InstructionSet) mObject).cleanup ();
+        } else {
+            runMethod ("cleanup");
+        }
+    }
+
+    private void runMethod (String name) {
+        try {
+            Method method = mObject.getClass ().getMethod (name, new Class<?>[0]);
+            method.invoke (mObject);
+        } catch (NoSuchMethodException nsme) {
+            // ignore
+        } catch (SecurityException se) {
+            throw new ExecutionException ("security exception invoking method " + name);
+        } catch (IllegalAccessException iae) {
+            throw new ExecutionException ("instruction class method " + name + " is not public");
+        } catch (IllegalArgumentException iae) {
+            throw new ExecutionException ("illegal argument to method " + name);
+        } catch (InvocationTargetException ite) {
+            throw new ExecutionException ("invocation target exception invoking method " + name);
         }
     }
 }

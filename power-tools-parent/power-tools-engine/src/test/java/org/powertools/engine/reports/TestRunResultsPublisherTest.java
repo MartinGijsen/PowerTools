@@ -14,6 +14,7 @@ public class TestRunResultsPublisherTest {
 	private Subscriber mTestCasesSubscriber;
 	private Subscriber mTestLinesSubscriber;
 	private Subscriber mTestResultsSubscriber;
+	private Subscriber mModelSubscriber;
 
 	@Before
 	public void setUp () throws Exception {
@@ -21,10 +22,12 @@ public class TestRunResultsPublisherTest {
 		mTestCasesSubscriber	= new Subscriber ();
 		mTestLinesSubscriber	= new Subscriber ();
 		mTestResultsSubscriber	= new Subscriber ();
+		mModelSubscriber        = new Subscriber ();
 		
 		mPublisher.subscribeToTestCases (mTestCasesSubscriber);
 		mPublisher.subscribeToTestLines (mTestLinesSubscriber);
 		mPublisher.subscribeToTestResults (mTestResultsSubscriber);
+		mPublisher.subscribeToModel (mModelSubscriber);
 	}
 
 	@After
@@ -44,14 +47,14 @@ public class TestRunResultsPublisherTest {
 
 	@Test
 	public void testNoSubscribeToTestCases () {
-		final Subscriber subscriber = new Subscriber ();
+		Subscriber subscriber = new Subscriber ();
 		mPublisher.publishTestCaseBegin (null, null);
 		assertEquals (Subscriber.Method.NONE, subscriber.getLastMethod ());
 	}
 
 	@Test
 	public void testSubscribeToTestCases () {
-		final Subscriber subscriber = new Subscriber ();
+		Subscriber subscriber = new Subscriber ();
 		mPublisher.subscribeToTestCases (subscriber);
 		mPublisher.publishTestCaseBegin (null, null);
 		assertEquals (Subscriber.Method.PROCESS_BEGIN, subscriber.getLastMethod ());
@@ -59,7 +62,7 @@ public class TestRunResultsPublisherTest {
 
 	@Test
 	public void testDoubleSubscribeToTestCases () {
-		final Subscriber subscriber = new Subscriber ();
+		Subscriber subscriber = new Subscriber ();
 		mPublisher.subscribeToTestCases (subscriber);
 		mPublisher.subscribeToTestCases (subscriber);
 		mPublisher.subscribeToTestCases (null);
@@ -69,14 +72,14 @@ public class TestRunResultsPublisherTest {
 
 	@Test
 	public void testNoSubscribeToTestLines () {
-		final Subscriber subscriber = new Subscriber ();
+		Subscriber subscriber = new Subscriber ();
 		mPublisher.publishTestLine (null);
 		assertEquals (Subscriber.Method.NONE, subscriber.getLastMethod ());
 	}
 
 	@Test
 	public void testSubscribeToTestLines () {
-		final Subscriber subscriber = new Subscriber ();
+		Subscriber subscriber = new Subscriber ();
 		mPublisher.subscribeToTestLines (subscriber);
 		mPublisher.publishTestLine (null);
 		assertEquals (Subscriber.Method.PROCESS_TESTLINE, subscriber.getLastMethod ());
@@ -84,7 +87,7 @@ public class TestRunResultsPublisherTest {
 
 	@Test
 	public void testDoubleSubscribeToTestLines () {
-		final Subscriber subscriber = new Subscriber ();
+		Subscriber subscriber = new Subscriber ();
 		mPublisher.subscribeToTestLines (subscriber);
 		mPublisher.subscribeToTestLines (subscriber);
 		mPublisher.subscribeToTestLines (null);
@@ -94,14 +97,14 @@ public class TestRunResultsPublisherTest {
 
 	@Test
 	public void testNoSubscribeToTestResults () {
-		final Subscriber subscriber = new Subscriber ();
+		Subscriber subscriber = new Subscriber ();
 		mPublisher.publishError (null);
 		assertEquals (Subscriber.Method.NONE, subscriber.getLastMethod ());
 	}
 
 	@Test
 	public void testSubscribeToTestResults () {
-		final Subscriber subscriber = new Subscriber ();
+		Subscriber subscriber = new Subscriber ();
 		mPublisher.subscribeToTestResults (subscriber);
 		mPublisher.publishError (null);
 		assertEquals (Subscriber.Method.PROCESS_ERROR, subscriber.getLastMethod ());
@@ -109,7 +112,7 @@ public class TestRunResultsPublisherTest {
 
 	@Test
 	public void testDoubleSubscribeToTestResults () {
-		final Subscriber subscriber = new Subscriber ();
+		Subscriber subscriber = new Subscriber ();
 		mPublisher.subscribeToTestResults (subscriber);
 		mPublisher.subscribeToTestResults (subscriber);
 		mPublisher.subscribeToTestResults (null);
@@ -118,11 +121,37 @@ public class TestRunResultsPublisherTest {
 	}
 
 	@Test
+	public void testNoSubscribeToModel () {
+		Subscriber subscriber = new Subscriber ();
+		mPublisher.publishNewEdge (null, null);
+		assertEquals (Subscriber.Method.NONE, subscriber.getLastMethod ());
+	}
+
+	@Test
+	public void testSubscribeToModel () {
+		Subscriber subscriber = new Subscriber ();
+		mPublisher.subscribeToModel (subscriber);
+		mPublisher.publishAtNode (null);
+		assertEquals (Subscriber.Method.PROCESS_AT_NODE, subscriber.getLastMethod ());
+	}
+
+	@Test
+	public void testDoubleSubscribeToModel () {
+		Subscriber subscriber = new Subscriber ();
+		mPublisher.subscribeToModel (subscriber);
+		mPublisher.subscribeToModel (subscriber);
+		mPublisher.subscribeToModel (null);
+		mPublisher.publishAtEdge (null, null);
+		assertEquals (Subscriber.Method.PROCESS_AT_EDGE, subscriber.getLastMethod ());
+	}
+
+	@Test
 	public void testPublishCommentLineString () {
 		mPublisher.publishCommentLine ("");
 		assertEquals (Subscriber.Method.NONE, mTestCasesSubscriber.getLastMethod ());
 		assertEquals (Subscriber.Method.PROCESS_COMMENT_LINE_STRING, mTestLinesSubscriber.getLastMethod ());
 		assertEquals (Subscriber.Method.NONE, mTestResultsSubscriber.getLastMethod ());
+		assertEquals (Subscriber.Method.NONE, mModelSubscriber.getLastMethod ());
 	}
 
 	@Test
@@ -132,6 +161,7 @@ public class TestRunResultsPublisherTest {
 		assertEquals (Subscriber.Method.NONE, mTestCasesSubscriber.getLastMethod ());
 		assertEquals (Subscriber.Method.PROCESS_COMMENT_LINE_TESTLINE, mTestLinesSubscriber.getLastMethod ());
 		assertEquals (Subscriber.Method.NONE, mTestResultsSubscriber.getLastMethod ());
+		assertEquals (Subscriber.Method.NONE, mModelSubscriber.getLastMethod ());
 	}
 
 	@Test
@@ -140,6 +170,7 @@ public class TestRunResultsPublisherTest {
 		assertEquals (Subscriber.Method.NONE, mTestCasesSubscriber.getLastMethod ());
 		assertEquals (Subscriber.Method.PROCESS_TESTLINE, mTestLinesSubscriber.getLastMethod ());
 		assertEquals (Subscriber.Method.NONE, mTestResultsSubscriber.getLastMethod ());
+		assertEquals (Subscriber.Method.NONE, mModelSubscriber.getLastMethod ());
 	}
 
 	@Test
@@ -148,6 +179,7 @@ public class TestRunResultsPublisherTest {
 		assertEquals (Subscriber.Method.NONE, mTestCasesSubscriber.getLastMethod ());
 		assertEquals (Subscriber.Method.PROCESS_END_OF_SECTION, mTestLinesSubscriber.getLastMethod ());
 		assertEquals (Subscriber.Method.NONE, mTestResultsSubscriber.getLastMethod ());
+		assertEquals (Subscriber.Method.NONE, mModelSubscriber.getLastMethod ());
 	}
 
 	@Test
@@ -156,6 +188,7 @@ public class TestRunResultsPublisherTest {
 		assertEquals (Subscriber.Method.NONE, mTestCasesSubscriber.getLastMethod ());
 		assertEquals (Subscriber.Method.NONE, mTestLinesSubscriber.getLastMethod ());
 		assertEquals (Subscriber.Method.PROCESS_ERROR, mTestResultsSubscriber.getLastMethod ());
+		assertEquals (Subscriber.Method.NONE, mModelSubscriber.getLastMethod ());
 	}
 
 	@Test
@@ -164,6 +197,7 @@ public class TestRunResultsPublisherTest {
 		assertEquals (Subscriber.Method.NONE, mTestCasesSubscriber.getLastMethod ());
 		assertEquals (Subscriber.Method.NONE, mTestLinesSubscriber.getLastMethod ());
 		assertEquals (Subscriber.Method.PROCESS_ERROR, mTestResultsSubscriber.getLastMethod ());
+		assertEquals (Subscriber.Method.NONE, mModelSubscriber.getLastMethod ());
 	}
 
 	@Test
@@ -194,6 +228,7 @@ public class TestRunResultsPublisherTest {
 		assertEquals (Subscriber.Method.NONE, mTestCasesSubscriber.getLastMethod ());
 		assertEquals (Subscriber.Method.NONE, mTestLinesSubscriber.getLastMethod ());
 		assertEquals (Subscriber.Method.PROCESS_WARNING, mTestResultsSubscriber.getLastMethod ());
+		assertEquals (Subscriber.Method.NONE, mModelSubscriber.getLastMethod ());
 	}
 
 	@Test
@@ -202,6 +237,7 @@ public class TestRunResultsPublisherTest {
 		assertEquals (Subscriber.Method.NONE, mTestCasesSubscriber.getLastMethod ());
 		assertEquals (Subscriber.Method.NONE, mTestLinesSubscriber.getLastMethod ());
 		assertEquals (Subscriber.Method.PROCESS_INFO, mTestResultsSubscriber.getLastMethod ());
+		assertEquals (Subscriber.Method.NONE, mModelSubscriber.getLastMethod ());
 	}
 
 	@Test
@@ -210,6 +246,7 @@ public class TestRunResultsPublisherTest {
 		assertEquals (Subscriber.Method.NONE, mTestCasesSubscriber.getLastMethod ());
 		assertEquals (Subscriber.Method.NONE, mTestLinesSubscriber.getLastMethod ());
 		assertEquals (Subscriber.Method.PROCESS_INFO, mTestResultsSubscriber.getLastMethod ());
+		assertEquals (Subscriber.Method.NONE, mModelSubscriber.getLastMethod ());
 	}
 
 	@Test
@@ -218,6 +255,7 @@ public class TestRunResultsPublisherTest {
 		assertEquals (Subscriber.Method.NONE, mTestCasesSubscriber.getLastMethod ());
 		assertEquals (Subscriber.Method.NONE, mTestLinesSubscriber.getLastMethod ());
 		assertEquals (Subscriber.Method.PROCESS_LINK, mTestResultsSubscriber.getLastMethod ());
+		assertEquals (Subscriber.Method.NONE, mModelSubscriber.getLastMethod ());
 	}
 
 	@Test
@@ -226,6 +264,7 @@ public class TestRunResultsPublisherTest {
 		assertEquals (Subscriber.Method.NONE, mTestCasesSubscriber.getLastMethod ());
 		assertEquals (Subscriber.Method.NONE, mTestLinesSubscriber.getLastMethod ());
 		assertEquals (Subscriber.Method.PROCESS_END_OF_TESTLINE, mTestResultsSubscriber.getLastMethod ());
+		assertEquals (Subscriber.Method.NONE, mModelSubscriber.getLastMethod ());
 	}
 
 	@Test
@@ -234,6 +273,7 @@ public class TestRunResultsPublisherTest {
 		assertEquals (Subscriber.Method.NONE, mTestCasesSubscriber.getLastMethod ());
 		assertEquals (Subscriber.Method.NONE, mTestLinesSubscriber.getLastMethod ());
 		assertEquals (Subscriber.Method.PROCESS_INCREASE_LEVEL, mTestResultsSubscriber.getLastMethod ());
+		assertEquals (Subscriber.Method.NONE, mModelSubscriber.getLastMethod ());
 	}
 
 	@Test
@@ -242,6 +282,7 @@ public class TestRunResultsPublisherTest {
 		assertEquals (Subscriber.Method.NONE, mTestCasesSubscriber.getLastMethod ());
 		assertEquals (Subscriber.Method.NONE, mTestLinesSubscriber.getLastMethod ());
 		assertEquals (Subscriber.Method.PROCESS_DECREASE_LEVEL, mTestResultsSubscriber.getLastMethod ());
+		assertEquals (Subscriber.Method.NONE, mModelSubscriber.getLastMethod ());
 	}
 
 	@Test
@@ -250,6 +291,7 @@ public class TestRunResultsPublisherTest {
 		assertEquals (Subscriber.Method.PROCESS_BEGIN, mTestCasesSubscriber.getLastMethod ());
 		assertEquals (Subscriber.Method.NONE, mTestLinesSubscriber.getLastMethod ());
 		assertEquals (Subscriber.Method.NONE, mTestResultsSubscriber.getLastMethod ());
+		assertEquals (Subscriber.Method.NONE, mModelSubscriber.getLastMethod ());
 	}
 
 	@Test
@@ -258,6 +300,34 @@ public class TestRunResultsPublisherTest {
 		assertEquals (Subscriber.Method.PROCESS_END, mTestCasesSubscriber.getLastMethod ());
 		assertEquals (Subscriber.Method.NONE, mTestLinesSubscriber.getLastMethod ());
 		assertEquals (Subscriber.Method.NONE, mTestResultsSubscriber.getLastMethod ());
+		assertEquals (Subscriber.Method.NONE, mModelSubscriber.getLastMethod ());
+	}
+
+	@Test
+	public void testPublishNewEdge () {
+		mPublisher.publishNewEdge (null, null);
+		assertEquals (Subscriber.Method.NONE, mTestCasesSubscriber.getLastMethod ());
+		assertEquals (Subscriber.Method.NONE, mTestLinesSubscriber.getLastMethod ());
+		assertEquals (Subscriber.Method.NONE, mTestResultsSubscriber.getLastMethod ());
+		assertEquals (Subscriber.Method.PROCESS_NEW_EDGE, mModelSubscriber.getLastMethod ());
+	}
+
+	@Test
+	public void testPublishAtNode () {
+		mPublisher.publishAtNode (null);
+		assertEquals (Subscriber.Method.NONE, mTestCasesSubscriber.getLastMethod ());
+		assertEquals (Subscriber.Method.NONE, mTestLinesSubscriber.getLastMethod ());
+		assertEquals (Subscriber.Method.NONE, mTestResultsSubscriber.getLastMethod ());
+		assertEquals (Subscriber.Method.PROCESS_AT_NODE, mModelSubscriber.getLastMethod ());
+	}
+
+	@Test
+	public void testPublishAtEdge () {
+		mPublisher.publishAtEdge (null, null);
+		assertEquals (Subscriber.Method.NONE, mTestCasesSubscriber.getLastMethod ());
+		assertEquals (Subscriber.Method.NONE, mTestLinesSubscriber.getLastMethod ());
+		assertEquals (Subscriber.Method.NONE, mTestResultsSubscriber.getLastMethod ());
+		assertEquals (Subscriber.Method.PROCESS_AT_EDGE, mModelSubscriber.getLastMethod ());
 	}
 
 	@Test
@@ -266,6 +336,7 @@ public class TestRunResultsPublisherTest {
 		assertEquals (Subscriber.Method.START, mTestCasesSubscriber.getLastMethod ());
 		assertEquals (Subscriber.Method.START, mTestLinesSubscriber.getLastMethod ());
 		assertEquals (Subscriber.Method.START, mTestResultsSubscriber.getLastMethod ());
+		assertEquals (Subscriber.Method.START, mModelSubscriber.getLastMethod ());
 	}
 
 	@Test
@@ -274,5 +345,6 @@ public class TestRunResultsPublisherTest {
 		assertEquals (Subscriber.Method.FINISH, mTestCasesSubscriber.getLastMethod ());
 		assertEquals (Subscriber.Method.FINISH, mTestLinesSubscriber.getLastMethod ());
 		assertEquals (Subscriber.Method.FINISH, mTestResultsSubscriber.getLastMethod ());
+		assertEquals (Subscriber.Method.FINISH, mModelSubscriber.getLastMethod ());
 	}
 }

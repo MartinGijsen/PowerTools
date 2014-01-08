@@ -23,7 +23,7 @@ import java.util.Date;
 import org.powertools.engine.TestLine;
 
 
-final class Subscriber implements TestCaseSubscriber, TestLineSubscriber, TestResultSubscriber {
+final class Subscriber implements TestCaseSubscriber, TestLineSubscriber, TestResultSubscriber, ModelSubscriber {
 	public enum Method {
 		NONE,
 		START,
@@ -42,6 +42,9 @@ final class Subscriber implements TestCaseSubscriber, TestLineSubscriber, TestRe
 		PROCESS_END_OF_SECTION,
 		PROCESS_BEGIN,
 		PROCESS_END,
+		PROCESS_NEW_EDGE,
+		PROCESS_AT_NODE,
+		PROCESS_AT_EDGE,
 		MORE_THAN_ONE
 	}
 	
@@ -136,6 +139,21 @@ final class Subscriber implements TestCaseSubscriber, TestLineSubscriber, TestRe
 	@Override
 	public void processEnd () {
 		assignMethod (Method.PROCESS_END);
+	}
+	
+	@Override
+	public void processNewEdge (String sourceName, String targetName) {
+		assignMethod (Method.PROCESS_NEW_EDGE);
+	}
+	
+	@Override
+	public void processAtNode (String name) {
+		assignMethod (Method.PROCESS_AT_NODE);
+	}
+	
+	@Override
+	public void processAtEdge (String sourceName, String targetName) {
+		assignMethod (Method.PROCESS_AT_EDGE);
 	}
 	
 	private void assignMethod (Method method) {

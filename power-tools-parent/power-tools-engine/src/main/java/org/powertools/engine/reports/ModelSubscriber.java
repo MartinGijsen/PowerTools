@@ -1,4 +1,4 @@
-/* Copyright 2012 by Martin Gijsen (www.DeAnalist.nl)
+/* Copyright 2014 by Martin Gijsen (www.DeAnalist.nl)
  *
  * This file is part of the PowerTools engine.
  *
@@ -19,7 +19,8 @@
 package org.powertools.engine.reports;
 
 
-public interface TestCaseSubscriber extends TestSubscriber {
-    void processBegin (String id, String description);
-    void processEnd ();
+public interface ModelSubscriber extends TestSubscriber {
+    void processNewEdge (String sourceNodeName, String targetNodeName);
+    void processAtNode (String name);
+    void processAtEdge (String sourceNodeName, String targetNodeName);
 }

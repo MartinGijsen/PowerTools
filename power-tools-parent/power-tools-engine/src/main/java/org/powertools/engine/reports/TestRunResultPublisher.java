@@ -38,6 +38,7 @@ public final class TestRunResultPublisher {
     private final List<TestLineSubscriber>   mTestLineSubscribers;
     private final List<TestResultSubscriber> mTestResultSubscribers;
     private final List<TestCaseSubscriber>   mTestCaseSubscribers;
+    private final List<ModelSubscriber>      mModelSubscribers;
     private final Set<TestSubscriber>        mTestSubscribers;
 
 
@@ -45,6 +46,7 @@ public final class TestRunResultPublisher {
         mTestLineSubscribers   = new LinkedList<TestLineSubscriber> ();
         mTestResultSubscribers = new LinkedList<TestResultSubscriber> ();
         mTestCaseSubscribers   = new LinkedList<TestCaseSubscriber> ();
+        mModelSubscribers      = new LinkedList<ModelSubscriber> ();
         mTestSubscribers       = new HashSet<TestSubscriber> ();
     }
 
@@ -75,6 +77,13 @@ public final class TestRunResultPublisher {
         }
     }
 
+    public void subscribeToModel (ModelSubscriber subscriber) {
+        if (subscriber != null) {
+            subscribeToModelEvents (subscriber);
+            subscribeToTestEvents (subscriber);
+        }
+    }
+
     private void subscribeToTestEvents (TestSubscriber subscriber) {
         if (!mTestSubscribers.contains (subscriber)) {
             mTestSubscribers.add (subscriber);
@@ -96,6 +105,12 @@ public final class TestRunResultPublisher {
     private void subscribeToTestResultEvents (TestResultSubscriber subscriber) {
         if (!mTestResultSubscribers.contains (subscriber)) {
             mTestResultSubscribers.add (subscriber);
+        }
+    }
+
+    private void subscribeToModelEvents (ModelSubscriber subscriber) {
+        if (!mModelSubscribers.contains (subscriber)) {
+            mModelSubscribers.add (subscriber);
         }
     }
 
@@ -224,6 +239,25 @@ public final class TestRunResultPublisher {
     public void publishTestCaseEnd () {
         for (TestCaseSubscriber subscriber : mTestCaseSubscribers) {
             subscriber.processEnd ();
+        }
+    }
+
+    
+    public void publishNewEdge (String sourceName, String targetName) {
+        for (ModelSubscriber subscriber : mModelSubscribers) {
+            subscriber.processNewEdge (sourceName, targetName);
+        }
+    }
+    
+    public void publishAtNode (String name) {
+        for (ModelSubscriber subscriber : mModelSubscribers) {
+            subscriber.processAtNode (name);
+        }
+    }
+
+    public void publishAtEdge (String sourceName, String targetName) {
+        for (ModelSubscriber subscriber : mModelSubscribers) {
+            subscriber.processAtEdge (sourceName, targetName);
         }
     }
 
