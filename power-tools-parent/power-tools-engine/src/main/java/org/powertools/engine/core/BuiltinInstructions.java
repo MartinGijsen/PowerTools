@@ -29,6 +29,7 @@ import org.powertools.engine.ParameterOrder;
 import org.powertools.engine.RunTime;
 import org.powertools.engine.Symbol;
 import org.powertools.engine.instructions.InstructionSetFactory;
+import org.powertools.engine.reports.ModelCoverageGraph;
 import org.powertools.engine.symbol.BaseSequence;
 
 
@@ -294,6 +295,10 @@ public final class BuiltinInstructions implements InstructionSet {
         }
     }
 
+    public void SetGraphvizPathTo_ (String path) {
+        ModelCoverageGraph.setGraphviz_path (path);
+    }
+    
     //@KeywordName ("")
     public boolean CheckThat_ (boolean value) {
         return value;

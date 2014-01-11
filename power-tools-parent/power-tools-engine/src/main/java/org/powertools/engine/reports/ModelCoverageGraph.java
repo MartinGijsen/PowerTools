@@ -19,6 +19,7 @@
 package org.powertools.engine.reports;
 
 import java.util.Date;
+import org.powertools.engine.ExecutionException;
 import org.powertools.graph.DirectedGraph;
 import org.powertools.graph.Edge;
 import org.powertools.graph.GraphViz;
@@ -26,12 +27,18 @@ import org.powertools.graph.Node;
 
 
 public class ModelCoverageGraph implements ModelSubscriber {
+    private static String mGraphvizPath = "";
+
     private final DirectedGraph mGraph;
     private final String mResultsDirectory;
     
     private int mEdgeNr = 0;
 
     
+    public static void setGraphviz_path (String path) {
+        mGraphvizPath = path;
+    }
+
     public ModelCoverageGraph (String resultsDirectory) {
         mGraph            = new DirectedGraph ();
         mResultsDirectory = resultsDirectory;
@@ -72,7 +79,9 @@ public class ModelCoverageGraph implements ModelSubscriber {
     }
 
     public void finish (Date dateTime) {
-        GraphViz graphViz = new GraphViz ("C:\\Program Files (x86)\\Graphviz 2.28\\bin");
-        graphViz.writeDirected (mGraph, mResultsDirectory + "/coverage");
+        if (!"".equals (mGraphvizPath)) {
+            GraphViz graphViz = new GraphViz (mGraphvizPath);
+            graphViz.writeDirected (mGraph, mResultsDirectory + "/coverage");
+        }
     }
 }
