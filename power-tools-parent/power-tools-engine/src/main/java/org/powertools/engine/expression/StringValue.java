@@ -23,7 +23,7 @@ final class StringValue extends Value {
     private final String mText;
 
 
-    public StringValue (String text) {
+    StringValue (String text) {
         mText = text;
     }
 
@@ -35,43 +35,43 @@ final class StringValue extends Value {
 
 
     @Override
-    public Value equal (Value v) {
+    Value equal (Value v) {
         return new BooleanValue (mText.equals (v.toStringValue ().mText));
     }
 
     @Override
-    public Value unequal (Value v) {
+    Value unequal (Value v) {
         return new BooleanValue (!mText.equals (v.toStringValue ().mText));
     }
 
     @Override
-    public Value concatenate (Value v) {
+    Value concatenate (Value v) {
         return new StringValue (mText + v.toStringValue ().mText);
     }
 
 
     @Override
-    public IntegerValue toIntegerValue () {
+    IntegerValue toIntegerValue () {
         return new IntegerValue (Integer.parseInt (mText));
     }
 
     @Override
-    public RealValue toRealValue () {
+    RealValue toRealValue () {
         return new RealValue (Double.parseDouble (mText));
     }
 
     @Override
-    public StringValue toStringValue () {
+    StringValue toStringValue () {
         return this;
+    }
+
+    @Override
+    BooleanValue toBooleanValue () {
+        return new BooleanValue (mText);
     }
 
     @Override
     public String toString () {
         return mText;
-    }
-
-    @Override
-    public BooleanValue toBooleanValue () {
-        return new BooleanValue (mText);
     }
 }

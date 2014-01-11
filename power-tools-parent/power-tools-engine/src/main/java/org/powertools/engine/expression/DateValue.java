@@ -36,11 +36,11 @@ final class DateValue extends Value {
     private Calendar mDate;
 
 
-    public DateValue (Calendar date) {
+    DateValue (Calendar date) {
         mDate = (Calendar) date.clone ();
     }
 
-    public DateValue (String stringValue) {
+    DateValue (String stringValue) {
         try {
             Date date = mFormat.parse (stringValue);
             mDate = GregorianCalendar.getInstance ();
@@ -58,12 +58,12 @@ final class DateValue extends Value {
 
 
     @Override
-    public Value equal (Value v) {
+    Value equal (Value v) {
         return new BooleanValue (mDate.equals (v.toDateValue ().mDate));
     }
 
     @Override
-    public Value unequal (Value v) {
+    Value unequal (Value v) {
         return new BooleanValue (!mDate.equals (v.toDateValue ().mDate));
     }
 
@@ -79,12 +79,12 @@ final class DateValue extends Value {
     }
 
     @Override
-    public StringValue toStringValue () {
+    StringValue toStringValue () {
         return new StringValue (toString());
     }
 
     @Override
-    public DateValue toDateValue () {
+    DateValue toDateValue () {
         return this;
     }
 

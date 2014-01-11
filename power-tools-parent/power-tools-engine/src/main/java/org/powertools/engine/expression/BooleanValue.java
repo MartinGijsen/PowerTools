@@ -29,11 +29,11 @@ final class BooleanValue extends Value {
     static final BooleanValue cFalseStringValue = new BooleanValue (false);
 
 
-    public BooleanValue (boolean value) {
+    BooleanValue (boolean value) {
         mValue = value;
     }
 
-    public BooleanValue (String text) {
+    BooleanValue (String text) {
         if (!text.equals (TRUE_STRING) && !text.equals (FALSE_STRING)) {
             throw newException ("not a boolean value: " + text);
         }
@@ -48,39 +48,39 @@ final class BooleanValue extends Value {
 
 
     @Override
-    public Value or (Value v) {
+    Value or (Value v) {
         return mValue || v.toBooleanValue ().mValue ? cTrueStringValue : cFalseStringValue;
     }
 
     @Override
-    public Value and (Value v) {
+    Value and (Value v) {
         return mValue && v.toBooleanValue ().mValue ? cTrueStringValue : cFalseStringValue;
     }
 
     @Override
-    public Value not () {
+    Value not () {
         return !mValue ? cTrueStringValue : cFalseStringValue;
     }
 
 
     @Override
-    public Value equal (Value v) {
+    Value equal (Value v) {
         return mValue == v.toBooleanValue ().mValue ? cTrueStringValue : cFalseStringValue;
     }
 
     @Override
-    public Value unequal (Value v) {
+    Value unequal (Value v) {
         return mValue != v.toBooleanValue ().mValue ? cTrueStringValue : cFalseStringValue;
     }
 
 
     @Override
-    public StringValue toStringValue () {
+    StringValue toStringValue () {
         return new StringValue (toString ());
     }
 
     @Override
-    public BooleanValue toBooleanValue () {
+    BooleanValue toBooleanValue () {
         return this;
     }
 
