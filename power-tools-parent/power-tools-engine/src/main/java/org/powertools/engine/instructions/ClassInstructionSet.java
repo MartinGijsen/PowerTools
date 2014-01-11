@@ -134,7 +134,8 @@ final class ClassInstructionSet implements InstructionSet {
         } catch (IllegalArgumentException iae) {
             throw new ExecutionException ("illegal argument to method " + name);
         } catch (InvocationTargetException ite) {
-            throw new ExecutionException ("invocation target exception invoking method " + name);
+            Throwable cause = ite.getCause ();
+            throw new ExecutionException (cause.getMessage () +  " invoking method " + name, cause.getStackTrace ());
         }
     }
 }

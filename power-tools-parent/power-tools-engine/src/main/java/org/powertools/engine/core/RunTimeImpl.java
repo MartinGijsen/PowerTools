@@ -1,4 +1,4 @@
-/* Copyright 2012 by Martin Gijsen (www.DeAnalist.nl)
+/* Copyright 2012-2014 by Martin Gijsen (www.DeAnalist.nl)
  *
  * This file is part of the PowerTools engine.
  *
@@ -51,6 +51,7 @@ public final class RunTimeImpl implements RunTime, ProcedureRunner {
     final TestSourceStack mSourceStack;
 
     private final Context mContext;
+    private final ExpressionEvaluator mEvaluator;
     private final TestRunResultPublisher mPublisher;
     private final RolesImpl mRoles;
     private final Map<String, Object> mSharedObjects;
@@ -59,6 +60,7 @@ public final class RunTimeImpl implements RunTime, ProcedureRunner {
     public RunTimeImpl (Context context) {
         mSourceStack   = new TestSourceStack (getGlobalScope ());
         mContext       = context;
+        mEvaluator     = new ExpressionEvaluator ();
         mPublisher     = TestRunResultPublisher.getInstance ();
         mRoles         = new RolesImpl (this);
         mSharedObjects = new HashMap<String, Object> ();
@@ -179,13 +181,18 @@ public final class RunTimeImpl implements RunTime, ProcedureRunner {
         mSourceStack.initAndPush (source);
     }
 
+    @Override
+    public String evaluateExpression (String expression) {
+        return mEvaluator.evaluate (expression, getCurrentScope ());
+    }
+     
     void evaluateExpressions (TestLineImpl testLine) {
         Scope scope   = getCurrentScope ();
         int nrOfParts = testLine.getNrOfParts ();
         for (int partNr = 0; partNr < nrOfParts; ++partNr) {
             final String part = testLine.getPart (partNr);
             if (part.startsWith ("?")) {
-                testLine.setEvaluatedPart (partNr, ExpressionEvaluator.evaluate (part, scope));
+                testLine.setEvaluatedPart (partNr, mEvaluator.evaluate (part, scope));
             }
         }
     }

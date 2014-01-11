@@ -1,4 +1,4 @@
-/* Copyright 2013 by Martin Gijsen (www.DeAnalist.nl)
+/* Copyright 2013-2014 by Martin Gijsen (www.DeAnalist.nl)
  *
  * This file is part of the PowerTools engine.
  *
@@ -23,40 +23,29 @@ package org.powertools.engine.sources.model;
  * The NeverDone condition never indicates that model processing is done.
  * So it can ignore submodels and processed edges.
  */
-final class NeverDone extends DoneCondition {
+final class NeverDone implements DoneCondition {
     static final String NAME = "never";
 
     private static final String DESCRIPTION = "never stop";
-
 
     NeverDone () {
         super ();
     }
 
 
-    @Override
-    DoneCondition create (DirectedGraphImpl graph) {
-        return new NeverDone ();
-    }
-
-
-    @Override
-    void addSubModelGraph (DirectedGraphImpl graph) {
-        // empty
-    }
-
-    @Override
-    String getDescription () {
+    public String getDescription () {
         return DESCRIPTION;
     }
 
-    @Override
-    void markEdge (Edge edge) {
+    public void addSubModelGraph (DirectedGraphImpl graph) {
         // empty
     }
 
-    @Override
-    void check () {
+    public void markEdge (Edge edge) {
         // empty
+    }
+
+    public boolean isSatisfied () {
+        return false;
     }
 }

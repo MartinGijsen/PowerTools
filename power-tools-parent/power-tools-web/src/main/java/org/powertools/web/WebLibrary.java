@@ -75,7 +75,9 @@ public abstract class WebLibrary implements InstructionSet {
 
     @Override
     public final void cleanup () {
-        mBrowser.cleanup ();
+        if (mBrowser != null) {
+            mBrowser.cleanup ();
+        }
     }
 
 
@@ -529,14 +531,12 @@ public abstract class WebLibrary implements InstructionSet {
         }
     }
 
-    public final boolean MakeScreenshot () {
+    public final void MakeScreenshot () {
         String filename = "screenshot" + ++mLastScreenshotNr + ".png";
         String path = mRunTime.getContext ().getResultsDirectory () + filename;
-        boolean ok  = mBrowser.makeScreenshot (path);
-        if (ok) {
+        if (mBrowser != null && mBrowser.makeScreenshot (path)) {
             mRunTime.reportLink (filename);
         }
-        return ok;
     }
 
     /*

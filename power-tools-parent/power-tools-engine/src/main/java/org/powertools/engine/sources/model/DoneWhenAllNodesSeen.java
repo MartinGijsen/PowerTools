@@ -1,4 +1,4 @@
-/* Copyright 2013 by Martin Gijsen (www.DeAnalist.nl)
+/* Copyright 2013-2014 by Martin Gijsen (www.DeAnalist.nl)
  *
  * This file is part of the PowerTools engine.
  *
@@ -22,7 +22,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 
-final class DoneWhenAllNodesSeen extends DoneCondition {
+final class DoneWhenAllNodesSeen implements DoneCondition {
     static final String NAME = "all nodes";
 
     private static final String DESCRIPTION = "stop after all nodes have been traversed";
@@ -38,32 +38,20 @@ final class DoneWhenAllNodesSeen extends DoneCondition {
     }
 
 
-    @Override
-    DoneCondition create (DirectedGraphImpl graph) {
-        return new DoneWhenAllNodesSeen (graph);
-    }
-
-
-    @Override
-    void addSubModelGraph (DirectedGraphImpl graph) {
-        mUnseenNodes.addAll (graph.mNodes.values ());
-    }
-
-    @Override
-    String getDescription () {
+    public String getDescription () {
         return DESCRIPTION;
     }
 
-    @Override
-    void markEdge (Edge edge) {
+    public void addSubModelGraph (DirectedGraphImpl graph) {
+        mUnseenNodes.addAll (graph.mNodes.values ());
+    }
+
+    public void markEdge (Edge edge) {
         mUnseenNodes.remove (edge.mTarget);
         mDone = mUnseenNodes.isEmpty ();
     }
 
-    @Override
-    void check () {
-        if (mDone) {
-            throw new DoneException ();
-        }
+    public boolean isSatisfied () {
+        return mDone;
     }
 }

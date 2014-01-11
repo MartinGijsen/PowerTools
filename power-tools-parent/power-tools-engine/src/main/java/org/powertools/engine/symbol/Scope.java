@@ -28,7 +28,7 @@ import org.powertools.engine.Symbol;
 public final class Scope {
     private static final Scope mGlobalScope = new Scope (null);
 
-     private final Map<String, Symbol> mSymbols;
+    private final Map<String, Symbol> mSymbols;
     private final Scope mParent;
 
 

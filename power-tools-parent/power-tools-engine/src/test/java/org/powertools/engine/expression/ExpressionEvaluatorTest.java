@@ -1,4 +1,4 @@
-/*	Copyright 2013 by Martin Gijsen (www.DeAnalist.nl)
+/*	Copyright 2013-2014 by Martin Gijsen (www.DeAnalist.nl)
  *
  *	This file is part of the PowerTools engine.
  *
@@ -28,7 +28,7 @@ import org.powertools.engine.symbol.Scope;
 
 
 public class ExpressionEvaluatorTest {
-	private Scope mScope;
+	private final ExpressionEvaluator mEvaluator = new ExpressionEvaluator ();
 
 	@Test
 	public void testSetBusinessDayCheckerGetBusinessDayChecker () {
@@ -44,13 +44,13 @@ public class ExpressionEvaluatorTest {
 
 	@Test
 	public void testEvaluate () {
-		assertEquals ("1", ExpressionEvaluator.evaluate ("? 1", new Scope (null)));
+		assertEquals ("1", mEvaluator.evaluate ("? 1", new Scope (null)));
 	}
 
 	@Test
 	public void testEvaluate_InvalidExpression () {
 		try {
-			ExpressionEvaluator.evaluate ("?'abc", new Scope (null));
+			mEvaluator.evaluate ("?'abc", new Scope (null));
 			fail ("no exception");
 		} catch (ExecutionException ee) {
 			assertTrue (ee.getMessage ().contains ("invalid expression"));

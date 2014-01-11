@@ -548,7 +548,7 @@ class WebDriverBrowser implements IBrowser {
             Files.copy (Paths.get (screenshot.getPath ()), Paths.get (path));
             return true;
         } catch (IOException ioe) {
-            mRunTime.reportStackTrace(ioe);
+            mRunTime.reportStackTrace (ioe);
             throw new ExecutionException ("Could not copy screenshot file");
         }
     }
@@ -620,7 +620,7 @@ class WebDriverBrowser implements IBrowser {
             locator = By.tagName (value);
             break;
         default:
-            throw new ExecutionException ("invalid key");
+            throw new ExecutionException ("invalid key: " + keyType);
         }
         mRunTime.reportInfo ("locator: " + locator.toString ());
         return locator;

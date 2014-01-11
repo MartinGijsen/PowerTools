@@ -1,4 +1,4 @@
-/* Copyright 2012 by Martin Gijsen (www.DeAnalist.nl)
+/* Copyright 2012-2014 by Martin Gijsen (www.DeAnalist.nl)
  *
  * This file is part of the PowerTools engine.
  *
@@ -19,7 +19,6 @@
 package org.powertools.engine.fitnesse;
 
 import org.powertools.engine.sources.TestLineImpl;
-import org.powertools.engine.symbol.Scope;
 
 import fit.Fixture;
 import fit.Parse;
@@ -27,7 +26,7 @@ import fit.Parse;
 
 class ScenarioSource extends BaseTestSource {
     ScenarioSource (Fixture fixture, Parse table, String logFilePath) {
-        super (Scope.getGlobalScope (), fixture, table.parts, logFilePath);
+        super (fixture, table.parts, logFilePath);
     }
 
 

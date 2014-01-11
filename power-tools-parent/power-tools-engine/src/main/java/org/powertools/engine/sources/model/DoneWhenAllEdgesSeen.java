@@ -1,4 +1,4 @@
-/* Copyright 2013 by Martin Gijsen (www.DeAnalist.nl)
+/* Copyright 2013-2014 by Martin Gijsen (www.DeAnalist.nl)
  *
  * This file is part of the PowerTools engine.
  *
@@ -22,12 +22,14 @@ import java.util.HashSet;
 import java.util.Set;
 
 
-final class DoneWhenAllEdgesSeen extends DoneCondition {
+final class DoneWhenAllEdgesSeen implements DoneCondition {
     static final String NAME = "all edges";
 
     private static final String DESCRIPTION = "stop after all edges have been traversed";
 
     private final Set<Edge> mUnseenEdges;
+    
+    private boolean mDone;
 
 
     DoneWhenAllEdgesSeen (DirectedGraphImpl graph) {
@@ -36,36 +38,26 @@ final class DoneWhenAllEdgesSeen extends DoneCondition {
         for (Set<Edge> edges : graph.mEdges.values ()) {
             mUnseenEdges.addAll (edges);
         }
+        mDone = false;
     }
 
 
-    @Override
-    void addSubModelGraph (DirectedGraphImpl graph) {
+    public String getDescription () {
+        return DESCRIPTION;
+    }
+
+    public void addSubModelGraph (DirectedGraphImpl graph) {
         for (Set<Edge> edges : graph.mEdges.values ()) {
             mUnseenEdges.addAll (edges);
         }
     }
 
-    @Override
-    DoneCondition create (DirectedGraphImpl graph) {
-        return new DoneWhenAllEdgesSeen (graph);
-    }
-
-
-    @Override
-    String getDescription () {
-        return DESCRIPTION;
-    }
-
-    @Override
-    void markEdge (Edge edge) {
+    public void markEdge (Edge edge) {
         mUnseenEdges.remove (edge);
+        mDone = mUnseenEdges.isEmpty ();
     }
 
-    @Override
-    void check () {
-        if (mUnseenEdges.isEmpty ()) {
-            throw new DoneException ();
-        }
+    public boolean isSatisfied () {
+        return mDone;
     }
 }

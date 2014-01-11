@@ -1,4 +1,4 @@
-/* Copyright 2012 by Martin Gijsen (www.DeAnalist.nl)
+/* Copyright 2012-2014 by Martin Gijsen (www.DeAnalist.nl)
  *
  * This file is part of the PowerTools engine.
  *
@@ -85,6 +85,14 @@ public interface RunTime {
      * @param   url the URL to report
      */
     void reportLink (String url);
+
+
+    /**
+     * Evaluates a PowerTools expression
+     * @param   expression  the expression to evaluate
+     * @return  the value of the expression
+     */
+    String evaluateExpression (String expression);
 
 
     /**

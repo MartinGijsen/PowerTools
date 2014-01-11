@@ -33,7 +33,7 @@ import org.powertools.engine.reports.TestRunResultPublisher;
  * It starts at the start node and then travels from node to node.
  * It selects the next edge using the specified edge selection strategy.
  * The done condition will generate an exception when it is satisfied,
- * but this is only passed on to the test source once in a final state,
+ * but this is only passed on to the test source once in an end state,
  * because an exception could break off current processing.
  */
 public final class Model {
@@ -45,16 +45,16 @@ public final class Model {
     private final Stack<ActiveGraph>             mGraphStack;
     private final Map<String, DirectedGraphImpl> mSubModels;
 
+    private boolean                              mAtNode;
     private EdgeSelectionStrategy                mSelector;
     private DoneCondition                        mDoneCondition;
-    private boolean                              mDoneConditionSatisfied;
 
 
     public Model () {
         mPublisher              = TestRunResultPublisher.getInstance ();
-        mDoneConditionSatisfied = false;
         mSubModels              = new HashMap<String, DirectedGraphImpl> ();
         mGraphStack             = new Stack<ActiveGraph> ();
+        mAtNode                 = false;
     }
 
     public void initialize (String name, String selector, String doneCondition, RunTime runTime) {
@@ -62,10 +62,10 @@ public final class Model {
         ActiveGraph activeGraph     = new ActiveGraph (mainGraph);
         mGraphStack.push (activeGraph);
 
-        mSelector = EdgeSelectionStrategyFactory.create (selector, runTime);
+        mSelector = new EdgeSelectionStrategyFactory ().create (selector, runTime);
         mPublisher.publishCommentLine ("edge selection: " + mSelector.getDescription ());
 
-        mDoneCondition = DoneConditionFactory.create (doneCondition, mainGraph);
+        mDoneCondition = new DoneConditionFactory ().create (doneCondition, mainGraph);
         mPublisher.publishCommentLine ("stop condition: " + mDoneCondition.getDescription ());
 
         mPublisher.publishCommentLine ("start node: " + activeGraph.mCurrentNode.getDescription ());
@@ -81,19 +81,28 @@ public final class Model {
             }
         }
     }
-    
+
     public String getNextAction () {
-        Edge edge = getNextEdge ();
-        mPublisher.publishAtEdge (edge.mSource.getName (), edge.mTarget.getName ());
-        return edge.mAction;
+        String action;
+        do {
+            if (mAtNode) {
+                Edge edge = getNextEdge ();
+                action    = edge.mAction;
+                mPublisher.publishAtEdge (edge.mSource.getName (), edge.mTarget.getName ());
+            } else {
+                action = mGraphStack.peek ().mCurrentNode.mAction;
+            }
+            mAtNode = !mAtNode;
+        } while ("".equals (action));
+        return action;
     }
 
     private Edge getNextEdge () {
         ActiveGraph currentGraph = mGraphStack.peek ();
         Node currentNode         = currentGraph.mCurrentNode;
-        if (doneConditionIsSatisfied () && mGraphStack.size () == 1 && currentNode.mLabel.equalsIgnoreCase (END_NODE_LABEL)) {
+        if (reallyDone (currentNode)) {
             throw new DoneException ();
-        } else if (mGraphStack.size () != 1 && currentNode.mLabel.equalsIgnoreCase (END_NODE_LABEL)) {
+        } else if (inEndNodeOfSubGraph (currentNode)) {
             mGraphStack.pop ();
             currentGraph = mGraphStack.peek ();
         } else if (currentNode.mAction.startsWith (SUBMODEL_ACTION_PREFIX)) {
@@ -112,18 +121,14 @@ public final class Model {
         return edge;
     }
 
-    private boolean doneConditionIsSatisfied () {
-        if (!mDoneConditionSatisfied) {
-            try {
-                mDoneCondition.check ();
-            } catch (DoneException de) {
-                mDoneConditionSatisfied = true;
-                mPublisher.publishCommentLine ("done condition is satisfied");
-            }
-        }
-        return mDoneConditionSatisfied;
+    private boolean reallyDone (Node currentNode) {
+        return mDoneCondition.isSatisfied () && mGraphStack.size () == 1 && currentNode.mLabel.equalsIgnoreCase (END_NODE_LABEL);
     }
 
+    private boolean inEndNodeOfSubGraph (Node currentNode) {
+        return mGraphStack.size () != 1 && currentNode.mLabel.equalsIgnoreCase (END_NODE_LABEL);
+    }
+    
     private DirectedGraphImpl getGraph (String name) {
         DirectedGraphImpl subModel = mSubModels.get (name);
         if (subModel == null) {

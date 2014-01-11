@@ -1,4 +1,4 @@
-/* Copyright 2012 by Martin Gijsen (www.DeAnalist.nl)
+/* Copyright 2012-2014 by Martin Gijsen (www.DeAnalist.nl)
  *
  * This file is part of the PowerTools engine.
  *
@@ -104,11 +104,11 @@ public final class BuiltinInstructions implements InstructionSet {
 
     private Object instantiateInstructionSet (String className) {
         Class<?> theClass = getClass (className);
-        Object object = instantiateWithRunTimeParameter (theClass);
-        if (object == null) {
-            object = instantiateWithDefaultConstructor (theClass);
+        Object instance = instantiateWithRunTimeParameter (theClass);
+        if (instance == null) {
+            instance = instantiateWithDefaultConstructor (theClass);
         }
-        return object;
+        return instance;
     }
 
     private Object instantiateWithRunTimeParameter (Class<?> theClass) {
@@ -123,8 +123,8 @@ public final class BuiltinInstructions implements InstructionSet {
         } catch (InstantiationException ie) {
             mRunTime.reportWarning ("failed to call constructor with RunTime parameter");
         } catch (InvocationTargetException ite) {
-            mRunTime.reportError (ite.toString ());
-            throw new ExecutionException (ite.getCause ().toString ());
+            Throwable cause = ite.getCause ();
+            throw new ExecutionException (cause.toString (), cause.getStackTrace ());
         }
         return null;
     }

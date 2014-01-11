@@ -1,4 +1,4 @@
-/* Copyright 2013 by Martin Gijsen (www.DeAnalist.nl)
+/* Copyright 2013-2014 by Martin Gijsen (www.DeAnalist.nl)
  *
  * This file is part of the PowerTools engine.
  *
@@ -162,7 +162,7 @@ final class GraphMLParser extends DefaultHandler {
     private void handleNodeKey (String keyName, String keyId) {
         if (keyName.equals (DESCRIPTION_KEY_NAME)) {
             mNodeDescriptionKeyId = keyId;
-        } else if (keyName.equals (ACTION_KEY_NAME)) {
+        } else if (keyName.equalsIgnoreCase (ACTION_KEY_NAME)) {
             mNodeActionKeyId = keyId;
         } else {
             // error
@@ -172,9 +172,9 @@ final class GraphMLParser extends DefaultHandler {
     private void handleEdgeKey (String keyName, String keyId) {
         if (keyName.equals (DESCRIPTION_KEY_NAME)) {
             mEdgeDescriptionKeyId = keyId;
-        } else if (keyName.equals (ACTION_KEY_NAME)) {
+        } else if (keyName.equalsIgnoreCase (ACTION_KEY_NAME)) {
             mEdgeActionKeyId = keyId;
-        } else if (keyName.equals (CONDITION_KEY_NAME)) {
+        } else if (keyName.equalsIgnoreCase (CONDITION_KEY_NAME)) {
             mEdgeConditionKeyId = keyId;
         } else {
             // error

@@ -24,7 +24,6 @@ import java.util.Random;
 import java.util.Set;
 import org.powertools.engine.ExecutionException;
 import org.powertools.engine.RunTime;
-import org.powertools.engine.expression.ExpressionEvaluator;
 
 
 final class RandomEdgeSelector implements EdgeSelectionStrategy {
@@ -56,10 +55,10 @@ final class RandomEdgeSelector implements EdgeSelectionStrategy {
             }
         }
 
-        if (currentNode.mLabel.equals (Model.END_NODE_LABEL)) {
-            return graph.addEdge (currentNode, graph.getRoot ());
+        if (currentNode.mLabel.equalsIgnoreCase (Model.END_NODE_LABEL)) {
+            return graph.addEdge (currentNode, graph.getStartNode ());
         } else {
-            throw new ExecutionException (String.format ("no edges out of node %s", currentNode.getName ()));
+            throw new ExecutionException (String.format ("no edges out of end node %s", currentNode.getName ()));
         }
     }
 
@@ -75,7 +74,8 @@ final class RandomEdgeSelector implements EdgeSelectionStrategy {
     }
 
     private boolean returnsTrue (String condition) {
-        String value = ExpressionEvaluator.evaluate (condition, mRunTime.getCurrentScope ());
+        String value = mRunTime.evaluateExpression (condition);
+        mRunTime.reportInfo (String.format ("condition '%s' is %s", condition, value));
         return "true".equals (value);
     }
 }

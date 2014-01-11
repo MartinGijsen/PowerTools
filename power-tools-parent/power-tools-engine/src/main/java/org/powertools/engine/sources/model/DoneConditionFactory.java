@@ -1,4 +1,4 @@
-/* Copyright 2013 by Martin Gijsen (www.DeAnalist.nl)
+/* Copyright 2013-2014 by Martin Gijsen (www.DeAnalist.nl)
  *
  * This file is part of the PowerTools engine.
  *
@@ -22,11 +22,7 @@ import org.powertools.engine.ExecutionException;
 
 
 final class DoneConditionFactory {
-    private DoneConditionFactory () {
-        // empty
-    }
-
-    static DoneCondition create (String conditionName, DirectedGraphImpl graph) {
+    DoneCondition create (String conditionName, DirectedGraphImpl graph) {
         // TODO: pass end node label as parameter?
         if (NeverDone.NAME.equals (conditionName)) {
             return new NeverDone ();

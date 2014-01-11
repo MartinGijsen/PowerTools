@@ -1,4 +1,4 @@
-/* Copyright 2013 by Martin Gijsen (www.DeAnalist.nl)
+/* Copyright 2013-2014 by Martin Gijsen (www.DeAnalist.nl)
  *
  * This file is part of the PowerTools engine.
  *
@@ -19,7 +19,7 @@
 package org.powertools.engine.sources.model;
 
 
-final class DoneWhenInEndNode extends DoneCondition {
+final class DoneWhenInEndNode implements DoneCondition {
     static final String NAME = "end node";
 
     private static final String DESCRIPTION = "stop after reaching an end node";
@@ -36,33 +36,21 @@ final class DoneWhenInEndNode extends DoneCondition {
     }
 
 
-    @Override
-    DoneCondition create (DirectedGraphImpl graph) {
-        return new DoneWhenInEndNode (this.mEndNodeLabel);
-    }
-
-
-    @Override
-    void addSubModelGraph (DirectedGraphImpl graph) {
-        // TODO?
-    }
-
-    @Override
-    String getDescription () {
+    public String getDescription () {
         return DESCRIPTION;
     }
 
-    @Override
-    void markEdge (Edge edge) {
+    public void addSubModelGraph (DirectedGraphImpl graph) {
+        // TODO?
+    }
+
+    public void markEdge (Edge edge) {
         if (edge.mTarget.mLabel.equals (mEndNodeLabel)) {
             mDone = true;
         }
     }
 
-    @Override
-    void check () {
-        if (mDone) {
-            throw new DoneException ();
-        }
+    public boolean isSatisfied () {
+        return mDone;
     }
 }

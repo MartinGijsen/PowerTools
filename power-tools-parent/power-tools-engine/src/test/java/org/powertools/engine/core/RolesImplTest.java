@@ -1,4 +1,4 @@
-/*	Copyright 2013 by Martin Gijsen (www.DeAnalist.nl)
+/*	Copyright 2013-2014 by Martin Gijsen (www.DeAnalist.nl)
  *
  *	This file is part of the PowerTools engine.
  *
@@ -85,7 +85,7 @@ public class RolesImplTest {
 
 
 	private class RunTimeImpl implements RunTime {
-		private Scope mGlobalScope = new Scope (null);
+		private final Scope mGlobalScope = new Scope (null);
 		
 		public Scope getGlobalScope () {
 			return mGlobalScope;
@@ -165,6 +165,10 @@ public class RolesImplTest {
 		}
 
 		public void setBusinessDayChecker(BusinessDayChecker checker) {
+			throw new UnsupportedOperationException ("Not supported yet.");
+		}
+
+		public String evaluateExpression(String expression) {
 			throw new UnsupportedOperationException ("Not supported yet.");
 		}
 	}

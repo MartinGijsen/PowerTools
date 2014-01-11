@@ -1,4 +1,4 @@
-/* Copyright 2012 by Martin Gijsen (www.DeAnalist.nl)
+/* Copyright 2012-2014 by Martin Gijsen (www.DeAnalist.nl)
  *
  * This file is part of the PowerTools engine.
  *
@@ -37,8 +37,8 @@ abstract class BaseTestSource extends TestSource {
     private static int mLastId = 0;
 
 
-    protected BaseTestSource (Scope scope, Fixture fixture, Parse row, String logFilePath) {
-        super (scope);
+    protected BaseTestSource (Fixture fixture, Parse row, String logFilePath) {
+        super (Scope.getGlobalScope ());
         mFixture       = fixture;
         mRow           = row;
         String rootDir = FitNesseEngine.ROOT_DIRECTORY;

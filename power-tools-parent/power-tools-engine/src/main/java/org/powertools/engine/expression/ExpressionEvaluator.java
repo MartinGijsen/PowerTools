@@ -1,4 +1,4 @@
-/* Copyright 2012-2013 by Martin Gijsen (www.DeAnalist.nl)
+/* Copyright 2012-2014 by Martin Gijsen (www.DeAnalist.nl)
  *
  * This file is part of the PowerTools engine.
  *
@@ -33,12 +33,13 @@ import org.powertools.engine.symbol.Scope;
  * This AST is then evaluated by a tree walker (also a kind of parser).
  */
 public final class ExpressionEvaluator {
-    private static final ExpressionLexer mLexer   = new ExpressionLexer ();
-    private static final ExpressionParser mParser = new ExpressionParser (new CommonTokenStream (mLexer));
+    private final ExpressionLexer mLexer;
+    private final ExpressionParser mParser;
 
 
-    private ExpressionEvaluator () {
-        // empty
+    public ExpressionEvaluator () {
+        mLexer  = new ExpressionLexer ();
+        mParser = new ExpressionParser (new CommonTokenStream (mLexer));
     }
 
     public static void setBusinessDayChecker (BusinessDayChecker checker) {
@@ -49,7 +50,7 @@ public final class ExpressionEvaluator {
         return DateValue.mBusinessDayChecker;
     }
 
-    public static String evaluate (String expression, Scope scope) {
+    public String evaluate (String expression, Scope scope) {
         try {
             // parse the expression, create AST (Abstract Syntax Tree)
             mLexer.setCharStream (new ANTLRStringStream (expression));

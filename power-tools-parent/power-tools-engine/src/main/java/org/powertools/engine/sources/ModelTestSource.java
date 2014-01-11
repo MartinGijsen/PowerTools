@@ -58,11 +58,7 @@ final class ModelTestSource extends TestSource {
     @Override
     public TestLineImpl getTestLine () {
         try {
-            String instruction;
-            do {
-                instruction = mModel.getNextAction ();
-            } while ("".equals (instruction));
-            mTestLine.setParts (getParts (instruction));
+            mTestLine.setParts (getParts (mModel.getNextAction ()));
             return mTestLine;
         } catch (DoneException de) {
             return null;

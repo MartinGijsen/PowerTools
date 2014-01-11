@@ -1,4 +1,4 @@
-/* Copyright 2013 by Martin Gijsen (www.DeAnalist.nl)
+/* Copyright 2013-2014 by Martin Gijsen (www.DeAnalist.nl)
  *
  * This file is part of the PowerTools engine.
  *
@@ -23,11 +23,7 @@ import org.powertools.engine.RunTime;
 
 
 final class EdgeSelectionStrategyFactory {
-    private EdgeSelectionStrategyFactory () {
-        // empty
-    }
-
-    static EdgeSelectionStrategy create (String selector, RunTime runTime) {
+    EdgeSelectionStrategy create (String selector, RunTime runTime) {
         if (RandomEdgeSelector.NAME.equals (selector)) {
             return new RandomEdgeSelector (runTime);
         } else if (WeightedEdgeSelector.NAME.equals (selector)) {

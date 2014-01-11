@@ -1,4 +1,4 @@
-/* Copyright 2013 by Martin Gijsen (www.DeAnalist.nl)
+/* Copyright 2013-2014 by Martin Gijsen (www.DeAnalist.nl)
  *
  * This file is part of the PowerTools engine.
  *
@@ -68,24 +68,40 @@ final class DirectedGraphImpl implements DirectedGraph {
         return mNodes.get (name);
     }
 
-    public Node getRoot () {
-        Node root = null;
+    public Node getNodeByLabel (String label) {
         for (Node node : mNodes.values ()) {
-            if (!node.mLabel.equalsIgnoreCase (Model.START_NODE_LABEL)) {
-                // this is not a start node and can be ignored
-            } else if (root != null) {
-                throw new ExecutionException ("multiple start nodes");
-            } else {
-                root = node;
+            if (node.mLabel.equalsIgnoreCase (label)) {
+                return node;
             }
         }
-
-        if (root == null) {
-            throw new ExecutionException ("no start node");
-        }
-        return root;
+        return null;
     }
 
+    public Node getRoot () {
+        // TODO: determine at initialization, during or after validation
+        Set<Node> nodes = new HashSet<Node> ();
+        nodes.addAll (mNodes.values ());
+        for (Set<Edge> set : mEdges.values ()) {
+            for (Edge edge : set) {
+                nodes.remove (edge.mTarget);
+            }
+        }
+        int nrOfRoots = nodes.size();
+        switch (nrOfRoots) {
+        case 0:
+            throw new ExecutionException ("no root node");
+        case 1:
+            return nodes.iterator ().next ();
+        default:
+            throw new ExecutionException ("multiple root nodes");
+        }
+    }
+
+    public Node getStartNode () {
+        // TODO: determine at initialization, during or after validation
+        return getNodeByLabel (Model.START_NODE_LABEL);
+    }
+    
     public Edge addEdge (String sourceName, String targetName) {
         return addEdge (getNode (sourceName), getNode (targetName));
     }

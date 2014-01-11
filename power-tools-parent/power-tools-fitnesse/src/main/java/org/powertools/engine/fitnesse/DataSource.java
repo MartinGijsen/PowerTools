@@ -1,4 +1,4 @@
-/* Copyright 2012 by Martin Gijsen (www.DeAnalist.nl)
+/* Copyright 2012-2014 by Martin Gijsen (www.DeAnalist.nl)
  *
  * This file is part of the PowerTools engine.
  *
@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.powertools.engine.sources.TestLineImpl;
-import org.powertools.engine.symbol.Scope;
 
 import fit.Fixture;
 import fit.Parse;
@@ -32,7 +31,7 @@ final class DataSource extends BaseTestSource {
     private String mInstructionName;
 
     DataSource (Fixture fixture, Parse table, String logFilePath) {
-        super (Scope.getGlobalScope (), fixture, table.parts, logFilePath);
+        super (fixture, table.parts, logFilePath);
     }
 
 
