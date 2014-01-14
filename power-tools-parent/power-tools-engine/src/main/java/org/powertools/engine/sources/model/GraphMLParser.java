@@ -118,7 +118,7 @@ final class GraphMLParser extends DefaultHandler {
 
         XMLReader reader = XMLReaderFactory.createXMLReader ();
         reader.setContentHandler (this);
-        String filename = graph.mName;
+        String filename = graph.getName ();
         if (!filename.endsWith (GRAPHML_EXTENSION)) {
             filename += GRAPHML_EXTENSION;
         }

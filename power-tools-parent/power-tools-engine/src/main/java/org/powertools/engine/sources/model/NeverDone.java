@@ -18,6 +18,8 @@
 
 package org.powertools.engine.sources.model;
 
+import java.util.Date;
+
 
 /*
  * The NeverDone condition never indicates that model processing is done.
@@ -37,15 +39,33 @@ final class NeverDone implements DoneCondition {
         return DESCRIPTION;
     }
 
-    public void addSubModelGraph (DirectedGraphImpl graph) {
-        // empty
-    }
-
-    public void markEdge (Edge edge) {
-        // empty
-    }
-
     public boolean isSatisfied () {
         return false;
+    }
+
+    
+    // model events
+    public void start(Date dateTime) {
+        // ignore
+    }
+
+    public void finish(Date dateTime) {
+        // ignore
+    }
+
+    public void processNewNode(String name) {
+        // ignore
+    }
+
+    public void processNewEdge(String sourceNodeName, String targetNodeName) {
+        // ignore
+    }
+
+    public void processAtNode(String name) {
+        // ignore
+    }
+
+    public void processAtEdge(String sourceNodeName, String targetNodeName) {
+        // ignore
     }
 }

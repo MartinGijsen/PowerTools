@@ -18,8 +18,10 @@
 
 package org.powertools.engine.sources.model;
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
+import org.powertools.engine.reports.TestRunResultPublisher;
 
 
 final class DoneWhenAllNodesSeen implements DoneCondition {
@@ -28,13 +30,14 @@ final class DoneWhenAllNodesSeen implements DoneCondition {
     private static final String DESCRIPTION = "stop after all nodes have been traversed";
 
     private boolean mDone;
-    private final Set<Node> mUnseenNodes;
+    private final Set<String> mUnseenNodes;
 
     DoneWhenAllNodesSeen (DirectedGraphImpl graph) {
         super ();
         mDone        = false;
-        mUnseenNodes = new HashSet<Node> (graph.mNodes.values ());
-        mUnseenNodes.remove (graph.getRootNode ());
+        mUnseenNodes = new HashSet<String> ();
+        
+        TestRunResultPublisher.getInstance ().subscribeToModel (this);
     }
 
 
@@ -42,16 +45,34 @@ final class DoneWhenAllNodesSeen implements DoneCondition {
         return DESCRIPTION;
     }
 
-    public void addSubModelGraph (DirectedGraphImpl graph) {
-        mUnseenNodes.addAll (graph.mNodes.values ());
+    public boolean isSatisfied () {
+        return mDone;
     }
 
-    public void markEdge (Edge edge) {
-        mUnseenNodes.remove (edge.mTarget);
+    
+    // model events
+    public void start(Date dateTime) {
+        // ignore
+    }
+
+    public void finish(Date dateTime) {
+        // ignore
+    }
+
+    public void processNewNode (String name) {
+        mUnseenNodes.add (name);
+    }
+
+    public void processNewEdge (String sourceNodeName, String targetNodeName) {
+        // ignore
+    }
+
+    public void processAtNode (String name) {
+        mUnseenNodes.remove (name);
         mDone = mUnseenNodes.isEmpty ();
     }
 
-    public boolean isSatisfied () {
-        return mDone;
+    public void processAtEdge (String sourceNodeName, String targetNodeName) {
+        // ignore
     }
 }

@@ -24,10 +24,10 @@ import org.powertools.engine.sources.model.Model;
 
 
 /*
- * This test source generates test lines from a model.
- * Processing starts with the initial node of the model.
- * A strategy object selects the edge to the next node.
- * The strategy throws a DoneException to signal it is done.
+ * This test source generates test lines from a model, starting with the root state.
+ * The main model may contain a start and end state. The test source will loop
+ * from end to start until the stop condition is satisfied.
+ * It can invoke submodels.
  */
 final class MainModelTestSource extends ModelTestSource {
     private final String mSelector;

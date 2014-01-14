@@ -25,9 +25,9 @@ import org.powertools.engine.sources.model.Model;
 
 /*
  * This test source generates test lines from a submodel.
- * Processing starts with the start node of the model.
- * The strategy object of the parent model selects the edge to the next node.
- * The strategy throws a DoneException to signal it is done.
+ * A submodel has no implicit loop from end to start state.
+ * It simply runs from the root state to a final state.
+ * It can invoke submodels.
  */
 final class SubmodelTestSource extends ModelTestSource {
     private final Model mParentModel;

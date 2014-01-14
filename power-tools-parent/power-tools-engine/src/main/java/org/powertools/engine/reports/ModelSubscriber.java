@@ -20,6 +20,7 @@ package org.powertools.engine.reports;
 
 
 public interface ModelSubscriber extends TestSubscriber {
+    void processNewNode (String name);
     void processNewEdge (String sourceNodeName, String targetNodeName);
     void processAtNode (String name);
     void processAtEdge (String sourceNodeName, String targetNodeName);

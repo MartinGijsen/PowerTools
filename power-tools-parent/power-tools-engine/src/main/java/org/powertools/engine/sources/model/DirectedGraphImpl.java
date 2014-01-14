@@ -27,13 +27,14 @@ import java.util.Set;
 import java.util.HashSet;
 
 import org.powertools.engine.ExecutionException;
+import org.powertools.engine.reports.TestRunResultPublisher;
 import org.xml.sax.SAXException;
 
 
 final class DirectedGraphImpl implements DirectedGraph {
-    final String               mName;
-    final Map<String, Node>    mNodes;
-    final Map<Node, Set<Edge>> mEdges;
+    private final String               mName;
+    private final Map<String, Node>    mNodes;
+    private final Map<Node, Set<Edge>> mEdges;
 
 
     static DirectedGraphImpl createGraph (String name) {
@@ -54,6 +55,10 @@ final class DirectedGraphImpl implements DirectedGraph {
         mEdges = new HashMap<Node, Set<Edge>> ();
     }
 
+    String getName () {
+        return mName;
+    }
+    
     public Node addNode (String name) {
         if (mNodes.containsKey (name)) {
             throw new ExecutionException (String.format ("node name %s not unique", name));
@@ -144,4 +149,17 @@ final class DirectedGraphImpl implements DirectedGraph {
             return edges;
         }
     }
+
+    void reportNodesAndEdges () {
+        TestRunResultPublisher publisher = TestRunResultPublisher.getInstance ();
+        for (Node node : mNodes.values ()) {
+            publisher.publishNewNode (node.getName ());
+        }
+        for (Set<Edge> set : mEdges.values ()) {
+            for (Edge edge : set) {
+                publisher.publishNewEdge (edge.mSource.getName (), edge.mTarget.getName ());
+            }
+        }
+    }
+
 }

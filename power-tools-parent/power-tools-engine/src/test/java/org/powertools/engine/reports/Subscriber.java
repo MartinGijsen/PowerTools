@@ -42,6 +42,7 @@ final class Subscriber implements TestCaseSubscriber, TestLineSubscriber, TestRe
 		PROCESS_END_OF_SECTION,
 		PROCESS_BEGIN,
 		PROCESS_END,
+		PROCESS_NEW_NODE,
 		PROCESS_NEW_EDGE,
 		PROCESS_AT_NODE,
 		PROCESS_AT_EDGE,
@@ -139,6 +140,11 @@ final class Subscriber implements TestCaseSubscriber, TestLineSubscriber, TestRe
 	@Override
 	public void processEnd () {
 		assignMethod (Method.PROCESS_END);
+	}
+	
+	@Override
+	public void processNewNode (String sourcename) {
+		assignMethod (Method.PROCESS_NEW_NODE);
 	}
 	
 	@Override

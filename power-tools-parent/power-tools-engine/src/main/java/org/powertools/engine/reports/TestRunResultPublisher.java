@@ -243,6 +243,12 @@ public final class TestRunResultPublisher {
     }
 
     
+    public void publishNewNode (String name) {
+        for (ModelSubscriber subscriber : mModelSubscribers) {
+            subscriber.processNewNode (name);
+        }
+    }
+    
     public void publishNewEdge (String sourceName, String targetName) {
         for (ModelSubscriber subscriber : mModelSubscribers) {
             subscriber.processNewEdge (sourceName, targetName);

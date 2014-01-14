@@ -43,6 +43,10 @@ public class ModelCoverageGraph implements ModelSubscriber {
         mResultsDirectory = resultsDirectory;
     }
     
+    public void processNewNode (String name) {
+        // ignore
+    }
+
     public void processNewEdge (String sourceNodeName, String targetNodeName) {
         Node source = getOrCreateNode (sourceNodeName);
         Node target = getOrCreateNode (targetNodeName);

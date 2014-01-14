@@ -18,21 +18,20 @@
 
 package org.powertools.engine.sources.model;
 
+import java.util.Date;
+
 
 final class DoneWhenInEndNode implements DoneCondition {
     static final String NAME = "end node";
 
     private static final String DESCRIPTION = "stop after reaching an end node";
 
-    private final String mEndNodeLabel;
-
     private boolean mDone;
 
 
-    DoneWhenInEndNode (String endNodeLabel) {
+    DoneWhenInEndNode () {
         super ();
-        mEndNodeLabel = endNodeLabel;
-        mDone         = false;
+        mDone = false;
     }
 
 
@@ -40,17 +39,35 @@ final class DoneWhenInEndNode implements DoneCondition {
         return DESCRIPTION;
     }
 
-    public void addSubModelGraph (DirectedGraphImpl graph) {
-        // TODO?
+    public boolean isSatisfied () {
+        return mDone;
     }
 
-    public void markEdge (Edge edge) {
-        if (edge.mTarget.mLabel.equals (mEndNodeLabel)) {
+
+    // model events
+    public void start(Date dateTime) {
+        // ignore
+    }
+
+    public void finish(Date dateTime) {
+        // ignore
+    }
+
+    public void processNewNode (String name) {
+        // ignore
+    }
+
+    public void processNewEdge (String sourceNodeName, String targetNodeName) {
+        // ignore
+    }
+
+    public void processAtNode (String name) {
+        if (name.startsWith (Model.END_NODE_LABEL + " (")) {
             mDone = true;
         }
     }
 
-    public boolean isSatisfied () {
-        return mDone;
+    public void processAtEdge (String sourceNodeName, String targetNodeName) {
+        // ignore
     }
 }

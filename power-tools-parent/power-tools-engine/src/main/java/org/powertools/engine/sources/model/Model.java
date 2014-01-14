@@ -18,6 +18,7 @@
 
 package org.powertools.engine.sources.model;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import org.powertools.engine.RunTime;
@@ -38,15 +39,17 @@ public final class Model {
     static final String END_NODE_LABEL         = "end";
     static final String SUBMODEL_ACTION_PREFIX = "submodel ";
 
-    private final TestRunResultPublisher         mPublisher;
-    private final Model                          mParent;
-    private final boolean                        mIsMainModel;
+    private static Set<String>           mKnownModels = new HashSet<String> ();
+    
+    private final TestRunResultPublisher mPublisher;
+    private final Model                  mParent;
+    private final boolean                mIsMainModel;
 
-    private DirectedGraphImpl                    mGraph;
-    private Node                                 mCurrentNode;
-    private boolean                              mAtNode;
-    private EdgeSelectionStrategy                mSelector;
-    private DoneCondition                        mDoneCondition;
+    private DirectedGraphImpl            mGraph;
+    private Node                         mCurrentNode;
+    private boolean                      mAtNode;
+    private EdgeSelectionStrategy        mSelector;
+    private DoneCondition                mDoneCondition;
     
 
     public Model () {
@@ -57,9 +60,9 @@ public final class Model {
     }
 
     public Model (Model parent) {
-        mPublisher  = TestRunResultPublisher.getInstance ();
-        mAtNode = false;
-        mParent = parent;
+        mPublisher   = TestRunResultPublisher.getInstance ();
+        mAtNode      = false;
+        mParent      = parent;
         mIsMainModel = false;
     }
 
@@ -74,7 +77,18 @@ public final class Model {
         mPublisher.publishCommentLine ("initial node: " + mCurrentNode.getDescription ());
 
         // TODO: move to where graph is created?
-        reportEdges ();
+        if (firstTime (name)) {
+            mGraph.reportNodesAndEdges ();
+        }
+    }
+    
+    private boolean firstTime (String name) {
+        if (mKnownModels.contains (name)) {
+            return false;
+        } else {
+            mKnownModels.add (name);
+            return true;
+        }
     }
 
     public void initialize (String name) {
@@ -84,17 +98,11 @@ public final class Model {
         mDoneCondition = mParent.mDoneCondition;
 
         // TODO: move to where graph is created?
-        reportEdges ();
-    }
-    
-    private void reportEdges () {
-        for (Set<Edge> set : mGraph.mEdges.values ()) {
-            for (Edge edge : set) {
-                mPublisher.publishNewEdge (edge.mSource.getName (), edge.mTarget.getName ());
-            }
+        if (firstTime (name)) {
+            mGraph.reportNodesAndEdges ();
         }
     }
-
+    
     public String getNextAction () {
         String action;
         do {
@@ -103,10 +111,11 @@ public final class Model {
                 if (edge == null) {
                     return null;
                 } else {
-                    action    = edge.mAction;
                     mPublisher.publishAtEdge (edge.mSource.getName (), edge.mTarget.getName ());
+                    action = edge.mAction;
                 }
             } else {
+                mPublisher.publishAtNode (mCurrentNode.getName ());
                 action = mCurrentNode.mAction;
             }
             mAtNode = !mAtNode;
@@ -119,7 +128,6 @@ public final class Model {
         if (edge != null) {
             mCurrentNode = edge.mTarget;
             mPublisher.publishCommentLine ("next node: " + edge.mTarget.getDescription ());
-            mDoneCondition.markEdge (edge);
         }
         return edge;
     }

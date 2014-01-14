@@ -27,24 +27,33 @@ import org.powertools.engine.sources.model.Model;
 
 /*
  * This test source generates test lines from a model.
- * Processing starts with the start node of the model.
+ * It moves from state to state, returning the instructions it encounters.
  * A strategy object selects the edge to the next node.
- * The strategy throws a DoneException to signal it is done.
  */
 abstract class ModelTestSource extends TestSource {
-    protected final String mFileName;
+    private static final String GRAPHML_EXTENSION = ".graphml";
+
+    protected final String  mFileName;
     protected final RunTime mRunTime;
-    protected final Model mModel;
+    protected final Model   mModel;
 
     private final ProcedureRunner mRunner;
 
 
     ModelTestSource (String fileName, Model model, RunTime runTime, ProcedureRunner runner) {
         super (runTime.getGlobalScope ());
-        mFileName = fileName;
+        mFileName = removeExtension (fileName);
         mModel    = model;
         mRunTime  = runTime;
         mRunner   = runner;
+    }
+
+    private String removeExtension (String fileName) {
+        if (fileName.endsWith (GRAPHML_EXTENSION)) {
+            return fileName.substring (0, fileName.indexOf (".graphml"));
+        } else {
+            return fileName;
+        }
     }
 
     @Override

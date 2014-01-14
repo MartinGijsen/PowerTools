@@ -44,6 +44,6 @@ final class Node {
     }
 
     String getDescription () {
-        return mGraph.mName + "." + getName ();
+        return mGraph.getName () + "." + getName ();
     }
 }

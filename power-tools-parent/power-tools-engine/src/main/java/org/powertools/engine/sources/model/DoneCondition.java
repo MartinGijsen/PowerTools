@@ -18,13 +18,15 @@
 
 package org.powertools.engine.sources.model;
 
+import org.powertools.engine.reports.ModelSubscriber;
+
 
 /*
  * Determines when the model (including any submodels) has been processed
  */
-interface DoneCondition {
+interface DoneCondition extends ModelSubscriber {
     String getDescription ();
-    void addSubModelGraph (DirectedGraphImpl graph);
-    void markEdge (Edge edge);
+//    void addSubModelGraph (DirectedGraphImpl graph);
+//    void markEdge (Edge edge);
     boolean isSatisfied ();
 }
