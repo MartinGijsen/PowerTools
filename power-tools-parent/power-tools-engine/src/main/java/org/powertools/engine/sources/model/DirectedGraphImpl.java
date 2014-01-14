@@ -77,7 +77,7 @@ final class DirectedGraphImpl implements DirectedGraph {
         return null;
     }
 
-    public Node getRoot () {
+    public Node getRootNode () {
         // TODO: determine at initialization, during or after validation
         Set<Node> nodes = new HashSet<Node> ();
         nodes.addAll (mNodes.values ());

@@ -19,7 +19,6 @@
 package org.powertools.engine.reports;
 
 import java.util.Date;
-import org.powertools.engine.ExecutionException;
 import org.powertools.graph.DirectedGraph;
 import org.powertools.graph.Edge;
 import org.powertools.graph.GraphViz;

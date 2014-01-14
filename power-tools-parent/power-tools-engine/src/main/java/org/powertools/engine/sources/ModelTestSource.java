@@ -1,4 +1,4 @@
-/* Copyright 2012 by Martin Gijsen (www.DeAnalist.nl)
+/* Copyright 2014 by Martin Gijsen (www.DeAnalist.nl)
  *
  * This file is part of the PowerTools engine.
  *
@@ -20,51 +20,52 @@ package org.powertools.engine.sources;
 
 import java.util.LinkedList;
 import java.util.List;
-
 import org.powertools.engine.RunTime;
-import org.powertools.engine.sources.model.DoneException;
+import org.powertools.engine.instructions.ProcedureRunner;
 import org.powertools.engine.sources.model.Model;
 
 
 /*
  * This test source generates test lines from a model.
  * Processing starts with the start node of the model.
- * A strategy object determines the edge to the next node.
+ * A strategy object selects the edge to the next node.
  * The strategy throws a DoneException to signal it is done.
  */
-final class ModelTestSource extends TestSource {
-    final Model mModel;
+abstract class ModelTestSource extends TestSource {
+    protected final String mFileName;
+    protected final RunTime mRunTime;
+    protected final Model mModel;
 
-    private final String mFileName;
-    private final String mSelector;
-    private final String mDoneCondition;
-    private final RunTime mRunTime;
+    private final ProcedureRunner mRunner;
 
 
-    ModelTestSource (String fileName, String selector, String doneCondition, RunTime runTime) {
+    ModelTestSource (String fileName, Model model, RunTime runTime, ProcedureRunner runner) {
         super (runTime.getGlobalScope ());
-        mModel         = new Model ();
-        mFileName      = fileName;
-        mSelector      = selector;
-        mDoneCondition = doneCondition;
-        mRunTime       = runTime;
+        mFileName = fileName;
+        mModel    = model;
+        mRunTime  = runTime;
+        mRunner   = runner;
     }
 
     @Override
-    public void initialize () {
-        mModel.initialize (mFileName, mSelector, mDoneCondition, mRunTime);
-    }
-
-    @Override
-    public TestLineImpl getTestLine () {
-        try {
-            mTestLine.setParts (getParts (mModel.getNextAction ()));
-            return mTestLine;
-        } catch (DoneException de) {
-            return null;
+    public final TestLineImpl getTestLine () {
+        for ( ; ; ) {
+            String action = mModel.getNextAction ();
+            if (action == null) {
+                return null;
+            } else {
+                List<String> parts     = getParts (action);
+                String instructionName = parts.get (0);
+                if (instructionName.startsWith ("submodel")) {
+                    return pushSubmodelTestSource (parts).getTestLine ();
+                } else {
+                    mTestLine.setParts (parts);
+                    return mTestLine;
+                }
+            }
         }
     }
-
+    
     private List<String> getParts (String instruction) {
         String[] partsArray = instruction.split ("\"");
         List<String> parts  = new LinkedList<String> ();
@@ -87,5 +88,12 @@ final class ModelTestSource extends TestSource {
             instructionName += " _";
         }
         return instructionName;
+    }
+
+    protected TestSource pushSubmodelTestSource (List<String> parts) {
+        String fileName = parts.get (1);
+        TestSource submodel = new SubmodelTestSource (fileName, mModel, mRunTime, mRunner);
+        mRunner.invokeSource (submodel);
+        return submodel;
     }
 }

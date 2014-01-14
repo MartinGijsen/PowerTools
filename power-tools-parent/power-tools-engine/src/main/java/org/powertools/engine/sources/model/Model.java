@@ -18,10 +18,7 @@
 
 package org.powertools.engine.sources.model;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Set;
-import java.util.Stack;
 
 import org.powertools.engine.RunTime;
 import org.powertools.engine.reports.TestRunResultPublisher;
@@ -42,40 +39,56 @@ public final class Model {
     static final String SUBMODEL_ACTION_PREFIX = "submodel ";
 
     private final TestRunResultPublisher         mPublisher;
-    private final Stack<ActiveGraph>             mGraphStack;
-    private final Map<String, DirectedGraphImpl> mSubModels;
+    private final Model                          mParent;
+    private final boolean                        mIsMainModel;
 
+    private DirectedGraphImpl                    mGraph;
+    private Node                                 mCurrentNode;
     private boolean                              mAtNode;
     private EdgeSelectionStrategy                mSelector;
     private DoneCondition                        mDoneCondition;
-
+    
 
     public Model () {
-        mPublisher              = TestRunResultPublisher.getInstance ();
-        mSubModels              = new HashMap<String, DirectedGraphImpl> ();
-        mGraphStack             = new Stack<ActiveGraph> ();
-        mAtNode                 = false;
+        mPublisher   = TestRunResultPublisher.getInstance ();
+        mAtNode      = false;
+        mParent      = null;
+        mIsMainModel = true;
+    }
+
+    public Model (Model parent) {
+        mPublisher  = TestRunResultPublisher.getInstance ();
+        mAtNode = false;
+        mParent = parent;
+        mIsMainModel = false;
     }
 
     public void initialize (String name, String selector, String doneCondition, RunTime runTime) {
-        DirectedGraphImpl mainGraph = DirectedGraphImpl.createGraph (name);
-        ActiveGraph activeGraph     = new ActiveGraph (mainGraph);
-        mGraphStack.push (activeGraph);
+        mGraph         = DirectedGraphImpl.createGraph (name);
+        mDoneCondition = new DoneConditionFactory ().create (doneCondition, mGraph);
+        mSelector      = new EdgeSelectionStrategyFactory ().create (selector, runTime, mDoneCondition);
+        mCurrentNode   = mGraph.getRootNode ();
 
-        mSelector = new EdgeSelectionStrategyFactory ().create (selector, runTime);
-        mPublisher.publishCommentLine ("edge selection: " + mSelector.getDescription ());
-
-        mDoneCondition = new DoneConditionFactory ().create (doneCondition, mainGraph);
         mPublisher.publishCommentLine ("stop condition: " + mDoneCondition.getDescription ());
+        mPublisher.publishCommentLine ("edge selection: " + mSelector.getDescription ());
+        mPublisher.publishCommentLine ("initial node: " + mCurrentNode.getDescription ());
 
-        mPublisher.publishCommentLine ("start node: " + activeGraph.mCurrentNode.getDescription ());
-        
+        // TODO: move to where graph is created?
         reportEdges ();
     }
 
+    public void initialize (String name) {
+        mGraph         = DirectedGraphImpl.createGraph (name);
+        mCurrentNode   = mGraph.getRootNode ();
+        mSelector      = mParent.mSelector;
+        mDoneCondition = mParent.mDoneCondition;
+
+        // TODO: move to where graph is created?
+        reportEdges ();
+    }
+    
     private void reportEdges () {
-        DirectedGraphImpl graph = mGraphStack.peek ().mGraph;
-        for (Set<Edge> set : graph.mEdges.values ()) {
+        for (Set<Edge> set : mGraph.mEdges.values ()) {
             for (Edge edge : set) {
                 mPublisher.publishNewEdge (edge.mSource.getName (), edge.mTarget.getName ());
             }
@@ -87,10 +100,14 @@ public final class Model {
         do {
             if (mAtNode) {
                 Edge edge = getNextEdge ();
-                action    = edge.mAction;
-                mPublisher.publishAtEdge (edge.mSource.getName (), edge.mTarget.getName ());
+                if (edge == null) {
+                    return null;
+                } else {
+                    action    = edge.mAction;
+                    mPublisher.publishAtEdge (edge.mSource.getName (), edge.mTarget.getName ());
+                }
             } else {
-                action = mGraphStack.peek ().mCurrentNode.mAction;
+                action = mCurrentNode.mAction;
             }
             mAtNode = !mAtNode;
         } while ("".equals (action));
@@ -98,44 +115,12 @@ public final class Model {
     }
 
     private Edge getNextEdge () {
-        ActiveGraph currentGraph = mGraphStack.peek ();
-        Node currentNode         = currentGraph.mCurrentNode;
-        if (reallyDone (currentNode)) {
-            throw new DoneException ();
-        } else if (inEndNodeOfSubGraph (currentNode)) {
-            mGraphStack.pop ();
-            currentGraph = mGraphStack.peek ();
-        } else if (currentNode.mAction.startsWith (SUBMODEL_ACTION_PREFIX)) {
-            int begin        = currentNode.mAction.indexOf ('"') + 1;
-            int end          = currentNode.mAction.indexOf ('"', begin);
-            String modelName = currentNode.mAction.substring (begin, end);
-            currentGraph     = new ActiveGraph (getGraph (modelName));
-            mGraphStack.push (currentGraph);
+        Edge edge = mSelector.selectEdge (mGraph, mCurrentNode, mIsMainModel);
+        if (edge != null) {
+            mCurrentNode = edge.mTarget;
+            mPublisher.publishCommentLine ("next node: " + edge.mTarget.getDescription ());
+            mDoneCondition.markEdge (edge);
         }
-
-        //TODO: pass ActiveGraph to selector?
-        Edge edge                 = mSelector.selectEdge (currentGraph.mGraph, currentGraph.mCurrentNode);
-        currentGraph.mCurrentNode = edge.mTarget;
-        mDoneCondition.markEdge (edge);
-        mPublisher.publishCommentLine ("next node: " + edge.mTarget.getDescription ());
         return edge;
-    }
-
-    private boolean reallyDone (Node currentNode) {
-        return mDoneCondition.isSatisfied () && mGraphStack.size () == 1 && currentNode.mLabel.equalsIgnoreCase (END_NODE_LABEL);
-    }
-
-    private boolean inEndNodeOfSubGraph (Node currentNode) {
-        return mGraphStack.size () != 1 && currentNode.mLabel.equalsIgnoreCase (END_NODE_LABEL);
-    }
-    
-    private DirectedGraphImpl getGraph (String name) {
-        DirectedGraphImpl subModel = mSubModels.get (name);
-        if (subModel == null) {
-            subModel = DirectedGraphImpl.createGraph (name);
-            mDoneCondition.addSubModelGraph (subModel);
-            mSubModels.put (name, subModel);
-        }
-        return subModel;
     }
 }

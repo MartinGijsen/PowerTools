@@ -23,9 +23,9 @@ import org.powertools.engine.RunTime;
 
 
 final class EdgeSelectionStrategyFactory {
-    EdgeSelectionStrategy create (String selector, RunTime runTime) {
+    EdgeSelectionStrategy create (String selector, RunTime runTime, DoneCondition doneCondition) {
         if (RandomEdgeSelector.NAME.equals (selector)) {
-            return new RandomEdgeSelector (runTime);
+            return new RandomEdgeSelector (runTime, doneCondition);
         } else if (WeightedEdgeSelector.NAME.equals (selector)) {
             return new WeightedEdgeSelector ();
         } else {

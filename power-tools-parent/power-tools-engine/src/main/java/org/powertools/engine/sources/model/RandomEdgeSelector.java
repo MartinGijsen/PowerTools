@@ -33,11 +33,13 @@ final class RandomEdgeSelector implements EdgeSelectionStrategy {
     private static final Random mRandom      = new Random ();
 
     private final RunTime mRunTime;
+    private final DoneCondition mDoneCondition;
 
 
-    RandomEdgeSelector (RunTime runTime) {
+    RandomEdgeSelector (RunTime runTime, DoneCondition doneCondition) {
         super ();
-        mRunTime = runTime;
+        mRunTime       = runTime;
+        mDoneCondition = doneCondition;
     }
 
     @Override
@@ -46,7 +48,13 @@ final class RandomEdgeSelector implements EdgeSelectionStrategy {
     }
 
     @Override
-    public Edge selectEdge (DirectedGraphImpl graph, Node currentNode) {
+    public Edge selectEdge (DirectedGraph graph, Node currentNode, boolean isMainModel) {
+        if (currentNode.mLabel.equalsIgnoreCase (Model.END_NODE_LABEL) && mDoneCondition.isSatisfied ()) {
+            return null;
+        } else if (!isMainModel && graph.getEdges (currentNode).isEmpty ()) {
+            return null;
+        }
+        
         Set<Edge> remainingEdges = new HashSet<Edge> (graph.getEdges (currentNode));
         while (!remainingEdges.isEmpty ()) {
             Edge edge = removeRandomEdge (remainingEdges);

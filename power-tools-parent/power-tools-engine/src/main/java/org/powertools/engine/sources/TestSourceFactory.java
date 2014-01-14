@@ -21,6 +21,7 @@ package org.powertools.engine.sources;
 import org.powertools.engine.ExecutionException;
 import org.powertools.engine.TestLine;
 import org.powertools.engine.RunTime;
+import org.powertools.engine.instructions.ProcedureRunner;
 import org.powertools.engine.sources.ExcelTestSource.Names;
 import org.powertools.engine.symbol.Scope;
 
@@ -44,8 +45,8 @@ public final class TestSourceFactory {
         }
     }
 
-    public static TestSource createModelTestSource (String fileName, String selector, String doneCondition, RunTime runTime) {
-        return new ModelTestSource (fileName, selector, doneCondition, runTime);
+    public static TestSource createModelTestSource (String fileName, String selector, String doneCondition, RunTime runTime, ProcedureRunner runner) {
+        return new MainModelTestSource (fileName, selector, doneCondition, runTime, runner);
     }
 
     public static TestSource createProcedureTestSource (Procedure procedure, Scope parentScope, TestLine testLine) {

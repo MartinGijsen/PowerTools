@@ -34,7 +34,7 @@ final class DoneWhenAllNodesSeen implements DoneCondition {
         super ();
         mDone        = false;
         mUnseenNodes = new HashSet<Node> (graph.mNodes.values ());
-        mUnseenNodes.remove (graph.getRoot ());
+        mUnseenNodes.remove (graph.getRootNode ());
     }
 
 

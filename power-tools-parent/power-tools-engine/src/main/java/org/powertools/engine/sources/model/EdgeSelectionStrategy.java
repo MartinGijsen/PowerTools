@@ -1,4 +1,4 @@
-/* Copyright 2013 by Martin Gijsen (www.DeAnalist.nl)
+/* Copyright 2013-2014 by Martin Gijsen (www.DeAnalist.nl)
  *
  * This file is part of the PowerTools engine.
  *
@@ -24,5 +24,5 @@ package org.powertools.engine.sources.model;
  */
 interface EdgeSelectionStrategy {
     String getDescription ();
-    Edge selectEdge (DirectedGraphImpl graph, Node currentNode);
+    Edge selectEdge (DirectedGraph graph, Node currentNode, boolean isMainModel);
 }

@@ -1,4 +1,4 @@
-/* Copyright 2013 by Martin Gijsen (www.DeAnalist.nl)
+/* Copyright 2013-2014 by Martin Gijsen (www.DeAnalist.nl)
  *
  * This file is part of the PowerTools engine.
  *
@@ -34,5 +34,6 @@ final class Edge {
         mTarget    = target;
         mCondition = "";
         mAction    = "";
+        mWeight    = -1;
     }
 }

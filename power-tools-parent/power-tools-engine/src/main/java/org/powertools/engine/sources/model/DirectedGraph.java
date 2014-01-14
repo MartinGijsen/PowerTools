@@ -1,4 +1,4 @@
-/* Copyright 2013 by Martin Gijsen (www.DeAnalist.nl)
+/* Copyright 2013-2014 by Martin Gijsen (www.DeAnalist.nl)
  *
  * This file is part of the PowerTools engine.
  *
@@ -24,7 +24,9 @@ import java.util.Set;
 interface DirectedGraph {
     Node addNode (String name);
     Node getNode (String name);
-    Node getRoot ();
+    Node getNodeByLabel (String label);
+    Node getRootNode ();
+    Node getStartNode ();
     Edge addEdge (String sourceName, String targetName);
     Edge addEdge (Node source, Node target);
     Edge getEdge (Node source, Node target);
