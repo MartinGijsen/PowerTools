@@ -30,6 +30,7 @@ import org.powertools.engine.RunTime;
 import org.powertools.engine.Symbol;
 import org.powertools.engine.instructions.InstructionSetFactory;
 import org.powertools.engine.reports.ModelCoverageGraph;
+import org.powertools.engine.sources.TestSourceFactory;
 import org.powertools.engine.symbol.BaseSequence;
 
 
@@ -295,6 +296,7 @@ public final class BuiltinInstructions implements InstructionSet {
         }
     }
 
+    @KeywordName ("SetGraphvizPath")
     public void SetGraphvizPathTo_ (String path) {
         ModelCoverageGraph.setGraphviz_path (path);
     }
@@ -340,6 +342,9 @@ public final class BuiltinInstructions implements InstructionSet {
         return !CheckThat_IsBetween_And_ (valueString, lowerBoundString, upperBoundString);
     }
 
+    public void RunFile_ (String fileName) {
+        mRunTime.invokeSource (new TestSourceFactory ().createExcelTestSource (fileName));
+    }
 
     // Keywords only (has parameters but not the corresponding underscores)
     public boolean RunSheet (String sheetName) {

@@ -68,7 +68,7 @@ public class ModelBasedEngine extends Engine {
 
     protected void run (String fileName, String selector, String condition) {
         try {
-            run (TestSourceFactory.createModelTestSource (fileName, selector, condition, mRunTime, mRunTime));
+            run (new TestSourceFactory ().createModelTestSource (fileName, selector, condition, mRunTime, mRunTime));
         } catch (GraphException ge) {
             System.err.println ("error: " + ge.getMessage ());
         } catch (ExecutionException ee) {

@@ -22,7 +22,9 @@ import java.util.LinkedList;
 import java.util.List;
 import org.powertools.engine.RunTime;
 import org.powertools.engine.instructions.ProcedureRunner;
+import org.powertools.engine.sources.model.MainModel;
 import org.powertools.engine.sources.model.Model;
+import org.powertools.engine.sources.model.Submodel;
 
 
 /*
@@ -30,30 +32,28 @@ import org.powertools.engine.sources.model.Model;
  * It moves from state to state, returning the instructions it encounters.
  * A strategy object selects the edge to the next node.
  */
-abstract class ModelTestSource extends TestSource {
-    private static final String GRAPHML_EXTENSION = ".graphml";
-
-    protected final String  mFileName;
+class ModelTestSource extends TestSource {
     protected final RunTime mRunTime;
     protected final Model   mModel;
 
     private final ProcedureRunner mRunner;
 
 
-    ModelTestSource (String fileName, Model model, RunTime runTime, ProcedureRunner runner) {
+//    public static ModelTestSource createMainModelTestSource (String fileName, String selector, String doneCondition, RunTime runTime, ProcedureRunner runner) {
+//        return new ModelTestSource (new MainModel (fileName, selector, doneCondition, runTime), runTime, runner);
+//    }
+    
+    
+    ModelTestSource (Model model, RunTime runTime, ProcedureRunner runner) {
         super (runTime.getGlobalScope ());
-        mFileName = removeExtension (fileName);
         mModel    = model;
         mRunTime  = runTime;
         mRunner   = runner;
     }
 
-    private String removeExtension (String fileName) {
-        if (fileName.endsWith (GRAPHML_EXTENSION)) {
-            return fileName.substring (0, fileName.indexOf (".graphml"));
-        } else {
-            return fileName;
-        }
+    @Override
+    public void initialize () {
+        mModel.initialize ();
     }
 
     @Override
@@ -65,7 +65,7 @@ abstract class ModelTestSource extends TestSource {
             } else {
                 List<String> parts     = getParts (action);
                 String instructionName = parts.get (0);
-                if (instructionName.startsWith ("submodel")) {
+                if (instructionName.startsWith ("submodel ")) {
                     return pushSubmodelTestSource (parts).getTestLine ();
                 } else {
                     mTestLine.setParts (parts);
@@ -100,9 +100,14 @@ abstract class ModelTestSource extends TestSource {
     }
 
     protected TestSource pushSubmodelTestSource (List<String> parts) {
-        String fileName = parts.get (1);
-        TestSource submodel = new SubmodelTestSource (fileName, mModel, mRunTime, mRunner);
+        String fileName     = parts.get (1);
+        TestSource submodel = new ModelTestSource (new Submodel (fileName, mModel), mRunTime, mRunner);
         mRunner.invokeSource (submodel);
         return submodel;
+    }
+    
+    @Override
+    public void cleanup () {
+        mModel.cleanup ();
     }
 }

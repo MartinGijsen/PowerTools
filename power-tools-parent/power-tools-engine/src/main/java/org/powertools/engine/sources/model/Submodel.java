@@ -16,30 +16,28 @@
  * along with the PowerTools engine. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.powertools.engine.sources;
-
-import org.powertools.engine.RunTime;
-import org.powertools.engine.instructions.ProcedureRunner;
-import org.powertools.engine.sources.model.Model;
+package org.powertools.engine.sources.model;
 
 
-/*
- * This test source generates test lines from a submodel.
- * A submodel has no implicit loop from end to start state.
- * It simply runs from the root state to a final state.
- * It can invoke submodels.
- */
-final class SubmodelTestSource extends ModelTestSource {
-    private final Model mParentModel;
-
-    SubmodelTestSource (String fileName, Model parent, RunTime runTime, ProcedureRunner runner) {
-        super (fileName, new Model (parent), runTime, runner);
-        mParentModel = new Model (parent);
+public final class Submodel extends Model {
+    private final String mFileName;
+    
+    public Submodel (String fileName, Model parent) {
+        mFileName      = fileName;
+        mAtNode        = false;
+        mSelector      = parent.mSelector;
+        mDoneCondition = parent.mDoneCondition;
     }
-
 
     @Override
     public void initialize () {
-        mModel.initialize (mFileName);
+        mGraph       = DirectedGraphImpl.createGraph (mFileName);
+        mCurrentNode = mGraph.getRootNode ();
+        finishInit ();
+    }
+
+    @Override
+    Edge selectEdge () {
+        return mSelector.selectEdge (mGraph, mCurrentNode, false);
     }
 }

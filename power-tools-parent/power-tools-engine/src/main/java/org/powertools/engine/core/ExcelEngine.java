@@ -60,6 +60,6 @@ public class ExcelEngine extends Engine {
 
     @Override
     public final void run (String sourceName) {
-        run (TestSourceFactory.createExcelTestSource (sourceName));
+        run (new TestSourceFactory ().createExcelTestSource (sourceName));
     }
 }

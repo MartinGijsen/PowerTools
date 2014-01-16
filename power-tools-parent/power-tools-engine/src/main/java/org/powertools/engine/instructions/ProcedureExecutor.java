@@ -36,7 +36,7 @@ public final class ProcedureExecutor implements Executor {
 
     @Override
     public boolean execute (TestLine testLine) {
-        mRunner.invokeSource (TestSourceFactory.createProcedureTestSource (mProcedure, mRunner.getCurrentScope (), testLine));
+        mRunner.invokeSource (new TestSourceFactory ().createProcedureTestSource (mProcedure, mRunner.getCurrentScope (), testLine));
         return true;
     }
 }

@@ -23,16 +23,12 @@ import org.powertools.engine.TestLine;
 import org.powertools.engine.RunTime;
 import org.powertools.engine.instructions.ProcedureRunner;
 import org.powertools.engine.sources.ExcelTestSource.Names;
+import org.powertools.engine.sources.model.MainModel;
 import org.powertools.engine.symbol.Scope;
 
 
 public final class TestSourceFactory {
-    private TestSourceFactory () {
-        // empty
-    }
-
-
-    public static TestSource createExcelTestSource (String sourceName) {
+    public TestSource createExcelTestSource (String sourceName) {
         Names names = ExcelTestSource.createNamesFromSourceName (sourceName);
 
         String fileName = names.getFileName ();
@@ -45,11 +41,11 @@ public final class TestSourceFactory {
         }
     }
 
-    public static TestSource createModelTestSource (String fileName, String selector, String doneCondition, RunTime runTime, ProcedureRunner runner) {
-        return new MainModelTestSource (fileName, selector, doneCondition, runTime, runner);
+    public TestSource createModelTestSource (String fileName, String selector, String doneCondition, RunTime runTime, ProcedureRunner runner) {
+        return new ModelTestSource (new MainModel (fileName, selector, doneCondition, runTime), runTime, runner);
     }
 
-    public static TestSource createProcedureTestSource (Procedure procedure, Scope parentScope, TestLine testLine) {
+    public TestSource createProcedureTestSource (Procedure procedure, Scope parentScope, TestLine testLine) {
         return new ProcedureTestSource (procedure, parentScope, testLine);
     }
 }
