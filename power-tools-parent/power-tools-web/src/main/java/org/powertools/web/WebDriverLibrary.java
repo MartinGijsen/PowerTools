@@ -18,6 +18,7 @@
 
 package org.powertools.web;
 
+import org.powertools.engine.KeywordName;
 import org.powertools.engine.RunTime;
 import org.powertools.engine.reports.TestResultSubscriber;
 import org.powertools.engine.reports.TestRunResultPublisher;
@@ -35,6 +36,7 @@ public final class WebDriverLibrary extends WebLibrary {
     }
 
 
+    @KeywordName ("OpenBrowser")
     public boolean OpenBrowser_At_ (String typeString, String url) {
         return OpenBrowser_Version_At_OnGrid_(typeString, null, url, null);
     }
@@ -44,7 +46,7 @@ public final class WebDriverLibrary extends WebLibrary {
             mRunTime.reportError ("browser is already open");
             return false;
         } else {
-            IBrowserType browserType   = getBrowserType (typeString);
+            BrowserType browserType    = getBrowserType (typeString);
             String urlToOpen           = url.isEmpty () ? "about:blank" : completeUrl (url);
             WebDriverBrowser myBrowser = new WebDriverBrowser (mRunTime);
             mBrowser                   = myBrowser;

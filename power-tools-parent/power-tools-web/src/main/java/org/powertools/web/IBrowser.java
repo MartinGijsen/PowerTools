@@ -18,8 +18,8 @@
 
 package org.powertools.web;
 
-import org.powertools.web.WebLibrary.IBrowserType;
-import org.powertools.web.WebLibrary.IKeyType;
+import org.powertools.web.WebLibrary.BrowserType;
+import org.powertools.web.WebLibrary.KeyType;
 
 
 public interface IBrowser {
@@ -30,7 +30,7 @@ public interface IBrowser {
     String getShortDefaultTimeoutAsString ();
     String getLongDefaultTimeoutAsString ();
 
-    boolean open (IBrowserType type, String url, String logDirectory);
+    boolean open (BrowserType type, String url, String logDirectory);
     boolean close ();
     boolean maximize ();
     boolean minimize ();
@@ -42,31 +42,31 @@ public interface IBrowser {
     String getPageTitle ();
 
     boolean selectFrame (Item item);
-    boolean selectFrame (IKeyType keyType, String value);
+    boolean selectFrame (KeyType keyType, String value);
     boolean selectDefaultFrame ();
 
     boolean type (Item item, String text);
-    boolean type (IKeyType keyType, String value, String text);
+    boolean type (KeyType keyType, String value, String text);
 
     boolean fireEvent (Item item, String event);
 
     boolean setCheckboxValue(Item item, boolean value);
-    boolean setCheckboxValue(IKeyType keyType, String value, boolean checkValue);
+    boolean setCheckboxValue(KeyType keyType, String value, boolean checkValue);
 
     boolean itemExists (Item item);
-    boolean itemExists (IKeyType keyType, String value);
+    boolean itemExists (KeyType keyType, String value);
     int countItems (Item item);
 
     boolean click (Item item);
-    boolean click (IKeyType keyType, String value);
+    boolean click (KeyType keyType, String value);
     boolean clickAndWait (Item item);
     boolean clickAndWait (Item item, int timeout);
-    boolean clickAndWait (IKeyType keyType, String value);
-    boolean clickAndWait (IKeyType keyType, String value, int timeout);
+    boolean clickAndWait (KeyType keyType, String value);
+    boolean clickAndWait (KeyType keyType, String value, int timeout);
 
     boolean clickLink (Item item);
     boolean clickLink (String text);
-    boolean clickLink (IKeyType key, String value);
+    boolean clickLink (KeyType key, String value);
 
     boolean clickAcceptInAlert();
 
@@ -103,8 +103,10 @@ public interface IBrowser {
 
     boolean checkForText (String text);
     String getItemText (Item item);
-    String getItemText (IKeyType key, String value);
-
+    String getItemText (KeyType key, String value);
+    String getItemAttribute (Item item, String attributeName);
+    String getItemAttribute (KeyType key, String value, String attributeName);
+            
     int getCount (Item item);
 
     boolean makeScreenshot (String path);

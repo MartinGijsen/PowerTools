@@ -18,16 +18,16 @@
 
 package org.powertools.web;
 
-import org.powertools.web.WebLibrary.IItemType;
+import org.powertools.web.WebLibrary.ItemType;
 
 
 final class XpathItem extends Item {
-    XpathItem (String logicalName, IItemType type, String value) {
+    XpathItem (String logicalName, ItemType type, String value) {
         this (logicalName, null, type, value);
     }
 
-    XpathItem (String logicalName, Item parent, IItemType type, String xpath) {
-        super (logicalName, parent, type, WebLibrary.IKeyType.cXpath, xpath);
+    XpathItem (String logicalName, Item parent, ItemType type, String xpath) {
+        super (logicalName, parent, type, WebLibrary.KeyType.cXpath, xpath);
         mSections = xpath.split (cParameterMarker);
         mParameters = new String[mSections.length - 1];
     }
@@ -62,7 +62,7 @@ final class XpathItem extends Item {
         String parentXpath = "";
         if (mParent == null) {
             // TODO: check parent exists and has Xpath at creation
-        } else if (mParent.mKeyType == WebLibrary.IKeyType.cXpath) {
+        } else if (mParent.mKeyType == WebLibrary.KeyType.cXpath) {
             parentXpath = mParent.getValue ();
         } else {
             return null;

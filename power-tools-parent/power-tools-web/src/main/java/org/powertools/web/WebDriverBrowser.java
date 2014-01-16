@@ -44,9 +44,9 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.Select;
 import org.powertools.engine.ExecutionException;
 import org.powertools.engine.RunTime;
-import org.powertools.web.WebLibrary.IBrowserType;
-import org.powertools.web.WebLibrary.IItemType;
-import org.powertools.web.WebLibrary.IKeyType;
+import org.powertools.web.WebLibrary.BrowserType;
+import org.powertools.web.WebLibrary.ItemType;
+import org.powertools.web.WebLibrary.KeyType;
 
 
 class WebDriverBrowser implements IBrowser {
@@ -95,7 +95,7 @@ class WebDriverBrowser implements IBrowser {
     //
     // }
 
-    public boolean open (IBrowserType type, String browserVersion, String url, String logDirectory, String hubUrl) {
+    public boolean open (BrowserType type, String browserVersion, String url, String logDirectory, String hubUrl) {
         if (hubUrl == null || hubUrl.isEmpty()) {
             webBrowserRunsOnGrid = false;
             return open(type, url, logDirectory);
@@ -106,7 +106,7 @@ class WebDriverBrowser implements IBrowser {
     }
 
 
-    private boolean openOnGrid (IBrowserType type, String browserVersion, String url, String hubUrl) {
+    private boolean openOnGrid (BrowserType type, String browserVersion, String url, String hubUrl) {
         DesiredCapabilities capability = getBrowserCapabilities (type);
 
         if (browserVersion != null && !browserVersion.isEmpty ()) {
@@ -124,7 +124,7 @@ class WebDriverBrowser implements IBrowser {
         }
     }
 
-    private DesiredCapabilities getBrowserCapabilities (IBrowserType type) {
+    private DesiredCapabilities getBrowserCapabilities (BrowserType type) {
         DesiredCapabilities capabilities;
         switch (type) {
         case cInternetExplorer:
@@ -143,7 +143,7 @@ class WebDriverBrowser implements IBrowser {
     }
 
     @Override
-    public boolean open (IBrowserType type, String url, String logDirectory) {
+    public boolean open (BrowserType type, String url, String logDirectory) {
         switch (type) {
         case cInternetExplorer:
             System.setProperty ("webdriver.ie.driver", "IEDriverServer.exe"); 
@@ -225,7 +225,7 @@ class WebDriverBrowser implements IBrowser {
     }
 
     @Override
-    public boolean selectFrame (IKeyType keyType, String value) {
+    public boolean selectFrame (KeyType keyType, String value) {
         mDriver.switchTo ().frame (mDriver.findElement (getLocator (keyType, value)));
         return true;
     }
@@ -242,7 +242,7 @@ class WebDriverBrowser implements IBrowser {
     }
 
     @Override
-    public boolean type (IKeyType keyType, String value, String text) {
+    public boolean type (KeyType keyType, String value, String text) {
         return type (getLocator (keyType, value), text);
     }
 
@@ -258,7 +258,7 @@ class WebDriverBrowser implements IBrowser {
     }
 
     @Override
-    public boolean setCheckboxValue(IKeyType keyType, String keyValue, boolean value) {
+    public boolean setCheckboxValue(KeyType keyType, String keyValue, boolean value) {
         return setCheckboxValue (getLocator (keyType, keyValue), value);
     }
 
@@ -268,7 +268,7 @@ class WebDriverBrowser implements IBrowser {
     }
 
     @Override
-    public boolean itemExists (IKeyType keyType, String value) {
+    public boolean itemExists (KeyType keyType, String value) {
         return getUniqueElement (getLocator (keyType, value)) != null;
     }
 
@@ -291,7 +291,7 @@ class WebDriverBrowser implements IBrowser {
     }
 
     @Override
-    public boolean click (IKeyType keyType, String value) {
+    public boolean click (KeyType keyType, String value) {
         return click (getLocator (keyType, value));
     }
 
@@ -307,12 +307,12 @@ class WebDriverBrowser implements IBrowser {
     }
 
     @Override
-    public boolean clickAndWait (IKeyType keyType, String value) {
+    public boolean clickAndWait (KeyType keyType, String value) {
         return click (keyType, value);
     }
 
     @Override
-    public boolean clickAndWait (IKeyType keyType, String value, int timout) {
+    public boolean clickAndWait (KeyType keyType, String value, int timout) {
         // TODO: handle timeout?
         return click (keyType, value);
     }
@@ -328,7 +328,7 @@ class WebDriverBrowser implements IBrowser {
     }
 
     @Override
-    public boolean clickLink (IKeyType keyType, String value) {
+    public boolean clickLink (KeyType keyType, String value) {
         return click (getLocator (keyType, value));
     }
 
@@ -341,7 +341,7 @@ class WebDriverBrowser implements IBrowser {
 
     @Override
     public boolean selectChoice (Item item) {
-        if (item.mType != WebLibrary.IItemType.cListboxItem) {
+        if (item.mType != WebLibrary.ItemType.cListboxItem) {
             mRunTime.reportError ("item is not a listbox item");
             return false;
         } else {
@@ -364,7 +364,7 @@ class WebDriverBrowser implements IBrowser {
 
     @Override
     public boolean selectChoiceByText (Item selectItem, String optionText) {
-        if (selectItem.mType != WebLibrary.IItemType.cListbox) {
+        if (selectItem.mType != WebLibrary.ItemType.cListbox) {
             mRunTime.reportError ("item is not a listbox");
             return false;
         } else {
@@ -376,7 +376,7 @@ class WebDriverBrowser implements IBrowser {
 
     @Override
     public boolean selectChoiceByPartialText (Item selectItem, String optionText) {
-        if (selectItem.mType != WebLibrary.IItemType.cListbox) {
+        if (selectItem.mType != WebLibrary.ItemType.cListbox) {
             mRunTime.reportError ("item is not a listbox");
             return false;
         } else {
@@ -410,7 +410,7 @@ class WebDriverBrowser implements IBrowser {
 
     @Override
     public boolean waitUntilTextIsPresent (String text, int timeout) {
-        return waitUntilTextIsPresent (getLocator (WebLibrary.IKeyType.cTag, "body"), text, timeout);
+        return waitUntilTextIsPresent (getLocator (WebLibrary.KeyType.cTag, "body"), text, timeout);
     }
 
     @Override
@@ -420,7 +420,7 @@ class WebDriverBrowser implements IBrowser {
 
     @Override
     public boolean waitUntilTextIsNotPresent (String text, int timeout) {
-        return waitUntilTextIsNotPresent (getLocator (WebLibrary.IKeyType.cTag, "body"), text, timeout);
+        return waitUntilTextIsNotPresent (getLocator (WebLibrary.KeyType.cTag, "body"), text, timeout);
     }
 
     @Override
@@ -505,18 +505,28 @@ class WebDriverBrowser implements IBrowser {
 
     @Override
     public boolean checkForText (String text) {
-        final WebElement element = getUniqueElement (getLocator (WebLibrary.IKeyType.cTag, "body"));
+        final WebElement element = getUniqueElement (getLocator (WebLibrary.KeyType.cTag, "body"));
         return element == null ? false : element.getText ().contains (text);
     }
 
     @Override
     public String getItemText (Item item) {
-        return getItemText(getLocator (item));
+        return getItemText (getLocator (item));
     }
 
     @Override
-    public String getItemText (IKeyType keyType, String value) {
-        return getItemText(getLocator (keyType, value));
+    public String getItemText (KeyType keyType, String value) {
+        return getItemText (getLocator (keyType, value));
+    }
+
+    @Override
+    public String getItemAttribute (Item item, String attributeName) {
+        return getItemAttribute (getLocator (item), attributeName);
+    }
+
+    @Override
+    public String getItemAttribute (KeyType keyType, String value, String attributeName) {
+        return getItemAttribute (getLocator (keyType, value), attributeName);
     }
 
     @Override
@@ -592,32 +602,40 @@ class WebDriverBrowser implements IBrowser {
     }
 
     private By getLocator (Item item) {
-        if (item.mType == IItemType.cLink && item.mKeyType == IKeyType.cText) {
-            final By locator = By.linkText (item.mValue);
+        if (item.mType != ItemType.cLink) {
+            // continue
+        } else if (item.mKeyType == KeyType.cText) {
+            By locator = By.linkText (item.mValue);
             mRunTime.reportInfo ("locator: " + locator.toString ());
             return locator;
-        } else {
-            return getLocator (item.mKeyType, item.getValue ());
+        } else if (item.mKeyType == KeyType.cPartialText) {
+            By locator = By.partialLinkText (item.mValue);
+            mRunTime.reportInfo ("locator: " + locator.toString ());
+            return locator;
         }
+        return getLocator (item.mKeyType, item.getValue ());
     }
 
-    private By getLocator (IKeyType keyType, String value) {
+    private By getLocator (KeyType keyType, String value) {
         By locator;
         switch (keyType) {
+        case cClass :
+            locator = By.className (value);
+            break;
+        case cCss :
+            locator = By.cssSelector (value);
+            break;
         case cId :
             locator = By.id (value);
             break;
         case cName :
             locator = By.name (value);
             break;
-        case cXpath :
-            locator = By.xpath (value);
-            break;
-        case cCss :
-            locator = By.cssSelector (value);
-            break;
         case cTag :
             locator = By.tagName (value);
+            break;
+        case cXpath :
+            locator = By.xpath (value);
             break;
         default:
             throw new ExecutionException ("invalid key: " + keyType);
@@ -777,7 +795,6 @@ class WebDriverBrowser implements IBrowser {
     }
 
     private class GetItemTextCommand implements WebCommand {
-
         String result = null;
 
         @Override
@@ -790,17 +807,44 @@ class WebDriverBrowser implements IBrowser {
         }
     }
 
-    private boolean executeCommandWhenElementAvailable (By locator, int timeoutInSec, WebCommand cmd) {
+    private String getItemAttribute (By locator, String attributeName) {
+        GetItemAttributeCommand command = new GetItemAttributeCommand (attributeName);
 
+        boolean succes = executeCommandWhenElementAvailable (locator, mShortDefaultTimeoutInSeconds, command);
+        if (!succes) {
+            throw new ExecutionException("error during getItemAttribute");
+        }
+
+        return command.result;
+    }
+
+    private class GetItemAttributeCommand implements WebCommand {
+        final String mAttributeName;
+        String result = null;
+        
+        GetItemAttributeCommand (String attributeName) {
+            mAttributeName = attributeName;
+        }
+
+        @Override
+        public boolean execute (WebElement element) {
+            result = element.getAttribute (mAttributeName);
+            mRunTime.reportInfo ("getItemAttribute result: " + result);
+            result = (result == null ? result :  result.trim ());
+            return true;
+        }
+    }
+
+    private boolean executeCommandWhenElementAvailable (By locator, int timeoutInSec, WebCommand cmd) {
         for (int nrOfSeconds = 0; nrOfSeconds < timeoutInSec; ++nrOfSeconds) {
             try {
                 WebElement element = getUniqueElement(locator);
                 if (cmd.execute (element)) {
                     return true;
                 }
-            } catch (WebDriverException e) {
+            } catch (WebDriverException wde) {
                 // This error occurs occasionally in IE when using SeleniumGrid
-            } catch (ExecutionException e) {
+            } catch (ExecutionException ee) {
                 // This error occurs when the element is not yet available 
             }
             sleep (cOneSecondTimeout);

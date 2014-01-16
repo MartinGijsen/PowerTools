@@ -22,11 +22,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.powertools.engine.InstructionSet;
+import org.powertools.engine.KeywordName;
+import org.powertools.engine.ParameterOrder;
 import org.powertools.engine.RunTime;
 
 
 public abstract class WebLibrary implements InstructionSet {
-    enum IItemType {
+    enum ItemType {
         cButton,
         cCheckbox,
         cCombobox,
@@ -39,22 +41,24 @@ public abstract class WebLibrary implements InstructionSet {
         cText
     }
 
-    enum IBrowserType {
+    enum BrowserType {
         cFirefox,
         cInternetExplorer,
         cChrome
     }
 
-    enum IKeyType {
+    enum KeyType {
+        cClass,
+        cCss,
         cDom,
         cId,
         cIndex,
         cName,
+        cPartialText,
+        cTag,
         cText,
         cValue,
-        cXpath,
-        cCss,
-        cTag
+        cXpath
     }
 
     public IBrowser mBrowser;
@@ -81,8 +85,8 @@ public abstract class WebLibrary implements InstructionSet {
     }
 
 
-    public static IItemType getItemType (String name) {
-        IItemType itemType = cItemTypesMap.get (name);
+    public static ItemType getItemType (String name) {
+        ItemType itemType = cItemTypesMap.get (name);
         if (itemType != null) {
             return itemType;
         } else {
@@ -90,8 +94,8 @@ public abstract class WebLibrary implements InstructionSet {
         }
     }
 
-    public static IBrowserType getBrowserType (String name) {
-        IBrowserType browserType = cBrowserTypesMap.get (name.toLowerCase ());
+    public static BrowserType getBrowserType (String name) {
+        BrowserType browserType = cBrowserTypesMap.get (name.toLowerCase ());
         if (browserType != null) {
             return browserType;
         } else {
@@ -99,8 +103,8 @@ public abstract class WebLibrary implements InstructionSet {
         }
     }
 
-    public static IKeyType getKeyType (String name) {
-        IKeyType keyType = cKeyTypesMap.get (name);
+    public static KeyType getKeyType (String name) {
+        KeyType keyType = cKeyTypesMap.get (name);
         if (keyType != null) {
             return keyType;
         } else {
@@ -127,6 +131,7 @@ public abstract class WebLibrary implements InstructionSet {
         return mBrowser.minimize ();
     }
 
+    @KeywordName ("OpenURL")
     public final boolean OpenURL_ (String url) {
         return mBrowser.openUrl (completeUrl (url));
     }
@@ -143,16 +148,19 @@ public abstract class WebLibrary implements InstructionSet {
 
 
     // configuration instructions
+    @KeywordName ("SetShortDefaultTimeout")
     public final boolean SetShortDefaultTimeoutTo_ (int timeout) {
         return mBrowser.setShortDefaultTimeout (timeout);
     }
 
+    @KeywordName ("SetLongDefaultTimeout")
     public final boolean SetLongDefaultTimeoutTo_ (int timeout) {
         return mBrowser.setLongDefaultTimeout (timeout);
     }
 
 
     // item declarations
+    @KeywordName ("DeclareItem")
     public final boolean Name_ParentName_Type_Key_Value_ (String name, String parentName, String type, String keyTypeString, String value) {
         if (parametersValid (name, type, keyTypeString, value)) {
             try {
@@ -180,14 +188,15 @@ public abstract class WebLibrary implements InstructionSet {
     }
 
     private Item createItem (String name, Item parentItem, String type, String keyTypeString, String value) {
-        IKeyType keyType = getKeyType (keyTypeString);
-        if (keyType == IKeyType.cXpath) {
+        KeyType keyType = getKeyType (keyTypeString);
+        if (keyType == KeyType.cXpath) {
             return new XpathItem (name, parentItem, getItemType (type), value);
         } else {
             return new Item (name, parentItem, getItemType (type), keyType, value);
         }
     }
 
+    @KeywordName ("SetItemParameter")
     public final boolean SetParameter_ForItem_To_ (int parameterNr, String itemName, String value) {
         final Item item = findItem (itemName);
         return item != null && item.setParameterValue (parameterNr, value);
@@ -195,6 +204,7 @@ public abstract class WebLibrary implements InstructionSet {
 
 
     // operations on frames
+    @KeywordName ("SelectFrame")
     public final boolean SelectFrame_ (String itemName) {
         final Item item = findItem (itemName);
         if (item != null) {
@@ -204,6 +214,7 @@ public abstract class WebLibrary implements InstructionSet {
         }
     }
 
+    @KeywordName ("SelectFrameByKeyValue")
     public final boolean SelectFrameWhere_Is_ (String key, String value) {
         try {
             return mBrowser.selectFrame (getKeyType (key), value);
@@ -219,6 +230,7 @@ public abstract class WebLibrary implements InstructionSet {
 
 
     // operations on items
+    @KeywordName ("CheckPageTitle")
     public final boolean CheckPageTitleIs_ (String expectedTitle) {
         final String actualTitle = mBrowser.getPageTitle ();
         if (actualTitle.equals (expectedTitle)) {
@@ -229,6 +241,7 @@ public abstract class WebLibrary implements InstructionSet {
         }
     }
 
+    @KeywordName ("CheckPartialPageTitle")
     public final boolean CheckPageTitleContains_ (String expectedTitle) {
         final String actualTitle = mBrowser.getPageTitle ();
         if (actualTitle.indexOf (expectedTitle) >= 0) {
@@ -239,10 +252,12 @@ public abstract class WebLibrary implements InstructionSet {
         }
     }
 
+    @KeywordName ("CheckForText")
     public final boolean CheckForText_ (String text) {
         return mBrowser.checkForText (text);
     }
 
+    @KeywordName ("CheckItemIsEmpty")
     public final boolean CheckItem_IsEmpty (String itemName) {
         final Item item = findItem (itemName);
         if (item != null) {
@@ -258,6 +273,7 @@ public abstract class WebLibrary implements InstructionSet {
         return false;
     }
 
+    @KeywordName ("CheckItemIsNotEmpty")
     public final boolean CheckItem_IsNotEmpty (String itemName) {
         final Item item = findItem (itemName);
         if (item != null) {
@@ -273,6 +289,7 @@ public abstract class WebLibrary implements InstructionSet {
         return false;
     }
 
+    @KeywordName ("CheckItemTextIs")
     public final boolean CheckTextOfItem_Is_ (String itemName, String expectedText) {
         final Item item = findItem (itemName);
         if (item != null) {
@@ -288,6 +305,7 @@ public abstract class WebLibrary implements InstructionSet {
         return false;
     }
 
+    @KeywordName ("CheckItemTextIsNot")
     public final boolean CheckTextOfItem_IsNot_ (String itemName, String unexpectedText) {
         final Item item = findItem (itemName);
         if (item != null) {
@@ -303,6 +321,7 @@ public abstract class WebLibrary implements InstructionSet {
         return false;
     }
 
+    @KeywordName ("CheckItemTextContains")
     public final boolean CheckTextOfItem_Contains_ (String itemName, String expectedText) {
         final Item item = findItem (itemName);
         if (item != null) {
@@ -318,6 +337,7 @@ public abstract class WebLibrary implements InstructionSet {
         return false;
     }
 
+    @KeywordName ("CheckItemTextContainsNot")
     public final boolean CheckTextOfItem_DoesNotContain_ (String itemName, String unexpectedText) {
         final Item item = findItem (itemName);
         if (item != null) {
@@ -333,15 +353,18 @@ public abstract class WebLibrary implements InstructionSet {
         return false;
     }
 
+    @KeywordName ("SelectLink")
     public final boolean SelectLink_ (String itemName) {
         final Item item = findItem (itemName);
         return item != null && mBrowser.clickLink (item);
     }
 
+    @KeywordName ("SelectLinkByText")
     public final boolean SelectLinkByText_ (String text) {
         return mBrowser.clickLink (text);
     }
 
+    @KeywordName ("SelectLinkByKeyValue")
     public final boolean SelectLinkWhere_Is_ (String keyTypeString, String value) {
         try {
             return mBrowser.clickLink (getKeyType (keyTypeString), value);
@@ -351,26 +374,31 @@ public abstract class WebLibrary implements InstructionSet {
         }
     }
 
+    @KeywordName ("SelectOption")
     public final boolean SelectOption_ (String itemName) {
         final Item item = findItem (itemName);
         return item != null && mBrowser.selectChoice (item);
     }
 
+    @KeywordName ("SelectOptionByText")
     public final boolean SelectOptionIn_ByText_ (String selectItemName, String text) {
         final Item item = findItem (selectItemName);
         return item != null && mBrowser.selectChoiceByText (item, text);
     }
 
+    @KeywordName ("SelectOptionByPartialText")
     public final boolean SelectOptionIn_ByPartialText_ (String selectItemName, String text) {
         final Item item = findItem (selectItemName);
         return item != null && mBrowser.selectChoiceByPartialText (item, text);
     }
 
+    @KeywordName ("ClickItem")
     public final boolean ClickItem_ (String itemName) {
         final Item item = findItem (itemName);
         return item != null && mBrowser.click (item);
     }
 
+    @KeywordName ("ClickItemByKeyValue")
     public final boolean ClickItemWhere_Is_ (String keyTypeString, String value) {
         try {
             return mBrowser.click (getKeyType (keyTypeString), value);
@@ -380,11 +408,13 @@ public abstract class WebLibrary implements InstructionSet {
         }
     }
 
+    @KeywordName ("ClickItemAndWait")
     public final boolean ClickItem_AndWait (String itemName) {
         final Item item = findItem (itemName);
         return item != null && mBrowser.clickAndWait (item);
     }
 
+    @KeywordName ("ClickItemByKeyValueAndWait")
     public final boolean ClickItemWhere_Is_AndWait (String keyTypeString, String value) {
         try {
             return mBrowser.clickAndWait (getKeyType (keyTypeString), value);
@@ -395,21 +425,26 @@ public abstract class WebLibrary implements InstructionSet {
     }
 
 
+    @KeywordName ("ClickAcceptInAlert")
     public boolean ClickAcceptInAlert() {
-        return mBrowser.clickAcceptInAlert();
+        return mBrowser.clickAcceptInAlert ();
     }
 
 
+    @KeywordName ("MoveMouseOver")
     public final boolean MoveMouseOver_ (String itemName) {
         final Item item = findItem (itemName);
         return item != null && mBrowser.mouseOver (item);
     }
 
+    @KeywordName ("TypeIntoItem")
+    @ParameterOrder ({ 2, 1 })
     public final boolean Type_IntoItem_ (String text, String itemName) {
         final Item item = findItem (itemName);
         return item != null && mBrowser.type (item, text);
     }
 
+    @KeywordName ("TypeIntoItemByKeyValue")
     public final boolean Type_IntoItemWhere_Is_ (String text, String keyTypeString, String value) {
         try {
             return mBrowser.type (getKeyType (keyTypeString), value, text);
@@ -421,9 +456,9 @@ public abstract class WebLibrary implements InstructionSet {
 
 
     public boolean Set_IntoCheckbox_(String text, String itemName) {
-        final Item item = findItem(itemName);
-        boolean value = makeBoolean(text);
-        return mBrowser.setCheckboxValue(item, value);
+        final Item item = findItem (itemName);
+        boolean value = makeBoolean (text);
+        return mBrowser.setCheckboxValue (item, value);
     }
 
     public boolean Set_IntoCheckboxWhere_Is_(String text, String keyTypeString, String value) {
@@ -436,27 +471,33 @@ public abstract class WebLibrary implements InstructionSet {
         }
     }
 
+    @KeywordName ("WaitForText")
     public final boolean WaitForText_ (String text) {
         return WaitUntilText_IsPresent (text);
     }
 
+    @KeywordName ("WaitUntilTextIsPresent")
     public final boolean WaitUntilText_IsPresent (String text) {
         return mBrowser.waitUntilTextIsPresent (text);
     }
 
+    @KeywordName ("WaitUntilTextIsNotPresent")
     public final boolean WaitUntilText_IsNotPresent (String text) {
         return mBrowser.waitUntilTextIsNotPresent (text);
     }
 
+    @KeywordName ("WaitForItem")
     public final boolean WaitForItem_ (String itemName) {
         return WaitUntilItem_IsPresent (itemName);
     }
 
+    @KeywordName ("WaitUntilItemIsPresent")
     public final boolean WaitUntilItem_IsPresent (String itemName) {
         final Item item = findItem (itemName);
         return item != null && mBrowser.waitUntilItemIsPresent (item);
     }
 
+    @KeywordName ("WaitUntilItemIsNotPresent")
     public final boolean WaitUntilItem_IsNotPresent (String itemName) {
         final Item item = findItem (itemName);
         return item != null && mBrowser.waitUntilItemIsNotPresent (item);
@@ -466,11 +507,13 @@ public abstract class WebLibrary implements InstructionSet {
         return WaitUntilItem_IsFilled (itemName);
     }
 
+    @KeywordName ("WaitUntilItemIsFilled")
     public final boolean WaitUntilItem_IsFilled (String itemName) {
         final Item item = findItem (itemName);
         return item != null && mBrowser.waitUntilItemIsFilled (item);
     }
 
+    @KeywordName ("WaitUntilItemIsEmpty")
     public final boolean WaitUntilItem_IsEmpty (String itemName) {
         final Item item = findItem (itemName);
         return item != null && mBrowser.waitUntilItemIsEmpty (item);
@@ -480,31 +523,37 @@ public abstract class WebLibrary implements InstructionSet {
         return WaitUntilItem_IsVisible (itemName);
     }
 
+    @KeywordName ("WaitUntilItemIsVisible")
     public final boolean WaitUntilItem_IsVisible (String itemName) {
         final Item item = findItem (itemName);
         return item != null && mBrowser.waitUntilItemIsVisible (item);
     }
 
+    @KeywordName ("WaitUntilItemIsNotVisible")
     public final boolean WaitUntilItem_IsNotVisible (String itemName) {
         final Item item = findItem (itemName);
         return item != null && mBrowser.waitUntilItemIsNotVisible (item);
     }
 
+    @KeywordName ("WaitUntilItemIsEnabled")
     public final boolean WaitUntilItem_IsEnabled (String itemName) {
         final Item item = findItem (itemName);
         return item != null && mBrowser.waitUntilItemIsEnabled (item);
     }
 
+    @KeywordName ("WaitUntilItemIsDisabled")
     public final boolean WaitUntilItem_IsDisabled (String itemName) {
         final Item item = findItem (itemName);
         return item != null && mBrowser.waitUntilItemIsDisabled (item);
     }
 
+    @KeywordName ("CheckItemIsPresent")
     public final boolean CheckItem_IsPresent (String itemName) {
         final Item item = findItem (itemName);
         return item != null && mBrowser.itemExists (item);
     }
 
+    @KeywordName ("CheckItemIsNotPresent")
     public final boolean CheckItem_IsNotPresent (String itemName) {
         final Item item = findItem (itemName);
         return item != null && !mBrowser.itemExists (item);
@@ -539,32 +588,8 @@ public abstract class WebLibrary implements InstructionSet {
         }
     }
 
-    /*
-    public final boolean ClearEvents () {
-        mBrowser.clearNetworkTraffic ();
-        mRequests = null;
-        return true;
-    }
-
-    public final boolean SelectEvents () {
-        mRequests = mBrowser.getNetworkTraffic ();
-        final Iterator<HtmlRequest> iter = mRequests.iterator ();
-        while (iter.hasNext ()) {
-            if (!iter.next ().url.startsWith ("http://stat.detelefoongids.nl")) {
-                iter.remove ();
-            }
-        }
-        return true;
-    }
-
-    public final boolean Event_Attribute_Value_ (String eventName, String attributeName, String value) {
-        return mEvents.addAttribute (eventName, attributeName, value);
-    }
-
-    public final boolean CheckForEvent_ (String eventName) {
-        return mEvents.checkEvent (mRequests, eventName);
-    }
-    */
+    
+    @KeywordName ("StoreItemText")
     public final boolean PutItem_In_ (String itemName, String variableName) {
         final Item item = findItem (itemName);
         if (item != null) {
@@ -575,11 +600,22 @@ public abstract class WebLibrary implements InstructionSet {
         }
     }
 
+    @KeywordName ("StoreItemAttribute")
+    public final boolean PutAttribute_ForItem_In_ (String attributeName, String itemName, String variableName) {
+        final Item item = findItem (itemName);
+        if (item != null) {
+            mRunTime.setValue (variableName, mBrowser.getItemAttribute (item, attributeName));
+            return true;
+        } else {
+            return false;
+        }
+    }
+
 
     // protected members
 
     // names for item types
-    protected interface IItemTypeName {
+    protected interface ItemTypeName {
         String cButton      = "button";
         String cCheckbox    = "checkbox";
         String cCombobox    = "combobox";
@@ -593,20 +629,22 @@ public abstract class WebLibrary implements InstructionSet {
     }
 
     // names for key types
-    protected interface IKeyTypeName {
-        String cDom   = "dom";
-        String cId    = "id";
-        String cIndex = "index";
-        String cName  = "name";
-        String cText  = "text";
-        String cValue = "value";
-        String cXpath = "xpath";
-        String cCss   = "css";
-        String cTag   = "tag";
+    protected interface KeyTypeName {
+        String cClass        = "class";
+        String cCss          = "css";
+        String cDom          = "dom";
+        String cId           = "id";
+        String cIndex        = "index";
+        String cName         = "name";
+        String cPartialText  = "partial text";
+        String cTag          = "tag";
+        String cText         = "text";
+        String cValue        = "value";
+        String cXpath        = "xpath";
     }
 
     // names for browsers
-    protected interface IBrowserName {
+    protected interface BrowserName {
         String cFirefox          = "firefox";
         String cIe               = "ie";
         String cInternetExplorer = "internet explorer";
@@ -614,8 +652,6 @@ public abstract class WebLibrary implements InstructionSet {
     }
 
     protected final RunTime mRunTime;
-    //protected final Events mEvents;
-    //protected final Collection<HtmlRequest> mRequests;
 
     protected int mLastScreenshotNr;
 
@@ -625,7 +661,6 @@ public abstract class WebLibrary implements InstructionSet {
         mLastScreenshotNr = 0;
         mItemMap          = new HashMap<String, Item> ();
         //mBrowserMap     = new HashMap<String, IBrowser> ();
-        //mEvents         = new Events (runTime);
     }
 
 
@@ -643,9 +678,9 @@ public abstract class WebLibrary implements InstructionSet {
 
 
     // private members
-    private static final Map<String, IItemType> cItemTypesMap;
-    private static final Map<String, IBrowserType> cBrowserTypesMap;
-    private static final Map<String, IKeyType> cKeyTypesMap;
+    private static final Map<String, ItemType> cItemTypesMap;
+    private static final Map<String, BrowserType> cBrowserTypesMap;
+    private static final Map<String, KeyType> cKeyTypesMap;
 
     private final Map<String, Item> mItemMap;
 
@@ -662,33 +697,35 @@ public abstract class WebLibrary implements InstructionSet {
     //private final Map<String, IBrowser> mBrowserMap;
 
     static {
-        cItemTypesMap = new HashMap<String, IItemType> ();
-        cItemTypesMap.put (IItemTypeName.cButton,      IItemType.cButton);
-        cItemTypesMap.put (IItemTypeName.cCheckbox,    IItemType.cCheckbox);
-        cItemTypesMap.put (IItemTypeName.cCombobox,    IItemType.cCombobox);
-        cItemTypesMap.put (IItemTypeName.cFrame,       IItemType.cFrame);
-        cItemTypesMap.put (IItemTypeName.cImage,       IItemType.cImage);
-        cItemTypesMap.put (IItemTypeName.cLink,        IItemType.cLink);
-        cItemTypesMap.put (IItemTypeName.cListbox,     IItemType.cListbox);
-        cItemTypesMap.put (IItemTypeName.cListboxItem, IItemType.cListboxItem);
-        cItemTypesMap.put (IItemTypeName.cRadioButton, IItemType.cRadioButton);
-        cItemTypesMap.put (IItemTypeName.cText,        IItemType.cText);
+        cItemTypesMap = new HashMap<String, ItemType> ();
+        cItemTypesMap.put (ItemTypeName.cButton,      ItemType.cButton);
+        cItemTypesMap.put (ItemTypeName.cCheckbox,    ItemType.cCheckbox);
+        cItemTypesMap.put (ItemTypeName.cCombobox,    ItemType.cCombobox);
+        cItemTypesMap.put (ItemTypeName.cFrame,       ItemType.cFrame);
+        cItemTypesMap.put (ItemTypeName.cImage,       ItemType.cImage);
+        cItemTypesMap.put (ItemTypeName.cLink,        ItemType.cLink);
+        cItemTypesMap.put (ItemTypeName.cListbox,     ItemType.cListbox);
+        cItemTypesMap.put (ItemTypeName.cListboxItem, ItemType.cListboxItem);
+        cItemTypesMap.put (ItemTypeName.cRadioButton, ItemType.cRadioButton);
+        cItemTypesMap.put (ItemTypeName.cText,        ItemType.cText);
 
-        cBrowserTypesMap = new HashMap<String, IBrowserType> ();
-        cBrowserTypesMap.put (IBrowserName.cFirefox,          IBrowserType.cFirefox);
-        cBrowserTypesMap.put (IBrowserName.cIe,               IBrowserType.cInternetExplorer);
-        cBrowserTypesMap.put (IBrowserName.cInternetExplorer, IBrowserType.cInternetExplorer);
-        cBrowserTypesMap.put (IBrowserName.cChrome,           IBrowserType.cChrome);
+        cBrowserTypesMap = new HashMap<String, BrowserType> ();
+        cBrowserTypesMap.put (BrowserName.cFirefox,          BrowserType.cFirefox);
+        cBrowserTypesMap.put (BrowserName.cIe,               BrowserType.cInternetExplorer);
+        cBrowserTypesMap.put (BrowserName.cInternetExplorer, BrowserType.cInternetExplorer);
+        cBrowserTypesMap.put (BrowserName.cChrome,           BrowserType.cChrome);
 
-        cKeyTypesMap = new HashMap<String, IKeyType> ();
-        cKeyTypesMap.put (IKeyTypeName.cDom,   IKeyType.cDom);
-        cKeyTypesMap.put (IKeyTypeName.cId,    IKeyType.cId);
-        cKeyTypesMap.put (IKeyTypeName.cIndex, IKeyType.cIndex);
-        cKeyTypesMap.put (IKeyTypeName.cName,  IKeyType.cName);
-        cKeyTypesMap.put (IKeyTypeName.cText,  IKeyType.cText);
-        cKeyTypesMap.put (IKeyTypeName.cValue, IKeyType.cValue);
-        cKeyTypesMap.put (IKeyTypeName.cXpath, IKeyType.cXpath);
-        cKeyTypesMap.put (IKeyTypeName.cCss,   IKeyType.cCss);
-        cKeyTypesMap.put (IKeyTypeName.cTag,   IKeyType.cTag);
+        cKeyTypesMap = new HashMap<String, KeyType> ();
+        cKeyTypesMap.put (KeyTypeName.cClass,       KeyType.cClass);
+        cKeyTypesMap.put (KeyTypeName.cCss,         KeyType.cCss);
+        cKeyTypesMap.put (KeyTypeName.cDom,         KeyType.cDom);
+        cKeyTypesMap.put (KeyTypeName.cId,          KeyType.cId);
+        cKeyTypesMap.put (KeyTypeName.cIndex,       KeyType.cIndex);
+        cKeyTypesMap.put (KeyTypeName.cName,        KeyType.cName);
+        cKeyTypesMap.put (KeyTypeName.cPartialText, KeyType.cPartialText);
+        cKeyTypesMap.put (KeyTypeName.cText,        KeyType.cText);
+        cKeyTypesMap.put (KeyTypeName.cValue,       KeyType.cValue);
+        cKeyTypesMap.put (KeyTypeName.cXpath,       KeyType.cXpath);
+        cKeyTypesMap.put (KeyTypeName.cTag,         KeyType.cTag);
     }
 }

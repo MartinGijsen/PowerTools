@@ -22,6 +22,8 @@ import org.powertools.engine.InstructionSet;
 import org.powertools.engine.RunTime;
 
 
+// TODO: remove in 2015
+@Deprecated
 public final class WebDriverKeywords implements InstructionSet {
     private final WebDriverLibrary mInstructions;
 

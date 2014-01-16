@@ -18,12 +18,12 @@
 
 package org.powertools.web;
 
-import org.powertools.web.WebLibrary.IItemType;
-import org.powertools.web.WebLibrary.IKeyType;
+import org.powertools.web.WebLibrary.ItemType;
+import org.powertools.web.WebLibrary.KeyType;
 
 
 public class Item {
-    Item (String logicalName, Item parent, IItemType type, IKeyType keyType, String value) {
+    Item (String logicalName, Item parent, ItemType type, KeyType keyType, String value) {
         mLogicalName = logicalName;
         mParent      = parent;
         mType        = type;
@@ -52,8 +52,8 @@ public class Item {
 
     final String mLogicalName;
     final Item mParent;
-    final IItemType mType;
-    final IKeyType mKeyType;
+    final ItemType mType;
+    final KeyType mKeyType;
 
 
     // protected members
