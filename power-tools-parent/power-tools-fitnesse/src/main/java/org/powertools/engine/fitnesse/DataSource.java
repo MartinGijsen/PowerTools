@@ -25,13 +25,14 @@ import org.powertools.engine.sources.TestLineImpl;
 
 import fit.Fixture;
 import fit.Parse;
+import org.powertools.engine.symbol.Scope;
 
 
 final class DataSource extends BaseTestSource {
     private String mInstructionName;
 
-    DataSource (Fixture fixture, Parse table, String logFilePath) {
-        super (fixture, table.parts, logFilePath);
+    DataSource (Fixture fixture, Parse table, Scope scope, String logFilePath) {
+        super (fixture, table.parts, scope, logFilePath);
     }
 
 

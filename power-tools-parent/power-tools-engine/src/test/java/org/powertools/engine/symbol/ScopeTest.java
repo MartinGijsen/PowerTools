@@ -36,11 +36,6 @@ public class ScopeTest {
 
 	
 	@Test
-	public void testGetGlobalScope () {
-		assertNotNull (Scope.getGlobalScope ());
-	}
-
-	@Test
 	public void testGetParent () {
 		Scope child = new Scope (mScope);
 		assertEquals (mScope, child.getParent ());

@@ -29,7 +29,7 @@ import org.powertools.engine.symbol.Scope;
 public class TestSourceStackTest {
 	@Test
 	public void testGetCurrentTestSource () {
-		TestSourceStack stack = new TestSourceStack (new Scope (null));
+		TestSourceStack stack = new TestSourceStack ();
 		TestSource testSource = new TestSourceImpl (new Scope (null));
 		stack.initAndPush (testSource);
 		assertEquals (testSource, stack.getCurrentTestSource ());
@@ -37,10 +37,10 @@ public class TestSourceStackTest {
 
 	@Test
 	public void testGetCurrentScope () {
-		Scope globalScope = new Scope (null);
-		TestSourceStack stack = new TestSourceStack (globalScope);
+		TestSourceStack stack = new TestSourceStack ();
+		Scope globalScope     = stack.getCurrentScope ();
 		assertEquals (globalScope, stack.getCurrentScope ());
-		Scope localScope = new Scope (globalScope);
+		Scope localScope      = new Scope (globalScope);
 		stack.initAndPush (new TestSourceImpl (localScope));
 		assertEquals (localScope, stack.getCurrentScope ());
 	}
@@ -48,7 +48,7 @@ public class TestSourceStackTest {
 	@Test
 	public void testRun () {
 		try {
-			TestSourceStack stack = new TestSourceStack (new Scope (null));
+			TestSourceStack stack = new TestSourceStack ();
 			stack.initAndPush (new TestSourceImpl (new Scope (null)));
 			stack.run ("some filename");
 		} catch (ExecutionException ee) {
@@ -58,7 +58,7 @@ public class TestSourceStackTest {
 
 	@Test
 	public void testGetTestLine () {
-		TestSourceStack stack = new TestSourceStack (new Scope (null));
+		TestSourceStack stack = new TestSourceStack ();
 		stack.initAndPush (new TestSourceImpl (new Scope (null)));
 		stack.initAndPush (new TestSourceImpl (new Scope (null)));
 		assertNotNull (stack.getTestLine ());
@@ -68,12 +68,11 @@ public class TestSourceStackTest {
 
 	@Test
 	public void testCreateAndPushTestCase () {
-		TestSourceStack stack = new TestSourceStack (new Scope (null));
+		TestSourceStack stack = new TestSourceStack ();
 		stack.initAndPush (new TestSourceImpl (new Scope (null)));
 		assertFalse (stack.inATestCase ());
 		assertTrue (stack.createAndPushTestCase ("test case name", "test case description"));
 		assertTrue (stack.inATestCase ());
-		assertTrue (stack.createAndPushTestCase ("test case name", "test case description"));
 		stack.popTestCase ();
 		assertFalse (stack.inATestCase ());
 	}
@@ -81,7 +80,7 @@ public class TestSourceStackTest {
 	@Test
 	public void testPopTestCase_EmptyStack () {
 		try {
-			TestSourceStack stack = new TestSourceStack (new Scope (null));
+			TestSourceStack stack = new TestSourceStack ();
 			stack.popTestCase ();
 			fail ("no exception");
 		} catch (ExecutionException ee) {

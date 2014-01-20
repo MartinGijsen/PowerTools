@@ -29,7 +29,7 @@ public final class WebDriverLibrary extends WebLibrary {
         super (runTime);
 
         TestRunResultPublisher mPublisher = TestRunResultPublisher.getInstance ();
-        TestResultSubscriber subscriber = new TestResultSubscriberMakeScreenshotByError (this);
+        TestResultSubscriber subscriber   = new TestResultSubscriberMakeScreenshotByError (this);
         mPublisher.subscribeToTestResults (subscriber);
 
         runTime.addSharedObject ("WebDriverLibrary", this);

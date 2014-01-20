@@ -1,4 +1,4 @@
-/* Copyright 2012 by Martin Gijsen (www.DeAnalist.nl)
+/* Copyright 2012-2014 by Martin Gijsen (www.DeAnalist.nl)
  *
  * This file is part of the PowerTools engine.
  *
@@ -22,11 +22,11 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.List;
+import org.apache.commons.io.FileUtils;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.NoAlertPresentException;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
@@ -89,11 +89,6 @@ class WebDriverBrowser implements IBrowser {
     public String getLongDefaultTimeoutAsString () {
         return Integer.toString (mLongDefaultTimeoutInSeconds);
     }
-
-    // @Override
-    // public void setXpathAdjusting(boolean setting) {
-    //
-    // }
 
     public boolean open (BrowserType type, String browserVersion, String url, String logDirectory, String hubUrl) {
         if (hubUrl == null || hubUrl.isEmpty()) {
@@ -262,22 +257,64 @@ class WebDriverBrowser implements IBrowser {
         return setCheckboxValue (getLocator (keyType, keyValue), value);
     }
 
+    private boolean setCheckboxValue (By locator, final boolean value) {
+        return executeCommandWhenElementAvailable (locator, mShortDefaultTimeoutInSeconds, new WebCommand() {
+
+            @Override
+            public boolean execute (WebElement element) {
+                boolean current = element.isSelected ();
+                if (current != value) {
+                    element.click ();
+                }
+                return true;
+            }
+        });
+    }
+
     @Override
-    public boolean itemExists (Item item) {
+    public boolean isSelected (Item item) {
+        return isSelected (item.mKeyType, item.mValue);
+    }
+    
+    @Override
+    public boolean isSelected (KeyType keyType, String value) {
+        return isSelected (getLocator (keyType, value));
+    }
+
+    private boolean isSelected (By locator) {
+        IsSelectedWebCommand command = new IsSelectedWebCommand ();
+        executeCommandWhenElementAvailable (locator, mShortDefaultTimeoutInSeconds, command);
+        return command.result;
+    }
+
+    private class IsSelectedWebCommand implements WebCommand {
+        boolean result;
+
+        @Override
+        public boolean execute (WebElement element) {
+            result = element.isSelected ();
+            return true;
+        }
+    }
+
+    @Override
+    public boolean itemIsPresent (Item item) {
         return getUniqueElement (getLocator (item)) != null;
     }
 
     @Override
-    public boolean itemExists (KeyType keyType, String value) {
-        return getUniqueElement (getLocator (keyType, value)) != null;
-    }
-
-    public boolean itemVisible (Item item) {
+    public boolean itemIsVisible (Item item) {
         return getUniqueElement (getLocator (item)).isDisplayed ();
     }
 
-    public boolean itemEnabled (Item item) {
+    @Override
+    public boolean itemIsEnabled (Item item) {
         return getUniqueElement (getLocator (item)).isEnabled ();
+    }
+
+    @Override
+    public boolean itemIsEmpty (Item item) {
+        return getUniqueElement (getLocator (item)).getText ().isEmpty ();
     }
 
     @Override
@@ -333,9 +370,25 @@ class WebDriverBrowser implements IBrowser {
     }
 
     @Override
-    public boolean clickAcceptInAlert() {
-        mDriver.switchTo().alert().accept();
-        return true;
+    public boolean clickAcceptInAlert () {
+        try {
+            mDriver.switchTo ().alert ().accept ();
+            return true;
+        } catch (NoAlertPresentException nape) {
+            mRunTime.reportError ("no alert found");
+            return false;
+        }
+    }
+
+    @Override
+    public boolean clickDismissInAlert () {
+        try {
+            mDriver.switchTo ().alert ().dismiss ();
+            return true;
+        } catch (NoAlertPresentException nape) {
+            mRunTime.reportError ("no alert found");
+            return false;
+        }
     }
 
 
@@ -344,6 +397,8 @@ class WebDriverBrowser implements IBrowser {
         if (item.mType != WebLibrary.ItemType.cListboxItem) {
             mRunTime.reportError ("item is not a listbox item");
             return false;
+        } else if (item.mKeyType == KeyType.cPartialText) {
+            return selectChoiceByPartialText (item.mParent, item.mValue);
         } else {
             Select listbox = new Select (mDriver.findElement (getLocator (item.mParent)));
             switch (item.mKeyType) {
@@ -357,6 +412,7 @@ class WebDriverBrowser implements IBrowser {
                 listbox.selectByValue (item.mValue);
                 return true;
             default:
+                mRunTime.reportError ("unsupported item key: " + item.mKeyType.toString ());
                 return false;
             }
         }
@@ -444,13 +500,13 @@ class WebDriverBrowser implements IBrowser {
     }
 
     @Override
-    public boolean waitUntilItemIsFilled (Item item) {
-        return waitUntilItemIsFilled (getLocator (item), mShortDefaultTimeoutInSeconds);
+    public boolean waitUntilItemIsNotEmpty (Item item) {
+        return waitUntilItemIsNotEmpty (getLocator (item), mShortDefaultTimeoutInSeconds);
     }
 
     @Override
-    public boolean waitUntilItemIsFilled (Item item, int timeout) {
-        return waitUntilItemIsFilled (getLocator (item), timeout);
+    public boolean waitUntilItemIsNotEmpty (Item item, int timeout) {
+        return waitUntilItemIsNotEmpty (getLocator (item), timeout);
     }
 
     @Override
@@ -503,8 +559,14 @@ class WebDriverBrowser implements IBrowser {
         return waitUntilItemIsDisabled (getLocator (item), timeout);
     }
 
+    @Deprecated
     @Override
     public boolean checkForText (String text) {
+        return textIsPresent (text);
+    }
+
+    @Override
+    public boolean textIsPresent (String text) {
         final WebElement element = getUniqueElement (getLocator (WebLibrary.KeyType.cTag, "body"));
         return element == null ? false : element.getText ().contains (text);
     }
@@ -546,16 +608,10 @@ class WebDriverBrowser implements IBrowser {
 
     @Override
     public boolean makeScreenshot (String path) {
-
         try {
-            WebDriver webDriver = mDriver;
-            if (webBrowserRunsOnGrid) {
-                webDriver = new Augmenter ().augment (mDriver);
-            }
-
-            TakesScreenshot screenshotCapableDriver = (TakesScreenshot) webDriver;
-            File screenshot = screenshotCapableDriver.getScreenshotAs (OutputType.FILE);
-            Files.copy (Paths.get (screenshot.getPath ()), Paths.get (path));
+            WebDriver driver    = webBrowserRunsOnGrid ? new Augmenter ().augment (mDriver) : mDriver;
+            File screenshotFile = ((TakesScreenshot) driver).getScreenshotAs (OutputType.FILE);
+            FileUtils.copyFile (screenshotFile, new File (path));
             return true;
         } catch (IOException ioe) {
             mRunTime.reportStackTrace (ioe);
@@ -644,20 +700,6 @@ class WebDriverBrowser implements IBrowser {
         return locator;
     }
 
-    private boolean setCheckboxValue (By locator, final boolean value) {
-        return executeCommandWhenElementAvailable (locator, mShortDefaultTimeoutInSeconds, new WebCommand() {
-
-            @Override
-            public boolean execute (WebElement element) {
-                boolean current = element.isSelected ();
-                if (current != value) {
-                    element.click ();
-                }
-                return true;
-            }
-        });
-    }
-
     private boolean click (By locator) {
         return executeCommandWhenElementAvailable (locator, mShortDefaultTimeoutInSeconds, new WebCommand() {
 
@@ -712,7 +754,7 @@ class WebDriverBrowser implements IBrowser {
         });
     }
 
-    private boolean waitUntilItemIsFilled(By locator, int timeout) {
+    private boolean waitUntilItemIsNotEmpty (By locator, int timeout) {
         return executeCommandWhenElementAvailable (locator, timeout, new WebCommand() {
 
             @Override
@@ -799,11 +841,24 @@ class WebDriverBrowser implements IBrowser {
 
         @Override
         public boolean execute (WebElement element) {
-            result = element.getText ();
+            if (element.getTagName ().equalsIgnoreCase ("SELECT")) {
+                result = getSelectedOptionText (element);
+            } else {
+                result = element.getText ();
+            }
             mRunTime.reportInfo ("getItemText result: " + result);
-            // Chrome does not trim the result. (selenium 2.32.0)
-            result = (result == null)? result:  result.trim ();
+            result = (result == null)? result: result.trim ();
             return true;
+        }
+        
+        private String getSelectedOptionText (WebElement listbox) {
+            List<WebElement> options = listbox.findElements (By.tagName ("option"));
+            for (WebElement option : options) {
+                if (option.isSelected ()) {
+                    return option.getText ();
+                }
+            }
+            return "";
         }
     }
 
@@ -845,6 +900,7 @@ class WebDriverBrowser implements IBrowser {
             } catch (WebDriverException wde) {
                 // This error occurs occasionally in IE when using SeleniumGrid
             } catch (ExecutionException ee) {
+                System.out.println (ee.getMessage ());
                 // This error occurs when the element is not yet available 
             }
             sleep (cOneSecondTimeout);
@@ -855,7 +911,7 @@ class WebDriverBrowser implements IBrowser {
     private boolean waitUntilItemIsNotPresent (By locator, int timeout) {
         for (int nrOfSeconds = 0; nrOfSeconds < timeout; ++nrOfSeconds) {
             try {
-                if (mDriver.findElements (locator).size () == 0) {
+                if (mDriver.findElements (locator).isEmpty ()) {
                     return true;
                 }
             } catch (WebDriverException e) {

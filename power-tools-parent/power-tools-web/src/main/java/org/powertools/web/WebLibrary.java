@@ -23,7 +23,6 @@ import java.util.Map;
 
 import org.powertools.engine.InstructionSet;
 import org.powertools.engine.KeywordName;
-import org.powertools.engine.ParameterOrder;
 import org.powertools.engine.RunTime;
 
 
@@ -37,6 +36,7 @@ public abstract class WebLibrary implements InstructionSet {
         cLink,
         cListbox,
         cListboxItem,
+        cRadioButtonGroup,
         cRadioButton,
         cText
     }
@@ -430,6 +430,11 @@ public abstract class WebLibrary implements InstructionSet {
         return mBrowser.clickAcceptInAlert ();
     }
 
+    @KeywordName ("ClickDismissInAlert")
+    public boolean ClickDismissInAlert() {
+        return mBrowser.clickDismissInAlert ();
+    }
+
 
     @KeywordName ("MoveMouseOver")
     public final boolean MoveMouseOver_ (String itemName) {
@@ -438,7 +443,7 @@ public abstract class WebLibrary implements InstructionSet {
     }
 
     @KeywordName ("TypeIntoItem")
-    @ParameterOrder ({ 2, 1 })
+    //@ParameterOrder ({ 2, 1 })
     public final boolean Type_IntoItem_ (String text, String itemName) {
         final Item item = findItem (itemName);
         return item != null && mBrowser.type (item, text);
@@ -469,6 +474,16 @@ public abstract class WebLibrary implements InstructionSet {
             mRunTime.reportError(iae.getMessage());
             return false;
         }
+    }
+
+    public boolean CheckItem_IsSelected (String itemName) {
+        final Item item = findItem (itemName);
+        return item != null && mBrowser.isSelected (item);
+    }
+
+    public boolean CheckItem_IsNotSelected (String itemName) {
+        final Item item = findItem (itemName);
+        return item != null && !mBrowser.isSelected (item);
     }
 
     @KeywordName ("WaitForText")
@@ -507,10 +522,17 @@ public abstract class WebLibrary implements InstructionSet {
         return WaitUntilItem_IsFilled (itemName);
     }
 
+    // TODO: remove in 2015
+    @Deprecated
     @KeywordName ("WaitUntilItemIsFilled")
     public final boolean WaitUntilItem_IsFilled (String itemName) {
+        return WaitUntilItem_IsNotEmpty (itemName);
+    }
+
+    @KeywordName ("WaitUntilItemIsNotEmpty")
+    public final boolean WaitUntilItem_IsNotEmpty (String itemName) {
         final Item item = findItem (itemName);
-        return item != null && mBrowser.waitUntilItemIsFilled (item);
+        return item != null && mBrowser.waitUntilItemIsNotEmpty (item);
     }
 
     @KeywordName ("WaitUntilItemIsEmpty")
@@ -550,13 +572,37 @@ public abstract class WebLibrary implements InstructionSet {
     @KeywordName ("CheckItemIsPresent")
     public final boolean CheckItem_IsPresent (String itemName) {
         final Item item = findItem (itemName);
-        return item != null && mBrowser.itemExists (item);
+        return item != null && mBrowser.itemIsPresent (item);
     }
 
     @KeywordName ("CheckItemIsNotPresent")
     public final boolean CheckItem_IsNotPresent (String itemName) {
         final Item item = findItem (itemName);
-        return item != null && !mBrowser.itemExists (item);
+        return item != null && !mBrowser.itemIsPresent (item);
+    }
+
+    @KeywordName ("CheckItemIsVisible")
+    public final boolean CheckItem_IsVisible (String itemName) {
+        final Item item = findItem (itemName);
+        return item != null && mBrowser.itemIsVisible (item);
+    }
+
+    @KeywordName ("CheckItemIsNotVisible")
+    public final boolean CheckItem_IsNotVisible (String itemName) {
+        final Item item = findItem (itemName);
+        return item != null && !mBrowser.itemIsVisible (item);
+    }
+
+    @KeywordName ("CheckItemIsEnabled")
+    public final boolean CheckItem_IsEnabled (String itemName) {
+        final Item item = findItem (itemName);
+        return item != null && mBrowser.itemIsEnabled (item);
+    }
+
+    @KeywordName ("CheckItemIsDisabled")
+    public final boolean CheckItem_IsDisabled (String itemName) {
+        final Item item = findItem (itemName);
+        return item != null && !mBrowser.itemIsEnabled (item);
     }
 
 
@@ -589,8 +635,8 @@ public abstract class WebLibrary implements InstructionSet {
     }
 
     
-    @KeywordName ("StoreItemText")
-    public final boolean PutItem_In_ (String itemName, String variableName) {
+    @KeywordName ("SaveItemText")
+    public final boolean SaveItem_In_ (String itemName, String variableName) {
         final Item item = findItem (itemName);
         if (item != null) {
             mRunTime.setValue (variableName, mBrowser.getItemText (item));
@@ -616,16 +662,17 @@ public abstract class WebLibrary implements InstructionSet {
 
     // names for item types
     protected interface ItemTypeName {
-        String cButton      = "button";
-        String cCheckbox    = "checkbox";
-        String cCombobox    = "combobox";
-        String cFrame       = "frame";
-        String cImage       = "image";
-        String cLink        = "link";
-        String cListbox     = "listbox";
-        String cListboxItem = "listbox item";
-        String cRadioButton = "radio button";
-        String cText        = "text input";
+        String cButton           = "button";
+        String cCheckbox         = "checkbox";
+        String cCombobox         = "combobox";
+        String cFrame            = "frame";
+        String cImage            = "image";
+        String cLink             = "link";
+        String cListbox          = "listbox";
+        String cListboxItem      = "listbox item";
+        String cRadioButtonGroup = "radio button group";
+        String cRadioButton      = "radio button";
+        String cText             = "text input";
     }
 
     // names for key types

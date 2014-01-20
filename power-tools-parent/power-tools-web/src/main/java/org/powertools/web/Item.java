@@ -46,7 +46,6 @@ public class Item {
 
     public String getValue () {
         return mValue;
-        //return mParent != null ? null : mValue;
     }
 
 

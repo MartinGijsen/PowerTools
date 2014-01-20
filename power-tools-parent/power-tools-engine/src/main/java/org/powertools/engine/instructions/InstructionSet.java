@@ -34,7 +34,8 @@ public interface InstructionSet {
 
     /**
      * retrieves an executor for an instruction (if is implemented once)
-     * @return an executor for the instruction (if is implemented once)
+     * @param   instructionName the instruction name
+     * @return  an executor for the instruction (if is implemented once)
      */
     Executor getExecutor (String instructionName);
 

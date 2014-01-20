@@ -36,18 +36,19 @@ final class TestSourceStack {
     private final Stack<TestSource> mSourceStack;
     private final Scope mGlobalScope;
 
-    private boolean mInATestCase;
 
-
-    TestSourceStack (Scope globalScope) {
+    TestSourceStack () {
         mSourceStack = new Stack<TestSource> ();
-        mInATestCase = false;
-        mGlobalScope = globalScope;
+        mGlobalScope = new Scope (null);
     }
 
 
     TestSource getCurrentTestSource () {
         return mSourceStack.peek ();
+    }
+
+    Scope getGlobalScope () {
+        return mGlobalScope;
     }
 
     Scope getCurrentScope () {
@@ -82,31 +83,35 @@ final class TestSourceStack {
     }
 
     boolean createAndPushTestCase (String name, String description) {
-        if (!mInATestCase) {
+        if (!inATestCase ()) {
             // can push immediately
-        } else if (mSourceStack.peek () instanceof TestCaseTestSource) {
+        } else if (mSourceStack.peek ().isATestCase ()) {
             popTestSource ();
         } else {
             return false;
         }
 
         initAndPush (mSourceStack.peek ().createTestCase (name, description));
-        mInATestCase = true;
         return true;
     }
 
     boolean inATestCase () {
-        return mInATestCase;
+        int nrOfSources = mSourceStack.size ();
+        for (int position = 0; position < nrOfSources; ++position) {
+            if (mSourceStack.get (position).isATestCase ()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     void popTestCase () {
         if (mSourceStack.isEmpty ()) {
             throw new ExecutionException ("no current test source");
-        } else if (!(mSourceStack.peek () instanceof TestCaseTestSource)) {
+        } else if (!(mSourceStack.peek ().isATestCase ())) {
             throw new ExecutionException ("not in a test case (in this test line source)");
         } else {
             popTestSource ();
-            mInATestCase = false;
         }
     }
 

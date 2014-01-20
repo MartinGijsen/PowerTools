@@ -46,6 +46,10 @@ public abstract class TestSource {
         // empty
     }
 
+    public boolean isATestCase () {
+        return false;
+    }
+
     public TestLineImpl getTestLine () {
         return null;
     }

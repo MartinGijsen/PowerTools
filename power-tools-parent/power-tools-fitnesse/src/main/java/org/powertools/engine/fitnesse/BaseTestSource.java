@@ -37,8 +37,8 @@ abstract class BaseTestSource extends TestSource {
     private static int mLastId = 0;
 
 
-    protected BaseTestSource (Fixture fixture, Parse row, String logFilePath) {
-        super (Scope.getGlobalScope ());
+    protected BaseTestSource (Fixture fixture, Parse row, Scope scope, String logFilePath) {
+        super (scope);
         mFixture       = fixture;
         mRow           = row;
         String rootDir = FitNesseEngine.ROOT_DIRECTORY;

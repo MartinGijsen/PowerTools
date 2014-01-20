@@ -20,19 +20,15 @@ package org.powertools.engine.expression;
 
 
 final class IntegerValue extends Value {
-    private int mValue;
+    private final String mValue;
 
 
     IntegerValue (int value) {
-        mValue = value;
+        mValue = Integer.toString (value);
     }
 
     IntegerValue (String value) {
-        try {
-            mValue = Integer.parseInt (value);
-        } catch (NumberFormatException nfe) {
-            throw newException ("not an integer number: " + value);
-        }
+        mValue = value;
     }
 
 
@@ -44,18 +40,18 @@ final class IntegerValue extends Value {
 
     @Override
     Value equal (Value v) {
-        return new BooleanValue (mValue == v.toIntegerValue ().mValue);
+        return new BooleanValue (intValue () == v.toIntegerValue ().intValue ());
     }
 
     @Override
     Value unequal (Value v) {
-        return new BooleanValue (mValue != v.toIntegerValue ().mValue);
+        return new BooleanValue (intValue () != v.toIntegerValue ().intValue ());
     }
 
     @Override
     Value lessThan (Value v) {
         if (v instanceof IntegerValue) {
-            return new BooleanValue (mValue < v.toIntegerValue ().mValue);
+            return new BooleanValue (intValue () < v.toIntegerValue ().intValue ());
         } else {
             return toRealValue ().lessThan (v);
         }
@@ -64,7 +60,7 @@ final class IntegerValue extends Value {
     @Override
     Value lessOrEqual (Value v) {
         if (v instanceof IntegerValue) {
-            return new BooleanValue (mValue <= v.toIntegerValue ().mValue);
+            return new BooleanValue (intValue () <= v.toIntegerValue ().intValue ());
         } else {
             return toRealValue ().lessOrEqual (v);
         }
@@ -73,7 +69,7 @@ final class IntegerValue extends Value {
     @Override
     Value greaterThan (Value v) {
         if (v instanceof IntegerValue) {
-            return new BooleanValue (mValue > v.toIntegerValue ().mValue);
+            return new BooleanValue (intValue () > v.toIntegerValue ().intValue ());
         } else {
             return toRealValue ().greaterThan (v);
         }
@@ -82,7 +78,7 @@ final class IntegerValue extends Value {
     @Override
     Value greaterOrEqual (Value v) {
         if (v instanceof IntegerValue) {
-            return new BooleanValue (mValue >= v.toIntegerValue ().mValue);
+            return new BooleanValue (intValue () >= v.toIntegerValue ().intValue ());
         } else {
             return toRealValue ().greaterOrEqual (v);
         }
@@ -91,7 +87,7 @@ final class IntegerValue extends Value {
     @Override
     Value add (Value v) {
         if (v instanceof IntegerValue) {
-            return new IntegerValue (mValue + v.toIntegerValue ().mValue);
+            return new IntegerValue (intValue () + v.toIntegerValue ().intValue ());
         } else if (v instanceof RealValue) {
             return toRealValue ().add (v);
         } else {
@@ -102,7 +98,7 @@ final class IntegerValue extends Value {
     @Override
     Value subtract (Value v) {
         if (v instanceof IntegerValue) {
-            return new IntegerValue (mValue - v.toIntegerValue ().mValue);
+            return new IntegerValue (intValue () - v.toIntegerValue ().intValue ());
         } else if (v instanceof RealValue) {
             return toRealValue ().subtract(v);
         } else {
@@ -113,7 +109,7 @@ final class IntegerValue extends Value {
     @Override
     Value multiply (Value v) {
         if (v instanceof IntegerValue) {
-            return new IntegerValue (mValue * v.toIntegerValue ().mValue);
+            return new IntegerValue (intValue () * v.toIntegerValue ().intValue ());
         } else if (v instanceof RealValue) {
             return toRealValue ().multiply (v);
         } else {
@@ -124,9 +120,9 @@ final class IntegerValue extends Value {
     @Override
     Value divide (Value v) {
         if (v instanceof IntegerValue) {
-            int integerValueOfV = v.toIntegerValue ().mValue;
-            if (mValue % integerValueOfV == 0) {
-                return new IntegerValue (mValue / integerValueOfV);
+            int integerValueOfV = v.toIntegerValue ().intValue ();
+            if (intValue () % integerValueOfV == 0) {
+                return new IntegerValue (intValue () / integerValueOfV);
             }
         } else if (!(v instanceof RealValue)) {
             throw newOperandException ("/");
@@ -136,12 +132,12 @@ final class IntegerValue extends Value {
 
     @Override
     Value negate () {
-        return new IntegerValue (-mValue);
+        return new IntegerValue (-intValue ());
     }
 
     @Override
     StringValue toStringValue () {
-        return new StringValue (Integer.toString (mValue));
+        return new StringValue (mValue);
     }
 
     @Override
@@ -156,6 +152,10 @@ final class IntegerValue extends Value {
 
     @Override
     public String toString () {
-        return Integer.toString (mValue);
+        return mValue;
+    }
+    
+    private int intValue () {
+        return Integer.parseInt (mValue);
     }
 }

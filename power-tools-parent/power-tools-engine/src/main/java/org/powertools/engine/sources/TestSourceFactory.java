@@ -28,14 +28,14 @@ import org.powertools.engine.symbol.Scope;
 
 
 public final class TestSourceFactory {
-    public TestSource createExcelTestSource (String sourceName) {
+    public TestSource createExcelTestSource (String sourceName, Scope globalScope) {
         Names names = ExcelTestSource.createNamesFromSourceName (sourceName);
 
         String fileName = names.getFileName ();
         if (fileName.endsWith (".xls")) {
-            return XlsTestSource.createTestSource (fileName, names.getSheetName (), Scope.getGlobalScope ());
+            return XlsTestSource.createTestSource (fileName, names.getSheetName (), globalScope);
         } else if (fileName.endsWith (".xlsx")) {
-            return XlsxTestSource.createTestSource (fileName, names.getSheetName (), Scope.getGlobalScope ());
+            return XlsxTestSource.createTestSource (fileName, names.getSheetName (), globalScope);
         } else {
             throw new ExecutionException ("invalid file extension");
         }

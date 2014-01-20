@@ -79,7 +79,7 @@ public final class FitNesseEngine extends Engine {
     }
 
     public void run (InstructionFixture fixture, Parse table) {
-        InstructionSource source = new InstructionSource (fixture, table, mLogFilePath);
+        InstructionSource source = new InstructionSource (fixture, table, mRunTime.getGlobalScope (), mLogFilePath);
         mFitNesseReporter.setSource (source);
         mRunTime.invokeSource (source);
         addProcedure (source.getProcedure ());
@@ -87,15 +87,15 @@ public final class FitNesseEngine extends Engine {
     }
 
     public void run (ScenarioFixture fixture, Parse table) {
-        run (new ScenarioSource (fixture, table, mLogFilePath));
+        run (new ScenarioSource (fixture, table, mRunTime.getGlobalScope (), mLogFilePath));
     }
 
     public void run (TestCaseFixture fixture, Parse table) {
-        run (new TestCaseSource (fixture, table, mRunTime, mLogFilePath));
+        run (new TestCaseSource (fixture, table, mRunTime.getGlobalScope (), mRunTime, mLogFilePath));
     }
 
     public void run (DataFixture fixture, Parse table) {
-        run (new DataSource (fixture, table, mLogFilePath));
+        run (new DataSource (fixture, table, mRunTime.getGlobalScope (), mLogFilePath));
     }
 
     private void run (BaseTestSource source) {

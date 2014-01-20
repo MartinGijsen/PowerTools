@@ -77,7 +77,7 @@ public final class BuiltinInstructions implements InstructionSet {
     }
 
 
-    public static void register (RunTimeImpl runTime, Instructions instructions) {
+    static void register (RunTimeImpl runTime, Instructions instructions) {
         BuiltinInstructions instructionSet = new BuiltinInstructions (runTime, instructions);
         instructionSet.register (instructionSet.getName (), instructionSet);
     }
@@ -343,7 +343,7 @@ public final class BuiltinInstructions implements InstructionSet {
     }
 
     public void RunFile_ (String fileName) {
-        mRunTime.invokeSource (new TestSourceFactory ().createExcelTestSource (fileName));
+        mRunTime.invokeSource (new TestSourceFactory ().createExcelTestSource (fileName, mRunTime.getGlobalScope ()));
     }
 
     // Keywords only (has parameters but not the corresponding underscores)

@@ -27,6 +27,7 @@ import org.powertools.engine.sources.TestLineImpl;
 
 import fit.Fixture;
 import fit.Parse;
+import org.powertools.engine.symbol.Scope;
 
 
 final class InstructionSource extends BaseTestSource {
@@ -35,8 +36,8 @@ final class InstructionSource extends BaseTestSource {
     private Procedure mProcedure;
 
 
-    InstructionSource (Fixture fixture, Parse table, String logFilePath) {
-        super (fixture, table.parts, logFilePath);
+    InstructionSource (Fixture fixture, Parse table, Scope scope, String logFilePath) {
+        super (fixture, table.parts, scope, logFilePath);
         mParameterNames = new ArrayList<String> ();
     }
 

@@ -1,4 +1,4 @@
-/* Copyright 2012 by Martin Gijsen (www.DeAnalist.nl)
+/* Copyright 2012-2014 by Martin Gijsen (www.DeAnalist.nl)
  *
  * This file is part of the PowerTools engine.
  *
@@ -50,11 +50,12 @@ public interface IBrowser {
 
     boolean fireEvent (Item item, String event);
 
-    boolean setCheckboxValue(Item item, boolean value);
-    boolean setCheckboxValue(KeyType keyType, String value, boolean checkValue);
+    boolean setCheckboxValue (Item item, boolean value);
+    boolean setCheckboxValue (KeyType keyType, String value, boolean checkValue);
 
-    boolean itemExists (Item item);
-    boolean itemExists (KeyType keyType, String value);
+    boolean isSelected (Item item);
+    boolean isSelected (KeyType keyType, String value);
+    
     int countItems (Item item);
 
     boolean click (Item item);
@@ -68,7 +69,8 @@ public interface IBrowser {
     boolean clickLink (String text);
     boolean clickLink (KeyType key, String value);
 
-    boolean clickAcceptInAlert();
+    boolean clickAcceptInAlert ();
+    boolean clickDismissInAlert ();
 
     boolean selectChoice (Item item);
     boolean selectChoiceByText (Item item, String text);
@@ -80,33 +82,39 @@ public interface IBrowser {
     boolean waitUntilTextIsPresent (String text, int timeout);
     boolean waitUntilTextIsNotPresent (String text);
     boolean waitUntilTextIsNotPresent (String text, int timeout);
+    boolean textIsPresent (String text);
+    @Deprecated
+    boolean checkForText (String text);
 
     boolean waitUntilItemIsPresent (Item item);
     boolean waitUntilItemIsPresent (Item item, int timeout);
     boolean waitUntilItemIsNotPresent (Item item);
     boolean waitUntilItemIsNotPresent (Item item, int timeout);
+    boolean itemIsPresent (Item item);
 
-    boolean waitUntilItemIsFilled (Item item);
-    boolean waitUntilItemIsFilled (Item item, int timeout);
+    boolean waitUntilItemIsNotEmpty (Item item);
+    boolean waitUntilItemIsNotEmpty (Item item, int timeout);
     boolean waitUntilItemIsEmpty (Item item);
     boolean waitUntilItemIsEmpty (Item item, int timeout);
+    boolean itemIsEmpty (Item item);
 
     boolean waitUntilItemIsVisible (Item item);
     boolean waitUntilItemIsVisible (Item item, int timeout);
     boolean waitUntilItemIsNotVisible (Item item);
     boolean waitUntilItemIsNotVisible (Item item, int timeout);
+    boolean itemIsVisible (Item item);
 
     boolean waitUntilItemIsEnabled (Item item);
     boolean waitUntilItemIsEnabled (Item item, int timeout);
     boolean waitUntilItemIsDisabled (Item item);
     boolean waitUntilItemIsDisabled (Item item, int timeout);
+    boolean itemIsEnabled (Item item);
 
-    boolean checkForText (String text);
     String getItemText (Item item);
     String getItemText (KeyType key, String value);
     String getItemAttribute (Item item, String attributeName);
     String getItemAttribute (KeyType key, String value, String attributeName);
-            
+
     int getCount (Item item);
 
     boolean makeScreenshot (String path);

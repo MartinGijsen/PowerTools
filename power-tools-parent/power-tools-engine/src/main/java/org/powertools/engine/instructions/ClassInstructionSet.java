@@ -73,26 +73,19 @@ final class ClassInstructionSet implements InstructionSet {
     }
 
     private String getMethodName (String instructionName) {
-        String[] words = instructionName.split (" ");
-        if (words.length == 0) {
-            throw new ExecutionException ("invalid instruction name");
-        } else {
-            StringBuilder sb = new StringBuilder ();
-            addWord (words[0], sb);
-
-            for (int partNr = 1; partNr < words.length; ++partNr) {
-                String part = words[partNr];
-                if (!part.isEmpty ()) {
-                    addWord (part, sb);
-                }
-            }
-            return sb.toString();
+        String[] parts   = instructionName.split (" ");
+        StringBuilder sb = new StringBuilder ();
+        for (String part : parts) {
+            addWord (part, sb);
         }
+        return sb.toString();
     }
 
     private void addWord (String word, StringBuilder sb) {
-        sb.append (Character.toUpperCase (word.charAt (0)));
-        sb.append (word.substring (1));
+        if (!word.isEmpty ()) {
+            sb.append (Character.toUpperCase (word.charAt (0)));
+            sb.append (word.substring (1));
+        }
     }
 
     private Method getMethod (String methodName) {

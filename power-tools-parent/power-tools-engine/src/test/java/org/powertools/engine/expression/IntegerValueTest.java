@@ -34,27 +34,16 @@ public class IntegerValueTest {
 	private final Value mRealOneValue		= new RealValue (1.0);
 	private final Value mRealMinusOneValue  = new RealValue (-1.0);
 
-	
+
 	@Test
 	public void testIntegerValue () {
-		new IntegerValue (123);
-		new IntegerValue (0);
-		new IntegerValue (-123);
-		new IntegerValue ("123");
-		new IntegerValue ("0");
-		new IntegerValue ("-123");
-		try {
-			new IntegerValue ("1,23");
-			fail ("no exception");
-		} catch (ExecutionException ee) {
-			// ok
-		}
-		try {
-			new IntegerValue ("1.23");
-			fail ("no exception");
-		} catch (ExecutionException ee) {
-			// ok
-		}
+		assertEquals ("123", new IntegerValue (123).toString ());
+		assertEquals ("0", new IntegerValue (0).toString ());
+		assertEquals ("-123", new IntegerValue (-123).toString ());
+		assertEquals ("123", new IntegerValue ("123").toString ());
+		assertEquals ("0", new IntegerValue ("0").toString ());
+		assertEquals ("-123", new IntegerValue ("-123").toString ());
+		assertEquals ("0123", new IntegerValue ("0123").toString ());
 	}
 
 	@Test

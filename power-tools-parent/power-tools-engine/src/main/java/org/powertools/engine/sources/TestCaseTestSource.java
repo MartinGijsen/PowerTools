@@ -38,6 +38,10 @@ public class TestCaseTestSource extends TestSource {
         mParent = parent;
     }
 
+    @Override
+    public boolean isATestCase () {
+        return true;
+    }
 
     @Override
     public TestLineImpl getTestLine () {

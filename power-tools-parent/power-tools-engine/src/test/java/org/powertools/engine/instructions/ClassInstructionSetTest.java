@@ -1,4 +1,4 @@
-/* Copyright 2013 by Martin Gijsen (www.DeAnalist.nl)
+/* Copyright 2013-2014 by Martin Gijsen (www.DeAnalist.nl)
  *
  * This file is part of the PowerTools.
  *
@@ -63,26 +63,34 @@ public class ClassInstructionSetTest {
 
     @Test
     public void testGetExecutorUnknownInstruction () {
-        String instructionName = "unknown instruction name";
+        String instructionName                = "unknown instruction name";
         InstructionSetImpl userInstructionSet = new InstructionSetImpl ();
         ClassInstructionSet instructionSet    = new ClassInstructionSet (NAME, userInstructionSet);
         assertNull (instructionSet.getExecutor (instructionName));
     }
 
     @Test
-    public void testGetExecutorInstruction () {
-        String instructionName = "instruction name";
+    public void testGetExecutorInstructionNoParameters () {
+        String instructionName                = "instruction name";
         InstructionSetImpl userInstructionSet = new InstructionSetImpl ();
         ClassInstructionSet instructionSet    = new ClassInstructionSet (NAME, userInstructionSet);
-        assertNotNull (instructionSet.getExecutor (instructionName));
+        assertTrue (instructionSet.getExecutor (instructionName) instanceof MethodExecutor);
     }
 
     @Test
-    public void testGetExecutorAnnotatedInstruction () {
-        String instructionName = "alternative instruction name";
+    public void testGetExecutorInstructionWithParameters () {
+        String instructionName                = "instruction _ name _";
         InstructionSetImpl userInstructionSet = new InstructionSetImpl ();
         ClassInstructionSet instructionSet    = new ClassInstructionSet (NAME, userInstructionSet);
-        assertNotNull (instructionSet.getExecutor (instructionName));
+        assertTrue (instructionSet.getExecutor (instructionName) instanceof MethodExecutor);
+    }
+
+    @Test
+    public void testGetExecutorAnnotatedInstructionWithParameters () {
+        String instructionName                = "alternative instruction name";
+        InstructionSetImpl userInstructionSet = new InstructionSetImpl ();
+        ClassInstructionSet instructionSet    = new ClassInstructionSet (NAME, userInstructionSet);
+        assertTrue (instructionSet.getExecutor (instructionName) instanceof ShuffledParametersMethodExecutor);
     }
 
 
@@ -120,10 +128,10 @@ public class ClassInstructionSetTest {
         public void InstructionName () {
             // nothing
         }
-
+        
         @KeywordName ("AlternativeInstructionName")
         @ParameterOrder ({ 2, 1 })
-        public void AnnotatedInstructionName (int i, int j) {
+        public void Instruction_Name_ (int i, int j) {
             // nothing
         }
     }

@@ -58,7 +58,7 @@ public final class RunTimeImpl implements RunTime, ProcedureRunner {
 
 
     public RunTimeImpl (Context context) {
-        mSourceStack   = new TestSourceStack (getGlobalScope ());
+        mSourceStack   = new TestSourceStack ();
         mContext       = context;
         mEvaluator     = new ExpressionEvaluator ();
         mPublisher     = TestRunResultPublisher.getInstance ();
@@ -146,7 +146,7 @@ public final class RunTimeImpl implements RunTime, ProcedureRunner {
 
     @Override
     public Scope getGlobalScope () {
-        return Scope.getGlobalScope ();
+        return mSourceStack.getGlobalScope ();
     }
 
     @Override

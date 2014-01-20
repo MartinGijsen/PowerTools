@@ -21,15 +21,16 @@ package org.powertools.engine.fitnesse;
 import fit.Fixture;
 import fit.Parse;
 import org.powertools.engine.RunTime;
+import org.powertools.engine.symbol.Scope;
 
 
 final class TestCaseSource extends ScenarioSource {
-    private final RunTime mRunTime;
+//    private final RunTime mRunTime;
     private final String[] mArgs;
 
-    TestCaseSource (Fixture fixture, Parse table, RunTime runTime, String logFilePath) {
-        super (fixture, table, logFilePath);
-        mRunTime = runTime;
+    TestCaseSource (Fixture fixture, Parse table, Scope scope, RunTime runTime, String logFilePath) {
+        super (fixture, table, scope, logFilePath);
+//        mRunTime = runTime;
         mArgs    = fixture.getArgs ();
     }
 
@@ -57,6 +58,11 @@ final class TestCaseSource extends ScenarioSource {
         for (int argNr = 0; argNr < nrOfArgs; ++argNr) {
             mTestLine.setPart (argNr + 1, mArgs[argNr]);
         }
+    }
+
+    @Override
+    public boolean isATestCase () {
+        return true;
     }
 
     @Override

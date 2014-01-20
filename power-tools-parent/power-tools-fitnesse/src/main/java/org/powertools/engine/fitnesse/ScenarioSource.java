@@ -22,11 +22,12 @@ import org.powertools.engine.sources.TestLineImpl;
 
 import fit.Fixture;
 import fit.Parse;
+import org.powertools.engine.symbol.Scope;
 
 
 class ScenarioSource extends BaseTestSource {
-    ScenarioSource (Fixture fixture, Parse table, String logFilePath) {
-        super (fixture, table.parts, logFilePath);
+    ScenarioSource (Fixture fixture, Parse table, Scope scope, String logFilePath) {
+        super (fixture, table.parts, scope, logFilePath);
     }
 
 
