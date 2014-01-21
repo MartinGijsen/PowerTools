@@ -1,4 +1,4 @@
-/* Copyright 2012 by Martin Gijsen (www.DeAnalist.nl)
+/* Copyright 2012-2014 by Martin Gijsen (www.DeAnalist.nl)
  *
  * This file is part of the PowerTools engine.
  *
@@ -22,7 +22,6 @@ import java.util.EmptyStackException;
 import java.util.Stack;
 
 import org.powertools.engine.ExecutionException;
-import org.powertools.engine.sources.TestCaseTestSource;
 import org.powertools.engine.sources.TestLineImpl;
 import org.powertools.engine.sources.TestSource;
 import org.powertools.engine.symbol.Scope;

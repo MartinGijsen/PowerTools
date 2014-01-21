@@ -1,4 +1,4 @@
-/* Copyright 2013-2014 by Martin Gijsen (www.DeAnalist.nl)
+/* Copyright 2014 by Martin Gijsen (www.DeAnalist.nl)
  *
  * This file is part of the PowerTools engine.
  *
@@ -18,20 +18,14 @@
 
 package org.powertools.engine.sources.model;
 
+import org.junit.Test;
+import static org.junit.Assert.assertFalse;
 
-/*
- * The NeverDone condition never indicates that model processing is done.
- * So it can ignore submodels and processed edges.
- */
-final class NeverDone extends DoneCondition {
-    private static final String DESCRIPTION = "never stop";
 
-    NeverDone () {
-        super (DESCRIPTION);
-    }
-
-    @Override
-    public boolean isSatisfied () {
-        return false;
+public class NeverDoneTest {
+    @Test
+    public void testIsSatisfied () {
+        NeverDone condition = new NeverDone ();
+        assertFalse (condition.isSatisfied ());
     }
 }

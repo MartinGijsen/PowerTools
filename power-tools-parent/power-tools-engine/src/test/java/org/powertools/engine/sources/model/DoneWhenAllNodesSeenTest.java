@@ -18,20 +18,22 @@
 
 package org.powertools.engine.sources.model;
 
+import org.junit.Test;
+import static org.junit.Assert.*;
 
-/*
- * The NeverDone condition never indicates that model processing is done.
- * So it can ignore submodels and processed edges.
- */
-final class NeverDone extends DoneCondition {
-    private static final String DESCRIPTION = "never stop";
 
-    NeverDone () {
-        super (DESCRIPTION);
+public class DoneWhenAllNodesSeenTest {
+    @Test
+    public void testProcessNewNodeProcessAtNode () {
+        DoneWhenAllNodesSeen condition = new DoneWhenAllNodesSeen ();
+        assertFalse (condition.isSatisfied ());
+        condition.processNewNode ("node 1");
+        condition.processNewNode ("node 2");
+        assertFalse (condition.isSatisfied ());
+        condition.processAtNode ("node 1");
+        assertFalse (condition.isSatisfied ());
+        condition.processAtNode ("node 2");
+        assertTrue (condition.isSatisfied ());
     }
-
-    @Override
-    public boolean isSatisfied () {
-        return false;
-    }
+    
 }

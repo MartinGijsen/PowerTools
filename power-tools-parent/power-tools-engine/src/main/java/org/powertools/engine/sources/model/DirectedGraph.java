@@ -22,6 +22,7 @@ import java.util.Set;
 
 
 interface DirectedGraph {
+    String getName ();
     Node addNode (String name);
     Node getNode (String name);
     Node getNodeByLabel (String label);

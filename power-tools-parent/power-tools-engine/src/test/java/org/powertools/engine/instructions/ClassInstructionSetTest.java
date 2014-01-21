@@ -20,6 +20,7 @@ package org.powertools.engine.instructions;
 
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.powertools.engine.ExecutionException;
 import org.powertools.engine.KeywordName;
 import org.powertools.engine.ParameterOrder;
 
@@ -59,6 +60,24 @@ public class ClassInstructionSetTest {
         instructionSet.cleanup ();
         assertTrue (userInstructionSet.isSetupCalled ());
         assertTrue (userInstructionSet.isCleanupCalled ());
+    }
+
+    @Test
+    public void testSetupCleanupWithExceptions () {
+        InstructionSetClassWithIssues userInstructionSet = new InstructionSetClassWithIssues ();
+        ClassInstructionSet instructionSet               = new ClassInstructionSet (NAME, userInstructionSet);
+        try {
+            instructionSet.setup ();
+            fail ("no exception");
+        } catch (ExecutionException ee) {
+            // ignore
+        }
+//        try {
+//            instructionSet.cleanup ();
+//            fail ("no exception");
+//        } catch (ExecutionException ee) {
+//            // ignore
+//        }
     }
 
     @Test
@@ -160,6 +179,18 @@ public class ClassInstructionSetTest {
 
         boolean isCleanupCalled () {
             return mIsCleanupCalled;
+        }
+    }
+
+
+    private class InstructionSetClassWithIssues {
+        public void setup () {
+            Object object = null;
+            object.toString ();
+        }
+
+        public void cleanup () {
+            // TODO: generate another exception
         }
     }
 }

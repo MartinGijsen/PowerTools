@@ -39,9 +39,9 @@ public class ModelBasedEngine extends Engine {
             new ModelBasedEngine (args[0]).run (args[1], args[2], args[3]);
             break;
         default:
-            System.err.println ("Please specify a directory, model file name, selection strategy and stop condition");
-            System.err.println ("\tselection strategies: random, weighted");
-            System.err.println ("\tstop conditions: all nodes, all edges, end node, never");
+            reportError ("Please specify a directory, model file name, selection strategy and stop condition");
+            reportError ("\tselection strategies: random, weighted");
+            reportError ("\tstop conditions: all nodes, all edges, end node, never");
         }
     }
 
@@ -70,9 +70,9 @@ public class ModelBasedEngine extends Engine {
         try {
             run (new TestSourceFactory ().createModelTestSource (fileName, selector, condition, mRunTime, mRunTime));
         } catch (GraphException ge) {
-            System.err.println ("error: " + ge.getMessage ());
+            reportError ("error: " + ge.getMessage ());
         } catch (ExecutionException ee) {
-            System.err.println ("error: " + ee.getMessage ());
+            reportError ("error: " + ee.getMessage ());
         }
     }
 }

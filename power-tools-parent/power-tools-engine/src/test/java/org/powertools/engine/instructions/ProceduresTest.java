@@ -36,8 +36,15 @@ public class ProceduresTest {
 	public void testAddGetExecutor () {
 		Procedures procedures = new Procedures (null);
 		String PROCEDURE_NAME = "procedure name";
-		Procedure procedure = new Procedure (PROCEDURE_NAME);
+		Procedure procedure   = new Procedure (PROCEDURE_NAME);
 		procedures.add (procedure);
 		assertNotNull (procedures.getExecutor (PROCEDURE_NAME));
+	}
+
+	@Test
+	public void testGetExecutorUnknownProcedure () {
+		Procedures procedures = new Procedures (null);
+		String PROCEDURE_NAME = "unknown procedure";
+		assertNull (procedures.getExecutor (PROCEDURE_NAME));
 	}
 }

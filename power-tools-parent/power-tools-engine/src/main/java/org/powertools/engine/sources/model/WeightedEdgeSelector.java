@@ -44,7 +44,7 @@ final class WeightedEdgeSelector implements EdgeSelectionStrategy {
     }
 
     @Override
-    public Edge selectEdge (DirectedGraph graph, Node currentNode, boolean isMainModel) {
+    public Edge selectEdge (DirectedGraph graph, Node currentNode) {
         Set<Edge> edges = graph.getEdges (currentNode);
         if (!edges.isEmpty ()) {
             return selectEdge (edges);

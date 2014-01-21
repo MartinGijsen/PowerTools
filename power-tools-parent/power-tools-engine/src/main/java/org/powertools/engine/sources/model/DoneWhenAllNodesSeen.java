@@ -1,4 +1,4 @@
-/* Copyright 2013-2014 by Martin Gijsen (www.DeAnalist.nl)
+/* Copyright 2014 by Martin Gijsen (www.DeAnalist.nl)
  *
  * This file is part of the PowerTools engine.
  *
@@ -18,61 +18,30 @@
 
 package org.powertools.engine.sources.model;
 
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
-import org.powertools.engine.reports.TestRunResultPublisher;
 
 
-final class DoneWhenAllNodesSeen implements DoneCondition {
-    static final String NAME = "all nodes";
-
+final class DoneWhenAllNodesSeen extends DoneCondition {
     private static final String DESCRIPTION = "stop after all nodes have been traversed";
 
-    private boolean mDone;
     private final Set<String> mUnseenNodes;
 
-    DoneWhenAllNodesSeen (DirectedGraphImpl graph) {
-        super ();
-        mDone        = false;
-        mUnseenNodes = new HashSet<String> ();
-        
-        TestRunResultPublisher.getInstance ().subscribeToModel (this);
-    }
-
-
-    public String getDescription () {
-        return DESCRIPTION;
-    }
-
-    public boolean isSatisfied () {
-        return mDone;
-    }
-
     
-    // model events
-    public void start(Date dateTime) {
-        // ignore
+    DoneWhenAllNodesSeen () {
+        super (DESCRIPTION);
+        mUnseenNodes = new HashSet<String> ();
     }
 
-    public void finish(Date dateTime) {
-        // ignore
-    }
 
+    @Override
     public void processNewNode (String name) {
         mUnseenNodes.add (name);
     }
 
-    public void processNewEdge (String sourceNodeName, String targetNodeName) {
-        // ignore
-    }
-
+    @Override
     public void processAtNode (String name) {
         mUnseenNodes.remove (name);
         mDone = mUnseenNodes.isEmpty ();
-    }
-
-    public void processAtEdge (String sourceNodeName, String targetNodeName) {
-        // ignore
     }
 }

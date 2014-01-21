@@ -23,16 +23,16 @@ import org.powertools.engine.reports.TestRunResultPublisher;
 
 
 final class DoneConditionFactory {
-    DoneCondition create (String conditionName, DirectedGraphImpl graph) {
+    DoneCondition create (String conditionName) {
         // TODO: pass end node label as parameter?
         DoneCondition condition;
-        if (NeverDone.NAME.equals (conditionName)) {
+        if ("never".equals (conditionName)) {
             condition = new NeverDone ();
-        } else if (DoneWhenAllEdgesSeen.NAME.equals (conditionName)) {
-            condition = new DoneWhenAllEdgesSeen (graph);
-        } else if (DoneWhenAllNodesSeen.NAME.equals (conditionName)) {
-            condition = new DoneWhenAllNodesSeen (graph);
-        } else if (DoneWhenInEndNode.NAME.equals (conditionName)) {
+        } else if ("all edges".equals (conditionName)) {
+            condition = new DoneWhenAllEdgesSeen ();
+        } else if ("all nodes".equals (conditionName)) {
+            condition = new DoneWhenAllNodesSeen ();
+        } else if ("end node".equals (conditionName)) {
             condition = new DoneWhenInEndNode ();
         } else {
             throw new ExecutionException (String.format ("unknown condition: %s", conditionName));

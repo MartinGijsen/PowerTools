@@ -40,8 +40,8 @@ public final class MainModel extends Model {
     public void initialize () {
         mGraph         = DirectedGraphImpl.createGraph (mFileName);
         mCurrentNode   = mGraph.getRootNode ();
-        mDoneCondition = new DoneConditionFactory ().create (mDoneConditionString, mGraph);
-        mSelector      = new EdgeSelectionStrategyFactory ().create (mSelectorString, mRunTime, mDoneCondition);
+        mDoneCondition = new DoneConditionFactory ().create (mDoneConditionString);
+        mSelector      = new EdgeSelectionStrategyFactory ().create (mSelectorString, mGraph, mRunTime, mDoneCondition);
 
         mPublisher.publishCommentLine ("stop condition: " + mDoneCondition.getDescription ());
         mPublisher.publishCommentLine ("edge selection: " + mSelector.getDescription ());
@@ -50,6 +50,6 @@ public final class MainModel extends Model {
     }
     
     Edge selectEdge () {
-        return mSelector.selectEdge (mGraph, mCurrentNode, true);
+        return mSelector.selectEdge (mGraph, mCurrentNode);
     }
 }

@@ -6,9 +6,9 @@
   <version>0.0.1-SNAPSHOT</version>
   <packaging>pom</packaging>
   <modules>
-  	<module>power-tools-engine</module>
-  	<module>power-tools-fitnesse</module>
-  	<module>power-tools-web</module>
+    <module>power-tools-engine</module>
+    <module>power-tools-fitnesse</module>
+    <module>power-tools-web</module>
     <module>power-tools-graph</module>
   </modules>
 </project>

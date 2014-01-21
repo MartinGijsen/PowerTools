@@ -38,6 +38,6 @@ public final class Submodel extends Model {
 
     @Override
     Edge selectEdge () {
-        return mSelector.selectEdge (mGraph, mCurrentNode, false);
+        return mSelector.selectEdge (mGraph, mCurrentNode);
     }
 }

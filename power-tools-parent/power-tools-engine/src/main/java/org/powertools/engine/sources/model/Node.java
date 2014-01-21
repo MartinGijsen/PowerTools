@@ -22,15 +22,15 @@ import org.powertools.engine.ExecutionException;
 
 
 final class Node {
-    final DirectedGraphImpl mGraph;
-    private final String    mName;
+    final DirectedGraph  mGraph;
+    private final String mName;
 
-    String                  mLabel;
-    String                  mAction;
+    String               mLabel;
+    String               mAction;
 
 
-    Node (String name, DirectedGraphImpl graph) {
-        if (name == null || name.isEmpty ()) {
+    Node (String name, DirectedGraph graph) {
+        if ("".equals (name)) {
             throw new ExecutionException ("empty node name");
         }
         mName   = name;
@@ -46,4 +46,6 @@ final class Node {
     String getDescription () {
         return mGraph.getName () + "." + getName ();
     }
+    
+    
 }

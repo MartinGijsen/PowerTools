@@ -34,7 +34,7 @@ import org.powertools.engine.sources.TestSourceFactory;
 public class ExcelEngine extends Engine {
     public static void main (String[] args) {
         if (args.length != 2) {
-            System.err.println ("Please specify a directory and a file");
+            reportError ("Please specify a directory and a file");
         } else {
             new ExcelEngine (args[0]).run (args[1]);
         }
@@ -49,10 +49,10 @@ public class ExcelEngine extends Engine {
         super (runTime);
 
         if (!ReportFactory.createKeywordsHtmlLog (runTime.getContext ())) {
-            System.err.println ("could not open HTML log");
+            reportError ("could not open HTML log");
         }
         if (!ReportFactory.createTestCaseReport (runTime.getContext ())) {
-            System.err.println ("could not open test case report");
+            reportError ("could not open test case report");
         }
 
         registerBuiltinInstructions ();

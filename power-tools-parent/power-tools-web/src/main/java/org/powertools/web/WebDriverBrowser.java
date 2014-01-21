@@ -634,7 +634,7 @@ class WebDriverBrowser implements IBrowser {
 
 
     // protected members
-    protected static final int cOneSecondTimeout = 1000;
+    protected static final int ONE_SECOND_TIMEOUT = 1000;
 
     protected final RunTime mRunTime;
 
@@ -841,7 +841,7 @@ class WebDriverBrowser implements IBrowser {
 
         @Override
         public boolean execute (WebElement element) {
-            if (element.getTagName ().equalsIgnoreCase ("SELECT")) {
+            if ("SELECT".equalsIgnoreCase (element.getTagName ())) {
                 result = getSelectedOptionText (element);
             } else {
                 result = element.getText ();
@@ -900,10 +900,9 @@ class WebDriverBrowser implements IBrowser {
             } catch (WebDriverException wde) {
                 // This error occurs occasionally in IE when using SeleniumGrid
             } catch (ExecutionException ee) {
-                System.out.println (ee.getMessage ());
                 // This error occurs when the element is not yet available 
             }
-            sleep (cOneSecondTimeout);
+            sleep (ONE_SECOND_TIMEOUT);
         }
         return false;
     }
@@ -917,7 +916,7 @@ class WebDriverBrowser implements IBrowser {
             } catch (WebDriverException e) {
                 // This error occurs occasionally in IE when using SeleniumGrid
             }
-            sleep (cOneSecondTimeout);
+            sleep (ONE_SECOND_TIMEOUT);
         }
         return false;
     }

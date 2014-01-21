@@ -18,15 +18,54 @@
 
 package org.powertools.engine.sources.model;
 
+import java.util.Date;
 import org.powertools.engine.reports.ModelSubscriber;
 
 
 /*
  * Determines when the model (including any submodels) has been processed
  */
-interface DoneCondition extends ModelSubscriber {
-    String getDescription ();
-//    void addSubModelGraph (DirectedGraphImpl graph);
-//    void markEdge (Edge edge);
-    boolean isSatisfied ();
+abstract class DoneCondition implements ModelSubscriber {
+    boolean mDone;
+
+    private final String mDescription;
+
+    DoneCondition (String description) {
+        mDescription = description;
+        mDone        = false;
+    }
+    
+    final String getDescription () {
+        return mDescription;
+    }
+    
+    boolean isSatisfied () {
+        return mDone;
+    }
+
+    
+    public void start(Date dateTime) {
+        // ignore
+    }
+
+    public void finish(Date dateTime) {
+        // ignore
+    }
+
+    
+    public void processNewNode (String name) {
+        // ignore
+    }
+
+    public void processNewEdge (String sourceNodeName, String targetNodeName) {
+        // ignore
+    }
+
+    public void processAtNode (String name) {
+        // ignore
+    }
+
+    public void processAtEdge (String sourceNodeName, String targetNodeName) {
+        // ignore
+    }
 }

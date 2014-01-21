@@ -18,58 +18,28 @@
 
 package org.powertools.engine.sources.model;
 
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
 
-final class DoneWhenAllEdgesSeen implements DoneCondition {
-    static final String NAME = "all edges";
-
+final class DoneWhenAllEdgesSeen extends DoneCondition {
     private static final String DESCRIPTION = "stop after all edges have been traversed";
 
     private final Set<String> mUnseenEdges;
     
-    private boolean mDone;
 
-
-    DoneWhenAllEdgesSeen (DirectedGraphImpl graph) {
-        super ();
+    DoneWhenAllEdgesSeen () {
+        super (DESCRIPTION);
         mUnseenEdges = new HashSet<String> ();
-        mDone = false;
     }
 
 
-    public String getDescription () {
-        return DESCRIPTION;
-    }
-
-    public boolean isSatisfied () {
-        return mDone;
-    }
-
-    
-    // model events
-    public void start (Date dateTime) {
-        // ignore
-    }
-
-    public void finish(Date dateTime) {
-        // ignore
-    }
-
-    public void processNewNode (String name) {
-        // ignore
-    }
-
+    @Override
     public void processNewEdge (String sourceNodeName, String targetNodeName) {
         mUnseenEdges.add (sourceNodeName + "/" + targetNodeName);
     }
 
-    public void processAtNode (String name) {
-        // ignore
-    }
-
+    @Override
     public void processAtEdge (String sourceNodeName, String targetNodeName) {
         mUnseenEdges.remove (sourceNodeName + "/" + targetNodeName);
         mDone = mDone || mUnseenEdges.isEmpty ();

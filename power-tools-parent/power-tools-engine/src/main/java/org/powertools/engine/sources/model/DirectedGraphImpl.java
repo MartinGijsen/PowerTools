@@ -49,19 +49,19 @@ final class DirectedGraphImpl implements DirectedGraph {
         }
     }
 
-    private DirectedGraphImpl (String name) {
+    DirectedGraphImpl (String name) {
         mName  = name;
         mNodes = new HashMap<String, Node> ();
         mEdges = new HashMap<Node, Set<Edge>> ();
     }
 
-    String getName () {
+    public String getName () {
         return mName;
     }
     
     public Node addNode (String name) {
         if (mNodes.containsKey (name)) {
-            throw new ExecutionException (String.format ("node name %s not unique", name));
+            throw new ExecutionException (String.format ("node name '%s' not unique", name));
         } else {
             Node node = new Node (name, this);
             mNodes.put (name, node);

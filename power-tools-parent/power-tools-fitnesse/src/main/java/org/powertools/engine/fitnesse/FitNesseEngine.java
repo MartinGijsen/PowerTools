@@ -48,7 +48,7 @@ public final class FitNesseEngine extends Engine {
         mLogFilePath = mRunTime.getContext ().getFullLogFilePath ();
         createLog ();
         if (!ReportFactory.createTestCaseReport (mRunTime.getContext ())) {
-            System.err.println ("could not open test case report");
+            reportError ("could not open test case report");
         }
         mFitNesseReporter = new FitNesseReporter ();
         mPublisher.subscribeToTestResults (mFitNesseReporter);

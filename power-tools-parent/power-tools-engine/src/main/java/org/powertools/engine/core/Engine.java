@@ -154,4 +154,8 @@ public abstract class Engine {
             mPublisher.publishCommentLine (mTestLine);
         }
     }
+    
+    protected static void reportError (String message) {
+        System.err.println ("error: " + message);
+    }
 }

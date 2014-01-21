@@ -24,5 +24,5 @@ package org.powertools.engine.sources.model;
  */
 interface EdgeSelectionStrategy {
     String getDescription ();
-    Edge selectEdge (DirectedGraph graph, Node currentNode, boolean isMainModel);
+    Edge selectEdge (DirectedGraph graph, Node currentNode);
 }
