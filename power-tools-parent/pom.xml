@@ -10,5 +10,6 @@
     <module>power-tools-fitnesse</module>
     <module>power-tools-web</module>
     <module>power-tools-graph</module>
+    <module>power-tools-windows</module>
   </modules>
 </project>
