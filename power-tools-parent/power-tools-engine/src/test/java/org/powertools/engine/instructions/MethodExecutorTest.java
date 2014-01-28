@@ -1,4 +1,4 @@
-/*	Copyright 2012 by Martin Gijsen (www.DeAnalist.nl)
+/*	Copyright 2012-2014 by Martin Gijsen (www.DeAnalist.nl)
  *
  *	This file is part of the PowerTools engine.
  *
@@ -22,6 +22,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.lang.reflect.Method;
+import java.util.Calendar;
+import java.util.Date;
 
 import org.junit.Test;
 import org.powertools.engine.ExecutionException;
@@ -29,7 +31,7 @@ import org.powertools.engine.sources.TestLineImpl;
 
 
 public class MethodExecutorTest {
-	private static final Object mObject = new MethodExecutorObject ();
+	private final Object mObject = new MethodExecutorObject ();
 	
 	
 	@Test
@@ -185,4 +187,55 @@ public class MethodExecutorTest {
 		testLine.setPart (1, "something");
 		executor.execute (testLine);
 	}
+
+
+    private class MethodExecutorObject {
+        MethodExecutorObject () {
+            // nothing
+        }
+
+        void voidReturningMethod () {
+            // nothing
+        }
+
+        boolean failingMethod () {
+            return false;
+        }
+
+        boolean noParametersMethod () {
+            return true;
+        }
+
+        boolean intParameterMethod (int i) {
+            return true;
+        }
+
+        boolean longParameterMethod (long l) {
+            return true;
+        }
+
+        boolean booleanParameterMethod (boolean b) {
+            return true;
+        }
+
+        boolean floatParameterMethod (float f) {
+            return true;
+        }
+
+        boolean doubleParameterMethod (double d) {
+            return true;
+        }
+
+        boolean dateParameterMethod (Date d) {
+            return true;
+        }
+
+        boolean calendarParameterMethod (Calendar c) {
+            return true;
+        }
+
+        boolean objectParameterMethod (Object o) {
+            return true;
+        }
+    }
 }

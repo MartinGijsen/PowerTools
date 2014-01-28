@@ -28,11 +28,12 @@ public class DoneWhenAllEdgesSeenTest {
         DoneWhenAllEdgesSeen condition = new DoneWhenAllEdgesSeen ();
         assertFalse (condition.isSatisfied ());
         condition.processNewEdge ("node 1", "node 2");
-        condition.processNewEdge ("node 2", "node 3");
+        condition.processNewEdge ("node 2", "node 1");
         assertFalse (condition.isSatisfied ());
         condition.processAtEdge ("node 1", "node 2");
         assertFalse (condition.isSatisfied ());
-        condition.processAtEdge ("node 2", "node 3");
+        condition.processAtEdge ("node 2", "node 1");
         assertTrue (condition.isSatisfied ());
+        condition.processAtEdge ("node 1", "node 2");
     }
 }

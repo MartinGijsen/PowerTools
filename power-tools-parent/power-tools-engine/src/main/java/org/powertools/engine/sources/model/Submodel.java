@@ -20,20 +20,9 @@ package org.powertools.engine.sources.model;
 
 
 public final class Submodel extends Model {
-    private final String mFileName;
-    
     public Submodel (String fileName, Model parent) {
-        mFileName      = fileName;
-        mAtNode        = false;
-        mSelector      = parent.mSelector;
-        mDoneCondition = parent.mDoneCondition;
-    }
-
-    @Override
-    public void initialize () {
-        mGraph       = DirectedGraphImpl.createGraph (mFileName);
-        mCurrentNode = mGraph.getRootNode ();
-        finishInit ();
+        super (parent.mPath, fileName, parent.mDoneCondition, parent.mKnownModels);
+        mSelector = parent.mSelector;
     }
 
     @Override

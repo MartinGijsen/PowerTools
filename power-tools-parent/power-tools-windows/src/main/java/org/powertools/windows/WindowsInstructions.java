@@ -16,7 +16,7 @@
  * along with the PowerTools engine. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.powerTools.windows;
+package org.powertools.windows;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -27,18 +27,20 @@ import org.powertools.engine.RunTime;
 
 
 public final class WindowsInstructions {
+    private final RunTime mRunTime;
+    private final Map<String, Application> mApplications;
+    private final Map<String, Window> mWindows;
+    private final Map<String, Control> mControls;
+    private final Windows mWinApi;
+
+
     public WindowsInstructions (RunTime runTime) {
         mRunTime      = runTime;
         mApplications = new HashMap<String, Application> ();
         mWindows      = new HashMap<String, Window> ();
         mControls     = new HashMap<String, Control> ();
+        mWinApi       = new Windows ();
     }
-
-
-    private final RunTime mRunTime;
-    private final Map<String, Application> mApplications;
-    private final Map<String, Window> mWindows;
-    private final Map<String, Control> mControls;
 
 
     @KeywordName ("DeclareApplication")
@@ -64,9 +66,9 @@ public final class WindowsInstructions {
     public boolean StartApplication_Within_ (String name, int timeout) {
         final Application application = getApplication (name);
         final Window window           = getWindow (application.mWindowName);
-        if (!Windows.run (application.mCommand, "", Windows.NORMAL)) {
+        if (!mWinApi.run (application.mCommand, "", Windows.NORMAL)) {
             throw new ExecutionException (String.format ("could not start '%s'", application.mCommand));
-        } else if (!Windows.waitForWindowActive (window.mTitle, window.mText, timeout)) {
+        } else if (!mWinApi.waitForWindowActive (window.mTitle, window.mText, timeout)) {
             throw new ExecutionException ("window was not active in time");
         } else {
             return true;
@@ -75,9 +77,9 @@ public final class WindowsInstructions {
 
     public boolean CloseWindow (String name, int timeout) {
         final Window window = getWindow (name);
-        if (!Windows.closeWindow (window.mTitle, window.mText)) {
+        if (!mWinApi.closeWindow (window.mTitle, window.mText)) {
             throw new ExecutionException (String.format ("could not close '%s'", window.mName));
-        } else if (!Windows.waitForWindowToClose (window.mTitle, window.mText, timeout)) {
+        } else if (!mWinApi.waitForWindowToClose (window.mTitle, window.mText, timeout)) {
             throw new ExecutionException ("window did not close in time");
         } else {
             return true;
@@ -97,7 +99,7 @@ public final class WindowsInstructions {
 
     public boolean ClickControl (String name) {
         final Control control = getControl (name);
-        if (!Windows.clickControl (control.mWindow.mTitle, control.mWindow.mText, control.mId, Windows.PRIMARY_MOUSE_BUTTON)) {
+        if (!mWinApi.clickControl (control.mWindow.mTitle, control.mWindow.mText, control.mId, Windows.PRIMARY_MOUSE_BUTTON)) {
             throw new ExecutionException (String.format ("could not click item '%s' (title: %s, text: %s, ID: %s)", control.mName, control.mWindow.mTitle, control.mWindow.mText, control.mId));
         } else {
             return true;
@@ -105,8 +107,8 @@ public final class WindowsInstructions {
     }
 
     public boolean CheckControlText (String name, String expectedText) {
-        final Control control = getControl (name);
-        final String actualText = Windows.getControlText (control.mWindow.mTitle, control.mWindow.mText, control.mId);
+        Control control   = getControl (name);
+        String actualText = mWinApi.getControlText (control.mWindow.mTitle, control.mWindow.mText, control.mId);
         if (actualText.equals (expectedText)) {
             return true;
         } else {
@@ -116,7 +118,7 @@ public final class WindowsInstructions {
     }
 
     public boolean Type (String text) {
-        Windows.sendText (text, Windows.RAW);
+        mWinApi.sendText (text, Windows.RAW);
         return true;
     }
 

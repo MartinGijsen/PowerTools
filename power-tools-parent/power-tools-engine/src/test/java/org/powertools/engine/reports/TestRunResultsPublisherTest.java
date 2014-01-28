@@ -1,5 +1,24 @@
+/* Copyright 2014 by Martin Gijsen (www.DeAnalist.nl)
+ *
+ * This file is part of the PowerTools.
+ *
+ * The PowerTools are free software: you can redistribute them and/or
+ * modify them under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
+ *
+ * The PowerTools are distributed in the hope that they will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with the PowerTools. If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package org.powertools.engine.reports;
 
+import org.powertools.engine.TestRunResultPublisher;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
@@ -18,7 +37,7 @@ public class TestRunResultsPublisherTest {
 
 	@Before
 	public void setUp () throws Exception {
-		mPublisher				= TestRunResultPublisher.getInstance ();
+		mPublisher				= TestRunResultPublisherImpl.getInstance ();
 		mTestCasesSubscriber	= new Subscriber ();
 		mTestLinesSubscriber	= new Subscriber ();
 		mTestResultsSubscriber	= new Subscriber ();
@@ -32,7 +51,7 @@ public class TestRunResultsPublisherTest {
 
 	@After
 	public void tearDown () throws Exception {
-		mPublisher.clear ();
+		mPublisher.finish ();
 		mPublisher				= null;
 		mTestCasesSubscriber	= null;
 		mTestLinesSubscriber	= null;
@@ -304,6 +323,15 @@ public class TestRunResultsPublisherTest {
 	}
 
 	@Test
+	public void testPublishNewNode () {
+		mPublisher.publishNewNode (null);
+		assertEquals (Subscriber.Method.NONE, mTestCasesSubscriber.getLastMethod ());
+		assertEquals (Subscriber.Method.NONE, mTestLinesSubscriber.getLastMethod ());
+		assertEquals (Subscriber.Method.NONE, mTestResultsSubscriber.getLastMethod ());
+		assertEquals (Subscriber.Method.PROCESS_NEW_NODE, mModelSubscriber.getLastMethod ());
+	}
+
+	@Test
 	public void testPublishNewEdge () {
 		mPublisher.publishNewEdge (null, null);
 		assertEquals (Subscriber.Method.NONE, mTestCasesSubscriber.getLastMethod ());
@@ -346,5 +374,15 @@ public class TestRunResultsPublisherTest {
 		assertEquals (Subscriber.Method.FINISH, mTestLinesSubscriber.getLastMethod ());
 		assertEquals (Subscriber.Method.FINISH, mTestResultsSubscriber.getLastMethod ());
 		assertEquals (Subscriber.Method.FINISH, mModelSubscriber.getLastMethod ());
+	}
+
+    @Test
+	public void testReset () {
+		mPublisher.reset ();
+		mPublisher.start (null);
+		assertEquals (Subscriber.Method.NONE, mTestCasesSubscriber.getLastMethod ());
+		assertEquals (Subscriber.Method.NONE, mTestLinesSubscriber.getLastMethod ());
+		assertEquals (Subscriber.Method.NONE, mTestResultsSubscriber.getLastMethod ());
+		assertEquals (Subscriber.Method.NONE, mModelSubscriber.getLastMethod ());
 	}
 }

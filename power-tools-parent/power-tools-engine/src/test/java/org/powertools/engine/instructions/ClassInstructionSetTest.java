@@ -90,7 +90,7 @@ public class ClassInstructionSetTest {
 
     @Test
     public void testGetExecutorInstructionNoParameters () {
-        String instructionName                = "instruction name";
+        String instructionName                = "instruction  name";
         InstructionSetImpl userInstructionSet = new InstructionSetImpl ();
         ClassInstructionSet instructionSet    = new ClassInstructionSet (NAME, userInstructionSet);
         assertTrue (instructionSet.getExecutor (instructionName) instanceof MethodExecutor);

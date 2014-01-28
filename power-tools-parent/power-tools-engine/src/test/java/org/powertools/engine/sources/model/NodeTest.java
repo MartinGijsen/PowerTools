@@ -21,6 +21,7 @@ package org.powertools.engine.sources.model;
 import java.util.Set;
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import org.powertools.engine.ExecutionException;
 
@@ -41,7 +42,7 @@ public class NodeTest {
 
     @Test
     public void testNode () {
-        GraphImpl graph = new GraphImpl (GRAPH_NAME);
+        DirectedGraph graph = new GraphImpl (GRAPH_NAME);
         Node node = new Node (NODE_NAME, graph);
         assertEquals (graph, node.mGraph);
         assertEquals ("", node.mLabel);
@@ -49,8 +50,16 @@ public class NodeTest {
     }
 
     @Test
-    public void testGetName () {
+    public void testGetNameWithoutLabel () {
         assertEquals (NODE_NAME, new Node (NODE_NAME, null).getName ());
+    }
+
+    @Test
+    public void testGetNameWithLabel () {
+        String LABEL = "a label";
+        Node node    = new Node (NODE_NAME, null);
+        node.mLabel  = LABEL;
+        assertTrue (node.getName ().startsWith (LABEL));
     }
 
     @Test
@@ -66,6 +75,10 @@ public class NodeTest {
             mName = name;
         }
         
+        public void read (String path, String fileName) {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+
         public String getName () {
             return mName;
         }

@@ -16,17 +16,15 @@
  * along with the PowerTools engine. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.powertools.windows;
+package org.powertools.engine.sources.model;
+
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 
-final class Window {
-    final String mName;
-    final String mTitle;
-    final String mText;
-
-    Window (String name, String title, String text) {
-        mName  = name;
-        mTitle = title;
-        mText  = text;
+public class DefaultRandomNumberGeneratorTest {
+    @Test
+    public void testGenerate () {
+        assertEquals(0, new DefaultRandomNumberGenerator ().generate (1));
     }
 }

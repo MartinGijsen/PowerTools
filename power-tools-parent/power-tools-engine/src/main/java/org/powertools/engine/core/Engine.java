@@ -1,4 +1,4 @@
-/* Copyright 2012-2013 by Martin Gijsen (www.DeAnalist.nl)
+/* Copyright 2012-2014 by Martin Gijsen (www.DeAnalist.nl)
  *
  * This file is part of the PowerTools engine.
  *
@@ -19,7 +19,7 @@
 package org.powertools.engine.core;
 
 import org.powertools.engine.ExecutionException;
-import org.powertools.engine.reports.TestRunResultPublisher;
+import org.powertools.engine.TestRunResultPublisher;
 import org.powertools.engine.sources.Procedure;
 import org.powertools.engine.sources.ProcedureException;
 import org.powertools.engine.sources.TestSource;
@@ -53,7 +53,7 @@ public abstract class Engine {
     protected Engine (RunTimeImpl runTime) {
         mRunTime      = runTime;
         mInstructions = new Instructions (runTime);
-        mPublisher    = TestRunResultPublisher.getInstance ();
+        mPublisher    = runTime.getPublisher ();
     }
 
     protected final void registerBuiltinInstructions () {

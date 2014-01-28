@@ -27,6 +27,7 @@ import org.powertools.engine.ExecutionException;
 import org.powertools.engine.Roles;
 import org.powertools.engine.RunTime;
 import org.powertools.engine.Symbol;
+import org.powertools.engine.TestRunResultPublisher;
 import org.powertools.engine.symbol.Scope;
 
 
@@ -171,5 +172,9 @@ public class RolesImplTest {
 		public String evaluateExpression(String expression) {
 			throw new UnsupportedOperationException ("Not supported yet.");
 		}
+
+        public TestRunResultPublisher getPublisher() {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
 	}
 }

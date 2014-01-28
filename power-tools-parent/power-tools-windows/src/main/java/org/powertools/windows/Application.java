@@ -16,7 +16,7 @@
  * along with the PowerTools engine. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.powerTools.windows;
+package org.powertools.windows;
 
 
 final class Application {

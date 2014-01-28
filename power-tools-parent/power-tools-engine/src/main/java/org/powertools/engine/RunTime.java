@@ -86,6 +86,13 @@ public interface RunTime {
      */
     void reportLink (String url);
 
+    /**
+     * Retrieves the event publisher.
+     * The report... methods should normally be used to report events.
+     * @return  the publisher
+     */
+    TestRunResultPublisher getPublisher ();
+
 
     /**
      * Evaluates a PowerTools expression

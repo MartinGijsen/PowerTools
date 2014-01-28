@@ -38,16 +38,25 @@ final class ShuffledParametersMethodExecutor extends MethodExecutor {
 
     private void checkMapping () {
         int nrOfParams = mParameterMapping.length;
-        Set<Integer> set = new HashSet<Integer> ();
-        for (int paramNr = 1; paramNr <= nrOfParams; ++paramNr) {
-            set.add (paramNr);
-        }
+        
+        if (nrOfParams != mMethod.getParameterTypes ().length) {
+            complain ();
+        } else {
+            Set<Integer> set = new HashSet<Integer> ();
+            for (int paramNr = 1; paramNr <= nrOfParams; ++paramNr) {
+                set.add (paramNr);
+            }
 
-        for (int paramNr = 0; paramNr < nrOfParams; ++paramNr) {
-            if (!set.remove (mParameterMapping[paramNr])) {
-                throw new ExecutionException (String.format ("incorrect @ParameterOrder annotation in instruction set (all %s parameters must be referenced once)", mMethod.getParameterTypes ().length));
+            for (int paramNr = 0; paramNr < nrOfParams; ++paramNr) {
+                if (!set.remove (mParameterMapping[paramNr])) {
+                    complain ();
+                }
             }
         }
+    }
+
+    private void complain () {
+        throw new ExecutionException (String.format ("incorrect @ParameterOrder annotation in instruction set (all %s parameters must be referenced once)", mMethod.getParameterTypes ().length));
     }
 
     @Override

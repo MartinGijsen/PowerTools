@@ -22,7 +22,6 @@ import java.util.LinkedList;
 import java.util.List;
 import org.powertools.engine.RunTime;
 import org.powertools.engine.instructions.ProcedureRunner;
-import org.powertools.engine.sources.model.MainModel;
 import org.powertools.engine.sources.model.Model;
 import org.powertools.engine.sources.model.Submodel;
 
@@ -39,11 +38,6 @@ class ModelTestSource extends TestSource {
     private final ProcedureRunner mRunner;
 
 
-//    public static ModelTestSource createMainModelTestSource (String fileName, String selector, String doneCondition, RunTime runTime, ProcedureRunner runner) {
-//        return new ModelTestSource (new MainModel (fileName, selector, doneCondition, runTime), runTime, runner);
-//    }
-    
-    
     ModelTestSource (Model model, RunTime runTime, ProcedureRunner runner) {
         super (runTime.getGlobalScope ());
         mModel    = model;
@@ -99,7 +93,7 @@ class ModelTestSource extends TestSource {
         return instructionName;
     }
 
-    protected TestSource pushSubmodelTestSource (List<String> parts) {
+    private TestSource pushSubmodelTestSource (List<String> parts) {
         String fileName     = parts.get (1);
         TestSource submodel = new ModelTestSource (new Submodel (fileName, mModel), mRunTime, mRunner);
         mRunner.invokeSource (submodel);

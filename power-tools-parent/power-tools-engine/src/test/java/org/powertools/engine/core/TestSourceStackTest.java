@@ -1,4 +1,4 @@
-/*	Copyright 2013 by Martin Gijsen (www.DeAnalist.nl)
+/*	Copyright 2013-2014 by Martin Gijsen (www.DeAnalist.nl)
  *
  *	This file is part of the PowerTools engine.
  *
@@ -30,16 +30,16 @@ public class TestSourceStackTest {
 	@Test
 	public void testGetCurrentTestSource () {
 		TestSourceStack stack = new TestSourceStack ();
-		TestSource testSource = new TestSourceImpl (new Scope (null));
+		TestSource testSource = new TestSourceImpl (stack.getCurrentScope ());
 		stack.initAndPush (testSource);
 		assertEquals (testSource, stack.getCurrentTestSource ());
 	}
 
 	@Test
-	public void testGetCurrentScope () {
+	public void testGetGlobalScopeGetCurrentScope () {
 		TestSourceStack stack = new TestSourceStack ();
-		Scope globalScope     = stack.getCurrentScope ();
-		assertEquals (globalScope, stack.getCurrentScope ());
+		Scope globalScope     = stack.getGlobalScope ();
+		assertNotNull (globalScope);
 		Scope localScope      = new Scope (globalScope);
 		stack.initAndPush (new TestSourceImpl (localScope));
 		assertEquals (localScope, stack.getCurrentScope ());
@@ -47,20 +47,19 @@ public class TestSourceStackTest {
 
 	@Test
 	public void testRun () {
-		try {
-			TestSourceStack stack = new TestSourceStack ();
-			stack.initAndPush (new TestSourceImpl (new Scope (null)));
-			stack.run ("some filename");
-		} catch (ExecutionException ee) {
-			assertTrue (ee.getMessage ().contains ("not supported"));
-		}
+        TestSourceStack stack = new TestSourceStack ();
+        TestSourceImpl source = new TestSourceImpl (stack.getCurrentScope ());
+        stack.initAndPush (source);
+		assertFalse (source.isCreateCalled ());
+        stack.run ("some filename");
+		assertTrue (source.isCreateCalled ());
 	}
 
 	@Test
 	public void testGetTestLine () {
 		TestSourceStack stack = new TestSourceStack ();
-		stack.initAndPush (new TestSourceImpl (new Scope (null)));
-		stack.initAndPush (new TestSourceImpl (new Scope (null)));
+		stack.initAndPush (new TestSourceImpl (stack.getCurrentScope ()));
+		stack.initAndPush (new TestSourceImpl (stack.getCurrentScope ()));
 		assertNotNull (stack.getTestLine ());
 		assertNotNull (stack.getTestLine ());
 		assertNull (stack.getTestLine ());
@@ -69,12 +68,22 @@ public class TestSourceStackTest {
 	@Test
 	public void testCreateAndPushTestCase () {
 		TestSourceStack stack = new TestSourceStack ();
-		stack.initAndPush (new TestSourceImpl (new Scope (null)));
-		assertFalse (stack.inATestCase ());
-		assertTrue (stack.createAndPushTestCase ("test case name", "test case description"));
+		stack.initAndPush (new TestSourceImpl (stack.getCurrentScope ()));
+		assertTrue (stack.createAndPushTestCase ("test case name 1", "test case description 1"));
+		assertTrue (stack.inATestCase ());
+		assertTrue (stack.createAndPushTestCase ("test case name 2", "test case description 2"));
 		assertTrue (stack.inATestCase ());
 		stack.popTestCase ();
 		assertFalse (stack.inATestCase ());
+	}
+
+	@Test
+	public void pushTestCaseNestedAndNotInTestCase () {
+		TestSourceStack stack = new TestSourceStack ();
+		stack.initAndPush (new TestSourceImpl (stack.getCurrentScope ()));
+		assertTrue (stack.createAndPushTestCase ("test case name 1", "test case description 1"));
+		stack.initAndPush (new TestSourceImpl (stack.getCurrentScope ()));
+		assertFalse (stack.createAndPushTestCase ("test case name 1", "test case description 1"));
 	}
 
 	@Test
@@ -88,9 +97,22 @@ public class TestSourceStackTest {
 		}
 	}
 
+	@Test
+	public void testPopTestCase_NoTestCase () {
+		try {
+			TestSourceStack stack = new TestSourceStack ();
+    		stack.initAndPush (new TestSourceImpl (stack.getCurrentScope ()));
+			stack.popTestCase ();
+			fail ("no exception");
+		} catch (ExecutionException ee) {
+			assertTrue (ee.getMessage ().contains ("not in a test case"));
+		}
+	}
+
 
 	private class TestSourceImpl extends TestSource {
 		private boolean mFirstTime = true;
+        private boolean mCreateCalled = false;
 		
 		TestSourceImpl (Scope scope) {
 			super (scope);
@@ -105,5 +127,15 @@ public class TestSourceStackTest {
 				return null;
 			}
 		}
+        
+        @Override
+        public TestSource create (String fileName) {
+            mCreateCalled = true;
+            return new TestSourceImpl (null);
+        }
+        
+        boolean isCreateCalled () {
+            return mCreateCalled;
+        }
 	}
 }

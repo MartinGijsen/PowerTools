@@ -62,14 +62,17 @@ final class ClassInstructionSet implements InstructionSet {
 
     @Override
     public Executor getExecutor (String instructionName) {
-        Method method = getMethod (getMethodName (instructionName));
+        String methodName = getMethodName (instructionName);
+        Method method = getMethod (methodName);
         if (method == null) {
-            return null;
-        } else if (method.isAnnotationPresent (KeywordName.class) && method.isAnnotationPresent (ParameterOrder.class)) {
-            return new ShuffledParametersMethodExecutor (mObject, method);
-        } else {
-            return new MethodExecutor (mObject, method);
+            method = getAnnotatedMethod (methodName);
+            if (method == null) {
+                return null;
+            } else if (method.isAnnotationPresent (KeywordName.class) && method.isAnnotationPresent (ParameterOrder.class)) {
+                return new ShuffledParametersMethodExecutor (mObject, method);
+            }
         }
+        return new MethodExecutor (mObject, method);
     }
 
     private String getMethodName (String instructionName) {
@@ -92,7 +95,15 @@ final class ClassInstructionSet implements InstructionSet {
         for (Method method : mObject.getClass ().getMethods ()) {
             if (method.getName ().equals (methodName)) {
                 return method;
-            } else if (isAnnotatedWithKeyword (method, methodName)) {
+            }
+        }
+
+        return null;
+    }
+
+    private Method getAnnotatedMethod (String methodName) {
+        for (Method method : mObject.getClass ().getMethods ()) {
+            if (isAnnotatedWithKeyword (method, methodName)) {
                 return method;
             }
         }

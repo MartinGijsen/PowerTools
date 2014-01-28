@@ -39,7 +39,7 @@ final class WeightedEdgeSelector implements EdgeSelectionStrategy {
     }
 
     @Override
-    public String getDescription() {
+    public String getDescription () {
         return NAME + " (" + DESCRIPTION + ")";
     }
 

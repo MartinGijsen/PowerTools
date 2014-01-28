@@ -27,32 +27,43 @@ import java.util.Set;
 import java.util.HashSet;
 
 import org.powertools.engine.ExecutionException;
-import org.powertools.engine.reports.TestRunResultPublisher;
+import org.powertools.engine.TestRunResultPublisher;
+import org.powertools.engine.reports.TestRunResultPublisherImpl;
 import org.xml.sax.SAXException;
 
 
 final class DirectedGraphImpl implements DirectedGraph {
+    static final String FILE_EXTENSION = ".graphml";
+    
     private final String               mName;
     private final Map<String, Node>    mNodes;
     private final Map<Node, Set<Edge>> mEdges;
 
 
-    static DirectedGraphImpl createGraph (String name) {
-        try {
-            return new GraphMLParser ().parse (new DirectedGraphImpl (name));
-        } catch (SAXException se) {
-            throw new ExecutionException ("SAX exception");
-        } catch (FileNotFoundException fnfe) {
-            throw new ExecutionException ("file not found: " + name);
-        } catch (IOException ioe) {
-            throw new ExecutionException ("error reading file: " + name);
+    DirectedGraphImpl (String name) {
+        mName  = removeExtension (name);
+        mNodes = new HashMap<String, Node> ();
+        mEdges = new HashMap<Node, Set<Edge>> ();
+    }
+    
+    private String removeExtension (String fileName) {
+        if (fileName.endsWith (FILE_EXTENSION)) {
+            return fileName.substring (0, fileName.length () - FILE_EXTENSION.length ());
+        } else {
+            return fileName;
         }
     }
 
-    DirectedGraphImpl (String name) {
-        mName  = name;
-        mNodes = new HashMap<String, Node> ();
-        mEdges = new HashMap<Node, Set<Edge>> ();
+    public void read (String path, String fileName) {
+        try {
+            new GraphMLParser ().parse (this, path, fileName);
+        } catch (SAXException se) {
+            throw new ExecutionException ("SAX exception");
+        } catch (FileNotFoundException fnfe) {
+            throw new ExecutionException ("file not found: " + mName);
+        } catch (IOException ioe) {
+            throw new ExecutionException ("error reading file: " + mName);
+        }
     }
 
     public String getName () {
@@ -129,6 +140,10 @@ final class DirectedGraphImpl implements DirectedGraph {
         return edge;
     }
 
+    public Edge getEdge (String sourceName, String targetName) {
+        return getEdge (getNode (sourceName), getNode (targetName));
+    }
+
     public Edge getEdge (Node source, Node target) {
         Set<Edge> edges = mEdges.get (source);
         if (edges != null) {
@@ -141,6 +156,10 @@ final class DirectedGraphImpl implements DirectedGraph {
         throw new ExecutionException ("edge does not exist");
     }
 
+    public Set<Edge> getEdges (String sourceName) {
+        return getEdges (getNode (sourceName));
+    }
+
     public Set<Edge> getEdges (Node source) {
         Set<Edge> edges = mEdges.get (source);
         if (edges == null) {
@@ -150,8 +169,9 @@ final class DirectedGraphImpl implements DirectedGraph {
         }
     }
 
+    // TODO: move elsewhere so this class does not need the publisher
     void reportNodesAndEdges () {
-        TestRunResultPublisher publisher = TestRunResultPublisher.getInstance ();
+        TestRunResultPublisher publisher = TestRunResultPublisherImpl.getInstance ();
         for (Node node : mNodes.values ()) {
             publisher.publishNewNode (node.getName ());
         }
@@ -161,5 +181,4 @@ final class DirectedGraphImpl implements DirectedGraph {
             }
         }
     }
-
 }

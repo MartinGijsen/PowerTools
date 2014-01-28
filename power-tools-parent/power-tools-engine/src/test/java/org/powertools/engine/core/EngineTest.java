@@ -1,4 +1,4 @@
-/*	Copyright 2013 by Martin Gijsen (www.DeAnalist.nl)
+/*	Copyright 2013-2014 by Martin Gijsen (www.DeAnalist.nl)
  *
  *	This file is part of the PowerTools engine.
  *
@@ -45,16 +45,16 @@ public class EngineTest {
 //	public void tearDown() {
 //	}
 
-	@Test
-	public void testRun_String () {
-		try {
-			Engine engine = new EngineImpl ();
-			engine.run ("something");
-			fail ("no exception");
-		} catch (ExecutionException ee) {
-			assertTrue (ee.getMessage ().contains ("not supported"));
-		}
-	}
+//	@Test
+//	public void testRun_String () {
+//		try {
+//			Engine engine = new EngineImpl ();
+//			engine.run ("something");
+//			fail ("no exception");
+//		} catch (ExecutionException ee) {
+//			assertTrue (ee.getMessage ().contains ("not supported"));
+//		}
+//	}
 
 //	@Test
 //	public void testRun_TestSource () {
@@ -89,11 +89,11 @@ public class EngineTest {
 //		fail("The test case is a prototype.");
 //	}
 
-	private class EngineImpl extends Engine {
-		public EngineImpl () {
-			super (null);
-		}
-	}
+//	private class EngineImpl extends Engine {
+//		public EngineImpl () {
+//			super (null);
+//		}
+//	}
 	
 //	private class MyRunTimeImpl implements RunTime {
 //		MyRunTimeImpl () {

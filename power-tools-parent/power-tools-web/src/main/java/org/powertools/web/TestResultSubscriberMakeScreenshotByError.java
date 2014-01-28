@@ -1,4 +1,4 @@
-/* Copyright 2013 by Martin Gijsen (www.DeAnalist.nl)
+/* Copyright 2013-2014 by Martin Gijsen (www.DeAnalist.nl)
  *
  * This file is part of the PowerTools engine.
  *
@@ -32,14 +32,17 @@ public class TestResultSubscriberMakeScreenshotByError implements TestResultSubs
 
     @Override
     public void start(Date dateTime) {
+        // ignore
     }
 
     @Override
     public void finish(Date dateTime) {
+        // ignore
     }
 
     @Override
     public void processStackTrace(String[] stackTraceLines) {
+        // ignore
     }
 
     @Override
@@ -49,25 +52,31 @@ public class TestResultSubscriberMakeScreenshotByError implements TestResultSubs
 
     @Override
     public void processWarning(String message) {
+        // ignore
     }
 
     @Override
     public void processInfo(String message) {
+        // ignore
     }
 
     @Override
     public void processLink(String message) {
+        // ignore
     }
 
     @Override
     public void processEndOfTestLine() {
+        // ignore
     }
 
     @Override
     public void processIncreaseLevel() {
+        // ignore
     }
 
     @Override
     public void processDecreaseLevel() {
+        // ignore
     }
 }

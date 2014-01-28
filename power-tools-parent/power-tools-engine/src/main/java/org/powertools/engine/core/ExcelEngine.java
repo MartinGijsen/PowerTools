@@ -1,4 +1,4 @@
-/* Copyright 2012 by Martin Gijsen (www.DeAnalist.nl)
+/* Copyright 2012-2014 by Martin Gijsen (www.DeAnalist.nl)
  *
  * This file is part of the PowerTools engine.
  *
@@ -48,10 +48,10 @@ public class ExcelEngine extends Engine {
     public ExcelEngine (RunTimeImpl runTime) {
         super (runTime);
 
-        if (!ReportFactory.createKeywordsHtmlLog (runTime.getContext ())) {
+        if (!new ReportFactory ().createKeywordsHtmlLog (runTime.getContext ())) {
             reportError ("could not open HTML log");
         }
-        if (!ReportFactory.createTestCaseReport (runTime.getContext ())) {
+        if (!new ReportFactory ().createTestCaseReport (runTime.getContext ())) {
             reportError ("could not open test case report");
         }
 

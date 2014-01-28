@@ -28,7 +28,8 @@ import org.powertools.engine.RunTime;
 import org.powertools.engine.Symbol;
 import org.powertools.engine.expression.ExpressionEvaluator;
 import org.powertools.engine.instructions.ProcedureRunner;
-import org.powertools.engine.reports.TestRunResultPublisher;
+import org.powertools.engine.TestRunResultPublisher;
+import org.powertools.engine.reports.TestRunResultPublisherImpl;
 import org.powertools.engine.sources.TestLineImpl;
 import org.powertools.engine.sources.TestSource;
 import org.powertools.engine.symbol.Scope;
@@ -61,7 +62,7 @@ public final class RunTimeImpl implements RunTime, ProcedureRunner {
         mSourceStack   = new TestSourceStack ();
         mContext       = context;
         mEvaluator     = new ExpressionEvaluator ();
-        mPublisher     = TestRunResultPublisher.getInstance ();
+        mPublisher     = TestRunResultPublisherImpl.getInstance ();
         mRoles         = new RolesImpl (this);
         mSharedObjects = new HashMap<String, Object> ();
     }
@@ -141,6 +142,11 @@ public final class RunTimeImpl implements RunTime, ProcedureRunner {
     @Override
     public void reportLink (String url) {
         mPublisher.publishLink (url);
+    }
+
+    @Override
+    public TestRunResultPublisher getPublisher () {
+        return mPublisher;
     }
 
 

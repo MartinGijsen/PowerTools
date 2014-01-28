@@ -1,4 +1,4 @@
-/* Copyright 2012 by Martin Gijsen (www.DeAnalist.nl)
+/* Copyright 2012-2014 by Martin Gijsen (www.DeAnalist.nl)
  *
  * This file is part of the PowerTools engine.
  *
@@ -19,7 +19,8 @@
 package org.powertools.engine.sources;
 
 import org.powertools.engine.ExecutionException;
-import org.powertools.engine.reports.TestRunResultPublisher;
+import org.powertools.engine.TestRunResultPublisher;
+import org.powertools.engine.reports.TestRunResultPublisherImpl;
 import org.powertools.engine.symbol.Scope;
 
 
@@ -37,7 +38,7 @@ public abstract class TestSource {
 
     protected TestSource (Scope scope) {
         mScope     = scope;
-        mPublisher = TestRunResultPublisher.getInstance ();
+        mPublisher = TestRunResultPublisherImpl.getInstance ();
         mTestLine  = new TestLineImpl ();
     }
 
@@ -50,9 +51,7 @@ public abstract class TestSource {
         return false;
     }
 
-    public TestLineImpl getTestLine () {
-        return null;
-    }
+    public abstract TestLineImpl getTestLine ();
 
     public void cleanup () {
         // empty

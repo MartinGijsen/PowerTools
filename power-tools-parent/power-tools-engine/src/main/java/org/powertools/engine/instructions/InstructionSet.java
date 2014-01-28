@@ -1,4 +1,4 @@
-/* Copyright 2012 by Martin Gijsen (www.DeAnalist.nl)
+/* Copyright 2012-2014 by Martin Gijsen (www.DeAnalist.nl)
  *
  * This file is part of the PowerTools engine.
  *
@@ -30,6 +30,9 @@ public interface InstructionSet {
      */
     String getName ();
 
+    /**
+     * prepares the instruction set
+     */
     void setup ();
 
     /**
@@ -39,5 +42,8 @@ public interface InstructionSet {
      */
     Executor getExecutor (String instructionName);
 
+    /**
+     * cleans up the instruction set when it is no longer needed
+     */
     void cleanup ();
 }

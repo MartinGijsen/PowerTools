@@ -22,34 +22,24 @@ import org.powertools.engine.RunTime;
 
 
 public final class MainModel extends Model {
-    private final String mFileName;
-    private final String mSelectorString;
-    private final String mDoneConditionString;
-    private final RunTime mRunTime;
-            
-    public MainModel (String fileName, String selector, String doneCondition, RunTime runTime) {
-        super ();
-        mFileName            = fileName;
-        mSelectorString      = selector;
-        mDoneConditionString = doneCondition;
-        mRunTime             = runTime;
-        mAtNode              = false;
+    public MainModel (String path, String fileName, String selector, String doneCondition, RunTime runTime) {
+        super (path, fileName, new DoneConditionFactory ().create (doneCondition));
+        mSelector = new EdgeSelectionStrategyFactory ().create (selector, mGraph, runTime);
+    }
+
+    // TODO: move into constructor?
+    @Override
+    void reportStopConditionAndSelector () {
+        mPublisher.publishCommentLine ("stop condition: " + mDoneCondition.getDescription ());
+        mPublisher.publishCommentLine ("edge selection: " + mSelector.getDescription ());
     }
 
     @Override
-    public void initialize () {
-        mGraph         = DirectedGraphImpl.createGraph (mFileName);
-        mCurrentNode   = mGraph.getRootNode ();
-        mDoneCondition = new DoneConditionFactory ().create (mDoneConditionString);
-        mSelector      = new EdgeSelectionStrategyFactory ().create (mSelectorString, mGraph, mRunTime, mDoneCondition);
-
-        mPublisher.publishCommentLine ("stop condition: " + mDoneCondition.getDescription ());
-        mPublisher.publishCommentLine ("edge selection: " + mSelector.getDescription ());
-
-        finishInit ();
-    }
-    
     Edge selectEdge () {
-        return mSelector.selectEdge (mGraph, mCurrentNode);
+        if (mDoneCondition.isSatisfied ()) {
+            return null;
+        } else {
+            return mSelector.selectEdge (mGraph, mCurrentNode);
+        }
     }
 }

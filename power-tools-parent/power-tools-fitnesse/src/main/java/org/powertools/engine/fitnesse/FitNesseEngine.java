@@ -1,4 +1,4 @@
-/* Copyright 2012-2013 by Martin Gijsen (www.DeAnalist.nl)
+/* Copyright 2012-2014 by Martin Gijsen (www.DeAnalist.nl)
  *
  * This file is part of the PowerTools engine.
  *
@@ -24,10 +24,10 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 import org.powertools.engine.Context;
+import org.powertools.engine.TestRunResultPublisher;
 import org.powertools.engine.core.Engine;
 import org.powertools.engine.core.RunTimeImpl;
 import org.powertools.engine.reports.ReportFactory;
-import org.powertools.engine.reports.TestRunResultPublisher;
 
 import fit.Parse;
 
@@ -47,7 +47,7 @@ public final class FitNesseEngine extends Engine {
         //ReportFactory.createConsole ();
         mLogFilePath = mRunTime.getContext ().getFullLogFilePath ();
         createLog ();
-        if (!ReportFactory.createTestCaseReport (mRunTime.getContext ())) {
+        if (!new ReportFactory ().createTestCaseReport (mRunTime.getContext ())) {
             reportError ("could not open test case report");
         }
         mFitNesseReporter = new FitNesseReporter ();
@@ -65,7 +65,7 @@ public final class FitNesseEngine extends Engine {
             File file       = new File (context.getFullLogFilePath ());
             file.getParentFile ().mkdirs ();
             HtmlLog log                      = new HtmlLog (new PrintWriter (new FileWriter (file)), context.getLogFileName ());
-            TestRunResultPublisher publisher = TestRunResultPublisher.getInstance ();
+            TestRunResultPublisher publisher = mRunTime.getPublisher ();
             publisher.subscribeToTestLines (log);
             publisher.subscribeToTestResults (log);
             return true;

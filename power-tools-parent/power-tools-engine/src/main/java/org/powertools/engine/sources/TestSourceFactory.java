@@ -1,4 +1,4 @@
-/* Copyright 2013 by Martin Gijsen (www.DeAnalist.nl)
+/* Copyright 2013-1014 by Martin Gijsen (www.DeAnalist.nl)
  *
  * This file is part of the PowerTools engine.
  *
@@ -41,8 +41,8 @@ public final class TestSourceFactory {
         }
     }
 
-    public TestSource createModelTestSource (String fileName, String selector, String doneCondition, RunTime runTime, ProcedureRunner runner) {
-        return new ModelTestSource (new MainModel (fileName, selector, doneCondition, runTime), runTime, runner);
+    public TestSource createModelTestSource (String path, String fileName, String selector, String doneCondition, RunTime runTime, ProcedureRunner runner) {
+        return new ModelTestSource (new MainModel (path, fileName, selector, doneCondition, runTime), runTime, runner);
     }
 
     public TestSource createProcedureTestSource (Procedure procedure, Scope parentScope, TestLine testLine) {

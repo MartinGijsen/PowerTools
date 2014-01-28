@@ -28,10 +28,10 @@ public class EdgeSelectionStrategyFactoryTest {
     @Test
     public void testCreate () {
         EdgeSelectionStrategyFactory factory = new EdgeSelectionStrategyFactory ();
-        assertTrue (factory.create (RandomEdgeSelector.NAME, null, null, null) instanceof RandomEdgeSelector);
-        assertTrue (factory.create (WeightedEdgeSelector.NAME, null, null, null) instanceof WeightedEdgeSelector);
+        assertTrue (factory.create (RandomEdgeSelector.NAME, null, null) instanceof RandomEdgeSelector);
+        assertTrue (factory.create (WeightedEdgeSelector.NAME, null, null) instanceof WeightedEdgeSelector);
         try {
-            factory.create ("unknown selector name", null, null, null);
+            factory.create ("unknown selector name", null, null);
             fail ("no exception");
         } catch (ExecutionException ee) {
             // ok

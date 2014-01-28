@@ -1,4 +1,4 @@
-/* Copyright 2012 by Martin Gijsen (www.DeAnalist.nl)
+/* Copyright 2014 by Martin Gijsen (www.DeAnalist.nl)
  *
  * This file is part of the PowerTools engine.
  *
@@ -32,6 +32,7 @@ public class Context {
     protected static String mDefaulBaseDirectory = null;
 
     protected final Date mStartTime;
+    protected final String mWorkingDirectory;
     protected final String mResultsBaseDirectory;
     protected final String mResultsDirectory;
     protected final String mLogFileName;
@@ -45,25 +46,31 @@ public class Context {
         setResultBaseDirectory (directory);
     }
 
+    @Deprecated
     public static void setResultBaseDirectory (String directory) {
         mDefaulBaseDirectory = directory;
     }
 
+    @Deprecated
     public Context (String resultsBaseDirectory) {
         this (GregorianCalendar.getInstance ().getTime (), resultsBaseDirectory);
     }
 
+    @Deprecated
     public Context (Date startTime, String resultsBaseDirectory) {
         this (startTime, resultsBaseDirectory, LOG_FILE_NAME);
     }
 
+    @Deprecated
     public Context (String resultsBaseDirectory, String logFileName) {
         this (GregorianCalendar.getInstance ().getTime (), resultsBaseDirectory, logFileName);
     }
 
+    @Deprecated
     public Context (Date startTime, String resultsBaseDirectory, String logFileName) {
         mStartTime = startTime;
 
+        mWorkingDirectory = resultsBaseDirectory;
         if (mDefaulBaseDirectory == null) {
             mResultsBaseDirectory = resultsBaseDirectory + "/";
         } else {
@@ -75,6 +82,25 @@ public class Context {
         mFullLogFilePath  = mResultsDirectory + logFileName;
     }
 
+    
+    public static Context create (String workingDirectory) {
+        return create (GregorianCalendar.getInstance ().getTime (), workingDirectory, LOG_FILE_NAME);
+    }
+
+    public static Context create (Date startTime, String workingDirectory, String logFileName) {
+        return new Context (GregorianCalendar.getInstance ().getTime (), workingDirectory, workingDirectory, logFileName);
+    }
+
+    public Context (Date startTime, String workingDirectory, String resultsBaseDirectory, String logFileName) {
+        mStartTime            = startTime;
+        mWorkingDirectory     = workingDirectory;
+        mResultsBaseDirectory = resultsBaseDirectory + "/";
+        mResultsDirectory     = mResultsBaseDirectory + mDateFormat.format (startTime) + "/";
+        mLogFileName          = logFileName;
+        mFullLogFilePath      = mResultsDirectory + logFileName;
+    }
+
+    
     public Date getStartTime () {
         return mStartTime;
     }

@@ -18,6 +18,7 @@
 
 package org.powertools.engine.core;
 
+import java.io.File;
 import org.powertools.engine.Context;
 import org.powertools.engine.ExecutionException;
 import org.powertools.engine.reports.ReportFactory;
@@ -32,11 +33,14 @@ import org.powertools.graph.GraphException;
 public class ModelBasedEngine extends Engine {
     public static void main (String[] args) {
         switch (args.length) {
+        case 0:
+            ModelRunner.run ();
+            break;
         case 2:
             new ModelBasedEngine (args[0]).run (args[1]);
             break;
         case 4:
-            new ModelBasedEngine (args[0]).run (args[1], args[2], args[3]);
+            new ModelBasedEngine (args[0]).run (args[0], args[1], args[2], args[3]);
             break;
         default:
             reportError ("Please specify a directory, model file name, selection strategy and stop condition");
@@ -47,32 +51,39 @@ public class ModelBasedEngine extends Engine {
 
 
     protected ModelBasedEngine (String resultsDirectory) {
-        this (new RunTimeImpl (new Context (resultsDirectory)));
+        this (new RunTimeImpl (Context.create (resultsDirectory)));
     }
 
     protected ModelBasedEngine (RunTimeImpl runTime) {
         super (runTime);
 
-        if (!ReportFactory.createKeywordsHtmlLog (runTime.getContext ())) {
+        if (!new ReportFactory ().createKeywordsHtmlLog (runTime.getContext ())) {
             mPublisher.publishError ("could not open HTML log");
         }
-        ReportFactory.createModelCoverageGraph (mRunTime.getContext ().getResultsDirectory ());
+        new ReportFactory ().createModelCoverageGraph (mRunTime.getContext ().getResultsDirectory ());
 
         registerBuiltinInstructions ();
     }
 
     @Override
     public final void run (String fileName) {
-        run (fileName, "random", "all edges");
+        File file = new File (fileName);
+        if (!file.exists () || !file.isFile ()) {
+            reportError ("file does not exist or is a directory");
+        } else {
+            run (file.getParent (), file.getName (), "random", "all edges");
+        }
     }
 
-    protected void run (String fileName, String selector, String condition) {
+    protected void run (String path, String fileName, String selector, String condition) {
         try {
-            run (new TestSourceFactory ().createModelTestSource (fileName, selector, condition, mRunTime, mRunTime));
+            run (new TestSourceFactory ().createModelTestSource (path, fileName, selector, condition, mRunTime, mRunTime));
         } catch (GraphException ge) {
             reportError ("error: " + ge.getMessage ());
         } catch (ExecutionException ee) {
             reportError ("error: " + ee.getMessage ());
+        } finally {
+            mRunTime.getPublisher ().reset ();
         }
     }
 }

@@ -1,4 +1,4 @@
-/* Copyright 2012-2013 by Martin Gijsen (www.DeAnalist.nl)
+/* Copyright 2012-2014 by Martin Gijsen (www.DeAnalist.nl)
  *
  * This file is part of the PowerTools engine.
  *
@@ -18,6 +18,7 @@
 
 package org.powertools.engine.reports;
 
+import org.powertools.engine.TestRunResultPublisher;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
@@ -29,11 +30,11 @@ import org.powertools.engine.TestLine;
 
 
 /*
- * The singleton TestRunResultPublisher passes test run information to any
+ * The TestRunResultPublisher passes test run information to any
  * interested parties. It implements the publish/subscriber design pattern.
  */
-public final class TestRunResultPublisher {
-    private static final TestRunResultPublisher mTheOne = new TestRunResultPublisher ();
+public final class TestRunResultPublisherImpl implements TestRunResultPublisher {
+    private static final TestRunResultPublisherImpl mTheOne = new TestRunResultPublisherImpl ();
 
     private final List<TestLineSubscriber>   mTestLineSubscribers;
     private final List<TestResultSubscriber> mTestResultSubscribers;
@@ -42,7 +43,7 @@ public final class TestRunResultPublisher {
     private final Set<TestSubscriber>        mTestSubscribers;
 
 
-    private TestRunResultPublisher () {
+    private TestRunResultPublisherImpl () {
         mTestLineSubscribers   = new LinkedList<TestLineSubscriber> ();
         mTestResultSubscribers = new LinkedList<TestResultSubscriber> ();
         mTestCaseSubscribers   = new LinkedList<TestCaseSubscriber> ();
@@ -50,12 +51,14 @@ public final class TestRunResultPublisher {
         mTestSubscribers       = new HashSet<TestSubscriber> ();
     }
 
-    public static TestRunResultPublisher getInstance () {
+    @Deprecated
+    public static TestRunResultPublisherImpl getInstance () {
         return mTheOne;
     }
 
 
     // subscribe methods for several kinds of events
+    @Override
     public void subscribeToTestCases (TestCaseSubscriber subscriber) {
         if (subscriber != null) {
             subscribeToTestCaseEvents (subscriber);
@@ -63,6 +66,7 @@ public final class TestRunResultPublisher {
         }
     }
 
+    @Override
     public void subscribeToTestLines (TestLineSubscriber subscriber) {
         if (subscriber != null) {
             subscribeToTestLineEvents (subscriber);
@@ -70,6 +74,7 @@ public final class TestRunResultPublisher {
         }
     }
 
+    @Override
     public void subscribeToTestResults (TestResultSubscriber subscriber) {
         if (subscriber != null) {
             subscribeToTestResultEvents (subscriber);
@@ -77,6 +82,7 @@ public final class TestRunResultPublisher {
         }
     }
 
+    @Override
     public void subscribeToModel (ModelSubscriber subscriber) {
         if (subscriber != null) {
             subscribeToModelEvents (subscriber);
@@ -116,30 +122,35 @@ public final class TestRunResultPublisher {
 
 
     // publish methods
+    @Override
     public void publishCommentLine (String commentLine) {
         for (TestLineSubscriber subscriber : mTestLineSubscribers) {
             subscriber.processCommentLine (commentLine);
         }
     }
 
+    @Override
     public void publishCommentLine (TestLine commentLine) {
         for (TestLineSubscriber subscriber : mTestLineSubscribers) {
             subscriber.processCommentLine (commentLine);
         }
     }
 
+    @Override
     public void publishTestLine (TestLine testLine) {
         for (TestLineSubscriber subscriber : mTestLineSubscribers) {
             subscriber.processTestLine (testLine);
         }
     }
 
+    @Override
     public void publishEndOfSection () {
         for (TestLineSubscriber subscriber : mTestLineSubscribers) {
             subscriber.processEndSection ();
         }
     }
 
+    @Override
     public void publishValueError (String expression, String actualValue, String expectedValue) {
         String message = "value of '" + expression + "' is '" + actualValue + "' (expected '" + expectedValue + "')";
         for (TestResultSubscriber subscriber : mTestResultSubscribers) {
@@ -147,6 +158,7 @@ public final class TestRunResultPublisher {
         }
     }
 
+    @Override
     public void publishError (String message) {
         if (mTestResultSubscribers.isEmpty ()) {
             System.err.println ("error: " + message);
@@ -157,6 +169,7 @@ public final class TestRunResultPublisher {
         }
     }
 
+    @Override
     public void publishStackTrace (Exception e) {
         String[] lines = createStackTraceLines (e);
         for (TestResultSubscriber subscriber : mTestResultSubscribers) {
@@ -186,12 +199,14 @@ public final class TestRunResultPublisher {
         }
     }
 
+    @Override
     public void publishWarning (String message) {
         for (TestResultSubscriber subscriber : mTestResultSubscribers) {
             subscriber.processWarning (message);
         }
     }
 
+    @Override
     public void publishValue (String expression, String value) {
         String message = String.format ("value of '%s' is '%s'", expression, value);
         for (TestResultSubscriber subscriber : mTestResultSubscribers) {
@@ -199,24 +214,28 @@ public final class TestRunResultPublisher {
         }
     }
 
+    @Override
     public void publishInfo (String message) {
         for (TestResultSubscriber subscriber : mTestResultSubscribers) {
             subscriber.processInfo (message);
         }
     }
 
+    @Override
     public void publishLink (String url) {
         for (TestResultSubscriber subscriber : mTestResultSubscribers) {
             subscriber.processLink (url);
         }
     }
 
+    @Override
     public void publishEndOfTestLine () {
         for (TestResultSubscriber subscriber : mTestResultSubscribers) {
             subscriber.processEndOfTestLine ();
         }
     }
 
+    @Override
     public void publishIncreaseLevel () {
         for (TestResultSubscriber subscriber : mTestResultSubscribers) {
             subscriber.processIncreaseLevel ();
@@ -224,18 +243,21 @@ public final class TestRunResultPublisher {
     }
 
 
+    @Override
     public void publishDecreaseLevel () {
         for (TestResultSubscriber subscriber : mTestResultSubscribers) {
             subscriber.processDecreaseLevel ();
         }
     }
 
+    @Override
     public void publishTestCaseBegin (String id, String description) {
         for (TestCaseSubscriber subscriber : mTestCaseSubscribers) {
             subscriber.processBegin (id, description);
         }
     }
 
+    @Override
     public void publishTestCaseEnd () {
         for (TestCaseSubscriber subscriber : mTestCaseSubscribers) {
             subscriber.processEnd ();
@@ -243,24 +265,28 @@ public final class TestRunResultPublisher {
     }
 
     
+    @Override
     public void publishNewNode (String name) {
         for (ModelSubscriber subscriber : mModelSubscribers) {
             subscriber.processNewNode (name);
         }
     }
     
+    @Override
     public void publishNewEdge (String sourceName, String targetName) {
         for (ModelSubscriber subscriber : mModelSubscribers) {
             subscriber.processNewEdge (sourceName, targetName);
         }
     }
     
+    @Override
     public void publishAtNode (String name) {
         for (ModelSubscriber subscriber : mModelSubscribers) {
             subscriber.processAtNode (name);
         }
     }
 
+    @Override
     public void publishAtEdge (String sourceName, String targetName) {
         for (ModelSubscriber subscriber : mModelSubscribers) {
             subscriber.processAtEdge (sourceName, targetName);
@@ -268,24 +294,27 @@ public final class TestRunResultPublisher {
     }
 
 
+    @Override
     public void start (Date dateTime) {
         for (TestSubscriber subscriber : mTestSubscribers) {
             subscriber.start (dateTime);
         }
     }
 
+    @Override
     public void finish () {
         Date dateTime = GregorianCalendar.getInstance ().getTime ();
         for (TestSubscriber subscriber : mTestSubscribers) {
             subscriber.finish (dateTime);
         }
     }
-
-
-    public void clear () {
+    
+    @Override
+    public void reset () {
         mTestLineSubscribers.clear ();
         mTestResultSubscribers.clear ();
         mTestCaseSubscribers.clear ();
+        mModelSubscribers.clear ();
         mTestSubscribers.clear ();
     }
 }

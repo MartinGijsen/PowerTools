@@ -34,8 +34,6 @@ import org.xml.sax.helpers.XMLReaderFactory;
 
 
 final class GraphMLParser extends DefaultHandler {
-    private static final String GRAPHML_EXTENSION           = ".graphml";
-
     private static final String NODE_KEY_TYPE               = "node";
     private static final String EDGE_KEY_TYPE               = "edge";
 
@@ -112,18 +110,17 @@ final class GraphMLParser extends DefaultHandler {
         super ();
     }
 
-    DirectedGraphImpl parse (DirectedGraphImpl graph) throws IOException, SAXException {
+    void parse (DirectedGraphImpl graph, String path, String fileName) throws IOException, SAXException {
         mGraph        = graph;
         mElementStack = new Stack<Element> ();
 
         XMLReader reader = XMLReaderFactory.createXMLReader ();
         reader.setContentHandler (this);
-        String filename = graph.getName ();
-        if (!filename.endsWith (GRAPHML_EXTENSION)) {
-            filename += GRAPHML_EXTENSION;
+        String fullPath = path + "/" + fileName;
+        if (!fullPath.endsWith (DirectedGraphImpl.FILE_EXTENSION)) {
+            fullPath += DirectedGraphImpl.FILE_EXTENSION;
         }
-        reader.parse (new InputSource (new FileReader (filename)));
-        return mGraph;
+        reader.parse (new InputSource (new FileReader (fullPath)));
     }
 
 

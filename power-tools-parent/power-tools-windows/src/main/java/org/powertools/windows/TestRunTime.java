@@ -16,30 +16,31 @@
  * along with the PowerTools engine. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.powerTools.windows;
+package org.powertools.windows;
 
 import org.powertools.engine.BusinessDayChecker;
 import org.powertools.engine.Context;
 import org.powertools.engine.Roles;
 import org.powertools.engine.RunTime;
 import org.powertools.engine.Symbol;
+import org.powertools.engine.TestRunResultPublisher;
 import org.powertools.engine.symbol.Scope;
 
 
 final class TestRunTime implements RunTime {
     @Override
     public Context getContext() {
-        return null;
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     public boolean addSharedObject(String name, Object object) {
-        return false;
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     public Object getSharedObject(String name) {
-        return null;
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
@@ -54,73 +55,77 @@ final class TestRunTime implements RunTime {
 
     @Override
     public void reportStackTrace(Exception e) {
-
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     public void reportWarning(String message) {
-
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     public void reportValue(String expression, String value) {
-
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     public void reportInfo(String message) {
-
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     public Symbol getSymbol(String name) {
-        return null;
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     public void setValue(String name, String value) {
-
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     public void copyStructure(String target, String source) {
-
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     public void clearStructure(String name) {
-
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     public void reportLink(String url) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     public String evaluateExpression(String expression) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     public Scope getGlobalScope() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     public Scope getCurrentScope() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     public Roles getRoles() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     public boolean enterTestCase(String name, String description) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     public boolean leaveTestCase() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     public void setBusinessDayChecker(BusinessDayChecker checker) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public TestRunResultPublisher getPublisher() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

@@ -24,20 +24,16 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 import org.powertools.engine.Context;
+import org.powertools.engine.TestRunResultPublisher;
 
 
 public final class ReportFactory {
-    private ReportFactory () {
-        // empty
-    }
-
-
-    public static boolean createKeywordsHtmlLog (Context context) {
+    public boolean createKeywordsHtmlLog (Context context) {
         try {
             File file = new File (context.getFullLogFilePath ());
             file.getParentFile ().mkdirs ();
             KeywordsHtmlLog log              = new KeywordsHtmlLog (new PrintWriter (new FileWriter (file)), context.getLogFileName ());
-            TestRunResultPublisher publisher = TestRunResultPublisher.getInstance ();
+            TestRunResultPublisher publisher = TestRunResultPublisherImpl.getInstance ();
             publisher.subscribeToTestLines (log);
             publisher.subscribeToTestResults (log);
             return true;
@@ -46,12 +42,12 @@ public final class ReportFactory {
         }
     }
 
-    public static boolean createTestCaseReport (Context context) {
+    public boolean createTestCaseReport (Context context) {
         try {
             File file = new File (context.getResultsDirectory () + "testcasereport.html");
             file.getParentFile ().mkdirs ();
             TestCaseReport report            = new TestCaseReport (new PrintWriter (new FileWriter (file)));
-            TestRunResultPublisher publisher = TestRunResultPublisher.getInstance ();
+            TestRunResultPublisher publisher = TestRunResultPublisherImpl.getInstance ();
             publisher.subscribeToTestCases (report);
             publisher.subscribeToTestResults (report);
             return true;
@@ -60,16 +56,16 @@ public final class ReportFactory {
         }
     }
 
-    public static void createConsole () {
+    public void createConsole () {
         Console console                  = new Console ();
-        TestRunResultPublisher publisher = TestRunResultPublisher.getInstance ();
+        TestRunResultPublisher publisher = TestRunResultPublisherImpl.getInstance ();
         publisher.subscribeToTestLines (console);
         publisher.subscribeToTestResults (console);
     }
 
-    public static void createModelCoverageGraph (String resultsDirectory) {
+    public void createModelCoverageGraph (String resultsDirectory) {
         ModelCoverageGraph graph         = new ModelCoverageGraph (resultsDirectory);
-        TestRunResultPublisher publisher = TestRunResultPublisher.getInstance ();
+        TestRunResultPublisher publisher = TestRunResultPublisherImpl.getInstance ();
         publisher.subscribeToModel (graph);
     }
 }

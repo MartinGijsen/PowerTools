@@ -1,4 +1,4 @@
-/* Copyright 2012 by Martin Gijsen (www.DeAnalist.nl)
+/* Copyright 2012-2014 by Martin Gijsen (www.DeAnalist.nl)
  *
  * This file is part of the PowerTools engine.
  *
@@ -18,11 +18,8 @@
 
 package org.powertools.engine.core;
 
-import java.lang.reflect.Method;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 import org.powertools.engine.ExecutionException;
 import org.powertools.engine.instructions.Executor;
@@ -118,18 +115,18 @@ final class Instructions {
         }
     }
 
-    Set<String> getMethodNames () {
-        Set<String> methodNames = new HashSet<String> ();
-        for (InstructionSet instructionSet : mInstructionSets.values ()) {
-            for (Method method : instructionSet.getClass ().getMethods ()) {
-                String methodName = method.getName ();
-                if (Character.isUpperCase (methodName.charAt (0))) {
-                    methodNames.add (methodName);
-                }
-            }
-        }
-        return methodNames;
-    }
+//    Set<String> getMethodNames () {
+//        Set<String> methodNames = new HashSet<String> ();
+//        for (InstructionSet instructionSet : mInstructionSets.values ()) {
+//            for (Method method : instructionSet.getClass ().getMethods ()) {
+//                String methodName = method.getName ();
+//                if (Character.isUpperCase (methodName.charAt (0))) {
+//                    methodNames.add (methodName);
+//                }
+//            }
+//        }
+//        return methodNames;
+//    }
 
     void cleanup () {
         for (InstructionSet instructionSet : mInstructionSets.values ()) {

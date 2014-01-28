@@ -20,7 +20,6 @@ package org.powertools.engine.sources.model;
 
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Random;
 import java.util.Set;
 import org.powertools.engine.ExecutionException;
 import org.powertools.engine.RunTime;
@@ -30,20 +29,17 @@ final class RandomEdgeSelector implements EdgeSelectionStrategy {
     static final String NAME = "random";
     
     private static final String DESCRIPTION = "select a random outgoing edge";
-    private static final Random mRandom      = new Random ();
 
     private final DirectedGraph mMainGraph;
     private final RunTime mRunTime;
     private final RandomNumberGenerator mNumberGenerator;
-    private final DoneCondition mDoneCondition;
 
 
-    RandomEdgeSelector (DirectedGraph mainGraph, RunTime runTime, RandomNumberGenerator numberGenerator, DoneCondition doneCondition) {
+    RandomEdgeSelector (DirectedGraph mainGraph, RunTime runTime, RandomNumberGenerator numberGenerator) {
         super ();
         mMainGraph       = mainGraph;
         mRunTime         = runTime;
         mNumberGenerator = numberGenerator;
-        mDoneCondition   = doneCondition;
     }
 
     @Override
@@ -57,13 +53,10 @@ final class RandomEdgeSelector implements EdgeSelectionStrategy {
         boolean atEndNode   = false;
         if (isMainGraph) {
             if (currentNode.mLabel.equalsIgnoreCase (Model.END_NODE_LABEL)) {
-                if (mDoneCondition.isSatisfied ()) {
-                    return null;
-                }
                 atEndNode = true;
             }
         } else {
-            if (!isMainGraph && graph.getEdges (currentNode).isEmpty ()) {
+            if (graph.getEdges (currentNode).isEmpty ()) {
                 return null;
             }
         }
@@ -71,7 +64,7 @@ final class RandomEdgeSelector implements EdgeSelectionStrategy {
         Set<Edge> remainingEdges = new HashSet<Edge> (graph.getEdges (currentNode));
         while (!remainingEdges.isEmpty ()) {
             Edge edge = removeRandomEdge (remainingEdges);
-            if ("".equals (edge.mCondition) || returnsTrue (edge.mCondition)) {
+            if (conditionNoProblem (edge)) {
                 return edge;
             }
         }
@@ -80,6 +73,16 @@ final class RandomEdgeSelector implements EdgeSelectionStrategy {
             return graph.addEdge (currentNode, graph.getStartNode ());
         } else {
             throw new ExecutionException (String.format ("no edges out of end node '%s'", currentNode.getName ()));
+        }
+    }
+
+    private boolean conditionNoProblem (Edge edge) {
+        if ("".equals (edge.mCondition)) {
+            return true;
+        } else if (returnsTrue (edge.mCondition)) {
+            return true;
+        } else {
+            return false;
         }
     }
 

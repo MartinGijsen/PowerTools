@@ -1,4 +1,4 @@
-/* Copyright 2012 by Martin Gijsen (www.DeAnalist.nl)
+/* Copyright 2014 by Martin Gijsen (www.DeAnalist.nl)
  *
  * This file is part of the PowerTools engine.
  *
@@ -20,15 +20,15 @@ package org.powertools.web;
 
 import org.powertools.engine.KeywordName;
 import org.powertools.engine.RunTime;
+import org.powertools.engine.TestRunResultPublisher;
 import org.powertools.engine.reports.TestResultSubscriber;
-import org.powertools.engine.reports.TestRunResultPublisher;
 
 
 public final class WebDriverLibrary extends WebLibrary {
     public WebDriverLibrary (RunTime runTime) {
         super (runTime);
 
-        TestRunResultPublisher mPublisher = TestRunResultPublisher.getInstance ();
+        TestRunResultPublisher mPublisher = runTime.getPublisher ();
         TestResultSubscriber subscriber   = new TestResultSubscriberMakeScreenshotByError (this);
         mPublisher.subscribeToTestResults (subscriber);
 

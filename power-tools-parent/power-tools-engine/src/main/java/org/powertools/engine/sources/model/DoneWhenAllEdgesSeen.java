@@ -42,6 +42,8 @@ final class DoneWhenAllEdgesSeen extends DoneCondition {
     @Override
     public void processAtEdge (String sourceNodeName, String targetNodeName) {
         mUnseenEdges.remove (sourceNodeName + "/" + targetNodeName);
-        mDone = mDone || mUnseenEdges.isEmpty ();
+        if (!mDone) {
+            mDone = mUnseenEdges.isEmpty ();
+        }
     }
 }

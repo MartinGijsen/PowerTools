@@ -19,7 +19,7 @@
 package org.powertools.engine.sources.model;
 
 import org.powertools.engine.ExecutionException;
-import org.powertools.engine.reports.TestRunResultPublisher;
+import org.powertools.engine.reports.TestRunResultPublisherImpl;
 
 
 final class DoneConditionFactory {
@@ -37,7 +37,7 @@ final class DoneConditionFactory {
         } else {
             throw new ExecutionException (String.format ("unknown condition: %s", conditionName));
         }
-        TestRunResultPublisher.getInstance ().subscribeToModel (condition);
+        TestRunResultPublisherImpl.getInstance ().subscribeToModel (condition);
         return condition;
     }
 }

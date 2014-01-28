@@ -1,4 +1,4 @@
-/* Copyright 2012 by Martin Gijsen (www.DeAnalist.nl)
+/* Copyright 2012-2014 by Martin Gijsen (www.DeAnalist.nl)
  *
  * This file is part of the PowerTools engine.
  *
@@ -23,6 +23,7 @@ import java.util.Map;
 
 import org.powertools.engine.InstructionSet;
 import org.powertools.engine.KeywordName;
+import org.powertools.engine.ParameterOrder;
 import org.powertools.engine.RunTime;
 
 
@@ -443,7 +444,7 @@ public abstract class WebLibrary implements InstructionSet {
     }
 
     @KeywordName ("TypeIntoItem")
-    //@ParameterOrder ({ 2, 1 })
+    @ParameterOrder ({ 2, 1 })
     public final boolean Type_IntoItem_ (String text, String itemName) {
         final Item item = findItem (itemName);
         return item != null && mBrowser.type (item, text);

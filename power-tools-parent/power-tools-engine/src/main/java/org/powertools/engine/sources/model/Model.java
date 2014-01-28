@@ -21,7 +21,7 @@ package org.powertools.engine.sources.model;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.powertools.engine.reports.TestRunResultPublisher;
+import org.powertools.engine.reports.TestRunResultPublisherImpl;
 
 
 /*
@@ -34,45 +34,51 @@ import org.powertools.engine.reports.TestRunResultPublisher;
  * because an exception could break off current processing.
  */
 public abstract class Model {
-    private static final String GRAPHML_EXTENSION = ".graphml";
-
     static final String START_NODE_LABEL       = "start";
     static final String END_NODE_LABEL         = "end";
     static final String SUBMODEL_ACTION_PREFIX = "submodel ";
 
-    private static final Set<String>     mKnownModels = new HashSet<String> ();
-    
-    final TestRunResultPublisher mPublisher;
+    final Set<String>            mKnownModels;
+    final TestRunResultPublisherImpl mPublisher;
+    final DoneCondition          mDoneCondition;
+    final DirectedGraphImpl      mGraph;
+    final String                 mPath;
+    final String                 mFileName;
 
-    DirectedGraphImpl          mGraph;
-    Node                       mCurrentNode;
-    protected boolean          mAtNode;
-    EdgeSelectionStrategy      mSelector;
-    DoneCondition              mDoneCondition;
-    
+    Node                  mCurrentNode;
+    boolean               mAtNode;
+    EdgeSelectionStrategy mSelector;
 
-    public Model () {
-        mPublisher = TestRunResultPublisher.getInstance ();
-        mAtNode    = false;
+
+    Model (String path, String fileName, DoneCondition doneCondition) {
+        this (path, fileName, doneCondition, new HashSet<String> ());
     }
 
-    String removeExtension (String fileName) {
-        if (fileName.endsWith (GRAPHML_EXTENSION)) {
-            return fileName.substring (0, fileName.indexOf (GRAPHML_EXTENSION));
-        } else {
-            return fileName;
-        }
+    Model (String path, String fileName, DoneCondition doneCondition, Set<String> knownModels) {
+        mKnownModels   = knownModels;
+        mPublisher     = TestRunResultPublisherImpl.getInstance ();
+        mGraph         = new DirectedGraphImpl (fileName);
+        mPath          = path;
+        mFileName      = fileName;
+        mDoneCondition = doneCondition;
+        mAtNode        = false;
     }
 
-    public abstract void initialize ();
-    
-    final void finishInit () {
-        mPublisher.publishCommentLine (String.format ("entering model '%s' at initial node %s", mGraph.getName (), mCurrentNode.getDescription ()));
+    public final void initialize () {
+        mGraph.read (mPath, mFileName);
+        mCurrentNode = mGraph.getRootNode ();
+
+        mPublisher.publishCommentLine (String.format ("entering model '%s' at initial node '%s'", mGraph.getName (), mCurrentNode.getDescription ()));
+        reportStopConditionAndSelector ();
 
         // TODO: move to where graph is created?
         if (firstTime (mGraph.getName ())) {
             mGraph.reportNodesAndEdges ();
         }
+    }
+
+    void reportStopConditionAndSelector () {
+        // nothing
     }
 
     private boolean firstTime (String name) {
@@ -84,7 +90,7 @@ public abstract class Model {
         }
     }
 
-    public String getNextAction () {
+    public final String getNextAction () {
         String action;
         do {
             if (mAtNode) {
@@ -115,7 +121,7 @@ public abstract class Model {
 
     abstract Edge selectEdge ();
     
-    public void cleanup () {
+    public final void cleanup () {
         mPublisher.publishCommentLine (String.format ("leaving model '%s'", mGraph.getName ()));
     }
 }
