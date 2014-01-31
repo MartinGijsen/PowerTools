@@ -648,7 +648,7 @@ public abstract class WebLibrary implements InstructionSet {
     }
 
     @KeywordName ("StoreItemAttribute")
-    public final boolean PutAttribute_ForItem_In_ (String attributeName, String itemName, String variableName) {
+    public final boolean PutAttribute_OfItem_In_ (String attributeName, String itemName, String variableName) {
         final Item item = findItem (itemName);
         if (item != null) {
             mRunTime.setValue (variableName, mBrowser.getItemAttribute (item, attributeName));
