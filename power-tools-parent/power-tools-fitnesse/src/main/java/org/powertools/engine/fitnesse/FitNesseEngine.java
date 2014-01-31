@@ -28,6 +28,7 @@ import org.powertools.engine.TestRunResultPublisher;
 import org.powertools.engine.core.Engine;
 import org.powertools.engine.core.RunTimeImpl;
 import org.powertools.engine.reports.ReportFactory;
+import org.powertools.engine.sources.Procedure;
 
 import fit.Parse;
 
@@ -82,7 +83,10 @@ public final class FitNesseEngine extends Engine {
         InstructionSource source = new InstructionSource (fixture, table, mRunTime.getGlobalScope (), mLogFilePath);
         mFitNesseReporter.setSource (source);
         mRunTime.invokeSource (source);
-        addProcedure (source.getProcedure ());
+        Procedure procedure = source.getProcedure ();
+        if (procedure != null) {
+            addProcedure (procedure);
+        }
         run ();
     }
 

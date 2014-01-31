@@ -29,7 +29,8 @@ import org.powertools.engine.symbol.Scope;
 
 /**
  * The test source stack supports pushing a new test source and getting the next
- * test line. It automatically pops a test source when it is depleted.
+ * test line. It automatically pops a test source when it is depleted, returning
+ * to the test source pushed before.
  */
 final class TestSourceStack {
     private final Stack<TestSource> mSourceStack;

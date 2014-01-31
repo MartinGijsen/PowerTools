@@ -49,56 +49,56 @@ final class InstructionSource extends BaseTestSource {
     }
 
     private void processHeaderLine () {
-        mProcedure             = null;
-        mRow                   = mRow.more;
-        Parse currentCell      = mRow.parts;
-        String instructionName = currentCell.text ();
+        mProcedure = null;
+        mRow       = mRow.more;
+        if (mRow != null) {
+            Parse currentCell      = mRow.parts;
+            String instructionName = currentCell.text ();
 
-        int position = 0;
-        while ((currentCell = currentCell.more) != null) {
-            final String text = currentCell.text();
-            if (text.isEmpty ()) {
-                mTestLine.setParts (readSentence (mRow.parts));
-                mPublisher.publishTestLine (mTestLine);
-                mPublisher.publishError ("empty cells not allowed");
-                mPublisher.publishEndOfTestLine ();
-                break;
-            } else if (++position % 2 != 0) {
-                mParameterNames.add (text);
-                instructionName += " _";
-            } else {
-                instructionName += " " + text;
+            int position = 0;
+            while ((currentCell = currentCell.more) != null) {
+                final String text = currentCell.text();
+                if (text.isEmpty ()) {
+                    mTestLine.setParts (readSentence (mRow.parts));
+                    mPublisher.publishTestLine (mTestLine);
+                    mPublisher.publishError ("empty cells not allowed");
+                    mPublisher.publishEndOfTestLine ();
+                    break;
+                } else if (++position % 2 != 0) {
+                    mParameterNames.add (text);
+                    instructionName += " _";
+                } else {
+                    instructionName += " " + text;
+                }
             }
-        }
 
-        linkToLogFile (mRow.parts);
-        mTestLine.setParts (readSentence (mRow.parts));
-        mPublisher.publishTestLine (mTestLine);
+            linkToLogFile (mRow.parts);
+            mTestLine.setParts (readSentence (mRow.parts));
+            mPublisher.publishTestLine (mTestLine);
 
-        mProcedure = new Procedure (instructionName);
+            mProcedure = new Procedure (instructionName);
 
-        for (String parameterName : mParameterNames) {
-            boolean isOutput = (parameterName.startsWith (OUTPUT_PARAMETER_PREFIX));
-            String realParameterName = (isOutput ? parameterName.substring (OUTPUT_PARAMETER_PREFIX.length ()).trim () : parameterName);
-            mProcedure.addParameter (realParameterName, isOutput);
+            for (String parameterName : mParameterNames) {
+                boolean isOutput = (parameterName.startsWith (OUTPUT_PARAMETER_PREFIX));
+                String realParameterName = (isOutput ? parameterName.substring (OUTPUT_PARAMETER_PREFIX.length ()).trim () : parameterName);
+                mProcedure.addParameter (realParameterName, isOutput);
+            }
         }
     }
 
     Procedure getProcedure () {
-        if (mProcedure != null) {
-            return mProcedure;
-        } else {
-            throw new ExecutionException ("no procedure created");
-        }
+        return mProcedure;
     }
 
     @Override
     public TestLineImpl getTestLine () {
-        // do not return instructions for execution
-        // add them to the procedure instead, unevaluated
-        // they are executed when the procedure is called
-        while ((mRow = mRow.more) != null) {
-            processSentence (readSentence (mRow.parts));
+        if (mRow != null) {
+            // Do not return instructions for execution.
+            // Add them to the procedure instead, unevaluated.
+            // They are executed when the procedure is called.
+            while ((mRow = mRow.more) != null) {
+                processSentence (readSentence (mRow.parts));
+            }
         }
 
         // indicate there are no instructions to execute from this source
@@ -112,6 +112,5 @@ final class InstructionSource extends BaseTestSource {
             mTestLine.setParts (parts);
             mPublisher.publishTestLine (mTestLine);
         }
-
     }
 }

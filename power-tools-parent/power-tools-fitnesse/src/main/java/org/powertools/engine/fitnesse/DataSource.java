@@ -44,31 +44,33 @@ final class DataSource extends BaseTestSource {
 
     private void processHeaderLine () {
         mRow = mRow.more;
-        fillDataTestLine ();
-        skipLinkingToLogFile ();
-        mPublisher.publishTestLine (mTestLine);
+        if (mRow != null) {
+            fillDataTestLine ();
+            skipLinkingToLogFile ();
+            mPublisher.publishTestLine (mTestLine);
 
-        int nrOfParts                   = mTestLine.getNrOfParts ();
-        StringBuilder instructionNameSb = new StringBuilder ();
-        for (int partNr = 1; partNr < nrOfParts; ++partNr) {
-            final String part = mTestLine.getPart (partNr);
-            if (part.isEmpty ()) {
-                mPublisher.publishError ("empty column name(s)");
-                break;
-            } else {
-                for (String word : part.split (" +")) {
-                    instructionNameSb.append (word).append (" ");
+            int nrOfParts                   = mTestLine.getNrOfParts ();
+            StringBuilder instructionNameSb = new StringBuilder ();
+            for (int partNr = 1; partNr < nrOfParts; ++partNr) {
+                final String part = mTestLine.getPart (partNr);
+                if (part.isEmpty ()) {
+                    mPublisher.publishError ("empty column name(s)");
+                    break;
+                } else {
+                    for (String word : part.split (" +")) {
+                        instructionNameSb.append (word).append (" ");
+                    }
+                    instructionNameSb.append ("_ ");
                 }
-                instructionNameSb.append ("_ ");
             }
-        }
-        mPublisher.publishEndOfTestLine ();
+            mPublisher.publishEndOfTestLine ();
 
-        mInstructionName = instructionNameSb.toString ().trim ();
+            mInstructionName = instructionNameSb.toString ().trim ();
+        }
     }
 
     private void fillDataTestLine () {
-        final List<String> parts = new ArrayList<String> ();
+        List<String> parts = new ArrayList<String> ();
         parts.add ("");
         Parse currentCell = mRow.parts;
         do {
@@ -80,11 +82,13 @@ final class DataSource extends BaseTestSource {
 
     @Override
     public TestLineImpl getTestLine () {
-        while ((mRow = mRow.more) != null) {
-            fillDataTestLine ();
-            mTestLine.setPart (0, mInstructionName);
-            linkToLogFile (mRow.parts);
-            return mTestLine;
+        if (mRow != null) {
+            while ((mRow = mRow.more) != null) {
+                fillDataTestLine ();
+                mTestLine.setPart (0, mInstructionName);
+                linkToLogFile (mRow.parts);
+                return mTestLine;
+            }
         }
 
         return null;
