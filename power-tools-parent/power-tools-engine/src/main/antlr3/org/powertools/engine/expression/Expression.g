@@ -133,10 +133,11 @@ StringLiteral
 			String text = getText ();
 			setText (text.substring (1, text.length () - 1));
 		};
-Spaces:					(' ')+ { skip(); };
-IdentifierPlus:			Identifier ('.' (NumberLiteral | Identifier) )*;
-fragment Identifier:	Alpha (Alpha | Digit | '_')*;
-fragment Alpha:			'a'..'z'|'A'..'Z';
-fragment Digit:			'0'..'9';
-DateLiteral:			Digit Digit '-' Digit Digit '-' Digit Digit Digit Digit;
-NumberLiteral:			Digit+ ('.' Digit+)?;
+Spaces:                 (' ')+ { skip(); };
+IdentifierPlus:         Identifier ('.' (Digits | Identifier) )*;
+fragment Identifier:    Alpha (Alpha | Digit | '_')*;
+fragment Alpha:         'a'..'z'|'A'..'Z';
+DateLiteral:            Digit Digit '-' Digit Digit '-' Digit Digit Digit Digit;
+NumberLiteral:          Digits ('.' Digits)?;
+fragment Digits:        Digit+;
+fragment Digit:         '0'..'9';
