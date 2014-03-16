@@ -1,4 +1,4 @@
-/* Copyright 2014 by Martin Gijsen (www.DeAnalist.nl)
+/* Copyright 2012 by Martin Gijsen (www.DeAnalist.nl)
  *
  * This file is part of the PowerTools engine.
  *
@@ -16,21 +16,20 @@
  * along with the PowerTools engine. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.powertools.engine.sources.model;
+package org.powertools.engine.fitnesse.fixtures;
 
-import org.junit.Test;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import fit.Fixture;
+import fit.Parse;
+import org.powertools.engine.fitnesse.FitNesseEngine;
 
 
-public class DoneWhenInEndNodeTest {
-    @Test
-    public void testProcessAtNode () {
-        DoneWhenInEndState condition = new DoneWhenInEndState ();
-        assertFalse (condition.isSatisfied ());
-        condition.processAtState ("some node name");
-        assertFalse (condition.isSatisfied ());
-        condition.processAtState ("end (something)");
-        assertTrue (condition.isSatisfied ());
+public final class TestCaseFixture extends Fixture {
+    public TestCaseFixture () {
+        super ();
+    }
+
+    @Override
+    public void doTable (Parse table) {
+        FitNesseEngine.getInstance ().run (this, table);
     }
 }

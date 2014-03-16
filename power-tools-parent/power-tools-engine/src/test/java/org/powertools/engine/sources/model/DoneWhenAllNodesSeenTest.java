@@ -25,14 +25,14 @@ import static org.junit.Assert.*;
 public class DoneWhenAllNodesSeenTest {
     @Test
     public void testProcessNewNodeProcessAtNode () {
-        DoneWhenAllNodesSeen condition = new DoneWhenAllNodesSeen ();
+        DoneWhenAllStatesSeen condition = new DoneWhenAllStatesSeen ();
         assertFalse (condition.isSatisfied ());
-        condition.processNewNode ("node 1");
-        condition.processNewNode ("node 2");
+        condition.processNewState ("node 1");
+        condition.processNewState ("node 2");
         assertFalse (condition.isSatisfied ());
-        condition.processAtNode ("node 1");
+        condition.processAtState ("node 1");
         assertFalse (condition.isSatisfied ());
-        condition.processAtNode ("node 2");
+        condition.processAtState ("node 2");
         assertTrue (condition.isSatisfied ());
     }
     

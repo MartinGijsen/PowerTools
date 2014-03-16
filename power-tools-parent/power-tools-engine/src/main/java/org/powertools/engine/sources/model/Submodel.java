@@ -18,15 +18,17 @@
 
 package org.powertools.engine.sources.model;
 
+import org.powertools.engine.TestRunResultPublisher;
+
 
 public final class Submodel extends Model {
-    public Submodel (String fileName, Model parent) {
-        super (parent.mPath, fileName, parent.mDoneCondition, parent.mKnownModels);
+    public Submodel (String fileName, Model parent, TestRunResultPublisher publisher) {
+        super (parent.mPath, fileName, parent.mDoneCondition, parent.mKnownModels, publisher);
         mSelector = parent.mSelector;
     }
 
     @Override
-    Edge selectEdge () {
-        return mSelector.selectEdge (mGraph, mCurrentNode);
+    Transition selectTransition () {
+        return mSelector.selectTransition (mGraph, mCurrentState);
     }
 }

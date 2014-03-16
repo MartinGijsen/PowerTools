@@ -38,6 +38,8 @@ import org.powertools.engine.sources.TestLineImpl;
  * <BR/><BR/>
  * The Instructions class provides the executor for known instructions.
  * <BR/><BR/>
+ * A test can run to completion or be aborted.
+ * <BR/><BR/>
  * Most of the test state is contained in the RunTime,
  * so that it can be accessed by (user defined) instruction sets.
  */
@@ -48,12 +50,15 @@ public abstract class Engine {
     protected TestLineImpl mTestLine;
 
     private final Instructions mInstructions;
-
+    
+    private boolean mAborting;
+    
 
     protected Engine (RunTimeImpl runTime) {
         mRunTime      = runTime;
-        mInstructions = new Instructions (runTime);
         mPublisher    = runTime.getPublisher ();
+        mInstructions = new Instructions (runTime, mPublisher);
+        mAborting     = false;
     }
 
     protected final void registerBuiltinInstructions () {
@@ -63,6 +68,11 @@ public abstract class Engine {
 
     public void run (String sourceName) {
         throw new ExecutionException ("not supported by this engine");
+    }
+
+    public final void abort () {
+        mAborting = true;
+        mRunTime.mSourceStack.abort ();
     }
 
     protected final void run (TestSource source) {
@@ -124,6 +134,9 @@ public abstract class Engine {
             handleEngineException (ee);
         } catch (Exception e) {
             handleOtherException (e);
+        }
+        if (mAborting) {
+            mPublisher.publishWarning ("aborting run");
         }
         mPublisher.publishEndOfTestLine ();
     }

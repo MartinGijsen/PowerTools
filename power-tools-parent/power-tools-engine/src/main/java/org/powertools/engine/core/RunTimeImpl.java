@@ -62,7 +62,7 @@ public final class RunTimeImpl implements RunTime, ProcedureRunner {
         mSourceStack   = new TestSourceStack ();
         mContext       = context;
         mEvaluator     = new ExpressionEvaluator ();
-        mPublisher     = TestRunResultPublisherImpl.getInstance ();
+        mPublisher     = new TestRunResultPublisherImpl ();
         mRoles         = new RolesImpl (this);
         mSharedObjects = new HashMap<String, Object> ();
     }

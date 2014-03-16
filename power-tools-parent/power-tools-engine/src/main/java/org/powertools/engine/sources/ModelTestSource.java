@@ -39,7 +39,7 @@ class ModelTestSource extends TestSource {
 
 
     ModelTestSource (Model model, RunTime runTime, ProcedureRunner runner) {
-        super (runTime.getGlobalScope ());
+        super (runTime.getGlobalScope (), runTime.getPublisher ());
         mModel    = model;
         mRunTime  = runTime;
         mRunner   = runner;
@@ -95,7 +95,7 @@ class ModelTestSource extends TestSource {
 
     private TestSource pushSubmodelTestSource (List<String> parts) {
         String fileName     = parts.get (1);
-        TestSource submodel = new ModelTestSource (new Submodel (fileName, mModel), mRunTime, mRunner);
+        TestSource submodel = new ModelTestSource (new Submodel (fileName, mModel, mRunTime.getPublisher ()), mRunTime, mRunner);
         mRunner.invokeSource (submodel);
         return submodel;
     }

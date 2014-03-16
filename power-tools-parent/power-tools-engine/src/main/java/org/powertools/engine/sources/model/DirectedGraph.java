@@ -24,13 +24,13 @@ import java.util.Set;
 interface DirectedGraph {
     void read (String path, String fileName);
     String getName ();
-    Node addNode (String name);
-    Node getNode (String name);
-    Node getNodeByLabel (String label);
-    Node getRootNode ();
-    Node getStartNode ();
-    Edge addEdge (String sourceName, String targetName);
-    Edge addEdge (Node source, Node target);
-    Edge getEdge (Node source, Node target);
-    Set<Edge> getEdges (Node source);
+    State addState (String name);
+    State getState (String name);
+    State getStateByLabel (String label);
+    State getRootState ();
+    State getBeginState ();
+    Transition addTransition (String sourceName, String targetName);
+    Transition addTransition (State source, State target);
+    Transition getTransition (State source, State target);
+    Set<Transition> getTransitions (State source);
 }

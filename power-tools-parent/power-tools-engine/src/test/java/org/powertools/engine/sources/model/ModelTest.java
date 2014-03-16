@@ -60,14 +60,14 @@ public class ModelTest {
 
     public class ModelImpl extends Model {
         ModelImpl (String path, String fileName, DoneCondition doneCondition) {
-            super (path, fileName, doneCondition);
+            super (path, fileName, doneCondition, null);
         }
         
         public void reportStopConditionAndSelector () {
             //
         }
 
-        public Edge selectEdge () {
+        public Transition selectTransition () {
             return null;
         }
     }

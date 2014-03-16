@@ -43,7 +43,7 @@ public final class TestRunResultPublisherImpl implements TestRunResultPublisher 
     private final Set<TestSubscriber>        mTestSubscribers;
 
 
-    private TestRunResultPublisherImpl () {
+    public TestRunResultPublisherImpl () {
         mTestLineSubscribers   = new LinkedList<TestLineSubscriber> ();
         mTestResultSubscribers = new LinkedList<TestResultSubscriber> ();
         mTestCaseSubscribers   = new LinkedList<TestCaseSubscriber> ();
@@ -120,7 +120,7 @@ public final class TestRunResultPublisherImpl implements TestRunResultPublisher 
         }
     }
 
-
+    
     // publish methods
     @Override
     public void publishCommentLine (String commentLine) {
@@ -266,30 +266,30 @@ public final class TestRunResultPublisherImpl implements TestRunResultPublisher 
 
     
     @Override
-    public void publishNewNode (String name) {
+    public void publishNewState (String name) {
         for (ModelSubscriber subscriber : mModelSubscribers) {
-            subscriber.processNewNode (name);
+            subscriber.processNewState (name);
         }
     }
     
     @Override
-    public void publishNewEdge (String sourceName, String targetName) {
+    public void publishNewTransition (String sourceName, String targetName) {
         for (ModelSubscriber subscriber : mModelSubscribers) {
-            subscriber.processNewEdge (sourceName, targetName);
+            subscriber.processNewTransition (sourceName, targetName);
         }
     }
     
     @Override
-    public void publishAtNode (String name) {
+    public void publishAtState (String name) {
         for (ModelSubscriber subscriber : mModelSubscribers) {
-            subscriber.processAtNode (name);
+            subscriber.processAtState (name);
         }
     }
 
     @Override
-    public void publishAtEdge (String sourceName, String targetName) {
+    public void publishAtTransition (String sourceName, String targetName) {
         for (ModelSubscriber subscriber : mModelSubscribers) {
-            subscriber.processAtEdge (sourceName, targetName);
+            subscriber.processAtTransition (sourceName, targetName);
         }
     }
 

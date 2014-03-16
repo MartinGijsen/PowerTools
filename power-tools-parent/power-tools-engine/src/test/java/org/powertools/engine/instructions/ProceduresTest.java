@@ -26,7 +26,7 @@ import org.powertools.engine.sources.Procedure;
 public class ProceduresTest {
 	@Test
 	public void testGetName () {
-		Procedures procedures = new Procedures (null);
+		Procedures procedures = new Procedures (null, null);
 		procedures.setup ();
 		procedures.cleanup ();
 		assertEquals ("something that will not match an instruction set name", procedures.getName ());
@@ -34,7 +34,7 @@ public class ProceduresTest {
 
 	@Test
 	public void testAddGetExecutor () {
-		Procedures procedures = new Procedures (null);
+		Procedures procedures = new Procedures (null, null);
 		String PROCEDURE_NAME = "procedure name";
 		Procedure procedure   = new Procedure (PROCEDURE_NAME);
 		procedures.add (procedure);
@@ -43,7 +43,7 @@ public class ProceduresTest {
 
 	@Test
 	public void testGetExecutorUnknownProcedure () {
-		Procedures procedures = new Procedures (null);
+		Procedures procedures = new Procedures (null, null);
 		String PROCEDURE_NAME = "unknown procedure";
 		assertNull (procedures.getExecutor (PROCEDURE_NAME));
 	}

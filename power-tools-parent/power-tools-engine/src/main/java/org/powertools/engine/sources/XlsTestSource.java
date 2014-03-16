@@ -25,23 +25,24 @@ import java.io.IOException;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.powertools.engine.ExecutionException;
+import org.powertools.engine.TestRunResultPublisher;
 import org.powertools.engine.symbol.Scope;
 
 
 final class XlsTestSource extends ExcelTestSource {
-    private XlsTestSource (String fileName, String sheetName, Scope scope) {
-        super (fileName, sheetName, scope);
+    private XlsTestSource (String fileName, String sheetName, Scope scope, TestRunResultPublisher publisher) {
+        super (fileName, sheetName, scope, publisher);
     }
 
 
-    static XlsTestSource createTestSource (String fileName, String sheetName, Scope scope) {
-        return new XlsTestSource (fileName, sheetName, scope);
+    static XlsTestSource createTestSource (String fileName, String sheetName, Scope scope, TestRunResultPublisher publisher) {
+        return new XlsTestSource (fileName, sheetName, scope, publisher);
     }
 
     @Override
     public TestSource create (String sourceName) {
         Names names = createNamesFromSheetName (sourceName);
-        return new XlsTestSource (names.getFileName (), names.getSheetName (), mScope);
+        return new XlsTestSource (names.getFileName (), names.getSheetName (), mScope, mPublisher);
     }
 
     @Override

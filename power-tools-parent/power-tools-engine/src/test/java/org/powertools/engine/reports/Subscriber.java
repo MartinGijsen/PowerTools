@@ -1,4 +1,4 @@
-/*	Copyright 2012 by Martin Gijsen (www.DeAnalist.nl)
+/*	Copyright 2013-2014 by Martin Gijsen (www.DeAnalist.nl)
  *
  *	This file is part of the PowerTools engine.
  *
@@ -143,22 +143,22 @@ final class Subscriber implements TestCaseSubscriber, TestLineSubscriber, TestRe
 	}
 	
 	@Override
-	public void processNewNode (String sourcename) {
+	public void processNewState (String sourcename) {
 		assignMethod (Method.PROCESS_NEW_NODE);
 	}
 	
 	@Override
-	public void processNewEdge (String sourceName, String targetName) {
+	public void processNewTransition (String sourceName, String targetName) {
 		assignMethod (Method.PROCESS_NEW_EDGE);
 	}
 	
 	@Override
-	public void processAtNode (String name) {
+	public void processAtState (String name) {
 		assignMethod (Method.PROCESS_AT_NODE);
 	}
 	
 	@Override
-	public void processAtEdge (String sourceName, String targetName) {
+	public void processAtTransition (String sourceName, String targetName) {
 		assignMethod (Method.PROCESS_AT_EDGE);
 	}
 	

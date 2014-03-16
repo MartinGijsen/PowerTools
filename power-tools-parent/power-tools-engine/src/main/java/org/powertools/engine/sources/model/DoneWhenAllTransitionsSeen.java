@@ -22,28 +22,28 @@ import java.util.HashSet;
 import java.util.Set;
 
 
-final class DoneWhenAllEdgesSeen extends DoneCondition {
-    private static final String DESCRIPTION = "stop after all edges have been traversed";
+final class DoneWhenAllTransitionsSeen extends DoneCondition {
+    private static final String DESCRIPTION = "stop after all transitions have been traversed";
 
-    private final Set<String> mUnseenEdges;
+    private final Set<String> mUnseenTransitions;
     
 
-    DoneWhenAllEdgesSeen () {
+    DoneWhenAllTransitionsSeen () {
         super (DESCRIPTION);
-        mUnseenEdges = new HashSet<String> ();
+        mUnseenTransitions = new HashSet<String> ();
     }
 
 
     @Override
-    public void processNewEdge (String sourceNodeName, String targetNodeName) {
-        mUnseenEdges.add (sourceNodeName + "/" + targetNodeName);
+    public void processNewTransition (String sourceStateName, String targetStateName) {
+        mUnseenTransitions.add (sourceStateName + "/" + targetStateName);
     }
 
     @Override
-    public void processAtEdge (String sourceNodeName, String targetNodeName) {
-        mUnseenEdges.remove (sourceNodeName + "/" + targetNodeName);
+    public void processAtTransition (String sourceStateName, String targetStateName) {
+        mUnseenTransitions.remove (sourceStateName + "/" + targetStateName);
         if (!mDone) {
-            mDone = mUnseenEdges.isEmpty ();
+            mDone = mUnseenTransitions.isEmpty ();
         }
     }
 }

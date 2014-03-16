@@ -19,25 +19,25 @@
 package org.powertools.engine.sources.model;
 
 import org.powertools.engine.ExecutionException;
-import org.powertools.engine.reports.TestRunResultPublisherImpl;
+import org.powertools.engine.TestRunResultPublisher;
 
 
 final class DoneConditionFactory {
-    DoneCondition create (String conditionName) {
-        // TODO: pass end node label as parameter?
+    DoneCondition create (String conditionName, TestRunResultPublisher publisher) {
+        // TODO: pass end state label as parameter?
         DoneCondition condition;
         if ("never".equals (conditionName)) {
             condition = new NeverDone ();
-        } else if ("all edges".equals (conditionName)) {
-            condition = new DoneWhenAllEdgesSeen ();
-        } else if ("all nodes".equals (conditionName)) {
-            condition = new DoneWhenAllNodesSeen ();
-        } else if ("end node".equals (conditionName)) {
-            condition = new DoneWhenInEndNode ();
+        } else if ("all transitions".equals (conditionName)) {
+            condition = new DoneWhenAllTransitionsSeen ();
+        } else if ("all states".equals (conditionName)) {
+            condition = new DoneWhenAllStatesSeen ();
+        } else if ("end state".equals (conditionName)) {
+            condition = new DoneWhenInEndState ();
         } else {
             throw new ExecutionException (String.format ("unknown condition: %s", conditionName));
         }
-        TestRunResultPublisherImpl.getInstance ().subscribeToModel (condition);
+        publisher.subscribeToModel (condition);
         return condition;
     }
 }

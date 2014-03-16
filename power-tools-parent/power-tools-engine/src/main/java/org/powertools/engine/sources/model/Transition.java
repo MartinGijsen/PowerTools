@@ -1,4 +1,4 @@
-/* Copyright 2014 by Martin Gijsen (www.DeAnalist.nl)
+/* Copyright 2013-2014 by Martin Gijsen (www.DeAnalist.nl)
  *
  * This file is part of the PowerTools engine.
  *
@@ -18,19 +18,22 @@
 
 package org.powertools.engine.sources.model;
 
-import org.junit.Test;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+
+final class Transition {
+    final State mSource;
+    final State mTarget;
+
+    String mLabel;
+    String mCondition;
+    String mAction;
+    int    mWeight;
 
 
-public class DoneWhenInEndNodeTest {
-    @Test
-    public void testProcessAtNode () {
-        DoneWhenInEndState condition = new DoneWhenInEndState ();
-        assertFalse (condition.isSatisfied ());
-        condition.processAtState ("some node name");
-        assertFalse (condition.isSatisfied ());
-        condition.processAtState ("end (something)");
-        assertTrue (condition.isSatisfied ());
+    Transition (State source, State target) {
+        mSource    = source;
+        mTarget    = target;
+        mCondition = "";
+        mAction    = "";
+        mWeight    = -1;
     }
 }

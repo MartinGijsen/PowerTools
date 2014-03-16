@@ -18,28 +18,30 @@
 
 package org.powertools.engine.sources.model;
 
-import org.powertools.engine.RunTime;
+import java.util.HashSet;
+import java.util.Set;
 
 
-public final class MainModel extends Model {
-    public MainModel (String path, String fileName, String selector, String doneCondition, RunTime runTime) {
-        super (path, fileName, new DoneConditionFactory ().create (doneCondition, runTime.getPublisher ()), runTime.getPublisher ());
-        mSelector = new EdgeSelectionStrategyFactory ().create (selector, mGraph, runTime);
+final class DoneWhenAllStatesSeen extends DoneCondition {
+    private static final String DESCRIPTION = "stop after all states have been traversed";
+
+    private final Set<String> mUnseenStates;
+
+    
+    DoneWhenAllStatesSeen () {
+        super (DESCRIPTION);
+        mUnseenStates = new HashSet<String> ();
     }
 
-    // TODO: move into constructor?
+
     @Override
-    void reportStopConditionAndSelector () {
-        mPublisher.publishCommentLine ("stop condition: " + mDoneCondition.getDescription ());
-        mPublisher.publishCommentLine ("edge selection: " + mSelector.getDescription ());
+    public void processNewState (String name) {
+        mUnseenStates.add (name);
     }
 
     @Override
-    Transition selectTransition () {
-        if (mDoneCondition.isSatisfied ()) {
-            return null;
-        } else {
-            return mSelector.selectTransition (mGraph, mCurrentState);
-        }
+    public void processAtState (String name) {
+        mUnseenStates.remove (name);
+        mDone = mUnseenStates.isEmpty ();
     }
 }

@@ -1,4 +1,4 @@
-/* Copyright 2012 by Martin Gijsen (www.DeAnalist.nl)
+/* Copyright 2014 by Martin Gijsen (www.DeAnalist.nl)
  *
  * This file is part of the PowerTools engine.
  *
@@ -18,17 +18,15 @@
 
 package org.powertools.engine.fitnesse;
 
-import fit.Fixture;
-import fit.Parse;
+import fitnesse.testsystems.Descriptor;
+import fitnesse.testsystems.TestSystem;
+import fitnesse.testsystems.TestSystemFactory;
+import java.io.IOException;
 
 
-public final class ScenarioFixture extends Fixture {
-    public ScenarioFixture () {
-        super ();
-    }
-
+public class Factory implements TestSystemFactory {
     @Override
-    public void doTable (Parse table) {
-        FitNesseEngine.getInstance ().run (this, table);
+    public TestSystem create (Descriptor descriptor) throws IOException {
+        return new PowerToolsTestSystem ();
     }
 }

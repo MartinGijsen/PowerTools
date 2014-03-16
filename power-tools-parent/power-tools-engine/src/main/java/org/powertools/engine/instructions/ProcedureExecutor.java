@@ -19,6 +19,7 @@
 package org.powertools.engine.instructions;
 
 import org.powertools.engine.TestLine;
+import org.powertools.engine.TestRunResultPublisher;
 import org.powertools.engine.sources.Procedure;
 import org.powertools.engine.sources.TestSourceFactory;
 
@@ -26,17 +27,19 @@ import org.powertools.engine.sources.TestSourceFactory;
 public final class ProcedureExecutor implements Executor {
     private final Procedure mProcedure;
     private final ProcedureRunner mRunner;
+    private final TestRunResultPublisher mPublisher;
 
 
-    public ProcedureExecutor (Procedure procedure, ProcedureRunner runner) {
+    public ProcedureExecutor (Procedure procedure, ProcedureRunner runner, TestRunResultPublisher publisher) {
         mProcedure = procedure;
         mRunner    = runner;
+        mPublisher = publisher;
     }
 
 
     @Override
     public boolean execute (TestLine testLine) {
-        mRunner.invokeSource (new TestSourceFactory ().createProcedureTestSource (mProcedure, mRunner.getCurrentScope (), testLine));
+        mRunner.invokeSource (new TestSourceFactory ().createProcedureTestSource (mProcedure, mRunner.getCurrentScope (), testLine, mPublisher));
         return true;
     }
 }

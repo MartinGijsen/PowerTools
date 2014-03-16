@@ -16,8 +16,9 @@
  * along with the PowerTools engine. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.powertools.engine.core;
+package org.powertools.engine.runners;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -35,31 +36,37 @@ import javax.swing.WindowConstants;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
+import org.powertools.engine.core.Engine;
+import org.powertools.engine.core.ModelBasedEngine;
+
 
 public final class ModelRunner extends javax.swing.JFrame implements ActionListener, DocumentListener {
-    private JLabel mModelFileLabel;
-    private JTextField mModelFileField;
-    private JButton mBrowseButton;
+    private JLabel       mModelFileLabel;
+    private JTextField   mModelFileField;
+    private JButton      mBrowseButton;
     private JFileChooser mFileChooser;
-    private JLabel mStopConditionLabel;
-    private JRadioButton mEndNodeRadioButton;
-    private JRadioButton mAllNodesRadioButton;
-    private JRadioButton mAllEdgesRadioButton;
+    private JLabel       mStopConditionLabel;
+    private JRadioButton mEndStateRadioButton;
+    private JRadioButton mAllStatesRadioButton;
+    private JRadioButton mAllTransitionsRadioButton;
     private JRadioButton mNeverRadioButton;
-    private JLabel mSelectorLabel;
+    private JLabel       mSelectorLabel;
     private JRadioButton mRandomRadioButton;
     private JRadioButton mWeightedRadioButton;
-    private JButton mGoButton;
+    private JButton      mGoAbortButton;
+    private JLabel       mMessageLabel;
+    private JLabel       mErrorMessageLabel;
 
-    private String mStopCondition;
-    private String mSelector;
+    private String       mStopCondition;
+    private String       mSelector;
+    private ModelBasedEngine mEngine;
 
 
-    public static void main (String args[]) {
+    public static void main (String[] args) {
         run ();
     }
 
-    static void run () {
+    public static void run () {
         java.awt.EventQueue.invokeLater (new Runnable () {
             public void run () {
                 new ModelRunner ().setVisible (true);
@@ -75,7 +82,7 @@ public final class ModelRunner extends javax.swing.JFrame implements ActionListe
         layoutComponents ();
         pack ();
 
-        mEndNodeRadioButton.doClick ();
+        mEndStateRadioButton.doClick ();
         mRandomRadioButton.doClick ();
     }
 
@@ -92,25 +99,25 @@ public final class ModelRunner extends javax.swing.JFrame implements ActionListe
 
         mStopConditionLabel = new JLabel ("Stop condition");
 
-        mEndNodeRadioButton = new JRadioButton ("End node");
-        mEndNodeRadioButton.addActionListener (this);
+        mEndStateRadioButton = new JRadioButton ("End state");
+        mEndStateRadioButton.addActionListener (this);
 
-        mAllNodesRadioButton = new JRadioButton ("All nodes");
-        mAllNodesRadioButton.addActionListener (this);
+        mAllStatesRadioButton = new JRadioButton ("All states");
+        mAllStatesRadioButton.addActionListener (this);
 
-        mAllEdgesRadioButton = new JRadioButton ("All edges");
-        mAllEdgesRadioButton.addActionListener (this);
+        mAllTransitionsRadioButton = new JRadioButton ("All transitions");
+        mAllTransitionsRadioButton.addActionListener (this);
 
         mNeverRadioButton = new JRadioButton ("Never");
         mNeverRadioButton.addActionListener (this);
 
         ButtonGroup stopConditionGroup = new ButtonGroup ();
-        stopConditionGroup.add (mEndNodeRadioButton);
-        stopConditionGroup.add (mAllNodesRadioButton);
-        stopConditionGroup.add (mAllEdgesRadioButton);
+        stopConditionGroup.add (mEndStateRadioButton);
+        stopConditionGroup.add (mAllStatesRadioButton);
+        stopConditionGroup.add (mAllTransitionsRadioButton);
         stopConditionGroup.add (mNeverRadioButton);
 
-        mSelectorLabel = new JLabel ("Edge selector");
+        mSelectorLabel = new JLabel ("Transition selector");
 
         mRandomRadioButton = new JRadioButton ("Random");
         mRandomRadioButton.addActionListener (this);
@@ -122,9 +129,14 @@ public final class ModelRunner extends javax.swing.JFrame implements ActionListe
         selectorGroup.add (mRandomRadioButton);
         selectorGroup.add (mWeightedRadioButton);
 
-        mGoButton = new JButton ("Go");
-        mGoButton.setEnabled (false);
-        mGoButton.addActionListener (this);
+        mGoAbortButton = new JButton ("Go");
+        mGoAbortButton.setEnabled (false);
+        mGoAbortButton.addActionListener (this);
+        
+        mMessageLabel = new JLabel ("Message");
+
+        mErrorMessageLabel = new JLabel ("");
+        mErrorMessageLabel.setForeground (Color.red);
     }
 
     private void layoutComponents () {
@@ -137,18 +149,20 @@ public final class ModelRunner extends javax.swing.JFrame implements ActionListe
                 .addGroup (layout.createParallelGroup ()
                     .addComponent (mModelFileLabel)
                     .addComponent (mStopConditionLabel)
-                    .addComponent (mSelectorLabel))
+                    .addComponent (mSelectorLabel)
+                    .addComponent (mMessageLabel))
                 .addGroup (layout.createParallelGroup ()
                     .addComponent (mModelFileField)
-                    .addComponent (mEndNodeRadioButton)
-                    .addComponent (mAllNodesRadioButton)
-                    .addComponent (mAllEdgesRadioButton)
+                    .addComponent (mEndStateRadioButton)
+                    .addComponent (mAllStatesRadioButton)
+                    .addComponent (mAllTransitionsRadioButton)
                     .addComponent (mNeverRadioButton)
                     .addComponent (mRandomRadioButton)
-                    .addComponent (mWeightedRadioButton))
+                    .addComponent (mWeightedRadioButton)
+                    .addComponent (mErrorMessageLabel))
                 .addGroup (layout.createParallelGroup ()
                     .addComponent (mBrowseButton)
-                    .addComponent (mGoButton)));
+                    .addComponent (mGoAbortButton)));
 
         layout.setVerticalGroup (
             layout.createSequentialGroup ()
@@ -159,52 +173,63 @@ public final class ModelRunner extends javax.swing.JFrame implements ActionListe
                 .addGroup (layout.createParallelGroup ()
                     .addComponent (mStopConditionLabel)
                     .addGroup (layout.createSequentialGroup ()
-                        .addComponent (mEndNodeRadioButton)
-                        .addComponent (mAllNodesRadioButton)
-                        .addComponent (mAllEdgesRadioButton)
+                        .addComponent (mEndStateRadioButton)
+                        .addComponent (mAllStatesRadioButton)
+                        .addComponent (mAllTransitionsRadioButton)
                         .addComponent (mNeverRadioButton)))
                 .addGroup (layout.createParallelGroup ()
                     .addComponent (mSelectorLabel)
                     .addGroup (layout.createSequentialGroup ()
                         .addComponent (mRandomRadioButton)
                         .addComponent (mWeightedRadioButton))
-                    .addComponent (mGoButton, GroupLayout.Alignment.TRAILING)));
+                    .addComponent (mGoAbortButton, GroupLayout.Alignment.TRAILING))
+                .addGroup (layout.createParallelGroup ()
+                    .addComponent(mMessageLabel)
+                    .addComponent(mErrorMessageLabel)));
 
-        layout.linkSize (SwingConstants.HORIZONTAL, new Component[] { mBrowseButton, mGoButton });
+        layout.linkSize (SwingConstants.HORIZONTAL, new Component[] { mBrowseButton, mGoAbortButton });
     }
 
     public void actionPerformed (ActionEvent e) {
+        mErrorMessageLabel.setText ("");
         Object source = e.getSource ();
-        if (source == mBrowseButton) {
-            if (mFileChooser.showOpenDialog (this) == JFileChooser.APPROVE_OPTION) {
-                try {
-                    File file = mFileChooser.getSelectedFile ();
-                    mModelFileField.setText (file.getCanonicalPath ());
-                } catch (IOException ioe) {
-                    // ignore
-                }
-            }
-        } else if (source == mEndNodeRadioButton) {
-            mStopCondition = "end node";
-        } else if (source == mAllNodesRadioButton) {
-            mStopCondition = "all nodes";
-        } else if (source == mAllEdgesRadioButton) {
-            mStopCondition = "all edges";
-        } else if (source == mNeverRadioButton) {
+        if (source.equals (mBrowseButton)) {
+            setSelectedFile ();
+        } else if (source.equals (mEndStateRadioButton)) {
+            mStopCondition = "end state";
+        } else if (source.equals (mAllStatesRadioButton)) {
+            mStopCondition = "all states";
+        } else if (source.equals (mAllTransitionsRadioButton)) {
+            mStopCondition = "all transitions";
+        } else if (source.equals (mNeverRadioButton)) {
             mStopCondition = "never";
-        } else if (source == mRandomRadioButton) {
+        } else if (source.equals (mRandomRadioButton)) {
             mSelector = "random";
-        } else if (source == mWeightedRadioButton) {
+        } else if (source.equals (mWeightedRadioButton)) {
             mSelector = "weighted";
-        } else if (source == mGoButton) {
-            mGoButton.setEnabled (false);
-            runModel ();
-            mGoButton.setEnabled (true);
+        } else if (source.equals (mGoAbortButton)) {
+            if ("Go".equals (mGoAbortButton.getText ())) {
+                runModel ();
+            } else {
+                mGoAbortButton.setEnabled (false);
+                mEngine.abort ();
+            }
             return;
         }
         enableGoButton ();
     }
-    
+
+    private void setSelectedFile () {
+        if (mFileChooser.showOpenDialog (this) == JFileChooser.APPROVE_OPTION) {
+            try {
+                File file = mFileChooser.getSelectedFile ();
+                mModelFileField.setText (file.getCanonicalPath ());
+            } catch (IOException ioe) {
+                // ignore
+            }
+        }
+    }
+
     public void insertUpdate (DocumentEvent e) {
         enableGoButton ();
     }
@@ -221,7 +246,7 @@ public final class ModelRunner extends javax.swing.JFrame implements ActionListe
         boolean allInputOk = !mModelFileField.getText ().isEmpty ()
                           && mStopCondition != null
                           && mSelector != null;
-        mGoButton.setEnabled (allInputOk);
+        mGoAbortButton.setEnabled (allInputOk);
     }
     
     private void runModel () {
@@ -229,11 +254,34 @@ public final class ModelRunner extends javax.swing.JFrame implements ActionListe
         if (!file.exists () || !file.isFile ()) {
             reportError ("file does not exist or is a directory");
         } else {
-            new ModelBasedEngine (file.getParent ()).run (file.getParent (), file.getName (), mSelector, mStopCondition);
+            new MyThread (file).start ();
         }
     }
-    
+
     private void reportError (String message) {
-        // TODO: show message to user
+        mErrorMessageLabel.setText (message);
+    }
+
+
+    private class MyThread extends Thread {
+        private final File mFile;
+
+
+        MyThread (File file) {
+            mFile   = file;
+            mEngine = new ModelBasedEngine (mFile.getParent ());
+        }
+
+        Engine getEngine () {
+            return mEngine;
+        }
+        
+        @Override
+        public void run () {
+            mGoAbortButton.setText ("Abort");
+            mEngine.run (mFile.getParent (), mFile.getName (), mSelector, mStopCondition);
+            mGoAbortButton.setText ("Go");
+            mGoAbortButton.setEnabled (true);
+        }
     }
 }

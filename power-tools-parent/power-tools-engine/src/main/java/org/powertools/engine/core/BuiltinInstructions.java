@@ -100,7 +100,7 @@ public final class BuiltinInstructions implements InstructionSet {
     }
 
     boolean register (String name, Object object) {
-        mInstructions.addInstructionSet (InstructionSetFactory.createClassInstructionSet (name, object));
+        mInstructions.addInstructionSet (new InstructionSetFactory ().createClassInstructionSet (name, object));
         return true;
     }
 
@@ -343,7 +343,7 @@ public final class BuiltinInstructions implements InstructionSet {
     }
 
     public void RunFile_ (String fileName) {
-        mRunTime.invokeSource (new TestSourceFactory ().createExcelTestSource (fileName, mRunTime.getGlobalScope ()));
+        mRunTime.invokeSource (new TestSourceFactory ().createExcelTestSource (fileName, mRunTime.getGlobalScope (), mRunTime.getPublisher ()));
     }
 
     // Keywords only (has parameters but not the corresponding underscores)

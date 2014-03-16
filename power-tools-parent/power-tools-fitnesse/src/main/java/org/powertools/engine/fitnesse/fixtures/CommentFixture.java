@@ -16,21 +16,20 @@
  * along with the PowerTools engine. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.powertools.engine.sources.model;
-
-import org.junit.Test;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+package org.powertools.engine.fitnesse.fixtures;
 
 
-public class DoneWhenInEndNodeTest {
-    @Test
-    public void testProcessAtNode () {
-        DoneWhenInEndState condition = new DoneWhenInEndState ();
-        assertFalse (condition.isSatisfied ());
-        condition.processAtState ("some node name");
-        assertFalse (condition.isSatisfied ());
-        condition.processAtState ("end (something)");
-        assertTrue (condition.isSatisfied ());
+import fit.Fixture;
+import fit.Parse;
+
+
+public final class CommentFixture extends Fixture {
+    public CommentFixture () {
+        super ();
+    }
+
+    @Override
+    public void doTable (Parse table) {
+        // ignore
     }
 }

@@ -16,28 +16,34 @@
  * along with the PowerTools engine. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.powertools.engine.fitnesse;
+package org.powertools.engine.fitnesse.sources;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.powertools.engine.ExecutionException;
+import org.powertools.engine.TestRunResultPublisher;
 import org.powertools.engine.sources.Procedure;
 import org.powertools.engine.sources.TestLineImpl;
+import org.powertools.engine.symbol.Scope;
 
 import fit.Fixture;
 import fit.Parse;
-import org.powertools.engine.symbol.Scope;
+import org.powertools.engine.fitnesse.Reference;
 
 
-final class InstructionSource extends BaseTestSource {
+public final class InstructionSource extends FitNesseTestSource {
     private final List<String> mParameterNames;
 
     private Procedure mProcedure;
 
 
-    InstructionSource (Fixture fixture, Parse table, Scope scope, String logFilePath) {
-        super (fixture, table.parts, scope, logFilePath);
+    InstructionSource (Fixture fixture, Parse table, Scope scope, String logFilePath, TestRunResultPublisher publisher, Reference reference) {
+        super (fixture, table, scope, logFilePath, publisher, reference);
+        mParameterNames = new ArrayList<String> ();
+    }
+
+    InstructionSource (Parse table, Scope scope, String logFilePath, TestRunResultPublisher publisher, Reference reference) {
+        super (table, scope, logFilePath, publisher, reference);
         mParameterNames = new ArrayList<String> ();
     }
 
@@ -86,7 +92,7 @@ final class InstructionSource extends BaseTestSource {
         }
     }
 
-    Procedure getProcedure () {
+    public Procedure getProcedure () {
         return mProcedure;
     }
 

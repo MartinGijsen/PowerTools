@@ -19,6 +19,8 @@
 package org.powertools.engine.core;
 
 import java.io.File;
+
+import org.powertools.engine.runners.ModelRunner;
 import org.powertools.engine.Context;
 import org.powertools.engine.ExecutionException;
 import org.powertools.engine.reports.ReportFactory;
@@ -46,21 +48,23 @@ public class ModelBasedEngine extends Engine {
             reportError ("Please specify a directory, model file name, selection strategy and stop condition");
             reportError ("\tselection strategies: random, weighted");
             reportError ("\tstop conditions: all nodes, all edges, end node, never");
+            break;
         }
     }
 
 
-    protected ModelBasedEngine (String resultsDirectory) {
+    public ModelBasedEngine (String resultsDirectory) {
         this (new RunTimeImpl (Context.create (resultsDirectory)));
     }
 
     protected ModelBasedEngine (RunTimeImpl runTime) {
         super (runTime);
 
-        if (!new ReportFactory ().createKeywordsHtmlLog (runTime.getContext ())) {
+        ReportFactory factory = new ReportFactory (mPublisher);
+        if (!factory.createKeywordsHtmlLog (runTime.getContext ())) {
             mPublisher.publishError ("could not open HTML log");
         }
-        new ReportFactory ().createModelCoverageGraph (mRunTime.getContext ().getResultsDirectory ());
+        factory.createModelCoverageGraph (mRunTime.getContext ().getResultsDirectory ());
 
         registerBuiltinInstructions ();
     }
@@ -75,7 +79,7 @@ public class ModelBasedEngine extends Engine {
         }
     }
 
-    protected void run (String path, String fileName, String selector, String condition) {
+    public void run (String path, String fileName, String selector, String condition) {
         try {
             run (new TestSourceFactory ().createModelTestSource (path, fileName, selector, condition, mRunTime, mRunTime));
         } catch (GraphException ge) {

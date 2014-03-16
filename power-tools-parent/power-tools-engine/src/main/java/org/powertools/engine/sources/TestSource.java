@@ -20,7 +20,6 @@ package org.powertools.engine.sources;
 
 import org.powertools.engine.ExecutionException;
 import org.powertools.engine.TestRunResultPublisher;
-import org.powertools.engine.reports.TestRunResultPublisherImpl;
 import org.powertools.engine.symbol.Scope;
 
 
@@ -36,9 +35,9 @@ public abstract class TestSource {
     protected TestLineImpl mTestLine;
 
 
-    protected TestSource (Scope scope) {
+    protected TestSource (Scope scope, TestRunResultPublisher publisher) {
         mScope     = scope;
-        mPublisher = TestRunResultPublisherImpl.getInstance ();
+        mPublisher = publisher;
         mTestLine  = new TestLineImpl ();
     }
 

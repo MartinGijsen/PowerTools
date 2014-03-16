@@ -1,4 +1,4 @@
-/* Copyright 2014 by Martin Gijsen (www.DeAnalist.nl)
+/* Copyright 2012 by Martin Gijsen (www.DeAnalist.nl)
  *
  * This file is part of the PowerTools engine.
  *
@@ -16,22 +16,21 @@
  * along with the PowerTools engine. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.powertools.engine.sources.model;
-
-import org.junit.Test;
-import static org.junit.Assert.assertEquals;
+package org.powertools.engine.fitnesse.fixtures;
 
 
-public class EdgeTest {
-    @Test
-    public void testEdge () {
-        Node source = new Node ("source", null);
-        Node target = new Node ("target", null);
-        Edge edge   = new Edge (source, target);
-        assertEquals (source, edge.mSource);
-        assertEquals (target, edge.mTarget);
-        assertEquals ("", edge.mCondition);
-        assertEquals ("", edge.mAction);
-        assertEquals (-1, edge.mWeight);
-    }    
+import fit.Fixture;
+import fit.Parse;
+import org.powertools.engine.fitnesse.FitNesseEngine;
+
+
+public final class InstructionFixture extends Fixture {
+    public InstructionFixture () {
+        super ();
+    }
+
+    @Override
+    public void doTable (Parse table) {
+        FitNesseEngine.getInstance ().run (this, table);
+    }
 }

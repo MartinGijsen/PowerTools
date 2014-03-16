@@ -30,7 +30,8 @@ interface AutoItX extends com.sun.jna.Library {
     AutoItX INSTANCE        = (AutoItX) Native.loadLibrary (AUTO_IT_BIN_PATH + DLL_NAME, AutoItX.class);
 
 
-    int AU3_INTDEFAULT = -2147483647; // "Default" value for _some_ int parameters (largest negative number)
+    // "Default" value for _some_ int parameters (largest negative number)
+    int AU3_INTDEFAULT = -2147483647;
 
     // Note: buffer size for results includes terminating null
 

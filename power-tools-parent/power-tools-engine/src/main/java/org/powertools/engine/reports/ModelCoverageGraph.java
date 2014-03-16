@@ -43,11 +43,11 @@ public class ModelCoverageGraph implements ModelSubscriber {
         mResultsDirectory = resultsDirectory;
     }
     
-    public void processNewNode (String name) {
+    public void processNewState (String name) {
         // ignore
     }
 
-    public void processNewEdge (String sourceNodeName, String targetNodeName) {
+    public void processNewTransition (String sourceNodeName, String targetNodeName) {
         Node source = getOrCreateNode (sourceNodeName);
         Node target = getOrCreateNode (targetNodeName);
         mGraph.addEdge (source, target);
@@ -61,11 +61,11 @@ public class ModelCoverageGraph implements ModelSubscriber {
         }
     }
 
-    public void processAtNode (String name) {
+    public void processAtState (String name) {
         // ignore
     }
 
-    public void processAtEdge (String sourceNodeName, String targetNodeName) {
+    public void processAtTransition (String sourceNodeName, String targetNodeName) {
         Node source = mGraph.getNode (sourceNodeName);
         Node target = mGraph.getNode (targetNodeName);
         if (mGraph.hasEdge (source, target)) {

@@ -126,6 +126,6 @@ final class TestRunTime implements RunTime {
     }
 
     public TestRunResultPublisher getPublisher() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

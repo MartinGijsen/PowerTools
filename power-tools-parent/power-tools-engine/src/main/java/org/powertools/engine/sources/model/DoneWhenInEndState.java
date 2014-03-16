@@ -1,4 +1,4 @@
-/* Copyright 2013 by Martin Gijsen (www.DeAnalist.nl)
+/* Copyright 2013-2014 by Martin Gijsen (www.DeAnalist.nl)
  *
  * This file is part of the PowerTools engine.
  *
@@ -18,34 +18,19 @@
 
 package org.powertools.engine.sources.model;
 
-import org.powertools.engine.ExecutionException;
+
+final class DoneWhenInEndState extends DoneCondition {
+    private static final String DESCRIPTION = "stop after reaching an end node";
 
 
-final class Node {
-    final DirectedGraph  mGraph;
-    private final String mName;
+    DoneWhenInEndState () {
+        super (DESCRIPTION);
+    }
 
-    String               mLabel;
-    String               mAction;
-
-
-    Node (String name, DirectedGraph graph) {
-        if ("".equals (name)) {
-            throw new ExecutionException ("empty node name");
+    @Override
+    public void processAtState (String name) {
+        if (name.startsWith (Model.END_STATE_LABEL + " (")) {
+            mDone = true;
         }
-        mName   = name;
-        mGraph  = graph;
-        mLabel  = "";
-        mAction = "";
     }
-
-    String getName () {
-        return (mLabel.isEmpty () ? mName : mLabel + " (" + mName + ")");
-    }
-
-    String getDescription () {
-        return mGraph.getName () + "." + getName ();
-    }
-    
-    
 }

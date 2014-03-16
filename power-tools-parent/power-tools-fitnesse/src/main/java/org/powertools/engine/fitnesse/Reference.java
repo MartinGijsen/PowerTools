@@ -16,32 +16,23 @@
  * along with the PowerTools engine. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.powertools.engine.sources.model;
-
-import java.util.HashSet;
-import java.util.Set;
+package org.powertools.engine.fitnesse;
 
 
-final class DoneWhenAllNodesSeen extends DoneCondition {
-    private static final String DESCRIPTION = "stop after all nodes have been traversed";
-
-    private final Set<String> mUnseenNodes;
-
+public class Reference {
+    private int mCounter;
     
-    DoneWhenAllNodesSeen () {
-        super (DESCRIPTION);
-        mUnseenNodes = new HashSet<String> ();
+    public Reference () {
+        mCounter = 0;
     }
 
-
-    @Override
-    public void processNewNode (String name) {
-        mUnseenNodes.add (name);
+    public Reference advance () {
+        ++mCounter;
+        return this;
     }
-
+    
     @Override
-    public void processAtNode (String name) {
-        mUnseenNodes.remove (name);
-        mDone = mUnseenNodes.isEmpty ();
+    public String toString () {
+        return Integer.toString (mCounter);
     }
 }

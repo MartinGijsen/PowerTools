@@ -1,4 +1,4 @@
-/* Copyright 2012 by Martin Gijsen (www.DeAnalist.nl)
+/* Copyright 2014 by Martin Gijsen (www.DeAnalist.nl)
  *
  * This file is part of the PowerTools engine.
  *
@@ -16,20 +16,16 @@
  * along with the PowerTools engine. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.powertools.engine.fitnesse;
+package org.powertools.engine.instructions;
+
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 
-import fit.Fixture;
-import fit.Parse;
-
-
-public final class DataFixture extends Fixture {
-    public DataFixture () {
-        super ();
-    }
-
-    @Override
-    public void doTable (Parse table) {
-        FitNesseEngine.getInstance ().run (this, table);
+public class InstructionSetFactoryTest {
+    @Test
+    public void testCreateClassInstructionSet () {
+        InstructionSetFactory factory = new InstructionSetFactory ();
+        assertNotNull (factory.createClassInstructionSet ("", null));
     }
 }

@@ -34,7 +34,7 @@ public class InstructionsTest {
 
     @Test
     public void testAddInstructionSet () {
-        Instructions instructions = new Instructions (null);
+        Instructions instructions = new Instructions (null, null);
         try {
             instructions.getExecutor (INSTRUCTION_NAME);
             fail ("no exception");
@@ -57,7 +57,7 @@ public class InstructionsTest {
 
     @Test
     public void testAddInstructionSetWithSameInstruction () {
-        Instructions instructions = new Instructions (null);
+        Instructions instructions = new Instructions (null, null);
         instructions.addInstructionSet (new InstructionSetImpl ("set 1"));
         instructions.addInstructionSet (new InstructionSetImpl ("set 2"));
         try {
@@ -70,7 +70,7 @@ public class InstructionsTest {
 
     @Test
     public void testAddInstructionSetTwice () {
-        Instructions instructions = new Instructions (null);
+        Instructions instructions = new Instructions (null, null);
         instructions.addInstructionSet (new InstructionSetImpl (INSTRUCTION_SET_NAME));
         try {
             instructions.addInstructionSet (new InstructionSetImpl (INSTRUCTION_SET_NAME));
@@ -84,14 +84,14 @@ public class InstructionsTest {
     public void testAddProcedure () {
         String PROCEDURE_NAME = "procedure name";
         Procedure procedure = new Procedure (PROCEDURE_NAME);
-        Instructions instructions = new Instructions (null);
+        Instructions instructions = new Instructions (null, null);
         instructions.addProcedure (procedure);
         assertTrue (instructions.getExecutor (PROCEDURE_NAME) instanceof ProcedureExecutor);
     }
 
     @Test
     public void testCleanup () {
-        Instructions instructions         = new Instructions (null);
+        Instructions instructions         = new Instructions (null, null);
         InstructionSetImpl instructionSet = new InstructionSetImpl ("instruction set name");
         instructions.addInstructionSet (instructionSet);
         assertFalse (instructionSet.isCleanupCalled ());

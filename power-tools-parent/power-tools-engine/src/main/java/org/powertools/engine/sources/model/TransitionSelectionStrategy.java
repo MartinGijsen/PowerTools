@@ -1,4 +1,4 @@
-/* Copyright 2012 by Martin Gijsen (www.DeAnalist.nl)
+/* Copyright 2013-2014 by Martin Gijsen (www.DeAnalist.nl)
  *
  * This file is part of the PowerTools engine.
  *
@@ -16,20 +16,13 @@
  * along with the PowerTools engine. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.powertools.engine.fitnesse;
+package org.powertools.engine.sources.model;
 
 
-import fit.Fixture;
-import fit.Parse;
-
-
-public final class InstructionFixture extends Fixture {
-    public InstructionFixture () {
-        super ();
-    }
-
-    @Override
-    public void doTable (Parse table) {
-        FitNesseEngine.getInstance ().run (this, table);
-    }
+/*
+ * The EdgeSelectionStrategy selects an edge out of the current node in a model.
+ */
+interface TransitionSelectionStrategy {
+    String getDescription ();
+    Transition selectTransition (DirectedGraph graph, State currentState);
 }

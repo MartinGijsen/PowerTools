@@ -16,23 +16,29 @@
  * along with the PowerTools engine. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.powertools.engine.fitnesse;
+package org.powertools.engine.fitnesse.sources;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.powertools.engine.sources.TestLineImpl;
+import org.powertools.engine.TestRunResultPublisher;
+import org.powertools.engine.symbol.Scope;
 
 import fit.Fixture;
 import fit.Parse;
-import org.powertools.engine.symbol.Scope;
+import org.powertools.engine.fitnesse.Reference;
 
 
-final class DataSource extends BaseTestSource {
+final class DataSource extends FitNesseTestSource {
     private String mInstructionName;
 
-    DataSource (Fixture fixture, Parse table, Scope scope, String logFilePath) {
-        super (fixture, table.parts, scope, logFilePath);
+    DataSource (Fixture fixture, Parse table, Scope scope, String logFilePath, TestRunResultPublisher publisher, Reference reference) {
+        super (fixture, table, scope, logFilePath, publisher, reference);
+    }
+
+    DataSource (Parse table, Scope scope, String logFilePath, TestRunResultPublisher publisher, Reference reference) {
+        super (table, scope, logFilePath, publisher, reference);
     }
 
 
@@ -46,7 +52,7 @@ final class DataSource extends BaseTestSource {
         mRow = mRow.more;
         if (mRow != null) {
             fillDataTestLine ();
-            skipLinkingToLogFile ();
+//            skipLinkingToLogFile ();
             mPublisher.publishTestLine (mTestLine);
 
             int nrOfParts                   = mTestLine.getNrOfParts ();
@@ -93,5 +99,4 @@ final class DataSource extends BaseTestSource {
 
         return null;
     }
-
 }

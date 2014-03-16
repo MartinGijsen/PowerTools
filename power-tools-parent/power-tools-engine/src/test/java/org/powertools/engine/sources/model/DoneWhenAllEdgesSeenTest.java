@@ -25,15 +25,15 @@ import static org.junit.Assert.*;
 public class DoneWhenAllEdgesSeenTest {
     @Test
     public void testProcessNewEdgeProcessAtEdge () {
-        DoneWhenAllEdgesSeen condition = new DoneWhenAllEdgesSeen ();
+        DoneWhenAllTransitionsSeen condition = new DoneWhenAllTransitionsSeen ();
         assertFalse (condition.isSatisfied ());
-        condition.processNewEdge ("node 1", "node 2");
-        condition.processNewEdge ("node 2", "node 1");
+        condition.processNewTransition ("node 1", "node 2");
+        condition.processNewTransition ("node 2", "node 1");
         assertFalse (condition.isSatisfied ());
-        condition.processAtEdge ("node 1", "node 2");
+        condition.processAtTransition ("node 1", "node 2");
         assertFalse (condition.isSatisfied ());
-        condition.processAtEdge ("node 2", "node 1");
+        condition.processAtTransition ("node 2", "node 1");
         assertTrue (condition.isSatisfied ());
-        condition.processAtEdge ("node 1", "node 2");
+        condition.processAtTransition ("node 1", "node 2");
     }
 }

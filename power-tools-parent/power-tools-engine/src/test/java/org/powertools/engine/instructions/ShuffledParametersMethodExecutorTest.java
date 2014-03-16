@@ -34,7 +34,7 @@ public class ShuffledParametersMethodExecutorTest {
     @Test
     public void testShuffledParametersMethodExecutor_tooFew () throws NoSuchMethodException {
         try {
-            Method method                     = mInstructionSet.getClass ().getMethod ("Too_Few_", new Class<?>[] { String.class, String.class });
+            Method method                             = mInstructionSet.getClass ().getMethod ("Too_Few_", new Class<?>[] { String.class, String.class });
             ShuffledParametersMethodExecutor executor = new ShuffledParametersMethodExecutor (mInstructionSet, method);
             fail ("no exception");
         } catch (ExecutionException ee) {
@@ -45,7 +45,7 @@ public class ShuffledParametersMethodExecutorTest {
     @Test
     public void testShuffledParametersMethodExecutor_tooMany () throws NoSuchMethodException {
         try {
-            Method method                     = mInstructionSet.getClass ().getMethod ("Too_Many_", new Class<?>[] { String.class, String.class });
+            Method method                             = mInstructionSet.getClass ().getMethod ("Too_Many_", new Class<?>[] { String.class, String.class });
             ShuffledParametersMethodExecutor executor = new ShuffledParametersMethodExecutor (mInstructionSet, method);
             fail ("no exception");
         } catch (ExecutionException ee) {
@@ -56,7 +56,7 @@ public class ShuffledParametersMethodExecutorTest {
     @Test
     public void testShuffledParametersMethodExecutor_repeatedParameter () throws NoSuchMethodException {
         try {
-            Method method                     = mInstructionSet.getClass ().getMethod ("Repeated_Parameter_", new Class<?>[] { String.class, String.class });
+            Method method                             = mInstructionSet.getClass ().getMethod ("Repeated_Parameter_", new Class<?>[] { String.class, String.class });
             ShuffledParametersMethodExecutor executor = new ShuffledParametersMethodExecutor (mInstructionSet, method);
             fail ("no exception");
         } catch (ExecutionException ee) {
@@ -66,9 +66,9 @@ public class ShuffledParametersMethodExecutorTest {
 
     @Test
     public void testGetArguments () throws NoSuchMethodException {
-        Method method                     = mInstructionSet.getClass ().getMethod ("Instruction_Name_", new Class<?>[] { String.class, String.class });
+        Method method                             = mInstructionSet.getClass ().getMethod ("Instruction_Name_", new Class<?>[] { String.class, String.class });
         ShuffledParametersMethodExecutor executor = new ShuffledParametersMethodExecutor (mInstructionSet, method);
-        TestLine testLine                 = new TestLineImpl (new String[] { "", "a", "b" });
+        TestLine testLine                         = new TestLineImpl (new String[] { "", "a", "b" });
         executor.getArguments (testLine);
         assertEquals ("b", executor.mArguments[0]);
         assertEquals ("a", executor.mArguments[1]);

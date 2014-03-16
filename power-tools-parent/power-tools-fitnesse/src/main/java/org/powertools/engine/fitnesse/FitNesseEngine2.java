@@ -23,10 +23,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-import org.powertools.engine.fitnesse.fixtures.TestCaseFixture;
-import org.powertools.engine.fitnesse.fixtures.ScenarioFixture;
-import org.powertools.engine.fitnesse.fixtures.InstructionFixture;
-import org.powertools.engine.fitnesse.fixtures.DataFixture;
 import org.powertools.engine.fitnesse.sources.InstructionSource;
 import org.powertools.engine.fitnesse.sources.FitNesseTestSource;
 import org.powertools.engine.fitnesse.sources.TestSourceFactory;
@@ -36,22 +32,23 @@ import org.powertools.engine.core.Engine;
 import org.powertools.engine.core.RunTimeImpl;
 import org.powertools.engine.reports.ReportFactory;
 import org.powertools.engine.sources.Procedure;
+import org.powertools.engine.symbol.Scope;
 
 import fit.Parse;
+import fitnesse.testsystems.TestSummary;
 
 
-public final class FitNesseEngine extends Engine {
-    private static final FitNesseEngine mTheOne = new FitNesseEngine ();
-
+public final class FitNesseEngine2 extends Engine {
     private final TestSourceFactory mSourceFactory;
     private final String mLogFilePath;
-    private final FitNesseReporter mFitNesseReporter;
+    private final PowerToolsReporter mFitNesseReporter;
+    private final TestSummary mSummary;
     
     private Reference mReference;
 
 
-    private FitNesseEngine () {
-        super (new RunTimeImpl (new Context (FitNesse.ROOT_DIRECTORY + "files/testResults/")));
+    FitNesseEngine2 () {
+        super (new RunTimeImpl (new Context (FitNesse.ROOT_DIRECTORY + "files/testResults")));
 
         //ReportFactory.createConsole ();
         mLogFilePath = mRunTime.getContext ().getFullLogFilePath ();
@@ -59,13 +56,13 @@ public final class FitNesseEngine extends Engine {
         if (!new ReportFactory (mPublisher).createTestCaseReport (mRunTime.getContext ())) {
             reportError ("could not open test case report");
         }
-        mFitNesseReporter = new FitNesseReporter ();
+        mSummary          = new TestSummary ();
+        mFitNesseReporter = new PowerToolsReporter (mSummary);
         mPublisher.subscribeToTestResults (mFitNesseReporter);
 
         registerBuiltinInstructions ();
 
         mPublisher.start (mRunTime.getContext ().getStartTime ());
-        // TODO: send stop signal also, once integration with Fit is improved
         
         mSourceFactory = new TestSourceFactory ();
     }
@@ -85,36 +82,47 @@ public final class FitNesseEngine extends Engine {
         }
     }
 
-    public static FitNesseEngine getInstance () {
-        return mTheOne;
+    void executeTable (Parse table) {
+        String tableType = getTableType (table);
+        if ("instruction".equalsIgnoreCase (tableType)) {
+            prepareInstructionTable (table);
+        } else {
+            FitNesseTestSource source = createSource (tableType, table);
+            mFitNesseReporter.setSource (source);
+            mRunTime.invokeSource (source);
+        }
+        run ();
     }
 
-    public void run (InstructionFixture fixture, Parse table) {
-        InstructionSource source = mSourceFactory.createInstructionSource (fixture, table, mRunTime.getGlobalScope (), mLogFilePath, mPublisher, mReference);
+    private String getTableType (Parse table) {
+        // the table type is in the first cell of the first line
+        return table.parts.parts.body;
+    }
+
+    private FitNesseTestSource createSource (String tableType, Parse table) {
+        Scope globalScope = mRunTime.getGlobalScope ();
+        if ("scenario".equalsIgnoreCase (tableType)) {
+            return mSourceFactory.createScenarioSource (table, globalScope, mLogFilePath, mPublisher, mReference);
+        } else if ("data".equalsIgnoreCase (tableType)) {
+            return mSourceFactory.createDataSource (table, globalScope, mLogFilePath, mPublisher, mReference);
+        } else if ("testcase".equalsIgnoreCase (tableType) || "test case".equalsIgnoreCase (tableType)) {
+            return mSourceFactory.createTestCaseSource (table, globalScope, mLogFilePath, mPublisher, mReference);
+        } else {
+            return mSourceFactory.createDummySource (table, mLogFilePath, mPublisher, mReference);
+        }
+    }
+
+    private void prepareInstructionTable (Parse table) {
+        InstructionSource source = mSourceFactory.createInstructionSource (table, mRunTime.getGlobalScope (), mLogFilePath, mPublisher, mReference);
         mFitNesseReporter.setSource (source);
         mRunTime.invokeSource (source);
         Procedure procedure = source.getProcedure ();
         if (procedure != null) {
             addProcedure (procedure);
         }
-        run ();
     }
-
-    public void run (ScenarioFixture fixture, Parse table) {
-        run (mSourceFactory.createScenarioSource (fixture, table, mRunTime.getGlobalScope (), mLogFilePath, mPublisher, mReference));
-    }
-
-    public void run (TestCaseFixture fixture, Parse table) {
-        run (mSourceFactory.createTestCaseSource (fixture, table, mRunTime.getGlobalScope (), mLogFilePath, mPublisher, mReference));
-    }
-
-    public void run (DataFixture fixture, Parse table) {
-        run (mSourceFactory.createDataSource (fixture, table, mRunTime.getGlobalScope (), mLogFilePath, mPublisher, mReference));
-    }
-
-    private void run (FitNesseTestSource source) {
-        mFitNesseReporter.setSource (source);
-        mRunTime.invokeSource (source);
-        run ();
+    
+    TestSummary getSummary () {
+        return mSummary;
     }
 }

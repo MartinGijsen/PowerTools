@@ -1,4 +1,4 @@
-/* Copyright 2012 by Martin Gijsen (www.DeAnalist.nl)
+/* Copyright 2012-2014 by Martin Gijsen (www.DeAnalist.nl)
  *
  * This file is part of the PowerTools engine.
  *
@@ -20,13 +20,14 @@ package org.powertools.engine.fitnesse;
 
 import java.util.Date;
 
+import org.powertools.engine.fitnesse.sources.FitNesseTestSource;
 import org.powertools.engine.reports.TestResultSubscriber;
 
 
-final class FitNesseReporter implements TestResultSubscriber {
-    private BaseTestSource mSource;
-    private int mLevel;
-    private boolean mAnyErrors;
+class FitNesseReporter implements TestResultSubscriber {
+    protected FitNesseTestSource mSource;
+    protected int mLevel;
+    protected boolean mAnyErrors;
 
 
     FitNesseReporter () {
@@ -35,7 +36,7 @@ final class FitNesseReporter implements TestResultSubscriber {
     }
 
 
-    void setSource (BaseTestSource source) {
+    public final void setSource (FitNesseTestSource source) {
         mSource = source;
     }
 
@@ -65,18 +66,8 @@ final class FitNesseReporter implements TestResultSubscriber {
     }
 
 
-    // ignored events
     @Override
-    public void start (Date dateTime) {
-        // ignored
-    }
-    @Override
-    public void finish (Date dateTime) {
-        // ignored
-    }
-
-    @Override
-    public void processIncreaseLevel () {
+    public final void processIncreaseLevel () {
         ++mLevel;
     }
 
@@ -85,18 +76,29 @@ final class FitNesseReporter implements TestResultSubscriber {
         --mLevel;
     }
 
+
+    // ignored events
     @Override
-    public void processInfo (String message) {
+    public final void start (Date dateTime) {
+        // ignored
+    }
+    @Override
+    public final void finish (Date dateTime) {
         // ignored
     }
 
     @Override
-    public void processLink (String url) {
+    public final void processInfo (String message) {
         // ignored
     }
 
     @Override
-    public void processWarning (String warning) {
+    public final void processLink (String url) {
+        // ignored
+    }
+
+    @Override
+    public final void processWarning (String warning) {
         // ignored
     }
 }

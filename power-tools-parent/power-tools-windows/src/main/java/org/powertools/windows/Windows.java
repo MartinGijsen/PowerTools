@@ -45,7 +45,7 @@ public class Windows {
     private static final int CLICK_TWICE = 2;
 
     
-    private final static AutoItX mAutoIt = AutoItX.INSTANCE;
+    private static final AutoItX mAutoIt = AutoItX.INSTANCE;
 
     
     public boolean clickControl (String windowTitle, String windowText, WString id, WString button) {

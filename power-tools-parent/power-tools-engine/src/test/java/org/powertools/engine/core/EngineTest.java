@@ -186,7 +186,7 @@ public class EngineTest {
 		private Iterator<TestLineImpl> mIter;
 		
 		TestSourceImpl () {
-			super (null);
+			super (null, null);
 			mTestLines = new LinkedList<TestLineImpl> ();
 		}
 		

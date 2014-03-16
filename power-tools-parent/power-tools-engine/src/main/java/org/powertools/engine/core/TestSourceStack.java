@@ -35,14 +35,21 @@ import org.powertools.engine.symbol.Scope;
 final class TestSourceStack {
     private final Stack<TestSource> mSourceStack;
     private final Scope mGlobalScope;
+    
+    private boolean mAborting;
 
 
     TestSourceStack () {
         mSourceStack = new Stack<TestSource> ();
         mGlobalScope = new Scope (null);
+        mAborting    = false;
     }
 
 
+    void abort () {
+        mAborting = true;
+    }
+    
     TestSource getCurrentTestSource () {
         return mSourceStack.peek ();
     }
@@ -72,11 +79,15 @@ final class TestSourceStack {
 
     TestLineImpl getTestLine () {
         while (!mSourceStack.isEmpty ()) {
-            TestLineImpl testLine = mSourceStack.peek ().getTestLine ();
-            if (testLine != null) {
-                return testLine;
-            } else {
+            if (mAborting) {
                 popTestSource ();
+            } else {
+                TestLineImpl testLine = mSourceStack.peek ().getTestLine ();
+                if (testLine != null) {
+                    return testLine;
+                } else {
+                    popTestSource ();
+                }
             }
         }
         return null;

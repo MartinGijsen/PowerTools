@@ -1,4 +1,4 @@
-/* Copyright 2013-2014 by Martin Gijsen (www.DeAnalist.nl)
+/* Copyright 2014 by Martin Gijsen (www.DeAnalist.nl)
  *
  * This file is part of the PowerTools engine.
  *
@@ -16,21 +16,9 @@
  * along with the PowerTools engine. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.powertools.engine.sources.model;
+package org.powertools.engine.fitnesse;
 
 
-final class DoneWhenInEndNode extends DoneCondition {
-    private static final String DESCRIPTION = "stop after reaching an end node";
-
-
-    DoneWhenInEndNode () {
-        super (DESCRIPTION);
-    }
-
-    @Override
-    public void processAtNode (String name) {
-        if (name.startsWith (Model.END_NODE_LABEL + " (")) {
-            mDone = true;
-        }
-    }
+public interface FitNesse {
+    String ROOT_DIRECTORY = "FitNesseRoot/";
 }

@@ -30,44 +30,44 @@ import org.powertools.engine.TestRunResultPublisher;
 import org.powertools.engine.symbol.Scope;
 
 
-public class RandomEdgeSelectorTest {
+public class RandomTransitionSelectorTest {
     @Test
     public void testGetDescription () {
-        assertTrue (new RandomEdgeSelector (null, null, null).getDescription ().startsWith (RandomEdgeSelector.NAME));
+        assertTrue (new RandomTransitionSelector (null, null, null).getDescription ().startsWith (RandomTransitionSelector.NAME));
     }
 
     @Test
-    public void testSelectEdge_doneWithSubgraph () {
+    public void testSelectTransition_doneWithSubgraph () {
         DirectedGraph mainGraph     = new DirectedGraphImpl ("main graph");
         DirectedGraph subGraph      = new DirectedGraphImpl ("subgraph");
-        Node endNode                = subGraph.addNode ("node name");
-        RandomEdgeSelector selector = new RandomEdgeSelector (mainGraph, null, null);
-        assertNull (selector.selectEdge (subGraph, endNode));
+        State endState              = subGraph.addState ("state name");
+        RandomTransitionSelector selector = new RandomTransitionSelector (mainGraph, null, null);
+        assertNull (selector.selectTransition (subGraph, endState));
     }
     
     @Test
-    public void testSelectEdge_conditionTrue () {
+    public void testSelectTransition_conditionTrue () {
         DirectedGraph mainGraph     = new DirectedGraphImpl ("main graph");
-        Node node1                  = mainGraph.addNode ("node 1");
-        Node node2                  = mainGraph.addNode ("node 2");
-        Edge edge                   = mainGraph.addEdge (node1, node2);
-        edge.mCondition             = "?true";
+        State state1                = mainGraph.addState ("state 1");
+        State state2                = mainGraph.addState ("state 2");
+        Transition transition       = mainGraph.addTransition (state1, state2);
+        transition.mCondition       = "?true";
         RunTime runTime             = new RunTimeImpl ("true");
-        RandomEdgeSelector selector = new RandomEdgeSelector (mainGraph, runTime, new DefaultRandomNumberGenerator ());
-        assertEquals (edge, selector.selectEdge (mainGraph, node1));
+        RandomTransitionSelector selector = new RandomTransitionSelector (mainGraph, runTime, new DefaultRandomNumberGenerator ());
+        assertEquals (transition, selector.selectTransition (mainGraph, state1));
     }
 
     @Test
-    public void testSelectEdge_conditionFalse () {
+    public void testSelectTransition_conditionFalse () {
         DirectedGraph mainGraph     = new DirectedGraphImpl ("main graph");
-        Node node1                  = mainGraph.addNode ("node 1");
-        Node node2                  = mainGraph.addNode ("node 2");
-        Edge edge                   = mainGraph.addEdge (node1, node2);
-        edge.mCondition             = "?false";
+        State state1                = mainGraph.addState ("state 1");
+        State state2                = mainGraph.addState ("state 2");
+        Transition transition       = mainGraph.addTransition (state1, state2);
+        transition.mCondition       = "?false";
         RunTime runTime             = new RunTimeImpl ("false");
-        RandomEdgeSelector selector = new RandomEdgeSelector (mainGraph, runTime, new DefaultRandomNumberGenerator ());
+        RandomTransitionSelector selector = new RandomTransitionSelector (mainGraph, runTime, new DefaultRandomNumberGenerator ());
         try {
-            selector.selectEdge (mainGraph, node1);
+            selector.selectTransition (mainGraph, state1);
             fail ("no exception");
         } catch (ExecutionException ee) {
             // ok
@@ -75,48 +75,48 @@ public class RandomEdgeSelectorTest {
     }
 
     @Test
-    public void testSelectEdge_notDoneWithMainGraph () {
-        DirectedGraph mainGraph     = new DirectedGraphImpl ("main graph");
-        Node node1                  = mainGraph.addNode ("node 1");
-        Node node2                  = mainGraph.addNode ("node 2");
-        Node node3                  = mainGraph.addNode ("node 3");
-        Edge edge1                  = mainGraph.addEdge (node1, node2);
-        Edge edge2                  = mainGraph.addEdge (node1, node3);
-        RandomEdgeSelector selector = new RandomEdgeSelector (mainGraph, null, new NumberGeneratorThatReturnsOne ());
-        assertNotNull (selector.selectEdge (mainGraph, node1));
+    public void testSelectTransition_notDoneWithMainGraph () {
+        DirectedGraph mainGraph           = new DirectedGraphImpl ("main graph");
+        State state1                      = mainGraph.addState ("state 1");
+        State state2                      = mainGraph.addState ("state 2");
+        State state3                      = mainGraph.addState ("state 3");
+        Transition transition1            = mainGraph.addTransition (state1, state2);
+        Transition transition2            = mainGraph.addTransition (state1, state3);
+        RandomTransitionSelector selector = new RandomTransitionSelector (mainGraph, null, new NumberGeneratorThatReturnsOne ());
+        assertNotNull (selector.selectTransition (mainGraph, state1));
     }
     
     @Test
-    public void testSelectEdge_notDoneWithSubgraph () {
-        DirectedGraph mainGraph     = new DirectedGraphImpl ("main graph");
-        DirectedGraph subGraph      = new DirectedGraphImpl ("subgraph");
-        Node node1                  = subGraph.addNode ("node 1");
-        Node node2                  = subGraph.addNode ("node 2");
-        Node node3                  = subGraph.addNode ("node 3");
-        Edge edge1                  = subGraph.addEdge (node1, node2);
-        Edge edge2                  = subGraph.addEdge (node1, node3);
-        RandomEdgeSelector selector = new RandomEdgeSelector (mainGraph, null, new NumberGeneratorThatReturnsOne ());
-        assertNotNull (selector.selectEdge (subGraph, node1));
+    public void testSelectTransition_notDoneWithSubgraph () {
+        DirectedGraph mainGraph           = new DirectedGraphImpl ("main graph");
+        DirectedGraph subGraph            = new DirectedGraphImpl ("subgraph");
+        State state1                      = subGraph.addState ("state 1");
+        State state2                      = subGraph.addState ("state 2");
+        State state3                      = subGraph.addState ("state 3");
+        Transition transition1            = subGraph.addTransition (state1, state2);
+        Transition transition2            = subGraph.addTransition (state1, state3);
+        RandomTransitionSelector selector = new RandomTransitionSelector (mainGraph, null, new NumberGeneratorThatReturnsOne ());
+        assertNotNull (selector.selectTransition (subGraph, state1));
     }
     
     @Test
-    public void testSelectEdge_loopToStartNode () {
-        DirectedGraph mainGraph     = new DirectedGraphImpl ("main graph");
-        Node startNode              = mainGraph.addNode ("start node");
-        Node endNode                = mainGraph.addNode ("end node");
-        endNode.mLabel              = Model.END_NODE_LABEL;
-        Edge edge                   = mainGraph.addEdge (startNode, endNode);
-        RandomEdgeSelector selector = new RandomEdgeSelector (mainGraph, null, new NumberGeneratorThatReturnsOne ());
-        assertNotNull (selector.selectEdge (mainGraph, endNode));
+    public void testSelectTransition_loopToStartState () {
+        DirectedGraph mainGraph           = new DirectedGraphImpl ("main graph");
+        State startState                  = mainGraph.addState ("start state");
+        State endState                    = mainGraph.addState ("end state");
+        endState.mLabel                   = Model.END_STATE_LABEL;
+        Transition transition             = mainGraph.addTransition (startState, endState);
+        RandomTransitionSelector selector = new RandomTransitionSelector (mainGraph, null, new NumberGeneratorThatReturnsOne ());
+        assertNotNull (selector.selectTransition (mainGraph, endState));
     }
     
     @Test
-    public void testSelectEdge_notDoneButNoNextNode () {
+    public void testSelectTransition_notDoneButNoNextState () {
         DirectedGraph mainGraph     = new DirectedGraphImpl ("main graph");
-        Node startNode              = mainGraph.addNode ("start node");
-        RandomEdgeSelector selector = new RandomEdgeSelector (mainGraph, null, null);
+        State startState            = mainGraph.addState ("start state");
+        RandomTransitionSelector selector = new RandomTransitionSelector (mainGraph, null, null);
         try {
-            selector.selectEdge (mainGraph, startNode);
+            selector.selectTransition (mainGraph, startState);
             fail ("no exception");
         } catch (ExecutionException ee) {
             // ok

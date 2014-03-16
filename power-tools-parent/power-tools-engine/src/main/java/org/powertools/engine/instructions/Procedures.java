@@ -20,6 +20,7 @@ package org.powertools.engine.instructions;
 
 import java.util.HashMap;
 import java.util.Map;
+import org.powertools.engine.TestRunResultPublisher;
 
 import org.powertools.engine.sources.Procedure;
 
@@ -32,11 +33,13 @@ public final class Procedures implements InstructionSet {
 
     private final Map<String, Procedure> mProcedures;
     private final ProcedureRunner mRunner;
+    private final TestRunResultPublisher mPublisher;
 
 
-    public Procedures (ProcedureRunner runner) {
+    public Procedures (ProcedureRunner runner, TestRunResultPublisher publisher) {
         mProcedures = new HashMap<String, Procedure> ();
         mRunner     = runner;
+        mPublisher  = publisher;
     }
 
 
@@ -57,7 +60,7 @@ public final class Procedures implements InstructionSet {
     @Override
     public Executor getExecutor (String instructionName) {
         Procedure procedure = mProcedures.get (instructionName);
-        return procedure != null ? new ProcedureExecutor (procedure, mRunner) : null;
+        return procedure != null ? new ProcedureExecutor (procedure, mRunner, mPublisher) : null;
     }
 
     @Override

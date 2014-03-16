@@ -53,19 +53,19 @@ abstract class DoneCondition implements ModelSubscriber {
     }
 
     
-    public void processNewNode (String name) {
+    public void processNewState (String name) {
         // ignore
     }
 
-    public void processNewEdge (String sourceNodeName, String targetNodeName) {
+    public void processNewTransition (String sourceNodeName, String targetNodeName) {
         // ignore
     }
 
-    public void processAtNode (String name) {
+    public void processAtState (String name) {
         // ignore
     }
 
-    public void processAtEdge (String sourceNodeName, String targetNodeName) {
+    public void processAtTransition (String sourceNodeName, String targetNodeName) {
         // ignore
     }
 }

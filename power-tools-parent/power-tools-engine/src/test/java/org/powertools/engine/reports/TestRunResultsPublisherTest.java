@@ -37,7 +37,7 @@ public class TestRunResultsPublisherTest {
 
 	@Before
 	public void setUp () throws Exception {
-		mPublisher				= TestRunResultPublisherImpl.getInstance ();
+		mPublisher				= new TestRunResultPublisherImpl ();
 		mTestCasesSubscriber	= new Subscriber ();
 		mTestLinesSubscriber	= new Subscriber ();
 		mTestResultsSubscriber	= new Subscriber ();
@@ -61,7 +61,7 @@ public class TestRunResultsPublisherTest {
 
 	@Test
 	public void testGetInstance () {
-		assertNotNull (mPublisher);
+		assertNotNull (TestRunResultPublisherImpl.getInstance ());
 	}
 
 	@Test
@@ -142,7 +142,7 @@ public class TestRunResultsPublisherTest {
 	@Test
 	public void testNoSubscribeToModel () {
 		Subscriber subscriber = new Subscriber ();
-		mPublisher.publishNewEdge (null, null);
+		mPublisher.publishNewTransition (null, null);
 		assertEquals (Subscriber.Method.NONE, subscriber.getLastMethod ());
 	}
 
@@ -150,7 +150,7 @@ public class TestRunResultsPublisherTest {
 	public void testSubscribeToModel () {
 		Subscriber subscriber = new Subscriber ();
 		mPublisher.subscribeToModel (subscriber);
-		mPublisher.publishAtNode (null);
+		mPublisher.publishAtState (null);
 		assertEquals (Subscriber.Method.PROCESS_AT_NODE, subscriber.getLastMethod ());
 	}
 
@@ -160,7 +160,7 @@ public class TestRunResultsPublisherTest {
 		mPublisher.subscribeToModel (subscriber);
 		mPublisher.subscribeToModel (subscriber);
 		mPublisher.subscribeToModel (null);
-		mPublisher.publishAtEdge (null, null);
+		mPublisher.publishAtTransition (null, null);
 		assertEquals (Subscriber.Method.PROCESS_AT_EDGE, subscriber.getLastMethod ());
 	}
 
@@ -324,7 +324,7 @@ public class TestRunResultsPublisherTest {
 
 	@Test
 	public void testPublishNewNode () {
-		mPublisher.publishNewNode (null);
+		mPublisher.publishNewState (null);
 		assertEquals (Subscriber.Method.NONE, mTestCasesSubscriber.getLastMethod ());
 		assertEquals (Subscriber.Method.NONE, mTestLinesSubscriber.getLastMethod ());
 		assertEquals (Subscriber.Method.NONE, mTestResultsSubscriber.getLastMethod ());
@@ -333,7 +333,7 @@ public class TestRunResultsPublisherTest {
 
 	@Test
 	public void testPublishNewEdge () {
-		mPublisher.publishNewEdge (null, null);
+		mPublisher.publishNewTransition (null, null);
 		assertEquals (Subscriber.Method.NONE, mTestCasesSubscriber.getLastMethod ());
 		assertEquals (Subscriber.Method.NONE, mTestLinesSubscriber.getLastMethod ());
 		assertEquals (Subscriber.Method.NONE, mTestResultsSubscriber.getLastMethod ());
@@ -342,7 +342,7 @@ public class TestRunResultsPublisherTest {
 
 	@Test
 	public void testPublishAtNode () {
-		mPublisher.publishAtNode (null);
+		mPublisher.publishAtState (null);
 		assertEquals (Subscriber.Method.NONE, mTestCasesSubscriber.getLastMethod ());
 		assertEquals (Subscriber.Method.NONE, mTestLinesSubscriber.getLastMethod ());
 		assertEquals (Subscriber.Method.NONE, mTestResultsSubscriber.getLastMethod ());
@@ -351,7 +351,7 @@ public class TestRunResultsPublisherTest {
 
 	@Test
 	public void testPublishAtEdge () {
-		mPublisher.publishAtEdge (null, null);
+		mPublisher.publishAtTransition (null, null);
 		assertEquals (Subscriber.Method.NONE, mTestCasesSubscriber.getLastMethod ());
 		assertEquals (Subscriber.Method.NONE, mTestLinesSubscriber.getLastMethod ());
 		assertEquals (Subscriber.Method.NONE, mTestResultsSubscriber.getLastMethod ());

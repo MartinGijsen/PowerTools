@@ -16,24 +16,39 @@
  * along with the PowerTools engine. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.powertools.engine.fitnesse;
+package org.powertools.engine.fitnesse.sources;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.powertools.engine.TestRunResultPublisher;
+import org.powertools.engine.fitnesse.Reference;
+import org.powertools.engine.symbol.Scope;
 
 import fit.Fixture;
 import fit.Parse;
-import org.powertools.engine.RunTime;
-import org.powertools.engine.symbol.Scope;
 
 
-final class TestCaseSource extends ScenarioSource {
-//    private final RunTime mRunTime;
+public final class TestCaseSource extends ScenarioSource {
     private final String[] mArgs;
 
-    TestCaseSource (Fixture fixture, Parse table, Scope scope, RunTime runTime, String logFilePath) {
-        super (fixture, table, scope, logFilePath);
-//        mRunTime = runTime;
-        mArgs    = fixture.getArgs ();
+    TestCaseSource (Fixture fixture, Parse table, Scope scope, String logFilePath, TestRunResultPublisher publisher, Reference reference) {
+        super (fixture, table, new Scope (scope), logFilePath, publisher, reference);
+        mArgs = getArgs (table);
     }
 
+    TestCaseSource (Parse table, Scope scope, String logFilePath, TestRunResultPublisher publisher, Reference reference) {
+        super (table, new Scope (scope), logFilePath, publisher, reference);
+        mArgs = getArgs (table);
+    }
+    
+    private String[] getArgs (Parse table) {
+        List<String> argumentList = new ArrayList<String> ();
+        for (Parse parameter = table.parts.parts.more; parameter != null; parameter = parameter.more) {
+            argumentList.add (parameter.text());
+        }
+        return argumentList.toArray (new String[argumentList.size ()]);
+    }
 
     @Override
     public void initialize () {
@@ -46,7 +61,6 @@ final class TestCaseSource extends ScenarioSource {
         if (mArgs.length > 2) {
             mPublisher.publishError ("too many arguments (test case name and description expected)");
         }
-        //TODO mRunTime.enterTestCase (id, description);
         mPublisher.publishEndOfTestLine ();
         mPublisher.publishTestCaseBegin (id, description);
     }

@@ -1,4 +1,4 @@
-/* Copyright 2014 by Martin Gijsen (www.DeAnalist.nl)
+/* Copyright 2012-2014 by Martin Gijsen (www.DeAnalist.nl)
  *
  * This file is part of the PowerTools engine.
  *
@@ -58,8 +58,8 @@ public interface TestRunResultPublisher {
     void publishValue (String expression, String value);
 
     // model events
-    void publishNewNode (String name);
-    void publishNewEdge (String sourceName, String targetName);
-    void publishAtNode (String name);
-    void publishAtEdge (String sourceName, String targetName);
+    void publishNewState (String name);
+    void publishNewTransition (String sourceName, String targetName);
+    void publishAtState (String name);
+    void publishAtTransition (String sourceName, String targetName);
 }

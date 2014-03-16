@@ -1,4 +1,4 @@
-/* Copyright 2014 by Martin Gijsen (www.DeAnalist.nl)
+/* Copyright 2012 by Martin Gijsen (www.DeAnalist.nl)
  *
  * This file is part of the PowerTools engine.
  *
@@ -16,20 +16,20 @@
  * along with the PowerTools engine. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.powertools.engine.fitnesse;
-
+package org.powertools.engine.fitnesse.fixtures;
 
 import fit.Fixture;
 import fit.Parse;
+import org.powertools.engine.fitnesse.FitNesseEngine;
 
 
-public final class CommentFixture extends Fixture {
-    public CommentFixture () {
+public final class ScenarioFixture extends Fixture {
+    public ScenarioFixture () {
         super ();
     }
 
     @Override
     public void doTable (Parse table) {
-        // ignore
+        FitNesseEngine.getInstance ().run (this, table);
     }
 }

@@ -22,6 +22,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.powertools.engine.TestLine;
+import org.powertools.engine.TestRunResultPublisher;
 import org.powertools.engine.symbol.Scope;
 
 
@@ -29,8 +30,8 @@ final class ProcedureTestSource extends TestSource {
     private final Iterator<List<String>> mInstructionIter;
 
 
-    ProcedureTestSource (Procedure procedure, Scope parentScope, TestLine testLine) {
-        super (new Scope (parentScope));
+    ProcedureTestSource (Procedure procedure, Scope parentScope, TestLine testLine, TestRunResultPublisher publisher) {
+        super (new Scope (parentScope), publisher);
         procedure.createParameters (mScope, testLine);
         mInstructionIter = procedure.instructionIterator ();
     }
@@ -48,8 +49,12 @@ final class ProcedureTestSource extends TestSource {
             mTestLine.setParts (mInstructionIter.next ());
             return mTestLine;
         } else {
-            mPublisher.publishDecreaseLevel ();
             return null;
         }
+    }
+
+    @Override
+    public void cleanup () {
+        mPublisher.publishDecreaseLevel ();
     }
 }

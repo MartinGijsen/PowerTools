@@ -115,7 +115,7 @@ public class TestSourceStackTest {
         private boolean mCreateCalled = false;
 		
 		TestSourceImpl (Scope scope) {
-			super (scope);
+			super (scope, null);
 		}
 
 		@Override

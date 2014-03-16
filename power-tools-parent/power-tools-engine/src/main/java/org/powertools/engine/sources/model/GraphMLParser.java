@@ -64,8 +64,8 @@ final class GraphMLParser extends DefaultHandler {
     private String mEdgeConditionKeyId;
     private String mEdgeActionKeyId;
 
-    private Node mLastNode;
-    private Edge mLastEdge;
+    private State mLastState;
+    private Transition mLastTransition;
     private String mKeyName;
 
     private static final Set<String> knownElements = new HashSet<String> ();
@@ -131,11 +131,11 @@ final class GraphMLParser extends DefaultHandler {
             handleKey (attributes);
         } else if ("node".equals (name)) {
             String nodeName = attributes.getValue (NODE_NAME_ATTRIBUTE_NAME);
-            mLastNode       = mGraph.addNode (nodeName);
+            mLastState       = mGraph.addState (nodeName);
         } else if ("edge".equals (name)) {
             String sourceName = attributes.getValue (EDGE_SOURCE_ATTRIBUTE_NAME);
             String targetName = attributes.getValue (EDGE_TARGET_ATTRIBUTE_NAME);
-            mLastEdge         = mGraph.addEdge (sourceName, targetName);
+            mLastTransition         = mGraph.addTransition (sourceName, targetName);
         } else if ("data".equals (name)) {
             mKeyName = attributes.getValue ("key");
         } else if (!knownElements.contains (name)) {
@@ -188,20 +188,20 @@ final class GraphMLParser extends DefaultHandler {
         String text = mElementStack.peek ().mText.trim ();
         if ("data".equals (name)) {
             if (mNodeActionKeyId != null && mNodeActionKeyId.equals (mKeyName)) {
-                mLastNode.mAction = text;
+                mLastState.mAction = text;
             } else if (mEdgeConditionKeyId != null && mEdgeConditionKeyId.equals (mKeyName)) {
-                mLastEdge.mCondition = text;
+                mLastTransition.mCondition = text;
             } else if (mEdgeActionKeyId != null && mEdgeActionKeyId.equals (mKeyName)) {
-                mLastEdge.mAction = text;
+                mLastTransition.mAction = text;
             }
             mKeyName = null;
         } else if ("NodeLabel".equals (name)) {
             if (!"".equals (text)) {
-                mLastNode.mLabel = text;
+                mLastState.mLabel = text;
             }
         } else if ("EdgeLabel".equals (name)) {
             if (!"".equals (text)) {
-                mLastEdge.mLabel = text;
+                mLastTransition.mLabel = text;
             }
         }
         mElementStack.pop ();

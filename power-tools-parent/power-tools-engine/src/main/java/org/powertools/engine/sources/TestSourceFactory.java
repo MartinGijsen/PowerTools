@@ -21,6 +21,7 @@ package org.powertools.engine.sources;
 import org.powertools.engine.ExecutionException;
 import org.powertools.engine.TestLine;
 import org.powertools.engine.RunTime;
+import org.powertools.engine.TestRunResultPublisher;
 import org.powertools.engine.instructions.ProcedureRunner;
 import org.powertools.engine.sources.ExcelTestSource.Names;
 import org.powertools.engine.sources.model.MainModel;
@@ -28,14 +29,14 @@ import org.powertools.engine.symbol.Scope;
 
 
 public final class TestSourceFactory {
-    public TestSource createExcelTestSource (String sourceName, Scope globalScope) {
+    public TestSource createExcelTestSource (String sourceName, Scope globalScope, TestRunResultPublisher publisher) {
         Names names = ExcelTestSource.createNamesFromSourceName (sourceName);
 
         String fileName = names.getFileName ();
         if (fileName.endsWith (".xls")) {
-            return XlsTestSource.createTestSource (fileName, names.getSheetName (), globalScope);
+            return XlsTestSource.createTestSource (fileName, names.getSheetName (), globalScope, publisher);
         } else if (fileName.endsWith (".xlsx")) {
-            return XlsxTestSource.createTestSource (fileName, names.getSheetName (), globalScope);
+            return XlsxTestSource.createTestSource (fileName, names.getSheetName (), globalScope, publisher);
         } else {
             throw new ExecutionException ("invalid file extension");
         }
@@ -45,7 +46,7 @@ public final class TestSourceFactory {
         return new ModelTestSource (new MainModel (path, fileName, selector, doneCondition, runTime), runTime, runner);
     }
 
-    public TestSource createProcedureTestSource (Procedure procedure, Scope parentScope, TestLine testLine) {
-        return new ProcedureTestSource (procedure, parentScope, testLine);
+    public TestSource createProcedureTestSource (Procedure procedure, Scope parentScope, TestLine testLine, TestRunResultPublisher publisher) {
+        return new ProcedureTestSource (procedure, parentScope, testLine, publisher);
     }
 }

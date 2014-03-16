@@ -1,4 +1,4 @@
-/* Copyright 2012-2014 by Martin Gijsen (www.DeAnalist.nl)
+/* Copyright 2014 by Martin Gijsen (www.DeAnalist.nl)
  *
  * This file is part of the PowerTools engine.
  *
@@ -16,36 +16,39 @@
  * along with the PowerTools engine. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.powertools.engine.fitnesse;
+package org.powertools.engine.fitnesse.sources;
 
+import org.powertools.engine.TestRunResultPublisher;
 import org.powertools.engine.sources.TestLineImpl;
 
-import fit.Fixture;
 import fit.Parse;
-import org.powertools.engine.symbol.Scope;
+import org.powertools.engine.fitnesse.Reference;
 
 
-class ScenarioSource extends BaseTestSource {
-    ScenarioSource (Fixture fixture, Parse table, Scope scope, String logFilePath) {
-        super (fixture, table.parts, scope, logFilePath);
+final class DummySource extends FitNesseTestSource {
+    DummySource (Parse table, String logFilePath, TestRunResultPublisher publisher, Reference reference) {
+        super (table, null, logFilePath, publisher, reference);
     }
 
 
     @Override
     public void initialize () {
-        processFixtureLine ();
+        mTestLine.createParts (1);
+        mTestLine.setPart (0, mRow.parts.text ());
+        linkToLogFile (mRow.parts);
+        mPublisher.publishTestLine (mTestLine);
+        mPublisher.publishError ("unknown table type");
+        if (mTestLine.getNrOfParts () != 1) {
+            mPublisher.publishError ("first line must have one cell");
+        }
+        mPublisher.publishEndOfTestLine ();
     }
 
     @Override
     public TestLineImpl getTestLine () {
         while ((mRow = mRow.more) != null) {
             mTestLine.setParts (readSentence (mRow.parts));
-            if (mTestLine.getPart (0).isEmpty ()) {
-                return mTestLine;
-            } else if (!mTestLine.isEmpty ()) {
-                linkToLogFile (mRow.parts);
-                return mTestLine;
-            }
+            mPublisher.publishCommentLine (mTestLine);
         }
 
         return null;

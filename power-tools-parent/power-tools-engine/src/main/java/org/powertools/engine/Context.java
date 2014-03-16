@@ -70,7 +70,7 @@ public class Context {
     public Context (Date startTime, String resultsBaseDirectory, String logFileName) {
         mStartTime = startTime;
 
-        mWorkingDirectory = resultsBaseDirectory;
+        mWorkingDirectory = resultsBaseDirectory + "/";
         if (mDefaulBaseDirectory == null) {
             mResultsBaseDirectory = resultsBaseDirectory + "/";
         } else {
@@ -93,7 +93,7 @@ public class Context {
 
     public Context (Date startTime, String workingDirectory, String resultsBaseDirectory, String logFileName) {
         mStartTime            = startTime;
-        mWorkingDirectory     = workingDirectory;
+        mWorkingDirectory     = workingDirectory + "/";
         mResultsBaseDirectory = resultsBaseDirectory + "/";
         mResultsDirectory     = mResultsBaseDirectory + mDateFormat.format (startTime) + "/";
         mLogFileName          = logFileName;
@@ -103,6 +103,10 @@ public class Context {
     
     public Date getStartTime () {
         return mStartTime;
+    }
+
+    public String getWorkingDirectory () {
+        return mWorkingDirectory;
     }
 
     public String getResultsBaseDirectory () {

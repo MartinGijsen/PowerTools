@@ -24,17 +24,17 @@ import org.powertools.engine.ExecutionException;
 
 
 /*
- * This edge selector uses 1000 as the fixed total weight for all edges.
- * The outgoing edges together must weigh 1000 if all edges have weights specified.
- * Edges without a weight weigh: remaining weight / nr of edges without a weight.
+ * This transition selector uses 1000 as the fixed total weight for all transitions.
+ * The outgoing transition together must weigh 1000 if all transition have weights specified.
+ * Transitions without a weight weigh: remaining weight / nr of transitions without a weight.
  */
-final class WeightedEdgeSelector implements EdgeSelectionStrategy {
+final class WeightedTransitionSelector implements TransitionSelectionStrategy {
     static final String NAME = "weighted";
 
-    private static final String DESCRIPTION = "a higher weight outgoing edge is more likely to be selected";
+    private static final String DESCRIPTION = "a higher weight outgoing transition is more likely to be selected";
 
 
-    WeightedEdgeSelector () {
+    WeightedTransitionSelector () {
         super ();
     }
 
@@ -44,26 +44,26 @@ final class WeightedEdgeSelector implements EdgeSelectionStrategy {
     }
 
     @Override
-    public Edge selectEdge (DirectedGraph graph, Node currentNode) {
-        Set<Edge> edges = graph.getEdges (currentNode);
-        if (!edges.isEmpty ()) {
-            return selectEdge (edges);
+    public Transition selectTransition (DirectedGraph graph, State currentState) {
+        Set<Transition> transitions = graph.getTransitions (currentState);
+        if (!transitions.isEmpty ()) {
+            return selectTransition (transitions);
 //      } else if (model.mCurrentNode.mLabel.equals (Model.END_NODE_LABEL)) {
 //          throw new Model.DoneException ();
         } else {
-            throw new ExecutionException (String.format ("no edges out of node %s", currentNode.getName ()));
+            throw new ExecutionException (String.format ("no transitions out of node %s", currentState.getName ()));
         }
     }
 
-    private Edge selectEdge (Set<Edge> edges) {
+    private Transition selectTransition (Set<Transition> transitions) {
         int selectedWeight = new Random ().nextInt (1000);
         int currentWeight  = 0;
-        for (Edge edge : edges) {
-            currentWeight += edge.mWeight;
+        for (Transition transition : transitions) {
+            currentWeight += transition.mWeight;
             if (currentWeight > selectedWeight) {
-                return edge;
+                return transition;
             }
         }
-        throw new ExecutionException ("did not find find an edge for weight " + selectedWeight);
+        throw new ExecutionException ("did not find find a transition for weight " + selectedWeight);
     }
 }

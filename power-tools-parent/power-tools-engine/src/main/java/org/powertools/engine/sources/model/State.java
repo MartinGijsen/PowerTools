@@ -1,4 +1,4 @@
-/* Copyright 2012 by Martin Gijsen (www.DeAnalist.nl)
+/* Copyright 2013-2014 by Martin Gijsen (www.DeAnalist.nl)
  *
  * This file is part of the PowerTools engine.
  *
@@ -16,19 +16,34 @@
  * along with the PowerTools engine. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.powertools.engine.fitnesse;
+package org.powertools.engine.sources.model;
 
-import fit.Fixture;
-import fit.Parse;
+import org.powertools.engine.ExecutionException;
 
 
-public final class TestCaseFixture extends Fixture {
-    public TestCaseFixture () {
-        super ();
+final class State {
+    final DirectedGraph  mGraph;
+    private final String mName;
+
+    String               mLabel;
+    String               mAction;
+
+
+    State (String name, DirectedGraph graph) {
+        if ("".equals (name)) {
+            throw new ExecutionException ("empty state name");
+        }
+        mName   = name;
+        mGraph  = graph;
+        mLabel  = "";
+        mAction = "";
     }
 
-    @Override
-    public void doTable (Parse table) {
-        FitNesseEngine.getInstance ().run (this, table);
+    String getName () {
+        return (mLabel.isEmpty () ? mName : mLabel + " (" + mName + ")");
+    }
+
+    String getDescription () {
+        return mGraph.getName () + "." + getName ();
     }
 }

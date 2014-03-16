@@ -1,4 +1,4 @@
-/* Copyright 2013-2014 by Martin Gijsen (www.DeAnalist.nl)
+/* Copyright 2014 by Martin Gijsen (www.DeAnalist.nl)
  *
  * This file is part of the PowerTools engine.
  *
@@ -18,11 +18,20 @@
 
 package org.powertools.engine.sources.model;
 
+import org.junit.Test;
+import static org.junit.Assert.assertEquals;
 
-/*
- * The EdgeSelectionStrategy selects an edge out of the current node in a model.
- */
-interface EdgeSelectionStrategy {
-    String getDescription ();
-    Edge selectEdge (DirectedGraph graph, Node currentNode);
+
+public class TransitionTest {
+    @Test
+    public void testTransition () {
+        State source          = new State ("source", null);
+        State target          = new State ("target", null);
+        Transition transition = new Transition (source, target);
+        assertEquals (source, transition.mSource);
+        assertEquals (target, transition.mTarget);
+        assertEquals ("", transition.mCondition);
+        assertEquals ("", transition.mAction);
+        assertEquals (-1, transition.mWeight);
+    }    
 }

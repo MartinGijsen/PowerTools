@@ -20,8 +20,10 @@ package org.powertools.engine.core;
 
 import java.util.HashMap;
 import java.util.Map;
+import junit.runner.TestRunListener;
 
 import org.powertools.engine.ExecutionException;
+import org.powertools.engine.TestRunResultPublisher;
 import org.powertools.engine.instructions.Executor;
 import org.powertools.engine.instructions.InstructionSet;
 import org.powertools.engine.instructions.ProcedureRunner;
@@ -47,10 +49,10 @@ final class Instructions {
     private final Procedures mProcedures;
 
 
-    Instructions (ProcedureRunner runner) {
+    Instructions (ProcedureRunner runner, TestRunResultPublisher publisher) {
         mInstructionSets = new HashMap<String, InstructionSet> ();
         mExecutorCache   = new HashMap<String, Executor> ();
-        mProcedures      = new Procedures (runner);
+        mProcedures      = new Procedures (runner, publisher);
         addInstructionSet (mProcedures);
     }
 

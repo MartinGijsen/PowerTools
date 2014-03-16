@@ -48,10 +48,11 @@ public class ExcelEngine extends Engine {
     public ExcelEngine (RunTimeImpl runTime) {
         super (runTime);
 
-        if (!new ReportFactory ().createKeywordsHtmlLog (runTime.getContext ())) {
+        ReportFactory factory = new ReportFactory (mPublisher);
+        if (!factory.createKeywordsHtmlLog (runTime.getContext ())) {
             reportError ("could not open HTML log");
         }
-        if (!new ReportFactory ().createTestCaseReport (runTime.getContext ())) {
+        if (!factory.createTestCaseReport (runTime.getContext ())) {
             reportError ("could not open test case report");
         }
 
@@ -60,6 +61,6 @@ public class ExcelEngine extends Engine {
 
     @Override
     public final void run (String sourceName) {
-        run (new TestSourceFactory ().createExcelTestSource (sourceName, mRunTime.getGlobalScope ()));
+        run (new TestSourceFactory ().createExcelTestSource (sourceName, mRunTime.getGlobalScope (), mPublisher));
     }
 }

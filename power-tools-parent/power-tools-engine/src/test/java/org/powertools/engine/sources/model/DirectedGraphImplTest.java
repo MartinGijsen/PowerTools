@@ -39,20 +39,20 @@ public class DirectedGraphImplTest {
     }
 
     @Test
-    public void testAddNode () {
-        String NODE_NAME        = "node name";
+    public void testAddState () {
+        String STATE_NAME       = "state name";
         DirectedGraphImpl graph = new DirectedGraphImpl (GRAPH_NAME);
-        Node node = graph.addNode (NODE_NAME);
-        assertEquals (node, graph.getNode (NODE_NAME));
+        State state             = graph.addState (STATE_NAME);
+        assertEquals (state, graph.getState (STATE_NAME));
     }
 
     @Test
-    public void testAddNodeTwice () {
-        String NODE_NAME        = "node name";
+    public void testAddStateTwice () {
+        String STATE_NAME       = "state name";
         DirectedGraphImpl graph = new DirectedGraphImpl (GRAPH_NAME);
-        graph.addNode (NODE_NAME);
+        graph.addState (STATE_NAME);
         try {
-            graph.addNode (NODE_NAME);
+            graph.addState (STATE_NAME);
             fail ("no exception");
         } catch (ExecutionException ee) {
             // ok
@@ -60,36 +60,36 @@ public class DirectedGraphImplTest {
     }
 
     @Test
-    public void testGetNodeByLabel () {
+    public void testGetStateByLabel () {
         String LABEL            = "label";
         DirectedGraphImpl graph = new DirectedGraphImpl (GRAPH_NAME);
-        assertNull (graph.getNodeByLabel (LABEL));
-        Node node = graph.addNode ("node name");
-        node.mLabel = LABEL;
-        assertEquals (node, graph.getNodeByLabel (LABEL));
+        assertNull (graph.getStateByLabel (LABEL));
+        State state  = graph.addState ("state name");
+        state.mLabel = LABEL;
+        assertEquals (state, graph.getStateByLabel (LABEL));
     }
 
     @Test
-    public void testGetRootNode () {
+    public void testGetRootState () {
         DirectedGraphImpl graph = new DirectedGraphImpl (GRAPH_NAME);
-        Node node1              = graph.addNode ("node 1");
-        Node node2              = graph.addNode ("node 2");
-        Node node3              = graph.addNode ("node 3");
-        graph.addEdge(node1, node2);
-        graph.addEdge(node2, node3);
-        assertEquals (node1, graph.getRootNode ());
+        State state1            = graph.addState ("state 1");
+        State state2            = graph.addState ("state 2");
+        State state3            = graph.addState ("state 3");
+        graph.addTransition(state1, state2);
+        graph.addTransition(state2, state3);
+        assertEquals (state1, graph.getRootState ());
     }
 
     @Test
-    public void testGetRootNodeTwoRoots () {
+    public void testGetRootStateTwoRoots () {
         DirectedGraphImpl graph = new DirectedGraphImpl (GRAPH_NAME);
-        Node node1              = graph.addNode ("node 1");
-        Node node2              = graph.addNode ("node 2");
-        Node node3              = graph.addNode ("node 3");
-        graph.addEdge(node1, node3);
-        graph.addEdge(node2, node3);
+        State state1            = graph.addState ("state 1");
+        State state2            = graph.addState ("state 2");
+        State state3            = graph.addState ("state 3");
+        graph.addTransition(state1, state3);
+        graph.addTransition(state2, state3);
         try {
-            graph.getRootNode ();
+            graph.getRootState ();
             fail ("no exception");
         } catch (ExecutionException ee) {
             // ok
@@ -97,16 +97,16 @@ public class DirectedGraphImplTest {
     }
 
     @Test
-    public void testGetRootNodeNoRoot () {
+    public void testGetRootStateNoRoot () {
         DirectedGraphImpl graph = new DirectedGraphImpl (GRAPH_NAME);
-        Node node1              = graph.addNode ("node 1");
-        Node node2              = graph.addNode ("node 2");
-        Node node3              = graph.addNode ("node 3");
-        graph.addEdge(node1, node2);
-        graph.addEdge(node2, node3);
-        graph.addEdge(node3, node1);
+        State state1            = graph.addState ("state 1");
+        State state2            = graph.addState ("state 2");
+        State state3            = graph.addState ("state 3");
+        graph.addTransition(state1, state2);
+        graph.addTransition(state2, state3);
+        graph.addTransition(state3, state1);
         try {
-            graph.getRootNode ();
+            graph.getRootState ();
             fail ("no exception");
         } catch (ExecutionException ee) {
             // ok
@@ -114,59 +114,59 @@ public class DirectedGraphImplTest {
     }
 
     @Test
-    public void testGetStartNode () {
+    public void testGetStartState () {
         DirectedGraphImpl graph = new DirectedGraphImpl (GRAPH_NAME);
-        Node node1              = graph.addNode ("node 1");
-        Node node2              = graph.addNode ("node 2");
-        Node node3              = graph.addNode ("node 3");
-        node2.mLabel            = Model.START_NODE_LABEL;
-        graph.addEdge(node1, node2);
-        graph.addEdge(node2, node3);
-        graph.addEdge(node3, node1);
-        assertEquals (node2, graph.getStartNode ());
+        State state1            = graph.addState ("state 1");
+        State state2            = graph.addState ("state 2");
+        State state3            = graph.addState ("state 3");
+        state2.mLabel           = Model.BEGIN_STATE_LABEL;
+        graph.addTransition(state1, state2);
+        graph.addTransition(state2, state3);
+        graph.addTransition(state3, state1);
+        assertEquals (state2, graph.getBeginState ());
     }
 
     @Test
-    public void testAddEdge_String_String () {
+    public void testAddTransition_String_String () {
         DirectedGraphImpl graph = new DirectedGraphImpl (GRAPH_NAME);
         String sourceName       = "source";
         String targetName       = "target";
-        Node source             = graph.addNode (sourceName);
-        Node target             = graph.addNode (targetName);
+        State source             = graph.addState (sourceName);
+        State target             = graph.addState (targetName);
         try {
-            graph.getEdge (sourceName, targetName);
+            graph.getTransition (sourceName, targetName);
             fail ("no exception");
         } catch (ExecutionException ee) {
             // ok
         }
-        Edge edge               = graph.addEdge (sourceName, targetName);
-        assertEquals (edge, graph.getEdge (sourceName, targetName));
-        assertEquals (edge, graph.getEdge (source, target));
+        Transition transition = graph.addTransition (sourceName, targetName);
+        assertEquals (transition, graph.getTransition (sourceName, targetName));
+        assertEquals (transition, graph.getTransition (source, target));
     }
 
     @Test
-    public void testAddEdge_Node_Node () {
+    public void testAddTransition_State_State () {
         DirectedGraphImpl graph = new DirectedGraphImpl (GRAPH_NAME);
         String sourceName       = "source";
         String targetName       = "target";
-        Node source             = graph.addNode (sourceName);
-        Node target             = graph.addNode (targetName);
-        Edge edge               = graph.addEdge (source, target);
-        assertEquals (edge, graph.getEdge (source, target));
-        assertEquals (edge, graph.getEdge (sourceName, targetName));
-        assertEquals (edge, graph.getEdge (source, target));
+        State source            = graph.addState (sourceName);
+        State target            = graph.addState (targetName);
+        Transition transition   = graph.addTransition (source, target);
+        assertEquals (transition, graph.getTransition (source, target));
+        assertEquals (transition, graph.getTransition (sourceName, targetName));
+        assertEquals (transition, graph.getTransition (source, target));
     }
 
     @Test
-    public void testAddEdgeTwice () {
+    public void testAddTransitionTwice () {
         DirectedGraphImpl graph = new DirectedGraphImpl (GRAPH_NAME);
         String sourceName       = "source";
         String targetName       = "target";
-        Node source             = graph.addNode (sourceName);
-        Node target             = graph.addNode (targetName);
-        graph.addEdge (source, target);
+        State source             = graph.addState (sourceName);
+        State target             = graph.addState (targetName);
+        graph.addTransition (source, target);
         try {
-            graph.addEdge (source, target);
+            graph.addTransition (source, target);
             fail ("no exception");
         } catch (ExecutionException ee) {
             // ok
@@ -174,31 +174,31 @@ public class DirectedGraphImplTest {
     }
 
     @Test
-    public void testGetEdges () {
+    public void testGetTransitions () {
         DirectedGraphImpl graph = new DirectedGraphImpl (GRAPH_NAME);
-        Node node1              = graph.addNode ("node 1");
-        Node node2              = graph.addNode ("node 2");
-        Node node3              = graph.addNode ("node 3");
-        Edge edge1To2           = graph.addEdge (node1, node2);
-        Edge edge1To3           = graph.addEdge (node1, node3);
-        Edge edge2To1           = graph.addEdge (node2, node1);
-        Edge edge2To3           = graph.addEdge (node2, node3);
-        Set<Edge> edges         = graph.getEdges ("node 1");
-        assertTrue (edges.contains (edge1To2));
-        assertTrue (edges.contains (edge1To3));
-        assertFalse (edges.contains (edge2To1));
-        assertFalse (edges.contains (edge2To3));
-        edges = graph.getEdges (node1);
-        assertTrue (edges.contains (edge1To2));
-        assertTrue (edges.contains (edge1To3));
-        assertFalse (edges.contains (edge2To1));
-        assertFalse (edges.contains (edge2To3));
+        State state1            = graph.addState ("state 1");
+        State state2            = graph.addState ("state 2");
+        State state3            = graph.addState ("state 3");
+        Transition from1To2     = graph.addTransition (state1, state2);
+        Transition from1To3     = graph.addTransition (state1, state3);
+        Transition from2To1     = graph.addTransition (state2, state1);
+        Transition from2To3     = graph.addTransition (state2, state3);
+        Set<Transition> transitions = graph.getTransitions ("state 1");
+        assertTrue (transitions.contains (from1To2));
+        assertTrue (transitions.contains (from1To3));
+        assertFalse (transitions.contains (from2To1));
+        assertFalse (transitions.contains (from2To3));
+        transitions = graph.getTransitions (state1);
+        assertTrue (transitions.contains (from1To2));
+        assertTrue (transitions.contains (from1To3));
+        assertFalse (transitions.contains (from2To1));
+        assertFalse (transitions.contains (from2To3));
     }
 
 //    @Test
-//    public void testReportNodesAndEdges () {
+//    public void testReportStatesAndTransitions () {
 //        DirectedGraphImpl instance = null;
-//        instance.reportNodesAndEdges();
+//        instance.reportStatesAndTransitions ();
 //        fail("The test case is a prototype.");
 //    }
 }

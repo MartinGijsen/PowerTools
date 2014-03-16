@@ -30,39 +30,39 @@ public class TestGraph implements DirectedGraph {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    public Node addNode(String name) {
+    public State addState(String name) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    public Node getNode(String name) {
+    public State getState(String name) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    public Node getNodeByLabel(String label) {
+    public State getStateByLabel(String label) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    public Node getRootNode() {
+    public State getRootState() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    public Node getStartNode() {
+    public State getBeginState() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    public Edge addEdge(String sourceName, String targetName) {
+    public Transition addTransition(String sourceName, String targetName) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    public Edge addEdge(Node source, Node target) {
+    public Transition addTransition(State source, State target) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    public Edge getEdge(Node source, Node target) {
+    public Transition getTransition(State source, State target) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    public Set<Edge> getEdges(Node source) {
+    public Set<Transition> getTransitions(State source) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

@@ -21,59 +21,59 @@ package org.powertools.engine.sources.model;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.powertools.engine.reports.TestRunResultPublisherImpl;
+import org.powertools.engine.TestRunResultPublisher;
 
 
 /*
- * A Model is read from a file and contains nodes and the edges between them.
- * It generates a sequence of edges.
- * It starts at the start node and then travels from node to node.
- * It selects the next edge using the specified edge selection strategy.
+ * A Model is read from a file and contains states and the transitions between them.
+ * It generates a sequence of transitions.
+ * It starts at the initial state and then travels from state to state.
+ * It selects the next transition using the specified transition selection strategy.
  * The done condition will generate an exception when it is satisfied,
  * but this is only passed on to the test source once in an end state,
  * because an exception could break off current processing.
  */
 public abstract class Model {
-    static final String START_NODE_LABEL       = "start";
-    static final String END_NODE_LABEL         = "end";
+    static final String BEGIN_STATE_LABEL      = "begin";
+    static final String END_STATE_LABEL        = "end";
     static final String SUBMODEL_ACTION_PREFIX = "submodel ";
 
     final Set<String>            mKnownModels;
-    final TestRunResultPublisherImpl mPublisher;
+    final TestRunResultPublisher mPublisher;
     final DoneCondition          mDoneCondition;
     final DirectedGraphImpl      mGraph;
     final String                 mPath;
     final String                 mFileName;
 
-    Node                  mCurrentNode;
-    boolean               mAtNode;
-    EdgeSelectionStrategy mSelector;
+    State                       mCurrentState;
+    boolean                     mAtState;
+    TransitionSelectionStrategy mSelector;
 
 
-    Model (String path, String fileName, DoneCondition doneCondition) {
-        this (path, fileName, doneCondition, new HashSet<String> ());
+    Model (String path, String fileName, DoneCondition doneCondition, TestRunResultPublisher publisher) {
+        this (path, fileName, doneCondition, new HashSet<String> (), publisher);
     }
 
-    Model (String path, String fileName, DoneCondition doneCondition, Set<String> knownModels) {
+    Model (String path, String fileName, DoneCondition doneCondition, Set<String> knownModels, TestRunResultPublisher publisher) {
         mKnownModels   = knownModels;
-        mPublisher     = TestRunResultPublisherImpl.getInstance ();
+        mPublisher     = publisher;
         mGraph         = new DirectedGraphImpl (fileName);
         mPath          = path;
         mFileName      = fileName;
         mDoneCondition = doneCondition;
-        mAtNode        = false;
+        mAtState        = false;
     }
 
     public final void initialize () {
         mGraph.read (mPath, mFileName);
-        mCurrentNode = mGraph.getRootNode ();
+        mCurrentState = mGraph.getRootState ();
 
-        mPublisher.publishCommentLine (String.format ("entering model '%s' at initial node '%s'", mGraph.getName (), mCurrentNode.getDescription ()));
+        mPublisher.publishCommentLine (String.format ("entering model '%s' at initial node '%s'", mGraph.getName (), mCurrentState.getDescription ()));
         reportStopConditionAndSelector ();
 
         // TODO: move to where graph is created?
         if (firstTime (mGraph.getName ())) {
-            mGraph.reportNodesAndEdges ();
+            mGraph.reportStatesAndTransitions (mPublisher);
         }
     }
 
@@ -93,33 +93,33 @@ public abstract class Model {
     public final String getNextAction () {
         String action;
         do {
-            if (mAtNode) {
-                Edge edge = getNextEdge ();
-                if (edge == null) {
+            if (mAtState) {
+                Transition transition = getNextTransition ();
+                if (transition == null) {
                     return null;
                 } else {
-                    mPublisher.publishAtEdge (edge.mSource.getName (), edge.mTarget.getName ());
-                    action = edge.mAction;
+                    mPublisher.publishAtTransition (transition.mSource.getName (), transition.mTarget.getName ());
+                    action = transition.mAction;
                 }
             } else {
-                mPublisher.publishAtNode (mCurrentNode.getName ());
-                action = mCurrentNode.mAction;
+                mPublisher.publishAtState (mCurrentState.getName ());
+                action = mCurrentState.mAction;
             }
-            mAtNode = !mAtNode;
+            mAtState = !mAtState;
         } while ("".equals (action));
         return action;
     }
 
-    private Edge getNextEdge () {
-        Edge edge = selectEdge ();
-        if (edge != null) {
-            mCurrentNode = edge.mTarget;
-            mPublisher.publishCommentLine ("next node: " + edge.mTarget.getDescription ());
+    private Transition getNextTransition () {
+        Transition transition = selectTransition ();
+        if (transition != null) {
+            mCurrentState = transition.mTarget;
+            mPublisher.publishCommentLine ("next state: " + transition.mTarget.getDescription ());
         }
-        return edge;
+        return transition;
     }
 
-    abstract Edge selectEdge ();
+    abstract Transition selectTransition ();
     
     public final void cleanup () {
         mPublisher.publishCommentLine (String.format ("leaving model '%s'", mGraph.getName ()));

@@ -37,10 +37,10 @@ public class DoneConditionTest {
         DoneCondition condition = new DoneConditionImpl ();
         condition.start (null);
         condition.finish (null);
-        condition.processNewNode ("");
-        condition.processNewEdge ("", "");
-        condition.processAtNode ("");
-        condition.processAtEdge ("", "");
+        condition.processNewState ("");
+        condition.processNewTransition ("", "");
+        condition.processAtState ("");
+        condition.processAtTransition ("", "");
         assertFalse (condition.isSatisfied ());
     }
 

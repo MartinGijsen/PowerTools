@@ -1,4 +1,4 @@
-/* Copyright 2013-2014 by Martin Gijsen (www.DeAnalist.nl)
+/* Copyright 2012 by Martin Gijsen (www.DeAnalist.nl)
  *
  * This file is part of the PowerTools engine.
  *
@@ -16,24 +16,21 @@
  * along with the PowerTools engine. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.powertools.engine.sources.model;
+package org.powertools.engine.fitnesse.fixtures;
 
 
-final class Edge {
-    final Node mSource;
-    final Node mTarget;
-
-    String mLabel;
-    String mCondition;
-    String mAction;
-    int    mWeight;
+import fit.Fixture;
+import fit.Parse;
+import org.powertools.engine.fitnesse.FitNesseEngine;
 
 
-    Edge (Node source, Node target) {
-        mSource    = source;
-        mTarget    = target;
-        mCondition = "";
-        mAction    = "";
-        mWeight    = -1;
+public final class DataFixture extends Fixture {
+    public DataFixture () {
+        super ();
+    }
+
+    @Override
+    public void doTable (Parse table) {
+        FitNesseEngine.getInstance ().run (this, table);
     }
 }

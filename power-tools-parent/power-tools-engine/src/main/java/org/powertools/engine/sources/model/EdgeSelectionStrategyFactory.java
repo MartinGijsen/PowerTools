@@ -23,11 +23,11 @@ import org.powertools.engine.RunTime;
 
 
 final class EdgeSelectionStrategyFactory {
-    EdgeSelectionStrategy create (String selector, DirectedGraph mainGraph, RunTime runTime) {
-        if (RandomEdgeSelector.NAME.equals (selector)) {
-            return new RandomEdgeSelector (mainGraph, runTime, new DefaultRandomNumberGenerator ());
-        } else if (WeightedEdgeSelector.NAME.equals (selector)) {
-            return new WeightedEdgeSelector ();
+    TransitionSelectionStrategy create (String selector, DirectedGraph mainGraph, RunTime runTime) {
+        if (RandomTransitionSelector.NAME.equals (selector)) {
+            return new RandomTransitionSelector (mainGraph, runTime, new DefaultRandomNumberGenerator ());
+        } else if (WeightedTransitionSelector.NAME.equals (selector)) {
+            return new WeightedTransitionSelector ();
         } else {
             throw new ExecutionException (String.format ("unknown edge selection strategy: %s", selector));
         }

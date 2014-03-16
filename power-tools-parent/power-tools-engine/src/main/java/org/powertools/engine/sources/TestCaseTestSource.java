@@ -34,7 +34,7 @@ public class TestCaseTestSource extends TestSource {
 
 
     TestCaseTestSource (TestSource parent) {
-        super (new Scope (parent.mScope));
+        super (new Scope (parent.mScope), parent.mPublisher);
         mParent = parent;
     }
 

@@ -27,6 +27,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.powertools.engine.ExecutionException;
+import org.powertools.engine.TestRunResultPublisher;
 import org.powertools.engine.symbol.Scope;
 
 
@@ -59,8 +60,8 @@ abstract class ExcelTestSource extends TestSource {
     }
 
 
-    protected ExcelTestSource (String fileName, String sheetName, Scope scope) {
-        super (scope);
+    protected ExcelTestSource (String fileName, String sheetName, Scope scope, TestRunResultPublisher publisher) {
+        super (scope, publisher);
         mFileName         = fileName;
         Workbook workbook = createWorkbook (fileName);
         mSheetName        = sheetName.isEmpty () ? workbook.getSheetName (0) : sheetName;

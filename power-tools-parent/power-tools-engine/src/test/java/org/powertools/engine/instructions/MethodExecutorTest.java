@@ -24,6 +24,7 @@ import static org.junit.Assert.assertTrue;
 import java.lang.reflect.Method;
 import java.util.Calendar;
 import java.util.Date;
+import static org.junit.Assert.fail;
 
 import org.junit.Test;
 import org.powertools.engine.ExecutionException;
@@ -35,154 +36,182 @@ public class MethodExecutorTest {
 	
 	
 	@Test
-	public void testExecuteVoidReturningMethod () throws SecurityException, NoSuchMethodException {
-		Method method = mObject.getClass ().getDeclaredMethod ("voidReturningMethod");
+	public void testExecute_voidReturningMethod () throws SecurityException, NoSuchMethodException {
+		Method method           = mObject.getClass ().getDeclaredMethod ("voidReturningMethod");
 		MethodExecutor executor = new MethodExecutor (mObject, method);
-		TestLineImpl testLine = new TestLineImpl ();
+		TestLineImpl testLine   = new TestLineImpl ();
 		assertTrue (executor.execute (testLine));
 	}
 
 	@Test
-	public void testExecuteFailingMethod () throws SecurityException, NoSuchMethodException {
-		Method method = mObject.getClass ().getDeclaredMethod ("failingMethod");
+	public void testExecute_intReturningMethod () throws SecurityException, NoSuchMethodException {
+        try {
+            Method method           = mObject.getClass ().getDeclaredMethod ("intReturningMethod");
+            MethodExecutor executor = new MethodExecutor (mObject, method);
+            TestLineImpl testLine   = new TestLineImpl ();
+            executor.execute (testLine);
+            fail ();
+        } catch (ExecutionException ee) {
+            // ok
+        }
+	}
+
+	@Test
+	public void testExecute_failingMethod () throws SecurityException, NoSuchMethodException {
+		Method method           = mObject.getClass ().getDeclaredMethod ("failingMethod");
 		MethodExecutor executor = new MethodExecutor (mObject, method);
-		TestLineImpl testLine = new TestLineImpl ();
+		TestLineImpl testLine   = new TestLineImpl ();
 		assertFalse (executor.execute (testLine));
 	}
 
 	@Test (expected=ExecutionException.class)
-	public void testExecuteTooManyParameters () throws SecurityException, NoSuchMethodException {
-		Method method = mObject.getClass ().getDeclaredMethod ("noParametersMethod");
+	public void testExecute_tooManyParameters () throws SecurityException, NoSuchMethodException {
+		Method method           = mObject.getClass ().getDeclaredMethod ("noParametersMethod");
 		MethodExecutor executor = new MethodExecutor (mObject, method);
-		TestLineImpl testLine = new TestLineImpl ();
+		TestLineImpl testLine   = new TestLineImpl ();
 		testLine.createParts (2);
 		testLine.setPart (1, "something");
 		executor.execute (testLine);
 	}
 
 	@Test
-	public void testExecuteNoParametersMethod () throws SecurityException, NoSuchMethodException {
-		Method method = mObject.getClass ().getDeclaredMethod ("noParametersMethod");
+	public void testExecute_noParametersMethod () throws SecurityException, NoSuchMethodException {
+		Method method           = mObject.getClass ().getDeclaredMethod ("noParametersMethod");
 		MethodExecutor executor = new MethodExecutor (mObject, method);
-		TestLineImpl testLine = new TestLineImpl ();
+		TestLineImpl testLine   = new TestLineImpl ();
 		assertTrue (executor.execute (testLine));
 	}
 
 	@Test
-	public void testExecuteBooleanMethodTrue () throws SecurityException, NoSuchMethodException {
-		Method method = mObject.getClass ().getDeclaredMethod ("booleanParameterMethod", new Class<?>[] { boolean.class });
+	public void testExecute_emptyParameter () throws SecurityException, NoSuchMethodException {
+        try {
+            Method method           = mObject.getClass ().getDeclaredMethod ("booleanParameterMethod", new Class<?>[] { boolean.class });
+            MethodExecutor executor = new MethodExecutor (mObject, method);
+            TestLineImpl testLine   = new TestLineImpl ();
+            testLine.createParts (2);
+            testLine.setPart (1, "");
+            executor.execute (testLine);
+            fail ();
+        } catch (ExecutionException ee) {
+            // ok
+        }
+	}
+
+	@Test
+	public void testExecute_booleanMethodTrue () throws SecurityException, NoSuchMethodException {
+		Method method           = mObject.getClass ().getDeclaredMethod ("booleanParameterMethod", new Class<?>[] { boolean.class });
 		MethodExecutor executor = new MethodExecutor (mObject, method);
-		TestLineImpl testLine = new TestLineImpl ();
+		TestLineImpl testLine   = new TestLineImpl ();
 		testLine.createParts (2);
 		testLine.setPart (1, "true");
 		assertTrue (executor.execute (testLine));
 	}
 
 	@Test
-	public void testExecuteBooleanMethodFalse () throws SecurityException, NoSuchMethodException {
-		Method method = mObject.getClass ().getDeclaredMethod ("booleanParameterMethod", new Class<?>[] { boolean.class });
+	public void testExecute_booleanMethodFalse () throws SecurityException, NoSuchMethodException {
+		Method method           = mObject.getClass ().getDeclaredMethod ("booleanParameterMethod", new Class<?>[] { boolean.class });
 		MethodExecutor executor = new MethodExecutor (mObject, method);
-		TestLineImpl testLine = new TestLineImpl ();
+		TestLineImpl testLine   = new TestLineImpl ();
 		testLine.createParts (2);
 		testLine.setPart (1, "false");
 		assertTrue (executor.execute (testLine));
 	}
 
 	@Test (expected=ExecutionException.class)
-	public void testExecuteBooleanMethodInvalid () throws SecurityException, NoSuchMethodException {
-		Method method = mObject.getClass ().getDeclaredMethod ("booleanParameterMethod", new Class<?>[] { boolean.class });
+	public void testExecute_booleanMethodInvalid () throws SecurityException, NoSuchMethodException {
+		Method method           = mObject.getClass ().getDeclaredMethod ("booleanParameterMethod", new Class<?>[] { boolean.class });
 		MethodExecutor executor = new MethodExecutor (mObject, method);
-		TestLineImpl testLine = new TestLineImpl ();
+		TestLineImpl testLine   = new TestLineImpl ();
 		testLine.createParts (2);
 		testLine.setPart (1, "something");
 		executor.execute (testLine);
 	}
 
 	@Test
-	public void testExecuteIntMethod () throws SecurityException, NoSuchMethodException {
-		Method method = mObject.getClass ().getDeclaredMethod ("intParameterMethod", new Class<?>[] { int.class });
+	public void testExecute_intMethod () throws SecurityException, NoSuchMethodException {
+		Method method           = mObject.getClass ().getDeclaredMethod ("intParameterMethod", new Class<?>[] { int.class });
 		MethodExecutor executor = new MethodExecutor (mObject, method);
-		TestLineImpl testLine = new TestLineImpl ();
+		TestLineImpl testLine   = new TestLineImpl ();
 		testLine.createParts (2);
 		testLine.setPart (1, "0");
 		assertTrue (executor.execute (testLine));
 	}
 
 	@Test (expected=ExecutionException.class)
-	public void testExecuteIntMethodInvalid () throws SecurityException, NoSuchMethodException {
-		Method method = mObject.getClass ().getDeclaredMethod ("intParameterMethod", new Class<?>[] { int.class });
+	public void testExecute_intMethodInvalid () throws SecurityException, NoSuchMethodException {
+		Method method           = mObject.getClass ().getDeclaredMethod ("intParameterMethod", new Class<?>[] { int.class });
 		MethodExecutor executor = new MethodExecutor (mObject, method);
-		TestLineImpl testLine = new TestLineImpl ();
+		TestLineImpl testLine   = new TestLineImpl ();
 		testLine.createParts (2);
 		testLine.setPart (1, "something");
 		executor.execute (testLine);
 	}
 
 	@Test
-	public void testExecuteLongMethod () throws SecurityException, NoSuchMethodException {
-		Method method = mObject.getClass ().getDeclaredMethod ("longParameterMethod", new Class<?>[] { long.class });
+	public void testExecute_longMethod () throws SecurityException, NoSuchMethodException {
+		Method method           = mObject.getClass ().getDeclaredMethod ("longParameterMethod", new Class<?>[] { long.class });
 		MethodExecutor executor = new MethodExecutor (mObject, method);
-		TestLineImpl testLine = new TestLineImpl ();
+		TestLineImpl testLine   = new TestLineImpl ();
 		testLine.createParts (2);
 		testLine.setPart (1, "0");
 		assertTrue (executor.execute (testLine));
 	}
 
 	@Test (expected=ExecutionException.class)
-	public void testExecuteLongMethodInvalid () throws SecurityException, NoSuchMethodException {
-		Method method = mObject.getClass ().getDeclaredMethod ("longParameterMethod", new Class<?>[] { long.class });
+	public void testExecute_longMethodInvalid () throws SecurityException, NoSuchMethodException {
+		Method method           = mObject.getClass ().getDeclaredMethod ("longParameterMethod", new Class<?>[] { long.class });
 		MethodExecutor executor = new MethodExecutor (mObject, method);
-		TestLineImpl testLine = new TestLineImpl ();
+		TestLineImpl testLine   = new TestLineImpl ();
 		testLine.createParts (2);
 		testLine.setPart (1, "something");
 		executor.execute (testLine);
 	}
 
 	@Test
-	public void testExecuteFloatMethod () throws SecurityException, NoSuchMethodException {
-		Method method = mObject.getClass ().getDeclaredMethod ("floatParameterMethod", new Class<?>[] { float.class });
+	public void testExecute_floatMethod () throws SecurityException, NoSuchMethodException {
+		Method method           = mObject.getClass ().getDeclaredMethod ("floatParameterMethod", new Class<?>[] { float.class });
 		MethodExecutor executor = new MethodExecutor (mObject, method);
-		TestLineImpl testLine = new TestLineImpl ();
+		TestLineImpl testLine   = new TestLineImpl ();
 		testLine.createParts (2);
 		testLine.setPart (1, "1.2");
 		assertTrue (executor.execute (testLine));
 	}
 
 	@Test (expected=ExecutionException.class)
-	public void testExecuteFloatMethodInvalid () throws SecurityException, NoSuchMethodException {
-		Method method = mObject.getClass ().getDeclaredMethod ("floatParameterMethod", new Class<?>[] { float.class });
+	public void testExecute_floatMethodInvalid () throws SecurityException, NoSuchMethodException {
+		Method method           = mObject.getClass ().getDeclaredMethod ("floatParameterMethod", new Class<?>[] { float.class });
 		MethodExecutor executor = new MethodExecutor (mObject, method);
-		TestLineImpl testLine = new TestLineImpl ();
+		TestLineImpl testLine   = new TestLineImpl ();
 		testLine.createParts (2);
 		testLine.setPart (1, "something");
 		executor.execute (testLine);
 	}
 
 	@Test
-	public void testExecuteDoubleMethod () throws SecurityException, NoSuchMethodException {
-		Method method = mObject.getClass ().getDeclaredMethod ("doubleParameterMethod", new Class<?>[] { double.class });
+	public void testExecute_doubleMethod () throws SecurityException, NoSuchMethodException {
+		Method method           = mObject.getClass ().getDeclaredMethod ("doubleParameterMethod", new Class<?>[] { double.class });
 		MethodExecutor executor = new MethodExecutor (mObject, method);
-		TestLineImpl testLine = new TestLineImpl ();
+		TestLineImpl testLine   = new TestLineImpl ();
 		testLine.createParts (2);
 		testLine.setPart (1, "1.2");
 		assertTrue (executor.execute (testLine));
 	}
 
 	@Test (expected=ExecutionException.class)
-	public void testExecuteDoubleMethodInvalid () throws SecurityException, NoSuchMethodException {
-		Method method = mObject.getClass ().getDeclaredMethod ("doubleParameterMethod", new Class<?>[] { double.class });
+	public void testExecute_doubleMethodInvalid () throws SecurityException, NoSuchMethodException {
+		Method method           = mObject.getClass ().getDeclaredMethod ("doubleParameterMethod", new Class<?>[] { double.class });
 		MethodExecutor executor = new MethodExecutor (mObject, method);
-		TestLineImpl testLine = new TestLineImpl ();
+		TestLineImpl testLine   = new TestLineImpl ();
 		testLine.createParts (2);
 		testLine.setPart (1, "something");
 		executor.execute (testLine);
 	}
 
 	@Test (expected=ExecutionException.class)
-	public void testExecuteInvalidParameterMethod () throws SecurityException, NoSuchMethodException {
-		Method method = mObject.getClass ().getDeclaredMethod ("objectParameterMethod", new Class<?>[] { Object.class });
+	public void testExecute_invalidParameterMethod () throws SecurityException, NoSuchMethodException {
+		Method method           = mObject.getClass ().getDeclaredMethod ("objectParameterMethod", new Class<?>[] { Object.class });
 		MethodExecutor executor = new MethodExecutor (mObject, method);
-		TestLineImpl testLine = new TestLineImpl ();
+		TestLineImpl testLine   = new TestLineImpl ();
 		testLine.createParts (2);
 		testLine.setPart (1, "something");
 		executor.execute (testLine);
@@ -196,6 +225,10 @@ public class MethodExecutorTest {
 
         void voidReturningMethod () {
             // nothing
+        }
+
+        int intReturningMethod () {
+            return 0;
         }
 
         boolean failingMethod () {

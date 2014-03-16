@@ -26,11 +26,18 @@ import org.powertools.engine.reports.BasicHtmlLog;
 
 
 final class HtmlLog extends BasicHtmlLog {
+    private final Reference mReference;
+
     HtmlLog (PrintWriter writer, String title) {
         super (writer, title);
+        mReference = new Reference ();
         mWriter.println ("<TABLE>");
     }
 
+    Reference getReference () {
+        return mReference;
+    }
+    
 
     // start and finish the test run
     @Override
@@ -56,7 +63,8 @@ final class HtmlLog extends BasicHtmlLog {
         }
         mWriter.append ("<TD colspan=\"10\">");
         if (mLevel == 0) {
-            mWriter.format ("<A id=\"id%d\">", ++mLastId);
+//            mWriter.format ("<A id=\"id%d\">", ++mLastId);
+            mWriter.format ("<A id=\"id%s\">", mReference);
         }
         mWriter.append (getCell (testLine, nrOfParts - 1)).println ("</TD></TR>");
     }
@@ -70,9 +78,8 @@ final class HtmlLog extends BasicHtmlLog {
     @Override
     public void processCommentLine (TestLine testLine) {
         writeTableRowStartWithTimestamp (mWriter);
-        mWriter.append ("<TD></TD>");
         final int nrOfParts = testLine.getNrOfParts ();
-        for (int partNr = 1; partNr < nrOfParts - 1; ++partNr) {
+        for (int partNr = 0; partNr < nrOfParts - 1; ++partNr) {
             mWriter.format ("<TD>%s</TD>", testLine.getPart (partNr));
         }
         mWriter.format ("<TD colspan=\"10\">%s</TD></TR>", testLine.getPart (nrOfParts - 1)).println ();

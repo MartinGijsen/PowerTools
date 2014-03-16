@@ -32,7 +32,8 @@ final class SequenceItem extends Item {
 
     SequenceItem (String name, Item parent) {
         super (name, parent);
-        mChildren = new HashMap<String, Item> ();
+        mChildren    = new HashMap<String, Item> ();
+        mNumbersOnly = null;
     }
 
 
@@ -80,7 +81,7 @@ final class SequenceItem extends Item {
     private void add (String name, Item newItem) {
         Item oldItem = mChildren.get (name);
         if (oldItem != null) {
-            throw new ExecutionException ("structure field already exists");
+            throw new ExecutionException ("structure field " + name + " already exists in " + mName);
         } else {
             Boolean isNumber = Character.isDigit (name.charAt (0));
             if (mNumbersOnly == null) {
@@ -94,4 +95,3 @@ final class SequenceItem extends Item {
         }
     }
 }
-

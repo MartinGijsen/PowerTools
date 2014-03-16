@@ -28,22 +28,21 @@ import java.util.HashSet;
 
 import org.powertools.engine.ExecutionException;
 import org.powertools.engine.TestRunResultPublisher;
-import org.powertools.engine.reports.TestRunResultPublisherImpl;
 import org.xml.sax.SAXException;
 
 
 final class DirectedGraphImpl implements DirectedGraph {
     static final String FILE_EXTENSION = ".graphml";
     
-    private final String               mName;
-    private final Map<String, Node>    mNodes;
-    private final Map<Node, Set<Edge>> mEdges;
+    private final String                      mName;
+    private final Map<String, State>          mStates;
+    private final Map<State, Set<Transition>> mTransitions;
 
 
     DirectedGraphImpl (String name) {
-        mName  = removeExtension (name);
-        mNodes = new HashMap<String, Node> ();
-        mEdges = new HashMap<Node, Set<Edge>> ();
+        mName        = removeExtension (name);
+        mStates      = new HashMap<String, State> ();
+        mTransitions = new HashMap<State, Set<Transition>> ();
     }
     
     private String removeExtension (String fileName) {
@@ -70,114 +69,113 @@ final class DirectedGraphImpl implements DirectedGraph {
         return mName;
     }
     
-    public Node addNode (String name) {
-        if (mNodes.containsKey (name)) {
-            throw new ExecutionException (String.format ("node name '%s' not unique", name));
+    public State addState (String name) {
+        if (mStates.containsKey (name)) {
+            throw new ExecutionException (String.format ("state name '%s' not unique", name));
         } else {
-            Node node = new Node (name, this);
-            mNodes.put (name, node);
-            return node;
+            State state = new State (name, this);
+            mStates.put (name, state);
+            return state;
         }
     }
 
-    public Node getNode (String name) {
-        return mNodes.get (name);
+    public State getState (String name) {
+        return mStates.get (name);
     }
 
-    public Node getNodeByLabel (String label) {
-        for (Node node : mNodes.values ()) {
-            if (node.mLabel.equalsIgnoreCase (label)) {
-                return node;
+    public State getStateByLabel (String label) {
+        for (State state : mStates.values ()) {
+            if (state.mLabel.equalsIgnoreCase (label)) {
+                return state;
             }
         }
         return null;
     }
 
-    public Node getRootNode () {
+    public State getRootState () {
         // TODO: determine at initialization, during or after validation
-        Set<Node> nodes = new HashSet<Node> ();
-        nodes.addAll (mNodes.values ());
-        for (Set<Edge> set : mEdges.values ()) {
-            for (Edge edge : set) {
-                nodes.remove (edge.mTarget);
+        Set<State> states = new HashSet<State> ();
+        states.addAll (mStates.values ());
+        for (Set<Transition> set : mTransitions.values ()) {
+            for (Transition transition : set) {
+                states.remove (transition.mTarget);
             }
         }
-        int nrOfRoots = nodes.size();
+        int nrOfRoots = states.size();
         switch (nrOfRoots) {
         case 0:
-            throw new ExecutionException ("no root node");
+            throw new ExecutionException ("no root state");
         case 1:
-            return nodes.iterator ().next ();
+            return states.iterator ().next ();
         default:
-            throw new ExecutionException ("multiple root nodes");
+            throw new ExecutionException ("multiple root states");
         }
     }
 
-    public Node getStartNode () {
+    public State getBeginState () {
         // TODO: determine at initialization, during or after validation
-        return getNodeByLabel (Model.START_NODE_LABEL);
+        return getStateByLabel (Model.BEGIN_STATE_LABEL);
     }
     
-    public Edge addEdge (String sourceName, String targetName) {
-        return addEdge (getNode (sourceName), getNode (targetName));
+    public Transition addTransition (String sourceName, String targetName) {
+        return addTransition (getState (sourceName), getState (targetName));
     }
 
-    public Edge addEdge (Node source, Node target) {
-        Set<Edge> edges = mEdges.get (source);
-        if (edges == null) {
-            edges = new HashSet<Edge> ();
-            mEdges.put (source, edges);
+    public Transition addTransition (State source, State target) {
+        Set<Transition> transitions = mTransitions.get (source);
+        if (transitions == null) {
+            transitions = new HashSet<Transition> ();
+            mTransitions.put (source, transitions);
         }
 
-        for (Edge edge : edges) {
-            if (edge.mTarget == target) {
-                throw new ExecutionException ("edge already exists");
+        for (Transition transition : transitions) {
+            if (transition.mTarget == target) {
+                throw new ExecutionException ("transition already exists");
             }
         }
 
-        Edge edge = new Edge (source, target);
-        edges.add (edge);
-        return edge;
+        Transition transition = new Transition (source, target);
+        transitions.add (transition);
+        return transition;
     }
 
-    public Edge getEdge (String sourceName, String targetName) {
-        return getEdge (getNode (sourceName), getNode (targetName));
+    public Transition getTransition (String sourceName, String targetName) {
+        return getTransition (getState (sourceName), getState (targetName));
     }
 
-    public Edge getEdge (Node source, Node target) {
-        Set<Edge> edges = mEdges.get (source);
-        if (edges != null) {
-            for (Edge edge : edges) {
-                if (edge.mTarget == target) {
-                    return edge;
+    public Transition getTransition (State source, State target) {
+        Set<Transition> transitions = mTransitions.get (source);
+        if (transitions != null) {
+            for (Transition transition : transitions) {
+                if (transition.mTarget == target) {
+                    return transition;
                 }
             }
         }
-        throw new ExecutionException ("edge does not exist");
+        throw new ExecutionException ("transition does not exist");
     }
 
-    public Set<Edge> getEdges (String sourceName) {
-        return getEdges (getNode (sourceName));
+    public Set<Transition> getTransitions (String sourceName) {
+        return getTransitions (getState (sourceName));
     }
 
-    public Set<Edge> getEdges (Node source) {
-        Set<Edge> edges = mEdges.get (source);
-        if (edges == null) {
-            return new HashSet<Edge> ();
+    public Set<Transition> getTransitions (State source) {
+        Set<Transition> transitions = mTransitions.get (source);
+        if (transitions == null) {
+            return new HashSet<Transition> ();
         } else {
-            return edges;
+            return transitions;
         }
     }
 
     // TODO: move elsewhere so this class does not need the publisher
-    void reportNodesAndEdges () {
-        TestRunResultPublisher publisher = TestRunResultPublisherImpl.getInstance ();
-        for (Node node : mNodes.values ()) {
-            publisher.publishNewNode (node.getName ());
+    void reportStatesAndTransitions (TestRunResultPublisher publisher) {
+        for (State state : mStates.values ()) {
+            publisher.publishNewState (state.getName ());
         }
-        for (Set<Edge> set : mEdges.values ()) {
-            for (Edge edge : set) {
-                publisher.publishNewEdge (edge.mSource.getName (), edge.mTarget.getName ());
+        for (Set<Transition> set : mTransitions.values ()) {
+            for (Transition transition : set) {
+                publisher.publishNewTransition (transition.mSource.getName (), transition.mTarget.getName ());
             }
         }
     }

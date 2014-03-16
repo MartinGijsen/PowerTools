@@ -20,12 +20,12 @@ package org.powertools.engine.instructions;
 
 
 public final class InstructionSetFactory {
-    private InstructionSetFactory () {
+    public InstructionSetFactory () {
         // empty
     }
 
 
-    public static InstructionSet createClassInstructionSet (String name, Object object) {
+    public InstructionSet createClassInstructionSet (String name, Object object) {
         return new ClassInstructionSet (name, object);
     }
 }

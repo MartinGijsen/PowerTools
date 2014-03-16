@@ -26,14 +26,14 @@ import static org.junit.Assert.fail;
 import org.powertools.engine.ExecutionException;
 
 
-public class NodeTest {
-    private static final String NODE_NAME = "name";
+public class StateTest {
+    private static final String STATE_NAME = "name";
     private static final String GRAPH_NAME = "graphName";
     
     @Test
-    public void testNodeWithEmptyName () {
+    public void testStateWithEmptyName () {
         try {
-            new Node ("", null);
+            new State ("", null);
             fail ("no exception");
         } catch (ExecutionException ee) {
             // ok
@@ -41,31 +41,31 @@ public class NodeTest {
     }
 
     @Test
-    public void testNode () {
+    public void testState () {
         DirectedGraph graph = new GraphImpl (GRAPH_NAME);
-        Node node = new Node (NODE_NAME, graph);
-        assertEquals (graph, node.mGraph);
-        assertEquals ("", node.mLabel);
-        assertEquals ("", node.mAction);
+        State state = new State (STATE_NAME, graph);
+        assertEquals (graph, state.mGraph);
+        assertEquals ("", state.mLabel);
+        assertEquals ("", state.mAction);
     }
 
     @Test
     public void testGetNameWithoutLabel () {
-        assertEquals (NODE_NAME, new Node (NODE_NAME, null).getName ());
+        assertEquals (STATE_NAME, new State (STATE_NAME, null).getName ());
     }
 
     @Test
     public void testGetNameWithLabel () {
         String LABEL = "a label";
-        Node node    = new Node (NODE_NAME, null);
-        node.mLabel  = LABEL;
-        assertTrue (node.getName ().startsWith (LABEL));
+        State state  = new State (STATE_NAME, null);
+        state.mLabel = LABEL;
+        assertTrue (state.getName ().startsWith (LABEL));
     }
 
     @Test
     public void testGetDescription() {
-        Node node = new Node (NODE_NAME, new GraphImpl (GRAPH_NAME));
-        assertEquals (GRAPH_NAME + "." + NODE_NAME, node.getDescription ());
+        State state = new State (STATE_NAME, new GraphImpl (GRAPH_NAME));
+        assertEquals (GRAPH_NAME + "." + STATE_NAME, state.getDescription ());
     }
     
     private class GraphImpl implements DirectedGraph {
@@ -83,39 +83,39 @@ public class NodeTest {
             return mName;
         }
 
-        public Node addNode(String name) {
+        public State addState(String name) {
             throw new UnsupportedOperationException("Not supported yet.");
         }
 
-        public Node getNode(String name) {
+        public State getState(String name) {
             throw new UnsupportedOperationException("Not supported yet.");
         }
 
-        public Node getNodeByLabel(String label) {
+        public State getStateByLabel(String label) {
             throw new UnsupportedOperationException("Not supported yet.");
         }
 
-        public Node getRootNode() {
+        public State getRootState() {
             throw new UnsupportedOperationException("Not supported yet.");
         }
 
-        public Node getStartNode() {
+        public State getBeginState() {
             throw new UnsupportedOperationException("Not supported yet.");
         }
 
-        public Edge addEdge(String sourceName, String targetName) {
+        public Transition addTransition(String sourceName, String targetName) {
             throw new UnsupportedOperationException("Not supported yet.");
         }
 
-        public Edge addEdge(Node source, Node target) {
+        public Transition addTransition(State source, State target) {
             throw new UnsupportedOperationException("Not supported yet.");
         }
 
-        public Edge getEdge(Node source, Node target) {
+        public Transition getTransition(State source, State target) {
             throw new UnsupportedOperationException("Not supported yet.");
         }
 
-        public Set<Edge> getEdges(Node source) {
+        public Set<Transition> getTransitions(State source) {
             throw new UnsupportedOperationException("Not supported yet.");
         }
         
