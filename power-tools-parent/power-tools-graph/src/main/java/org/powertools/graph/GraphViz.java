@@ -33,7 +33,12 @@ public final class GraphViz implements Renderer {
     private PrintWriter mWriter;
     private String mDefaultFileType;
     private boolean mInDebugMode;
+    private int mLastClusterNr;
 
+
+    public GraphViz () {
+        this (null);
+    }
 
     public GraphViz (String path) {
         this (path, DEFAULT_DEFAULT_TYPE);
@@ -116,6 +121,8 @@ public final class GraphViz implements Renderer {
     }
 
     private void writeGraph (DirectedGraph graph) {
+        mLastClusterNr = 0;
+        
         writeGraphAttribute (graph.getConcentrateEdges (), "concentrate", "true");
         writeGraphAttribute (graph.getRankDirection () != RankDirection.DEFAULT, "rankdir", graph.getRankDirection ().toString ());
         writeGraphAttribute (graph.getDistanceBetweenRanks () >= 0, "ranksep", "" + graph.getDistanceBetweenRanks ());
@@ -140,26 +147,37 @@ public final class GraphViz implements Renderer {
     }
 
     private void writeClusters (DirectedGraph graph) {
-        int counter = 0;
-        for (Cluster cluster : graph.mClusters) {
-            mWriter.println ("\tsubgraph cluster_" + Integer.toString (++counter) + " {");
-            writeClusterAttribute (!cluster.getLabel ().isEmpty (), "label", cluster.getLabel ());
-
-            writeClusterAttribute (cluster.getStyle () != Style.DEFAULT, "style", cluster.getStyle ().toString ());
-            writeClusterAttribute (cluster.getLineColour () != Colour.DEFAULT, "color", cluster.getLineColour ().toString ());
-            writeClusterAttribute (!cluster.getLineWidth ().isEmpty (), "penwidth", cluster.getLineWidth ());
-            writeClusterAttribute (cluster.getFillColour () != Colour.DEFAULT, "fillcolor", cluster.getFillColour ().toString ());
-            writeClusterAttribute (cluster.getTextColour () != Colour.DEFAULT, "fontcolor", cluster.getTextColour ().toString ());
-            writeClusterAttribute (!cluster.getFontName ().isEmpty (), "fontname", cluster.getFontName ());
-            writeClusterAttribute (!cluster.getFontSize ().isEmpty (), "fontsize", cluster.getFontSize ());
-
-            writeDefaultNodeAttributes (cluster);
-
-            for (Node node : cluster.getNodes ()) {
-                mWriter.println (String.format ("\t\t\"%s\";", node.getName ()));
-            }
-            mWriter.println ("\t}");
+        for (Cluster cluster : graph.mClusters.values ()) {
+            writeCluster (cluster);
         }
+    }
+
+    private void writeClusters (Cluster cluster) {
+        for (Cluster subCluster : cluster.mSubClusters.values ()) {
+            writeCluster (subCluster);
+        }
+    }
+
+    private void writeCluster (Cluster cluster) {
+        mWriter.println ("\tsubgraph cluster_" + Integer.toString (++mLastClusterNr) + " {");
+        writeClusterAttribute (!cluster.getLabel ().isEmpty (), "label", cluster.getLabel ());
+
+        writeClusterAttribute (cluster.getStyle () != Style.DEFAULT, "style", cluster.getStyle ().toString ());
+        writeClusterAttribute (cluster.getLineColour () != Colour.DEFAULT, "color", cluster.getLineColour ().toString ());
+        writeClusterAttribute (!cluster.getLineWidth ().isEmpty (), "penwidth", cluster.getLineWidth ());
+        writeClusterAttribute (cluster.getFillColour () != Colour.DEFAULT, "fillcolor", cluster.getFillColour ().toString ());
+        writeClusterAttribute (cluster.getTextColour () != Colour.DEFAULT, "fontcolor", cluster.getTextColour ().toString ());
+        writeClusterAttribute (!cluster.getFontName ().isEmpty (), "fontname", cluster.getFontName ());
+        writeClusterAttribute (!cluster.getFontSize ().isEmpty (), "fontsize", cluster.getFontSize ());
+
+        writeDefaultNodeAttributes (cluster);
+
+        writeClusters (cluster);
+
+        for (Node node : cluster.getNodes ()) {
+            mWriter.println (String.format ("\t\t\"%s\";", node.getName ()));
+        }
+        mWriter.println ("\t}");
     }
 
     private void writeClusterAttribute (boolean condition, String attributeName, String value) {
@@ -262,8 +280,7 @@ public final class GraphViz implements Renderer {
 
     private void runTool (String tool, String filename, String fileType) {
         try {
-            String command = String.format ("\"%s/%s\" -Tpng -o %s.%s.%s %s", mPath, tool, filename, tool, fileType, mFile.getPath ());
-//          System.out.println (command);
+            String command = String.format ("\"%s%s\" -Tpng -o %s.%s.%s %s", getPath (), tool, filename, tool, fileType, mFile.getPath ());
             Runtime.getRuntime ().exec (command).waitFor ();
             if (!mInDebugMode) {
                 mFile.delete ();
@@ -272,6 +289,14 @@ public final class GraphViz implements Renderer {
             throw new GraphException ("could not write picture");
         } catch (InterruptedException ie) {
             throw new GraphException ("wait interrupted");
+        }
+    }
+
+    private String getPath () {
+        if (mPath == null || "".equals (mPath)) {
+            return "";
+        } else {
+            return mPath + "/";
         }
     }
 }

@@ -1,4 +1,4 @@
-/*	Copyright 2013 by Martin Gijsen (www.DeAnalist.nl)
+/*	Copyright 2013-2014 by Martin Gijsen (www.DeAnalist.nl)
  *
  *	This file is part of the PowerTools.
  *
@@ -30,6 +30,7 @@ public class DirectedGraphTest {
 	private final String SOURCE_NODE_NAME = "source node name";
 	private final String TARGET_NODE_NAME = "target node name";
 	private final String CLUSTER_NAME = "cluster name";
+	private final String EDGE_LABEL = "edge name";
 
 	private DirectedGraph mGraph;
 
@@ -195,6 +196,61 @@ public class DirectedGraphTest {
 	}
 
 	@Test
+	public void testAddEdge_String_String_String () {
+		Node source = mGraph.addNode (SOURCE_NODE_NAME);
+		Node target = mGraph.addNode (TARGET_NODE_NAME);
+		Edge edge = mGraph.addEdge (SOURCE_NODE_NAME, TARGET_NODE_NAME, EDGE_LABEL);
+		assertEquals (source, edge.getSource ());
+		assertEquals (target, edge.getTarget ());
+		Edge retrievedEdge = mGraph.getEdge (source, target);
+		assertEquals (edge, retrievedEdge);
+		assertEquals (EDGE_LABEL, retrievedEdge.getLabel ());
+
+		try {
+			mGraph.addEdge (SOURCE_NODE_NAME, TARGET_NODE_NAME);
+			fail ("no exception");
+		} catch (GraphException ge) {
+			assertTrue (ge.getMessage ().contains ("already exists"));
+		}
+	}
+
+	@Test
+	public void testAddEdge_Node_String_String () {
+		Node source = mGraph.addNode (SOURCE_NODE_NAME);
+		Node target = mGraph.addNode (TARGET_NODE_NAME);
+		Edge edge = mGraph.addEdge (source, TARGET_NODE_NAME, EDGE_LABEL);
+		assertEquals (source, edge.getSource ());
+		assertEquals (target, edge.getTarget ());
+		Edge retrievedEdge = mGraph.getEdge (source, target);
+		assertEquals (edge, retrievedEdge);
+		assertEquals (EDGE_LABEL, retrievedEdge.getLabel ());
+	}
+
+	@Test
+	public void testAddEdge_String_Node_String () {
+		Node source = mGraph.addNode (SOURCE_NODE_NAME);
+		Node target = mGraph.addNode (TARGET_NODE_NAME);
+		Edge edge = mGraph.addEdge (SOURCE_NODE_NAME, target, EDGE_LABEL);
+		assertEquals (source, edge.getSource ());
+		assertEquals (target, edge.getTarget ());
+		Edge retrievedEdge = mGraph.getEdge (source, target);
+		assertEquals (edge, retrievedEdge);
+		assertEquals (EDGE_LABEL, retrievedEdge.getLabel ());
+	}
+
+	@Test
+	public void testAddEdge_Node_Node_String () {
+		Node source = mGraph.addNode (SOURCE_NODE_NAME);
+		Node target = mGraph.addNode (TARGET_NODE_NAME);
+		Edge edge = mGraph.addEdge (source, target, EDGE_LABEL);
+		assertEquals (source, edge.getSource ());
+		assertEquals (target, edge.getTarget ());
+		Edge retrievedEdge = mGraph.getEdge (source, target);
+		assertEquals (edge, retrievedEdge);
+		assertEquals (EDGE_LABEL, retrievedEdge.getLabel ());
+	}
+
+	@Test
 	public void testGetEdges () {
 		Node node1 = mGraph.addNode ("node1");
 		Node node2 = mGraph.addNode ("node2");
@@ -210,10 +266,25 @@ public class DirectedGraphTest {
 	}
 
 	@Test
-	public void testAddCluster () {
+	public void testAddCluster_new () {
 		mGraph.addCluster ("some cluster name");
 		assertNull (mGraph.getCluster (CLUSTER_NAME));
 		Cluster cluster = mGraph.addCluster (CLUSTER_NAME);
+		assertEquals (cluster, mGraph.getCluster (CLUSTER_NAME));
+	}
+
+	@Test
+	public void testAddCluster_existing () {
+		mGraph.addCluster ("some cluster name");
+		assertNull (mGraph.getCluster (CLUSTER_NAME));
+		Cluster cluster = mGraph.addCluster (CLUSTER_NAME);
+		assertEquals (cluster, mGraph.getCluster (CLUSTER_NAME));
+   		try {
+            mGraph.addCluster (CLUSTER_NAME);
+            fail ("no exception");
+        } catch (GraphException ge) {
+            // ok
+        }
 		assertEquals (cluster, mGraph.getCluster (CLUSTER_NAME));
 	}
 

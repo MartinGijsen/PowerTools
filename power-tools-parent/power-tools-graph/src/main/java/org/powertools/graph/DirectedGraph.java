@@ -27,7 +27,8 @@ import java.util.Set;
 
 public final class DirectedGraph extends AttributeSetWithDefaultNodeAttributes {
     final Map<String, Node> mNodes;
-    final Set<Cluster> mClusters;
+    final Map<String, Cluster> mClusters;
+    final Map<String, Cluster> mSubClusters;
     final Map<String, Rank> mRanks;
 
     private boolean mConcentrateEdges;
@@ -44,10 +45,11 @@ public final class DirectedGraph extends AttributeSetWithDefaultNodeAttributes {
 
     public DirectedGraph (boolean concentrateEdges) {
         super ();
-        mNodes    = new HashMap<String, Node> ();
-        mEdges    = new HashMap<Node, Set<Edge>> ();
-        mClusters = new HashSet<Cluster> ();
-        mRanks    = new HashMap<String, Rank> ();
+        mNodes       = new HashMap<String, Node> ();
+        mEdges       = new HashMap<Node, Set<Edge>> ();
+        mClusters    = new HashMap<String, Cluster> ();
+        mSubClusters = new HashMap<String, Cluster> ();
+        mRanks       = new HashMap<String, Rank> ();
 
         mConcentrateEdges     = concentrateEdges;
         mRankDirection        = RankDirection.DEFAULT;
@@ -89,6 +91,7 @@ public final class DirectedGraph extends AttributeSetWithDefaultNodeAttributes {
     }
 
 
+    // nodes
     public Node addNode (String name) {
         if (mNodes.containsKey (name)) {
             throw new GraphException (String.format ("node name %s not unique", name));
@@ -137,6 +140,12 @@ public final class DirectedGraph extends AttributeSetWithDefaultNodeAttributes {
         }
     }
 
+    public Iterator<Node> nodeIterator () {
+        return mNodes.values ().iterator ();
+    }
+
+    
+    // edges
     public Edge addEdge (String sourceName, String targetName) {
         return addEdge (getNode (sourceName), getNode (targetName));
     }
@@ -167,6 +176,24 @@ public final class DirectedGraph extends AttributeSetWithDefaultNodeAttributes {
         return edge;
     }
 
+    public Edge addEdge (String sourceName, String targetName, String label) {
+        return addEdge (getNode (sourceName), getNode (targetName), label);
+    }
+
+    public Edge addEdge (Node source, String targetName, String label) {
+        return addEdge (source, getNode (targetName), label);
+    }
+
+    public Edge addEdge (String sourceName, Node target, String label) {
+        return addEdge (getNode (sourceName), target, label);
+    }
+
+    public Edge addEdge (Node source, Node target, String label) {
+        Edge edge = addEdge (source, target);
+        edge.setLabel (label);
+        return edge;
+    }
+
     public boolean hasEdge (Node source, Node target) {
         try {
             getEdge (source, target);
@@ -193,21 +220,38 @@ public final class DirectedGraph extends AttributeSetWithDefaultNodeAttributes {
         return edgesFromSameSource == null ? new HashSet<Edge> () : edgesFromSameSource;
     }
 
+    
+    // clusters
     public Cluster addCluster (String label) {
-        Cluster cluster = new Cluster (label);
-        mClusters.add (cluster);
-        return cluster;
+        if (mClusters.containsKey (label) || mSubClusters.containsKey (label)) {
+            throw new GraphException (String.format ("cluster name %s is not unique", label));
+        } else {
+            Cluster cluster = new Cluster (label);
+            mClusters.put (label, cluster);
+            return cluster;
+        }
+    }
+
+    public Cluster addCluster (String label, Cluster cluster) {
+        if (mClusters.containsKey (label) || mSubClusters.containsKey (label)) {
+            throw new GraphException (String.format ("cluster name %s is not unique", label));
+        } else {
+            Cluster subCluster = cluster.addCluster (label);
+            mSubClusters.put (label, subCluster);
+            return subCluster;
+        }
     }
 
     public Cluster getCluster (String label) {
-        for (Cluster cluster : mClusters) {
-            if (cluster.getLabel ().equals (label)) {
-                return cluster;
-            }
+        Cluster cluster = mClusters.get (label);
+        if (cluster == null) {
+            cluster = mSubClusters.get (label);
         }
-        return null;
+        return cluster;
     }
 
+
+    // ranks
     public Rank addRank (String name, RankType type) {
         if (mRanks.containsKey (name)) {
             throw new GraphException (String.format ("rank name %s not unique", name));
@@ -220,9 +264,5 @@ public final class DirectedGraph extends AttributeSetWithDefaultNodeAttributes {
 
     public Rank getRank (String name) {
         return mRanks.get (name);
-    }
-
-    public Iterator<Node> nodeIterator () {
-        return mNodes.values ().iterator ();
     }
 }

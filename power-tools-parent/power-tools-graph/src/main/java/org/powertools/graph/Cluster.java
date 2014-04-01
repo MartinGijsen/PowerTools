@@ -18,20 +18,25 @@
 
 package org.powertools.graph;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 
 public final class Cluster extends AttributeSetWithDefaultNodeAttributes {
+    final Map<String, Cluster> mSubClusters;
+
     private final Set<Node> mNodes;
 
 
     Cluster (String label) {
         super ();
-        mLabel      = label;
-        mLineColour = Colour.DEFAULT;
-        mLineWidth  = "";
-        mNodes      = new HashSet<Node> ();
+        mLabel       = label;
+        mLineColour  = Colour.DEFAULT;
+        mLineWidth   = "";
+        mNodes       = new HashSet<Node> ();
+        mSubClusters = new HashMap<String, Cluster> ();
     }
 
     void addNode (Node node) {
@@ -49,5 +54,11 @@ public final class Cluster extends AttributeSetWithDefaultNodeAttributes {
 
     Set<Node> getNodes () {
         return mNodes;
+    }
+    
+    Cluster addCluster (String label) {
+        Cluster cluster = new Cluster (label);
+        mSubClusters.put (label, cluster);
+        return cluster;
     }
 }

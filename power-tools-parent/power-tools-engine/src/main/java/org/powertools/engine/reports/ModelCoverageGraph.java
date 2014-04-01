@@ -82,9 +82,7 @@ public class ModelCoverageGraph implements ModelSubscriber {
     }
 
     public void finish (Date dateTime) {
-        if (!"".equals (mGraphvizPath)) {
-            GraphViz graphViz = new GraphViz (mGraphvizPath);
-            graphViz.writeDirected (mGraph, mResultsDirectory + "/coverage");
-        }
+        GraphViz graphViz = ("".equals (mGraphvizPath) ? new GraphViz () : new GraphViz (mGraphvizPath));
+        graphViz.writeDirected (mGraph, mResultsDirectory + "/coverage");
     }
 }
