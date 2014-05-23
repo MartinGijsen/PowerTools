@@ -613,6 +613,8 @@ class WebDriverBrowser implements IBrowser {
             File screenshotFile = ((TakesScreenshot) driver).getScreenshotAs (OutputType.FILE);
             FileUtils.copyFile (screenshotFile, new File (path));
             return true;
+        } catch (NullPointerException npe) {
+            return false;
         } catch (IOException ioe) {
             mRunTime.reportStackTrace (ioe);
             throw new ExecutionException ("Could not copy screenshot file");
