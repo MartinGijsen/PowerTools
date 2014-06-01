@@ -43,14 +43,13 @@ public final class WebDriverLibrary extends WebLibrary {
 
     public boolean OpenBrowser_Version_At_OnGrid_ (String typeString, String browserVersion, String url, String hubUrl) {
         if (mBrowser != null) {
-            mRunTime.reportError ("browser is already open");
             return false;
         } else {
-            BrowserType browserType    = getBrowserType (typeString);
-            String urlToOpen           = url.isEmpty () ? "about:blank" : completeUrl (url);
-            WebDriverBrowser myBrowser = new WebDriverBrowser (mRunTime);
-            mBrowser                   = myBrowser;
-            return myBrowser.open (browserType, browserVersion, urlToOpen, mRunTime.getContext ().getResultsDirectory (), hubUrl);
+            BrowserType browserType  = getBrowserType (typeString);
+            String urlToOpen         = url.isEmpty () ? "about:blank" : completeUrl (url);
+            WebDriverBrowser browser = new WebDriverBrowser (mRunTime);
+            mBrowser                 = browser;
+            return browser.open (browserType, browserVersion, urlToOpen, mRunTime.getContext ().getResultsDirectory (), hubUrl);
         }
     }
 }
