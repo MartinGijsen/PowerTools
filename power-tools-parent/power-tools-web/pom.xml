@@ -9,7 +9,7 @@
 	<artifactId>power-tools-web</artifactId>
 
 	<properties>
-		<selenium.version>2.32.0</selenium.version>
+		<selenium.version>2.41.0</selenium.version>
 	</properties>
 
 	<dependencies>
