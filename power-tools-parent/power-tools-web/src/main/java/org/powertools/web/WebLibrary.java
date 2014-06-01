@@ -20,7 +20,7 @@ package org.powertools.web;
 
 import java.util.HashMap;
 import java.util.Map;
-import org.powertools.engine.ExecutionException;
+
 import org.powertools.engine.InstructionSet;
 import org.powertools.engine.KeywordName;
 import org.powertools.engine.ParameterOrder;
@@ -143,7 +143,8 @@ public abstract class WebLibrary implements InstructionSet {
 
     public final boolean CloseBrowser () {
         if (mBrowser == null) {
-            throw new ExecutionException ("browser is not open");
+            mRunTime.reportError ("browser is not open");
+            return false;
         } else {
             boolean result = mBrowser.close ();
             mBrowser       = null;
