@@ -1,33 +1,33 @@
-/*	Copyright 2012 by Martin Gijsen (www.DeAnalist.nl)
+/* Copyright 2012-2014 by Martin Gijsen (www.DeAnalist.nl)
  *
- *	This file is part of the PowerTools engine.
+ * This file is part of the PowerTools engine.
  *
- *	The PowerTools engine is free software: you can redistribute it and/or
- *	modify it under the terms of the GNU Affero General Public License as
- *	published by the Free Software Foundation, either version 3 of the License,
- *	or (at your option) any later version.
+ * The PowerTools engine is free software: you can redistribute it and/or
+ * modify it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  *
- *	The PowerTools engine is distributed in the hope that it will be useful,
- *	but WITHOUT ANY WARRANTY; without even the implied warranty of
- *	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- *	GNU Affero General Public License for more details.
+ * The PowerTools engine is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Affero General Public License for more details.
  *
- *	You should have received a copy of the GNU Affero General Public License
- *	along with the PowerTools engine. If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU Affero General Public License
+ * along with the PowerTools engine. If not, see <http://www.gnu.org/licenses/>.
  */
 
 grammar Expression;
 
 options {
-	k				= 1;
-	output			= AST;
-	ASTLabelType	= CommonTree;
+    k            = 1;
+    output       = AST;
+    ASTLabelType = CommonTree;
 }
 
 tokens {
-	UnaryMinus;
-	DatePlus;
-	DateMinus;
+    UnaryMinus;
+    DatePlus;
+    DateMinus;
 }
 
 @lexer::header {
@@ -39,100 +39,102 @@ package org.powertools.engine.expression;
 }
 
 @rulecatch {
-	catch (RecognitionException e) {
-		throw e;
-	}
+    catch (RecognitionException e) {
+            throw e;
+    }
 }
 
 root
-	:	'?'! expr EOF!
-	;
+    :   '?'! expr EOF!
+    ;
 	
 expr
-	:	andExpr ('or'^ expr)?
-	;
+    :   andExpr ('or'^ expr)?
+    ;
 
 andExpr
-	:	notExpr ('and'^ andExpr)?
-	;
+    :   notExpr ('and'^ andExpr)?
+    ;
 
 notExpr
-	:	('not'^)? booleanExpr
-	;
+    :   ('not'^)? booleanExpr
+    ;
 
 booleanExpr
-	:	comparableExpression
-		(	(	'='^
-			|	'<>'^
-			|	'<'^
-			|	'<='^
-			|	'>'^
-			|	'>='^
-			)
-			comparableExpression
-		)?
-	;
+    :   comparableExpression
+        (   (   '='^
+            |   '<>'^
+            |   '<'^
+            |   '<='^
+            |   '>'^
+            |   '>='^
+            )
+            comparableExpression
+        )?
+    ;
 
 comparableExpression
-	:	(term '++') => stringExpr
-	|	(day | IdentifierPlus dateOperator addExpr period) => dateExpr
-	|	addExpr
-	;
+    :   (term '++') => stringExpr
+    |   (day | IdentifierPlus dateOperator addExpr period) => dateExpr
+    |   addExpr
+    ;
 
 stringExpr
-	:	term ('++'^ term)+
-	;
+    :   term ('++'^ term)+
+    ;
 
 dateExpr
-	:	(	day
-		|	IdentifierPlus dateOperator^ addExpr period
-		)
-		( dateOperator^ addExpr period)*
-	;
+    :   (   day
+        |   IdentifierPlus dateOperator^ addExpr period
+        )
+        (dateOperator^ addExpr period)*
+    ;
 
 dateOperator
-	:	'+' -> DatePlus
-	|	'-' -> DateMinus
-	;
+    :   '+' -> DatePlus
+    |   '-' -> DateMinus
+    ;
 
 day
-	:	'yesterday' | 'today' | 'tomorrow' | DateLiteral
-	;
+    :   'yesterday' | 'today' | 'tomorrow' | DateLiteral
+    ;
 
 period
-	:	'business'? 'days' | 'weeks' | 'months' | 'years'
-	;
+    :   'business'? 'days' | 'weeks' | 'months' | 'years'
+    ;
 
 addExpr
-	:	mulExpr (('+'^ | '-'^) mulExpr)*
-	;
+    :   mulExpr (('+'^ | '-'^) mulExpr)*
+    ;
 
 mulExpr
-	:	unaryExpr (('*'^ | '/'^) unaryExpr)*
-	;
+    :   unaryExpr (('*'^ | '/'^) unaryExpr)*
+    ;
 
 unaryExpr
-	:	'-' unaryExpr -> ^(UnaryMinus unaryExpr)
-	|	term
-	;
+    :   '-' unaryExpr -> ^(UnaryMinus unaryExpr)
+    |   term
+    ;
 
 term
-	:	StringLiteral
-	|	'true'
-	|	'false'
-	|	IdentifierPlus
-	|	NumberLiteral
-	|	'('! expr ')'!
-	;
+    :   StringLiteral
+    |   'true'
+    |   'false'
+    |   IdentifierPlus
+    |   NumberLiteral
+    |   '('! expr ')'!
+    ;
 
 StringLiteral
-	:	(	'"' (~('"'))* '"'
-		|	'\'' (~('\''))* '\''
-		|	('\u201c'|'\u201d') (~('\u201c'|'\u201d'))* ('\u201c'|'\u201d')
-		) {
-			String text = getText ();
-			setText (text.substring (1, text.length () - 1));
-		};
+    :   (   '"' (~('"'))* '"'
+        |   '\'' (~('\''))* '\''
+        |   ('\u201c'|'\u201d') (~('\u201c'|'\u201d'))* ('\u201c'|'\u201d')
+        ) {
+            String text = getText ();
+            setText (text.substring (1, text.length () - 1));
+        }
+    ;
+
 Spaces:                 (' ')+ { skip(); };
 IdentifierPlus:         Identifier ('.' (Digits | Identifier) )*;
 fragment Identifier:    Alpha (Alpha | Digit | '_')*;
