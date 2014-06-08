@@ -85,8 +85,8 @@ public final class WebDriverKeywords implements InstructionSet {
         return mInstructions.SetLongDefaultTimeoutTo_ (timeout);
     }
 
-    public boolean DeclareItem (String name, String parentName, String type, String keyTypeString, String value) {
-        return mInstructions.Name_ParentName_Type_Key_Value_ (name, parentName, type, keyTypeString, value);
+    public void DeclareItem (String name, String parentName, String type, String keyTypeString, String value) {
+        mInstructions.Name_ParentName_Type_Key_Value_ (name, parentName, type, keyTypeString, value);
     }
 
     public boolean SetItemParameter (String itemName, int parameterNr, String value) {

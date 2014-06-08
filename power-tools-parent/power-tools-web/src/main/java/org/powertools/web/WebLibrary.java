@@ -144,7 +144,7 @@ public abstract class WebLibrary implements InstructionSet {
     public final boolean CloseBrowser () {
         if (mBrowser == null) {
             mRunTime.reportError ("browser is not open");
-            return false;
+            return true;
         } else {
             boolean result = mBrowser.close ();
             mBrowser       = null;
@@ -167,7 +167,7 @@ public abstract class WebLibrary implements InstructionSet {
 
     // item declarations
     @KeywordName ("DeclareItem")
-    public final boolean Name_ParentName_Type_Key_Value_ (String name, String parentName, String type, String keyTypeString, String value) {
+    public final void Name_ParentName_Type_Key_Value_ (String name, String parentName, String type, String keyTypeString, String value) {
         if (parametersValid (name, type, keyTypeString, value)) {
             try {
                 Item parentItem = ("".equals (parentName) ? null : findItem (parentName));
@@ -181,7 +181,6 @@ public abstract class WebLibrary implements InstructionSet {
                 mRunTime.reportError (iae.getMessage ());
             }
         }
-        return true;
     }
 
     private boolean parametersValid (String name, String type, String keyTypeString, String value) {
@@ -204,7 +203,7 @@ public abstract class WebLibrary implements InstructionSet {
 
     @KeywordName ("SetItemParameter")
     public final boolean SetParameter_ForItem_To_ (int parameterNr, String itemName, String value) {
-        final Item item = findItem (itemName);
+        Item item = findItem (itemName);
         return item != null && item.setParameterValue (parameterNr, value);
     }
 
@@ -212,7 +211,7 @@ public abstract class WebLibrary implements InstructionSet {
     // operations on frames
     @KeywordName ("SelectFrame")
     public final boolean SelectFrame_ (String itemName) {
-        final Item item = findItem (itemName);
+        Item item = findItem (itemName);
         if (item != null) {
             return mBrowser.selectFrame (item);
         } else {
@@ -238,7 +237,7 @@ public abstract class WebLibrary implements InstructionSet {
     // operations on items
     @KeywordName ("CheckPageTitle")
     public final boolean CheckPageTitleIs_ (String expectedTitle) {
-        final String actualTitle = mBrowser.getPageTitle ();
+        String actualTitle = mBrowser.getPageTitle ();
         if (actualTitle.equals (expectedTitle)) {
             return true;
         } else {
@@ -249,7 +248,7 @@ public abstract class WebLibrary implements InstructionSet {
 
     @KeywordName ("CheckPartialPageTitle")
     public final boolean CheckPageTitleContains_ (String expectedTitle) {
-        final String actualTitle = mBrowser.getPageTitle ();
+        String actualTitle = mBrowser.getPageTitle ();
         if (actualTitle.indexOf (expectedTitle) >= 0) {
             return true;
         } else {
@@ -265,9 +264,9 @@ public abstract class WebLibrary implements InstructionSet {
 
     @KeywordName ("CheckItemIsEmpty")
     public final boolean CheckItem_IsEmpty (String itemName) {
-        final Item item = findItem (itemName);
+        Item item = findItem (itemName);
         if (item != null) {
-            final String actualText = mBrowser.getItemText (item);
+            String actualText = mBrowser.getItemText (item);
             if (actualText == null) {
                 //mPublisher.publishError ("item not found on this page or not unique");
             } else if (!actualText.isEmpty ()) {
@@ -281,9 +280,9 @@ public abstract class WebLibrary implements InstructionSet {
 
     @KeywordName ("CheckItemIsNotEmpty")
     public final boolean CheckItem_IsNotEmpty (String itemName) {
-        final Item item = findItem (itemName);
+        Item item = findItem (itemName);
         if (item != null) {
-            final String actualText = mBrowser.getItemText (item);
+            String actualText = mBrowser.getItemText (item);
             if (actualText == null) {
                 //mPublisher.publishError ("item not found on this page or not unique");
             } else if (actualText.isEmpty ()) {
@@ -297,9 +296,9 @@ public abstract class WebLibrary implements InstructionSet {
 
     @KeywordName ("CheckItemTextIs")
     public final boolean CheckTextOfItem_Is_ (String itemName, String expectedText) {
-        final Item item = findItem (itemName);
+        Item item = findItem (itemName);
         if (item != null) {
-            final String actualText = mBrowser.getItemText (item);
+            String actualText = mBrowser.getItemText (item);
             if (actualText == null) {
                 //mPublisher.publishError ("item not found on this page or not unique");
             } else if (!actualText.equals (expectedText)) {
@@ -313,9 +312,9 @@ public abstract class WebLibrary implements InstructionSet {
 
     @KeywordName ("CheckItemTextIsNot")
     public final boolean CheckTextOfItem_IsNot_ (String itemName, String unexpectedText) {
-        final Item item = findItem (itemName);
+        Item item = findItem (itemName);
         if (item != null) {
-            final String actualText = mBrowser.getItemText (item);
+            String actualText = mBrowser.getItemText (item);
             if (actualText == null) {
                 //mPublisher.publishError ("item not found on this page or not unique");
             } else if (actualText.equals (unexpectedText)) {
@@ -329,9 +328,9 @@ public abstract class WebLibrary implements InstructionSet {
 
     @KeywordName ("CheckItemTextContains")
     public final boolean CheckTextOfItem_Contains_ (String itemName, String expectedText) {
-        final Item item = findItem (itemName);
+        Item item = findItem (itemName);
         if (item != null) {
-            final String actualText = mBrowser.getItemText (item);
+            String actualText = mBrowser.getItemText (item);
             if (actualText == null) {
                 //mPublisher.publishError ("item not found on this page or not unique");
             } else if (actualText.indexOf (expectedText) < 0) {
@@ -345,9 +344,9 @@ public abstract class WebLibrary implements InstructionSet {
 
     @KeywordName ("CheckItemTextContainsNot")
     public final boolean CheckTextOfItem_DoesNotContain_ (String itemName, String unexpectedText) {
-        final Item item = findItem (itemName);
+        Item item = findItem (itemName);
         if (item != null) {
-            final String actualText = mBrowser.getItemText (item);
+            String actualText = mBrowser.getItemText (item);
             if (actualText == null) {
                 //mPublisher.publishError ("item not found on this page or not unique");
             } else if (actualText.indexOf (unexpectedText) >= 0) {
@@ -361,7 +360,7 @@ public abstract class WebLibrary implements InstructionSet {
 
     @KeywordName ("SelectLink")
     public final boolean SelectLink_ (String itemName) {
-        final Item item = findItem (itemName);
+        Item item = findItem (itemName);
         return item != null && mBrowser.clickLink (item);
     }
 
@@ -382,25 +381,25 @@ public abstract class WebLibrary implements InstructionSet {
 
     @KeywordName ("SelectOption")
     public final boolean SelectOption_ (String itemName) {
-        final Item item = findItem (itemName);
+        Item item = findItem (itemName);
         return item != null && mBrowser.selectChoice (item);
     }
 
     @KeywordName ("SelectOptionByText")
     public final boolean SelectOptionIn_ByText_ (String selectItemName, String text) {
-        final Item item = findItem (selectItemName);
+        Item item = findItem (selectItemName);
         return item != null && mBrowser.selectChoiceByText (item, text);
     }
 
     @KeywordName ("SelectOptionByPartialText")
     public final boolean SelectOptionIn_ByPartialText_ (String selectItemName, String text) {
-        final Item item = findItem (selectItemName);
+        Item item = findItem (selectItemName);
         return item != null && mBrowser.selectChoiceByPartialText (item, text);
     }
 
     @KeywordName ("ClickItem")
     public final boolean ClickItem_ (String itemName) {
-        final Item item = findItem (itemName);
+        Item item = findItem (itemName);
         return item != null && mBrowser.click (item);
     }
 
@@ -416,7 +415,7 @@ public abstract class WebLibrary implements InstructionSet {
 
     @KeywordName ("ClickItemAndWait")
     public final boolean ClickItem_AndWait (String itemName) {
-        final Item item = findItem (itemName);
+        Item item = findItem (itemName);
         return item != null && mBrowser.clickAndWait (item);
     }
 
@@ -444,14 +443,14 @@ public abstract class WebLibrary implements InstructionSet {
 
     @KeywordName ("MoveMouseOver")
     public final boolean MoveMouseOver_ (String itemName) {
-        final Item item = findItem (itemName);
+        Item item = findItem (itemName);
         return item != null && mBrowser.mouseOver (item);
     }
 
     @KeywordName ("TypeIntoItem")
     @ParameterOrder ({ 2, 1 })
     public final boolean Type_IntoItem_ (String text, String itemName) {
-        final Item item = findItem (itemName);
+        Item item = findItem (itemName);
         return item != null && mBrowser.type (item, text);
     }
 
@@ -467,7 +466,7 @@ public abstract class WebLibrary implements InstructionSet {
 
 
     public boolean Set_IntoCheckbox_(String text, String itemName) {
-        final Item item = findItem (itemName);
+        Item item = findItem (itemName);
         boolean value = makeBoolean (text);
         return mBrowser.setCheckboxValue (item, value);
     }
@@ -483,12 +482,12 @@ public abstract class WebLibrary implements InstructionSet {
     }
 
     public boolean CheckItem_IsSelected (String itemName) {
-        final Item item = findItem (itemName);
+        Item item = findItem (itemName);
         return item != null && mBrowser.isSelected (item);
     }
 
     public boolean CheckItem_IsNotSelected (String itemName) {
-        final Item item = findItem (itemName);
+        Item item = findItem (itemName);
         return item != null && !mBrowser.isSelected (item);
     }
 
@@ -514,13 +513,13 @@ public abstract class WebLibrary implements InstructionSet {
 
     @KeywordName ("WaitUntilItemIsPresent")
     public final boolean WaitUntilItem_IsPresent (String itemName) {
-        final Item item = findItem (itemName);
+        Item item = findItem (itemName);
         return item != null && mBrowser.waitUntilItemIsPresent (item);
     }
 
     @KeywordName ("WaitUntilItemIsNotPresent")
     public final boolean WaitUntilItem_IsNotPresent (String itemName) {
-        final Item item = findItem (itemName);
+        Item item = findItem (itemName);
         return item != null && mBrowser.waitUntilItemIsNotPresent (item);
     }
 
@@ -537,13 +536,13 @@ public abstract class WebLibrary implements InstructionSet {
 
     @KeywordName ("WaitUntilItemIsNotEmpty")
     public final boolean WaitUntilItem_IsNotEmpty (String itemName) {
-        final Item item = findItem (itemName);
+        Item item = findItem (itemName);
         return item != null && mBrowser.waitUntilItemIsNotEmpty (item);
     }
 
     @KeywordName ("WaitUntilItemIsEmpty")
     public final boolean WaitUntilItem_IsEmpty (String itemName) {
-        final Item item = findItem (itemName);
+        Item item = findItem (itemName);
         return item != null && mBrowser.waitUntilItemIsEmpty (item);
     }
 
@@ -553,74 +552,74 @@ public abstract class WebLibrary implements InstructionSet {
 
     @KeywordName ("WaitUntilItemIsVisible")
     public final boolean WaitUntilItem_IsVisible (String itemName) {
-        final Item item = findItem (itemName);
+        Item item = findItem (itemName);
         return item != null && mBrowser.waitUntilItemIsVisible (item);
     }
 
     @KeywordName ("WaitUntilItemIsNotVisible")
     public final boolean WaitUntilItem_IsNotVisible (String itemName) {
-        final Item item = findItem (itemName);
+        Item item = findItem (itemName);
         return item != null && mBrowser.waitUntilItemIsNotVisible (item);
     }
 
     @KeywordName ("WaitUntilItemIsEnabled")
     public final boolean WaitUntilItem_IsEnabled (String itemName) {
-        final Item item = findItem (itemName);
+        Item item = findItem (itemName);
         return item != null && mBrowser.waitUntilItemIsEnabled (item);
     }
 
     @KeywordName ("WaitUntilItemIsDisabled")
     public final boolean WaitUntilItem_IsDisabled (String itemName) {
-        final Item item = findItem (itemName);
+        Item item = findItem (itemName);
         return item != null && mBrowser.waitUntilItemIsDisabled (item);
     }
 
     @KeywordName ("CheckItemIsPresent")
     public final boolean CheckItem_IsPresent (String itemName) {
-        final Item item = findItem (itemName);
+        Item item = findItem (itemName);
         return item != null && mBrowser.itemIsPresent (item);
     }
 
     @KeywordName ("CheckItemIsNotPresent")
     public final boolean CheckItem_IsNotPresent (String itemName) {
-        final Item item = findItem (itemName);
+        Item item = findItem (itemName);
         return item != null && !mBrowser.itemIsPresent (item);
     }
 
     @KeywordName ("CheckItemIsVisible")
     public final boolean CheckItem_IsVisible (String itemName) {
-        final Item item = findItem (itemName);
+        Item item = findItem (itemName);
         return item != null && mBrowser.itemIsVisible (item);
     }
 
     @KeywordName ("CheckItemIsNotVisible")
     public final boolean CheckItem_IsNotVisible (String itemName) {
-        final Item item = findItem (itemName);
+        Item item = findItem (itemName);
         return item != null && !mBrowser.itemIsVisible (item);
     }
 
     @KeywordName ("CheckItemIsEnabled")
     public final boolean CheckItem_IsEnabled (String itemName) {
-        final Item item = findItem (itemName);
+        Item item = findItem (itemName);
         return item != null && mBrowser.itemIsEnabled (item);
     }
 
     @KeywordName ("CheckItemIsDisabled")
     public final boolean CheckItem_IsDisabled (String itemName) {
-        final Item item = findItem (itemName);
+        Item item = findItem (itemName);
         return item != null && !mBrowser.itemIsEnabled (item);
     }
 
 
     public final boolean CheckThat_Items_ArePresent (String itemName, int count) {
-        final Item item = findItem (itemName);
+        Item item = findItem (itemName);
         return item != null && mBrowser.getCount (item) >= count;
     }
 
     public final boolean CheckAtLeast_Items_ArePresent (int expectedNrOfItems, String itemName) {
-        final Item item = findItem (itemName);
+        Item item = findItem (itemName);
         if (item != null) {
-            final int actualNrOfItems = mBrowser.countItems (item);
+            int actualNrOfItems = mBrowser.countItems (item);
             if (actualNrOfItems >= expectedNrOfItems) {
                 return true;
             } else {
@@ -643,7 +642,7 @@ public abstract class WebLibrary implements InstructionSet {
     
     @KeywordName ("SaveItemText")
     public final boolean SaveItem_In_ (String itemName, String variableName) {
-        final Item item = findItem (itemName);
+        Item item = findItem (itemName);
         if (item != null) {
             mRunTime.setValue (variableName, mBrowser.getItemText (item));
             return true;
@@ -654,7 +653,7 @@ public abstract class WebLibrary implements InstructionSet {
 
     @KeywordName ("StoreItemAttribute")
     public final boolean PutAttribute_OfItem_In_ (String attributeName, String itemName, String variableName) {
-        final Item item = findItem (itemName);
+        Item item = findItem (itemName);
         if (item != null) {
             mRunTime.setValue (variableName, mBrowser.getItemAttribute (item, attributeName));
             return true;
@@ -713,7 +712,6 @@ public abstract class WebLibrary implements InstructionSet {
         mRunTime          = runTime;
         mLastScreenshotNr = 0;
         mItemMap          = new HashMap<String, Item> ();
-        //mBrowserMap     = new HashMap<String, IBrowser> ();
     }
 
 
@@ -746,8 +744,6 @@ public abstract class WebLibrary implements InstructionSet {
         }
         throw new IllegalArgumentException ("Invalid boolean value: " + text + " valid values: true/false/on/off");
     }
-
-    //private final Map<String, IBrowser> mBrowserMap;
 
     static {
         cItemTypesMap = new HashMap<String, ItemType> ();
