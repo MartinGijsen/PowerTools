@@ -20,9 +20,13 @@ package org.powertools.graph;
 
 import java.util.Iterator;
 import java.util.Set;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import org.junit.Before;
+import org.junit.Test;
 
 
 public class DirectedGraphTest {
@@ -251,18 +255,92 @@ public class DirectedGraphTest {
 	}
 
 	@Test
-	public void testGetEdges () {
+	public void testGetEdgesFrom () {
 		Node node1 = mGraph.addNode ("node1");
 		Node node2 = mGraph.addNode ("node2");
 		Node node3 = mGraph.addNode ("node3");
-		assertTrue (mGraph.getEdges (node1).isEmpty ());
+		assertTrue (mGraph.getEdgesFrom (node1).isEmpty ());
 		Edge edge1 = mGraph.addEdge ("node1", "node2");
 		Edge edge2 = mGraph.addEdge ("node1", "node3");
 		Edge edge3 = mGraph.addEdge ("node2", "node3");
-		Set<Edge> edges = mGraph.getEdges (node1);
+		Set<Edge> edges = mGraph.getEdgesFrom (node1);
 		assertTrue (edges.contains (edge1));
 		assertTrue (edges.contains (edge2));
 		assertFalse (edges.contains (edge3));
+	}
+
+	@Test
+	public void testGetEdgesTo () {
+		Node node1 = mGraph.addNode ("node1");
+		Node node2 = mGraph.addNode ("node2");
+		Node node3 = mGraph.addNode ("node3");
+		assertTrue (mGraph.getEdgesTo (node1).isEmpty ());
+		Edge edge1 = mGraph.addEdge ("node1", "node2");
+		Edge edge2 = mGraph.addEdge ("node1", "node3");
+		Edge edge3 = mGraph.addEdge ("node2", "node3");
+		Set<Edge> edges = mGraph.getEdgesTo (node3);
+		assertFalse (edges.contains (edge1));
+		assertTrue (edges.contains (edge2));
+		assertTrue (edges.contains (edge3));
+	}
+
+    @Test
+	public void testGetEdgesFromOrTo () {
+		Node node1 = mGraph.addNode ("node1");
+		Node node2 = mGraph.addNode ("node2");
+		Node node3 = mGraph.addNode ("node3");
+		Node node4 = mGraph.addNode ("node4");
+		Node node5 = mGraph.addNode ("node5");
+		assertTrue (mGraph.getEdgesFromOrTo (node1).isEmpty ());
+		Edge edge1 = mGraph.addEdge ("node1", "node2");
+		Edge edge2 = mGraph.addEdge ("node1", "node3");
+		Edge edge3 = mGraph.addEdge ("node2", "node3");
+		Edge edge4 = mGraph.addEdge ("node3", "node4");
+		Edge edge5 = mGraph.addEdge ("node3", "node5");
+		Edge edge6 = mGraph.addEdge ("node4", "node5");
+		Set<Edge> edges = mGraph.getEdgesFromOrTo (node3);
+		assertFalse (edges.contains (edge1));
+		assertTrue (edges.contains (edge2));
+		assertTrue (edges.contains (edge3));
+		assertTrue (edges.contains (edge4));
+		assertTrue (edges.contains (edge5));
+		assertFalse (edges.contains (edge6));
+	}
+
+    @Test
+	public void testGetNeighbours () {
+		Node node1 = mGraph.addNode ("node1");
+		Node node2 = mGraph.addNode ("node2");
+		Node node3 = mGraph.addNode ("node3");
+		Node node4 = mGraph.addNode ("node4");
+		Node node5 = mGraph.addNode ("node5");
+		assertTrue (mGraph.getEdgesFromOrTo (node1).isEmpty ());
+		Edge edge1 = mGraph.addEdge ("node1", "node2");
+		Edge edge2 = mGraph.addEdge ("node1", "node3");
+		Edge edge3 = mGraph.addEdge ("node2", "node3");
+		Edge edge4 = mGraph.addEdge ("node2", "node4");
+		Edge edge5 = mGraph.addEdge ("node3", "node5");
+		Set<Node> neighbours = mGraph.getNeighbours (node1, 1);
+		assertEquals (2, neighbours.size ());
+		assertFalse (neighbours.contains (node1));
+		assertTrue (neighbours.contains (node2));
+		assertTrue (neighbours.contains (node3));
+		assertFalse (neighbours.contains (node4));
+		assertFalse (neighbours.contains (node4));
+		neighbours = mGraph.getNeighbours (node1, 2);
+		assertEquals (2, neighbours.size ());
+		assertFalse (neighbours.contains (node1));
+		assertFalse (neighbours.contains (node2));
+		assertFalse (neighbours.contains (node3));
+		assertTrue (neighbours.contains (node4));
+		assertTrue (neighbours.contains (node4));
+		neighbours = mGraph.getNeighbours (node5, 2);
+		assertEquals (2, neighbours.size ());
+		assertTrue (neighbours.contains (node1));
+		assertTrue (neighbours.contains (node2));
+		assertFalse (neighbours.contains (node3));
+		assertFalse (neighbours.contains (node4));
+		assertFalse (neighbours.contains (node4));
 	}
 
 	@Test

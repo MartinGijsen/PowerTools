@@ -31,12 +31,13 @@ public final class DirectedGraph extends AttributeSetWithDefaultNodeAttributes {
     final Map<String, Cluster> mSubClusters;
     final Map<String, Rank> mRanks;
 
+    private Map<Node, Set<Edge>> mEdgesBySource;
+    private Map<Node, Set<Edge>> mEdgesByTarget;
+
     private boolean mConcentrateEdges;
     private RankDirection mRankDirection;
     private float mDistanceBetweenRanks;
     private float mDistanceBetweenNodes;
-
-    private Map<Node, Set<Edge>> mEdges;
 
 
     public DirectedGraph () {
@@ -45,11 +46,12 @@ public final class DirectedGraph extends AttributeSetWithDefaultNodeAttributes {
 
     public DirectedGraph (boolean concentrateEdges) {
         super ();
-        mNodes       = new HashMap<String, Node> ();
-        mEdges       = new HashMap<Node, Set<Edge>> ();
-        mClusters    = new HashMap<String, Cluster> ();
-        mSubClusters = new HashMap<String, Cluster> ();
-        mRanks       = new HashMap<String, Rank> ();
+        mNodes         = new HashMap<String, Node> ();
+        mEdgesBySource = new HashMap<Node, Set<Edge>> ();
+        mEdgesByTarget = new HashMap<Node, Set<Edge>> ();
+        mClusters      = new HashMap<String, Cluster> ();
+        mSubClusters   = new HashMap<String, Cluster> ();
+        mRanks         = new HashMap<String, Rank> ();
 
         mConcentrateEdges     = concentrateEdges;
         mRankDirection        = RankDirection.DEFAULT;
@@ -121,10 +123,11 @@ public final class DirectedGraph extends AttributeSetWithDefaultNodeAttributes {
     }
 
     public Node getRoot () {
+        // TODO: refactor to use mEdgesByTarget?
         Set<Node> startNodes = new HashSet<Node> ();
         startNodes.addAll (mNodes.values ());
 
-        for (Set<Edge> edgeSet : mEdges.values ()) {
+        for (Set<Edge> edgeSet : mEdgesBySource.values ()) {
             for (Edge edge : edgeSet) {
                 startNodes.remove (edge.getTarget ());
             }
@@ -159,10 +162,10 @@ public final class DirectedGraph extends AttributeSetWithDefaultNodeAttributes {
     }
 
     public Edge addEdge (Node source, Node target) {
-        Set<Edge> edgesFromSameSource = mEdges.get (source);
+        Set<Edge> edgesFromSameSource = mEdgesBySource.get (source);
         if (edgesFromSameSource == null) {
             edgesFromSameSource = new HashSet<Edge> ();
-            mEdges.put (source, edgesFromSameSource);
+            mEdgesBySource.put (source, edgesFromSameSource);
         } else {
             for (Edge edge : edgesFromSameSource) {
                 if (edge.getTarget () == target) {
@@ -171,8 +174,15 @@ public final class DirectedGraph extends AttributeSetWithDefaultNodeAttributes {
             }
         }
 
+        Set<Edge> edgesFromSameTarget = mEdgesByTarget.get (target);
+        if (edgesFromSameTarget == null) {
+            edgesFromSameTarget = new HashSet<Edge> ();
+            mEdgesByTarget.put (target, edgesFromSameTarget);
+        }
+
         Edge edge = new Edge (source, target);
         edgesFromSameSource.add (edge);
+        edgesFromSameTarget.add (edge);
         return edge;
     }
 
@@ -204,7 +214,7 @@ public final class DirectedGraph extends AttributeSetWithDefaultNodeAttributes {
     }
 
     public Edge getEdge (Node source, Node target) {
-        Set<Edge> edgesFromSameSource = mEdges.get (source);
+        Set<Edge> edgesFromSameSource = mEdgesBySource.get (source);
         if (edgesFromSameSource != null) {
             for (Edge edge : edgesFromSameSource) {
                 if (edge.getTarget () == target) {
@@ -215,12 +225,57 @@ public final class DirectedGraph extends AttributeSetWithDefaultNodeAttributes {
         throw new GraphException (String.format ("edge from %s to %s does not exist", source.getName (), target.getName ()));
     }
 
-    public Set<Edge> getEdges (Node source) {
-        Set<Edge> edgesFromSameSource = mEdges.get (source);
+    public Set<Edge> getEdgesFrom (Node source) {
+        Set<Edge> edgesFromSameSource = mEdgesBySource.get (source);
         return edgesFromSameSource == null ? new HashSet<Edge> () : edgesFromSameSource;
     }
 
+    public Set<Edge> getEdgesTo (Node target) {
+        Set<Edge> edgesFromSameTarget = mEdgesByTarget.get (target);
+        return edgesFromSameTarget == null ? new HashSet<Edge> () : edgesFromSameTarget;
+    }
+
+    public Set<Edge> getEdgesFromOrTo (Node node) {
+        Set<Edge> edges = getEdgesFrom (node);
+        edges.addAll (getEdgesTo (node));
+        return edges;
+    }
+
     
+    public Set<Node> getNeighbours (Node node, int distance) {
+        if (distance <= 0) {
+            throw new RuntimeException ("distance must be 1 or greater");
+        } else {
+            Set<Node> knownNodes    = new HashSet<Node> ();
+            Set<Node> newNeighbours = new HashSet<Node> ();
+            newNeighbours.add (node);
+            
+            for (int currentDistance = 1; currentDistance <= distance; ++currentDistance) {
+                knownNodes.addAll (newNeighbours);
+                Set<Node> nodesToProcess = newNeighbours;
+                newNeighbours            = new HashSet<Node> ();
+                for (Node currentNode : nodesToProcess) {
+                    for (Edge edge : getEdgesFrom (currentNode)) {
+                        Node target = edge.getTarget ();
+                        if (!knownNodes.contains (target)) {
+                            newNeighbours.add (target);
+                        }
+                    }
+                    for (Edge edge : getEdgesTo (currentNode)) {
+                        Node source = edge.getSource ();
+                        if (!knownNodes.contains (source)) {
+                            newNeighbours.add (source);
+                        }
+                    }
+                }
+                
+                knownNodes.addAll (newNeighbours);
+            }
+            return newNeighbours;
+        }
+    }
+
+
     // clusters
     public Cluster addCluster (String label) {
         if (mClusters.containsKey (label) || mSubClusters.containsKey (label)) {

@@ -210,7 +210,7 @@ public final class GraphViz implements Renderer {
 
     private void writeEdges (DirectedGraph graph) {
         for (Node node : graph.mNodes.values ()) {
-            for (Edge edge : graph.getEdges (node)) {
+            for (Edge edge : graph.getEdgesFrom (node)) {
                 mWriter.append (String.format ("\t\"%s\" -> \"%s\"", edge.getSource ().getName (), edge.getTarget ().getName ()));
                 writeEdgeAttribute (!edge.getLabel ().isEmpty (), "label", edge.getLabel ());
 
