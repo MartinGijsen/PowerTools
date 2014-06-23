@@ -20,23 +20,48 @@ package org.powertools.engine.sources;
 
 import java.util.Iterator;
 import java.util.List;
-
+import org.powertools.engine.ExecutionException;
 import org.powertools.engine.TestLine;
 import org.powertools.engine.TestRunResultPublisher;
 import org.powertools.engine.symbol.Scope;
 
 
 final class ProcedureTestSource extends TestSource {
+    private final Procedure mProcedure;
     private final Iterator<List<String>> mInstructionIter;
 
 
     ProcedureTestSource (Procedure procedure, Scope parentScope, TestLine testLine, TestRunResultPublisher publisher) {
         super (new Scope (parentScope), publisher);
-        procedure.createParameters (mScope, testLine);
+        mProcedure = procedure;
+        createParameters (testLine);
         mInstructionIter = procedure.instructionIterator ();
     }
 
+    void createParameters (TestLine testLine) {
+        List<ProcedureParameter> parameters = mProcedure.getParameters ();
+        checkNrOfArguments (testLine.getNrOfParts () - 1, parameters.size ());
+        createParameters (parameters, testLine);
+    }
 
+    private void checkNrOfArguments (int nrOfArguments, int nrOfParameters) {
+        if (nrOfArguments != nrOfParameters) {
+            throw new ExecutionException (String.format ("procedure %s expects %d arguments but receives %d", mProcedure.getName (), nrOfParameters, nrOfArguments));
+        }
+    }
+
+    private void createParameters (List<ProcedureParameter> parameters, TestLine testLine) {
+        int partNr = 0;
+        for (ProcedureParameter parameter : parameters) {
+            String argument = testLine.getPart (++partNr);
+            if (parameter.isOutput ()) {
+                mScope.createParameter (parameter.getName (), argument);
+            } else {
+                mScope.createConstant (parameter.getName (), argument);
+            }
+        }
+    }
+    
     @Override
     public void initialize () {
         mPublisher.publishIncreaseLevel ();
@@ -55,6 +80,13 @@ final class ProcedureTestSource extends TestSource {
 
     @Override
     public void cleanup () {
+        for (ProcedureParameter parameter : mProcedure.getParameters ()) {
+            if (parameter.isOutput ()) {
+                String name = parameter.getName ();
+                mPublisher.publishValue (name, mScope.getLocal (name).getValue ());
+            }
+        }
+
         mPublisher.publishDecreaseLevel ();
     }
 }

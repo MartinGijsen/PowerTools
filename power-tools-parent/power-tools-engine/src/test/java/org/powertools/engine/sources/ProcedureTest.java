@@ -21,12 +21,11 @@ package org.powertools.engine.sources;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
 import org.powertools.engine.ExecutionException;
-import org.powertools.engine.TestLine;
-import org.powertools.engine.symbol.Scope;
 
 
 public class ProcedureTest {
@@ -61,36 +60,21 @@ public class ProcedureTest {
 	@Test
 	public void testAddParameterIn () {
 		mProcedure.addParameter (PARAMETER_NAME, false);
-		Scope scope       = new Scope (null);
-		TestLine testLine = new TestLineImpl (new String[] { "instruction", "abc" });
-		mProcedure.createParameters (scope, testLine);
-		assertEquals ("abc", scope.get (PARAMETER_NAME).getValue ());
+		List<ProcedureParameter> parameters = mProcedure.getParameters ();
+		assertEquals (1, parameters.size ());
+        ProcedureParameter parameter = mProcedure.getParameters ().get (0);
+		assertEquals (PARAMETER_NAME, parameter.getName ());
+		assertEquals (false, parameter.isOutput ());
 	}
 
 	@Test
 	public void testAddParameterOut () {
-		String CONSTANT_NAME = "c";
-		String CONSTANT_VALUE = "1";
-		
 		mProcedure.addParameter (PARAMETER_NAME, true);
-		Scope parentScope = new Scope (null);
-		parentScope.createConstant (CONSTANT_NAME, CONSTANT_VALUE);
-		Scope childScope = new Scope (parentScope);
-		TestLine testLine = new TestLineImpl (new String[] { "x", "c" });
-		mProcedure.createParameters (childScope, testLine);
-		assertEquals ("1", childScope.get (PARAMETER_NAME).getValue ());
-	}
-
-	@Test
-	public void testAddParameter () {
-		Scope scope       = new Scope (null);
-		TestLine testLine = new TestLineImpl (new String[] { "instruction", "abc" });
-		try {
-			mProcedure.createParameters (scope, testLine);
-			fail ("no exception");
-		} catch (ExecutionException ee) {
-			// ok
-		}
+		List<ProcedureParameter> parameters = mProcedure.getParameters ();
+		assertEquals (1, parameters.size ());
+        ProcedureParameter parameter = mProcedure.getParameters ().get (0);
+		assertEquals (PARAMETER_NAME, parameter.getName ());
+		assertEquals (true, parameter.isOutput ());
 	}
 
 	@Test

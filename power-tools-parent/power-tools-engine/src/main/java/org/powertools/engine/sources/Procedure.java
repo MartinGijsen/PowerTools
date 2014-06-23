@@ -1,4 +1,4 @@
-/* Copyright 2012 by Martin Gijsen (www.DeAnalist.nl)
+/* Copyright 2012-2014 by Martin Gijsen (www.DeAnalist.nl)
  *
  * This file is part of the PowerTools engine.
  *
@@ -21,40 +21,19 @@ package org.powertools.engine.sources;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
 import org.powertools.engine.ExecutionException;
-import org.powertools.engine.TestLine;
-import org.powertools.engine.symbol.Scope;
 
 
 // A Procedure is a scripted instruction.
 public final class Procedure {
-    private class Parameter {
-        private final String mName;
-        private final boolean mIsOutput;
-
-        Parameter (String name, boolean isOutput) {
-            mName     = name;
-            mIsOutput = isOutput;
-        }
-
-        String getName () {
-            return mName;
-        }
-
-        boolean isOutput () {
-            return mIsOutput;
-        }
-    }
-
     private final String mName;
-    private final List<Parameter> mParameters;
+    private final List<ProcedureParameter> mParameters;
     private final List<List<String>> mInstructions;
 
 
     public Procedure (String name) {
         mName         = name;
-        mParameters   = new ArrayList<Parameter> ();
+        mParameters   = new ArrayList<ProcedureParameter> ();
         mInstructions = new ArrayList<List<String>> ();
     }
 
@@ -66,42 +45,24 @@ public final class Procedure {
 
     public void addParameter (String name, boolean isOutput) {
         String realName = name;
-        for (Parameter parameter : mParameters) {
+        for (ProcedureParameter parameter : mParameters) {
             if (parameter.getName ().equalsIgnoreCase (realName)) {
                 throw new ExecutionException (String.format ("duplicate parameter name '%s'", parameter.getName ()));
             }
         }
 
-        mParameters.add (new Parameter (realName, isOutput));
+        mParameters.add (new ProcedureParameter (realName, isOutput));
     }
 
     public void addInstruction (List<String> instruction) {
         mInstructions.add (instruction);
     }
 
-    void createParameters (Scope scope, TestLine testLine) {
-        checkNrOfArguments (testLine.getNrOfParts () - 1);
-
-        int partNr = 0;
-        for (Parameter parameter : mParameters) {
-            String argument = testLine.getPart (++partNr);
-            if (parameter.isOutput ()) {
-                scope.createParameter (parameter.getName (), argument);
-            } else {
-                scope.createConstant (parameter.getName (), argument);
-            }
-        }
+    List<ProcedureParameter> getParameters () {
+        return mParameters;
     }
 
-    public Iterator<List<String>> instructionIterator () {
+    Iterator<List<String>> instructionIterator () {
         return mInstructions.iterator ();
-    }
-
-
-    private void checkNrOfArguments (int nrOfArguments) {
-        int nrOfParameters = mParameters.size ();
-        if (nrOfArguments != nrOfParameters) {
-            throw new ExecutionException (String.format ("procedure %s expects %d arguments but receives %d", mName, nrOfParameters, nrOfArguments));
-        }
     }
 }
