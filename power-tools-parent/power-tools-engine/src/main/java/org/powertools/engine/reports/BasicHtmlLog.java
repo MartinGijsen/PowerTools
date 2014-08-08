@@ -32,14 +32,10 @@ public abstract class BasicHtmlLog implements TestLineSubscriber, TestResultSubs
     protected final PrintWriter mWriter;
 
     protected int mLevel;
-//    protected int mLastId;
-//    protected Reference mReference;
 
 
     public BasicHtmlLog (PrintWriter writer, String title) {
         mLevel  = 0;
-//        mLastId = 0;
-//        mReference = new Reference ();
 
         mWriter = writer;
         mWriter.format ("<HTML><HEAD><TITLE>%s</TITLE>\n", title);
