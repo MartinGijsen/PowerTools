@@ -20,15 +20,18 @@ package org.powertools.engine.core;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import org.powertools.engine.BusinessDayChecker;
 import org.powertools.engine.Context;
+import org.powertools.engine.Currencies;
+import org.powertools.engine.Functions;
 import org.powertools.engine.Roles;
 import org.powertools.engine.RunTime;
 import org.powertools.engine.Symbol;
+import org.powertools.engine.TestRunResultPublisher;
+import org.powertools.engine.core.runtime.Factory;
+import org.powertools.engine.core.runtime.TestSourceStack;
 import org.powertools.engine.expression.ExpressionEvaluator;
 import org.powertools.engine.instructions.ProcedureRunner;
-import org.powertools.engine.TestRunResultPublisher;
 import org.powertools.engine.reports.TestRunResultPublisherImpl;
 import org.powertools.engine.sources.TestLineImpl;
 import org.powertools.engine.sources.TestSource;
@@ -54,17 +57,21 @@ public final class RunTimeImpl implements RunTime, ProcedureRunner {
     private final Context mContext;
     private final ExpressionEvaluator mEvaluator;
     private final TestRunResultPublisher mPublisher;
-    private final RolesImpl mRoles;
     private final Map<String, Object> mSharedObjects;
+    private final Roles mRoles;
+    private final Currencies mCurrencies;
+    private final Functions mFunctions;
 
 
     public RunTimeImpl (Context context) {
-        mSourceStack   = new TestSourceStack ();
         mContext       = context;
-        mEvaluator     = new ExpressionEvaluator ();
+        mSourceStack   = Factory.createTestSourceStack ();
         mPublisher     = new TestRunResultPublisherImpl ();
-        mRoles         = new RolesImpl (this);
         mSharedObjects = new HashMap<String, Object> ();
+        mRoles         = Factory.createRoles (this);
+        mCurrencies    = Factory.createCurrencies ();
+        mFunctions     = Factory.createFunctions ();
+        mEvaluator     = new ExpressionEvaluator (mFunctions);
     }
 
 
@@ -75,17 +82,15 @@ public final class RunTimeImpl implements RunTime, ProcedureRunner {
 
 
     @Override
-    public boolean enterTestCase (String name, String description) {
+    public void enterTestCase (String name, String description) {
         mSourceStack.createAndPushTestCase (name, description);
         mPublisher.publishTestCaseBegin (name, description);
-        return true;
     }
 
     @Override
-    public boolean leaveTestCase () {
+    public void leaveTestCase () {
         mSourceStack.popTestCase ();
         mPublisher.publishTestCaseEnd ();
-        return true;
     }
 
 
@@ -209,7 +214,18 @@ public final class RunTimeImpl implements RunTime, ProcedureRunner {
     }
 
     @Override
+    public Functions getFunctions () {
+        return mFunctions;
+    }
+
+    @Override
     public void setBusinessDayChecker (BusinessDayChecker checker) {
         ExpressionEvaluator.setBusinessDayChecker (checker);
+    }
+
+    
+    @Override
+    public Currencies getCurrencies () {
+        return mCurrencies;
     }
 }

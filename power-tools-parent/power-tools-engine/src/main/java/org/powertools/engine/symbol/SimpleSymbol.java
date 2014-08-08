@@ -21,7 +21,7 @@ package org.powertools.engine.symbol;
 import org.powertools.engine.ExecutionException;
 
 
-abstract class SimpleSymbol extends SymbolImpl {
+public abstract class SimpleSymbol extends SymbolImpl {
     protected String mValue;
 
 

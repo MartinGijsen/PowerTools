@@ -16,7 +16,7 @@
  * along with the PowerTools engine. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.powertools.engine.core;
+package org.powertools.engine.core.runtime;
 
 import java.util.EmptyStackException;
 import java.util.Stack;
@@ -32,33 +32,37 @@ import org.powertools.engine.symbol.Scope;
  * test line. It automatically pops a test source when it is depleted, returning
  * to the test source pushed before.
  */
-final class TestSourceStack {
+final class TestSourceStackImpl implements TestSourceStack {
     private final Stack<TestSource> mSourceStack;
     private final Scope mGlobalScope;
     
     private boolean mAborting;
 
 
-    TestSourceStack () {
+    TestSourceStackImpl () {
         mSourceStack = new Stack<TestSource> ();
         mGlobalScope = new Scope (null);
         mAborting    = false;
     }
 
 
-    void abort () {
+    @Override
+    public void abort () {
         mAborting = true;
     }
     
-    TestSource getCurrentTestSource () {
+    @Override
+    public TestSource getCurrentTestSource () {
         return mSourceStack.peek ();
     }
 
-    Scope getGlobalScope () {
+    @Override
+    public Scope getGlobalScope () {
         return mGlobalScope;
     }
 
-    Scope getCurrentScope () {
+    @Override
+    public Scope getCurrentScope () {
         try {
             return mSourceStack.peek ().getScope ();
         } catch (EmptyStackException ese) {
@@ -67,17 +71,20 @@ final class TestSourceStack {
     }
 
 
-    void initAndPush (TestSource source) {
+    @Override
+    public void initAndPush (TestSource source) {
         source.initialize ();
         mSourceStack.push (source);
     }
 
 
-    void run (String fileName) {
+    @Override
+    public void run (String fileName) {
         initAndPush (mSourceStack.peek ().create (fileName));
     }
 
-    TestLineImpl getTestLine () {
+    @Override
+    public TestLineImpl getTestLine () {
         while (!mSourceStack.isEmpty ()) {
             if (mAborting) {
                 popTestSource ();
@@ -93,7 +100,8 @@ final class TestSourceStack {
         return null;
     }
 
-    boolean createAndPushTestCase (String name, String description) {
+    @Override
+    public boolean createAndPushTestCase (String name, String description) {
         if (!inATestCase ()) {
             // can push immediately
         } else if (mSourceStack.peek ().isATestCase ()) {
@@ -106,7 +114,8 @@ final class TestSourceStack {
         return true;
     }
 
-    boolean inATestCase () {
+    @Override
+    public boolean inATestCase () {
         int nrOfSources = mSourceStack.size ();
         for (int position = 0; position < nrOfSources; ++position) {
             if (mSourceStack.get (position).isATestCase ()) {
@@ -116,7 +125,8 @@ final class TestSourceStack {
         return false;
     }
 
-    void popTestCase () {
+    @Override
+    public void popTestCase () {
         if (mSourceStack.isEmpty ()) {
             throw new ExecutionException ("no current test source");
         } else if (!(mSourceStack.peek ().isATestCase ())) {

@@ -20,7 +20,6 @@ package org.powertools.engine.core;
 
 import java.util.HashMap;
 import java.util.Map;
-import junit.runner.TestRunListener;
 
 import org.powertools.engine.ExecutionException;
 import org.powertools.engine.TestRunResultPublisher;

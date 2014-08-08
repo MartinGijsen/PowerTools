@@ -155,7 +155,7 @@ final class IntegerValue extends Value {
         return mValue;
     }
     
-    private int intValue () {
+    int intValue () {
         return Integer.parseInt (mValue);
     }
 }

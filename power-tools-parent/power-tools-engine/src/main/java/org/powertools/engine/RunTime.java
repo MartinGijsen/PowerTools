@@ -145,25 +145,30 @@ public interface RunTime {
 
 
     /**
-     * Returns the roles object that contains registered user names and passwords
-     * @return  the roles object
+     * Returns the Roles object that contains registered user names and passwords
+     * @return  the Roles object
      */
     Roles getRoles ();
+
+
+    /**
+     * Returns the Functions object that contains functions that can be used in expressions
+     * @return  the Functions object
+     */
+    Functions getFunctions ();
 
 
     /**
      * Enters a test case, creating a new scope for variables.
      * @param   name    the (unique) name of the test case
      * @param   description a description of the test case
-     * @return  true
      */
-    boolean enterTestCase (String name, String description);
+    void enterTestCase (String name, String description);
 
     /**
      * Leaves the test case and deletes its scope and the variables in it
-     * @return  false if not in a test case, true otherwise
      */
-    boolean leaveTestCase ();
+    void leaveTestCase ();
 
 
     /**
@@ -187,4 +192,11 @@ public interface RunTime {
      * @param   checker the business day checker to use
      */
     void setBusinessDayChecker (BusinessDayChecker checker);
+
+
+    /**
+     * Gets the currencies object 
+     * @return  the object containing the known currencies
+     */
+    Currencies getCurrencies ();
 }

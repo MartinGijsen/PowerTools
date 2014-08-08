@@ -1,4 +1,4 @@
-/* Copyright 2012 by Martin Gijsen (www.DeAnalist.nl)
+/* Copyright 2012-2014 by Martin Gijsen (www.DeAnalist.nl)
  *
  * This file is part of the PowerTools engine.
  *
@@ -19,7 +19,7 @@
 package org.powertools.engine.symbol;
 
 
-final class Structure extends StructuredSymbol {
+public final class Structure extends StructuredSymbol {
     Structure (String name, Scope scope) {
         super (name, scope);
         mRootItem = new SequenceItem (name, null);

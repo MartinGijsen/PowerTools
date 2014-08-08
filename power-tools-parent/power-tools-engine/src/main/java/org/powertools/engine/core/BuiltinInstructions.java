@@ -23,6 +23,7 @@ import java.lang.reflect.InvocationTargetException;
 
 import org.powertools.engine.BusinessDayChecker;
 import org.powertools.engine.ExecutionException;
+import org.powertools.engine.Function;
 import org.powertools.engine.InstructionSet;
 import org.powertools.engine.KeywordName;
 import org.powertools.engine.ParameterOrder;
@@ -84,24 +85,23 @@ public final class BuiltinInstructions implements InstructionSet {
 
 
     // instruction sets
-    public boolean UseInstructionSet_ (String className) {
+    public void UseInstructionSet_ (String className) {
         String name           = className;
         Object instructionSet = instantiateInstructionSet (className);
         if (instructionSet instanceof InstructionSet) {
             name = ((InstructionSet) instructionSet).getName ();
         }
-        return register (name, instructionSet);
+        register (name, instructionSet);
     }
 
     @KeywordName ("UseInstructionSet")
     @ParameterOrder ({ 2, 1 })
-    public boolean UseInstructionSet_As_ (String className, String name) {
-        return register (name, instantiateInstructionSet (className));
+    public void UseInstructionSet_As_ (String className, String name) {
+        register (name, instantiateInstructionSet (className));
     }
 
-    boolean register (String name, Object object) {
-        mInstructions.addInstructionSet (new InstructionSetFactory ().createClassInstructionSet (name, object));
-        return true;
+    void register (String name, Object object) {
+        mInstructions.addInstructionSet (new InstructionSetFactory (mRunTime.getCurrencies (), mRunTime).createClassInstructionSet (name, object));
     }
 
     private Object instantiateInstructionSet (String className) {
@@ -152,118 +152,106 @@ public final class BuiltinInstructions implements InstructionSet {
 
     // test cases
     @KeywordName ("BeginTestCase")
-    public boolean BeginTestCase_To_ (String name, String description) {
-        return mRunTime.enterTestCase (name, description);
+    public void BeginTestCase_To_ (String name, String description) {
+        mRunTime.enterTestCase (name, description);
     }
 
     @KeywordName ("EndTestCase")
-    public boolean EndTestCase () {
-        return mRunTime.leaveTestCase ();
+    public void EndTestCase () {
+        mRunTime.leaveTestCase ();
     }
 
-    public boolean DefineNumberSequence_ (String name) {
-        return DefineNumberSequence_From_ (name, 1);
+    public void DefineNumberSequence_ (String name) {
+        DefineNumberSequence_From_ (name, 1);
     }
 
     @KeywordName ("DefineNumberSequence")
-    public boolean DefineNumberSequence_From_ (String name, int initialValue) {
+    public void DefineNumberSequence_From_ (String name, int initialValue) {
         mRunTime.getCurrentScope ().createNumberSequence (name, initialValue);
-        return true;
     }
 
     @KeywordName ("DefineStringSequence")
-    public boolean DefineStringSequence_ (String name) {
+    public void DefineStringSequence_ (String name) {
         mRunTime.getCurrentScope ().createStringSequence (name);
-        return true;
     }
 
     @KeywordName ("DefineRepeatingStringSequence")
-    public boolean DefineRepeatingStringSequence_ (String name) {
+    public void DefineRepeatingStringSequence_ (String name) {
         mRunTime.getCurrentScope ().createRepeatingStringSequence (name);
-        return true;
     }
 
     @KeywordName ("AddSequenceString")
-    public boolean Add_ToSequence_ (String value, String name) {
+    public void Add_ToSequence_ (String value, String name) {
         Symbol symbol = mRunTime.getSymbol (name);
         if (symbol instanceof BaseSequence) {
             symbol.setValue (value);
-            return true;
         } else {
             throw new ExecutionException (String.format ("symbol '%s' is not a string sequence", name));
         }
     }
 
     @KeywordName ("DefineConstant")
-    public boolean DefineConstant_As_ (String name, String value) {
+    public void DefineConstant_As_ (String name, String value) {
         mRunTime.getCurrentScope ().createConstant (name, value);
-        return true;
     }
 
-    public boolean DefineVariable_ (String name) {
-        return DefineVariable_As_ (name, "");
+    public void DefineVariable_ (String name) {
+        DefineVariable_As_ (name, "");
     }
 
     @KeywordName ("DefineVariable")
-    public boolean DefineVariable_As_ (String name, String value) {
+    public void DefineVariable_As_ (String name, String value) {
         mRunTime.getCurrentScope ().createVariable (name, value);
-        return true;
     }
 
     @KeywordName ("DefineGlobalStructure")
-    public boolean DefineGlobalStructure_ (String name) {
+    public void DefineGlobalStructure_ (String name) {
         mRunTime.getGlobalScope ().createStructure (name);
-        return true;
     }
 
     @KeywordName ("DefineStructure")
-    public boolean DefineStructure_ (String name) {
+    public void DefineStructure_ (String name) {
         mRunTime.getCurrentScope ().createStructure (name);
-        return true;
     }
 
     @KeywordName ("ClearStructure")
-    public boolean ClearStructure_ (String name) {
+    public void ClearStructure_ (String name) {
         mRunTime.getSymbol (name).clear (name);
-        return true;
     }
 
     @KeywordName ("Set")
-    public boolean Set_To_ (String name, String value) {
+    public void Set_To_ (String name, String value) {
         mRunTime.getSymbol (name).setValue (name, value);
-        return true;
     }
 
     @KeywordName ("CopyStructure")
-    public boolean CopyStructure_To_ (String source, String target) {
+    public void CopyStructure_To_ (String source, String target) {
         mRunTime.copyStructure (source, target);
-        return true;
     }
 
     @KeywordName ("Evaluate")
-    public boolean Evaluate_ (String value) {
-        return true;
+    public void Evaluate_ (String value) {
+        // do nothing
     }
 
     @KeywordName ("WaitMilliseconds")
-    public boolean Wait_Milliseconds (String nrOfMilliseconds) {
-        return sleep (Long.parseLong (nrOfMilliseconds));
+    public void Wait_Milliseconds (String nrOfMilliseconds) {
+        sleep (Long.parseLong (nrOfMilliseconds));
     }
 
     @KeywordName ("WaitSeconds")
-    public boolean Wait_Seconds (String nrOfSeconds) {
-        return sleep (Long.parseLong (nrOfSeconds) * MILLIS_PER_SECOND);
+    public void Wait_Seconds (String nrOfSeconds) {
+        sleep (Long.parseLong (nrOfSeconds) * MILLIS_PER_SECOND);
     }
 
     @KeywordName ("WaitMinutes")
-    public boolean Wait_Minutes (String nrOfMinutes) {
-        return sleep (Long.parseLong (nrOfMinutes) * SECONDS_PER_MINUTE * MILLIS_PER_SECOND);
+    public void Wait_Minutes (String nrOfMinutes) {
+        sleep (Long.parseLong (nrOfMinutes) * SECONDS_PER_MINUTE * MILLIS_PER_SECOND);
     }
 
-    private boolean sleep (long nrOfMilliseconds) {
+    private void sleep (long nrOfMilliseconds) {
         try {
             Thread.sleep (nrOfMilliseconds);
-            return true;
         } catch (InterruptedException ie) {
             throw new ExecutionException ("wait was interrupted");
         }
@@ -271,22 +259,52 @@ public final class BuiltinInstructions implements InstructionSet {
 
 
     // roles
-    public boolean Role_Username_Password_ (String role, String username, String password) {
-        return System_Role_Domain_Username_Password_ ("", role, "", username, password);
+    public void Role_Username_Password_ (String role, String username, String password) {
+        System_Role_Domain_Username_Password_ ("", role, "", username, password);
     }
 
     @KeywordName ("DeclareRole")
-    public boolean System_Role_Domain_Username_Password_ (String system, String role, String domain, String username, String password) {
+    public void System_Role_Domain_Username_Password_ (String system, String role, String domain, String username, String password) {
         mRunTime.getRoles ().addRole (system, role, domain, username, password);
-        return true;
     }
 
+    @KeywordName ("AddCurrency")
+    public void AddCurrency_With_Decimals (String name, int nrOfDecimals) {
+        mRunTime.getCurrencies ().add (name, nrOfDecimals);
+    }
+    
+    @KeywordName ("AddCurrencyAlias")
+    public void AddAlias_ForCurrency_ (String alias, String name) {
+        mRunTime.getCurrencies ().addAlias (alias, name);
+    }
+
+    @KeywordName ("RemoveCurrency")
+    public void RemoveCurrency_ (String name) {
+        mRunTime.getCurrencies ().remove (name);
+    }
+
+
+    @KeywordName ("RegisterFunction")
+    public void RegisterFunction_As_ (String name, String className) {
+        Class<?> aClass = getClass (className);
+        if (Function.class.isAssignableFrom (aClass)) {
+            mRunTime.getFunctions ().add (null);
+        } else {
+            throw new ExecutionException (String.format ("class '%s' does not extend class Function", className));
+        }
+    }
+
+    @KeywordName ("UnregisterFunction")
+    public void UnregisterFunction_ (String name) {
+        mRunTime.getFunctions ().remove (name);
+    }
+
+
     @KeywordName ("SetBusinessDayChecker")
-    public boolean SetBusinessDayCheckerTo_ (String className) {
+    public void SetBusinessDayCheckerTo_ (String className) {
         try {
             Object instance = Class.forName (className).newInstance ();
             mRunTime.setBusinessDayChecker ((BusinessDayChecker) instance);
-            return true;
         } catch (ClassNotFoundException cnfe) {
             throw new ExecutionException ("unknown class: " + className);
         } catch (IllegalAccessException iae) {
@@ -347,12 +365,11 @@ public final class BuiltinInstructions implements InstructionSet {
     }
 
     // Keywords only (has parameters but not the corresponding underscores)
-    public boolean RunSheet (String sheetName) {
+    public void RunSheet (String sheetName) {
         mRunTime.mSourceStack.run (sheetName);
-        return true;
     }
 
-    public boolean ToFields (String structure, String field1, String field2, String field3, String field4, String field5, String field6, String field7, String field8, String field9, String field10, String field11, String field12, String field13, String field14, String field15, String field16, String field17, String field18, String field19, String field20) {
+    public void ToFields (String structure, String field1, String field2, String field3, String field4, String field5, String field6, String field7, String field8, String field9, String field10, String field11, String field12, String field13, String field14, String field15, String field16, String field17, String field18, String field19, String field20) {
         if (!structure.isEmpty() && !"structure".equalsIgnoreCase (structure)) {
             throw new ExecutionException ("first argument must be empty or 'structure'");
         } else {
@@ -376,11 +393,10 @@ public final class BuiltinInstructions implements InstructionSet {
             mFieldNames[17] = field18;
             mFieldNames[18] = field19;
             mFieldNames[19] = field20;
-            return true;
         }
     }
 
-    public boolean Assign (String structure, String value1, String value2, String value3, String value4, String value5, String value6, String value7, String value8, String value9, String value10, String value11, String value12, String value13, String value14, String value15, String value16, String value17, String value18, String value19, String value20) {
+    public void Assign (String structure, String value1, String value2, String value3, String value4, String value5, String value6, String value7, String value8, String value9, String value10, String value11, String value12, String value13, String value14, String value15, String value16, String value17, String value18, String value19, String value20) {
         if (structure.isEmpty ()) {
             throw new ExecutionException ("missing structure");
         } else {
@@ -404,7 +420,6 @@ public final class BuiltinInstructions implements InstructionSet {
             assign (structure, mFieldNames[17], value18);
             assign (structure, mFieldNames[18], value19);
             assign (structure, mFieldNames[19], value20);
-            return true;
         }
     }
 

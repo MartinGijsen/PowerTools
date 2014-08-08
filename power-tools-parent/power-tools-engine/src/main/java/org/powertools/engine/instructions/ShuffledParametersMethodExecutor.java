@@ -30,8 +30,8 @@ import org.powertools.engine.TestLine;
 final class ShuffledParametersMethodExecutor extends MethodExecutor {
     private final int[] mParameterMapping;
 
-    ShuffledParametersMethodExecutor (Object object, Method method) {
-        super (object, method);
+    ShuffledParametersMethodExecutor (Object object, Method method, ParameterConvertors convertors) {
+        super (object, method, convertors);
         mParameterMapping = mMethod.getAnnotation (ParameterOrder.class).value ();
         checkMapping ();
     }
@@ -67,7 +67,8 @@ final class ShuffledParametersMethodExecutor extends MethodExecutor {
 
         for (int argNr = 0; argNr < nrOfParameters; ++argNr) {
             int mappedArgNr = mParameterMapping[argNr];
-            mArguments[argNr] = getArgument (parameterTypes[mappedArgNr - 1], testLine.getPart (mappedArgNr));
+            //mArguments[argNr] = getArgument (parameterTypes[mappedArgNr - 1], testLine.getPart (mappedArgNr));
+            mArguments[argNr] = mConvertors.get (parameterTypes[mappedArgNr - 1]).toObject (testLine.getPart (mappedArgNr));
         }
     }
 }

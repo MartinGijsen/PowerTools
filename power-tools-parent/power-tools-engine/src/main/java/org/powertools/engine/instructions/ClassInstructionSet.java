@@ -38,12 +38,14 @@ import org.powertools.engine.ParameterOrder;
 final class ClassInstructionSet implements InstructionSet {
     private final String mName;
     private final Object mObject;
+    private final ParameterConvertors mParameterConvertors;
 
 
-    ClassInstructionSet (String name, Object object) {
+    ClassInstructionSet (String name, Object object, ParameterConvertors parameterConvertors) {
         super ();
-        mName   = name;
-        mObject = object;
+        mName                = name;
+        mObject              = object;
+        mParameterConvertors = parameterConvertors;
     }
 
     @Override
@@ -69,10 +71,10 @@ final class ClassInstructionSet implements InstructionSet {
             if (method == null) {
                 return null;
             } else if (method.isAnnotationPresent (KeywordName.class) && method.isAnnotationPresent (ParameterOrder.class)) {
-                return new ShuffledParametersMethodExecutor (mObject, method);
+                return new ShuffledParametersMethodExecutor (mObject, method, mParameterConvertors);
             }
         }
-        return new MethodExecutor (mObject, method);
+        return new MethodExecutor (mObject, method, mParameterConvertors);
     }
 
     private String getMethodName (String instructionName) {

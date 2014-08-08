@@ -16,7 +16,7 @@
  * along with the PowerTools engine. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.powertools.engine.core;
+package org.powertools.engine.core.runtime;
 
 import org.powertools.engine.ExecutionException;
 import org.powertools.engine.Roles;
@@ -24,7 +24,7 @@ import org.powertools.engine.RunTime;
 import org.powertools.engine.Symbol;
 
 
-public final class RolesImpl implements Roles {
+final class RolesImpl implements Roles {
     private static final String SYMBOL_NAME         = "roles";
     private static final String DOMAIN_FIELD_NAME   = "domain";
     private static final String USERNAME_FIELD_NAME = "username";

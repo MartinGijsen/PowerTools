@@ -25,6 +25,7 @@ import org.antlr.runtime.tree.CommonTree;
 import org.antlr.runtime.tree.CommonTreeNodeStream;
 import org.powertools.engine.BusinessDayChecker;
 import org.powertools.engine.ExecutionException;
+import org.powertools.engine.Functions;
 import org.powertools.engine.symbol.Scope;
 
 
@@ -35,11 +36,13 @@ import org.powertools.engine.symbol.Scope;
 public final class ExpressionEvaluator {
     private final ExpressionLexer mLexer;
     private final ExpressionParser mParser;
+    private final ExpressionTreeWalker mWalker;
 
 
-    public ExpressionEvaluator () {
+    public ExpressionEvaluator (Functions functions) {
         mLexer  = new ExpressionLexer ();
-        mParser = new ExpressionParser (new CommonTokenStream (mLexer));
+        mParser = new ExpressionParser (null);
+        mWalker = new ExpressionTreeWalker (functions, null);
     }
 
     public static void setBusinessDayChecker (BusinessDayChecker checker) {
@@ -52,14 +55,11 @@ public final class ExpressionEvaluator {
 
     public String evaluate (String expression, Scope scope) {
         try {
-            // parse the expression, create AST (Abstract Syntax Tree)
             mLexer.setCharStream (new ANTLRStringStream (expression));
             mParser.setTokenStream (new CommonTokenStream (mLexer));
             CommonTree tree = (CommonTree) mParser.root ().getTree ();
-
-            // evaluate the AST using a tree walker parser
-            ExpressionTreeWalker walker = new ExpressionTreeWalker (new CommonTreeNodeStream (tree));
-            return walker.main (scope).toString ();
+            mWalker.setTreeNodeStream (new CommonTreeNodeStream (tree));
+            return mWalker.main (scope).toString ();
         } catch (RecognitionException re) {
             throw new ExecutionException ("invalid expression: " + expression);
         }

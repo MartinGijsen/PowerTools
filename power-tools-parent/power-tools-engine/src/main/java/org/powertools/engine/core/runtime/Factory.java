@@ -1,4 +1,4 @@
-/* Copyright 2012 by Martin Gijsen (www.DeAnalist.nl)
+/* Copyright 2014 by Martin Gijsen (www.DeAnalist.nl)
  *
  * This file is part of the PowerTools engine.
  *
@@ -16,22 +16,32 @@
  * along with the PowerTools engine. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.powertools.engine.instructions;
+package org.powertools.engine.core.runtime;
 
 import org.powertools.engine.Currencies;
+import org.powertools.engine.Functions;
+import org.powertools.engine.Roles;
 import org.powertools.engine.RunTime;
 
 
-public final class InstructionSetFactory {
-    private final ParameterConvertors mParameterConvertors;
+public class Factory {
+    private Factory () {
+        // not used
+    }
     
-    
-    public InstructionSetFactory (Currencies currencies, RunTime runTime) {
-        mParameterConvertors = new ParameterConvertors (currencies, runTime);
+    public static Currencies createCurrencies () {
+        return new CurrenciesImpl ();
     }
 
-
-    public InstructionSet createClassInstructionSet (String name, Object object) {
-        return new ClassInstructionSet (name, object, mParameterConvertors);
+    public static Roles createRoles (RunTime runTime) {
+        return new RolesImpl (runTime);
+    }
+    
+    public static TestSourceStackImpl createTestSourceStack () {
+        return new TestSourceStackImpl ();
+    }
+    
+    public static Functions createFunctions () {
+        return new FunctionsImpl ();
     }
 }

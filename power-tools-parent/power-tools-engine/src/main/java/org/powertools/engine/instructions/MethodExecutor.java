@@ -1,4 +1,4 @@
-/* Copyright 2012-2013 by Martin Gijsen (www.DeAnalist.nl)
+/* Copyright 2012-2014 by Martin Gijsen (www.DeAnalist.nl)
  *
  * This file is part of the PowerTools engine.
  *
@@ -29,12 +29,14 @@ class MethodExecutor implements Executor {
     protected final Object mObject;
     protected final Method mMethod;
     protected final Object[] mArguments;
+    protected final ParameterConvertors mConvertors;
 
 
-    MethodExecutor (Object object, Method method) {
-        mObject    = object;
-        mMethod    = method;
-        mArguments = new Object[method.getParameterTypes ().length];
+    MethodExecutor (Object object, Method method, ParameterConvertors convertors) {
+        mObject     = object;
+        mMethod     = method;
+        mArguments  = new Object[method.getParameterTypes ().length];
+        mConvertors = convertors;
     }
 
     @Override
@@ -50,7 +52,8 @@ class MethodExecutor implements Executor {
         checkNrOfArguments (testLine, nrOfParameters);
 
         for (int argNr = 0; argNr < nrOfParameters; ++argNr) {
-            mArguments[argNr] = getArgument (parameterTypes[argNr], testLine.getPart (argNr + 1));
+            //mArguments[argNr] = getArgument (parameterTypes[argNr], testLine.getPart (argNr + 1));
+            mArguments[argNr] = mConvertors.get (parameterTypes[argNr]).toObject (testLine.getPart (argNr + 1));
         }
     }
 
@@ -61,67 +64,67 @@ class MethodExecutor implements Executor {
         }
     }
 
-    protected final Object getArgument (Class<?> parameterType, String arg) {
-        if (parameterType == String.class) {
-            return arg;
-        } else if (arg.isEmpty ()) {
-            throw new ExecutionException ("empty argument");
-        } else if (parameterType == boolean.class) {
-            return getBooleanArgument (arg);
-        } else if (parameterType == int.class) {
-            return getIntegerArgument (arg);
-        } else if (parameterType == long.class) {
-            return getLongArgument (arg);
-        } else if (parameterType == float.class) {
-            return getFloatArgument (arg);
-        } else if (parameterType == double.class) {
-            return getDoubleArgument (arg);
-        } else {
-            throw new ExecutionException ("unsupported parameter type");
-        }
-    }
+//    protected final Object getArgument (Class<?> parameterType, String arg) {
+//        if (parameterType == String.class) {
+//            return arg;
+//        } else if (arg.isEmpty ()) {
+//            throw new ExecutionException ("empty argument");
+//        } else if (parameterType == boolean.class) {
+//            return getBooleanArgument (arg);
+//        } else if (parameterType == int.class) {
+//            return getIntegerArgument (arg);
+//        } else if (parameterType == long.class) {
+//            return getLongArgument (arg);
+//        } else if (parameterType == float.class) {
+//            return getFloatArgument (arg);
+//        } else if (parameterType == double.class) {
+//            return getDoubleArgument (arg);
+//        } else {
+//            throw new ExecutionException ("unsupported parameter type");
+//        }
+//    }
 
-    private Object getBooleanArgument (String arg) {
-        if ("true".equalsIgnoreCase (arg)) {
-            return Boolean.TRUE;
-        } else if ("false".equalsIgnoreCase (arg)) {
-            return Boolean.FALSE;
-        } else {
-            throw new ExecutionException ("invalid boolean: " + arg);
-        }
-    }
+//    private Object getBooleanArgument (String arg) {
+//        if ("true".equalsIgnoreCase (arg)) {
+//            return Boolean.TRUE;
+//        } else if ("false".equalsIgnoreCase (arg)) {
+//            return Boolean.FALSE;
+//        } else {
+//            throw new ExecutionException ("invalid boolean: " + arg);
+//        }
+//    }
 
-    private Object getIntegerArgument (String arg) {
-        try {
-            return Integer.valueOf (arg);
-        } catch (NumberFormatException nfe) {
-            throw new ExecutionException ("invalid integer number: " + arg);
-        }
-    }
+//    private Object getIntegerArgument (String arg) {
+//        try {
+//            return Integer.valueOf (arg);
+//        } catch (NumberFormatException nfe) {
+//            throw new ExecutionException ("invalid integer number: " + arg);
+//        }
+//    }
 
-    private Object getLongArgument (String arg) {
-        try {
-            return new Long (arg);
-        } catch (NumberFormatException nfe) {
-            throw new ExecutionException ("invalid long number: " + arg);
-        }
-    }
+//    private Object getLongArgument (String arg) {
+//        try {
+//            return new Long (arg);
+//        } catch (NumberFormatException nfe) {
+//            throw new ExecutionException ("invalid long number: " + arg);
+//        }
+//    }
 
-    private Object getFloatArgument (String arg) {
-        try {
-            return new Float (arg);
-        } catch (NumberFormatException nfe) {
-            throw new ExecutionException ("invalid float number: " + arg);
-        }
-    }
+//    private Object getFloatArgument (String arg) {
+//        try {
+//            return new Float (arg);
+//        } catch (NumberFormatException nfe) {
+//            throw new ExecutionException ("invalid float number: " + arg);
+//        }
+//    }
 
-    private Object getDoubleArgument (String arg) {
-        try {
-            return new Double (arg);
-        } catch (NumberFormatException nfe) {
-            throw new ExecutionException ("invalid double number: " + arg);
-        }
-    }
+//    private Object getDoubleArgument (String arg) {
+//        try {
+//            return new Double (arg);
+//        } catch (NumberFormatException nfe) {
+//            throw new ExecutionException ("invalid double number: " + arg);
+//        }
+//    }
 
     private boolean invokeMethodAndHandleExceptions () {
         try {
