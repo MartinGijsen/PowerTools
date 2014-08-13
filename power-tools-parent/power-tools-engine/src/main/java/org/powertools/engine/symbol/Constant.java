@@ -29,6 +29,6 @@ final class Constant extends SimpleSymbol {
 
     @Override
     public void setValue (String name, String value) {
-        throw new ExecutionException ("constant cannot be set");
+        throw new ExecutionException (String.format ("constant '%s' cannot be set", name));
     }
 }
