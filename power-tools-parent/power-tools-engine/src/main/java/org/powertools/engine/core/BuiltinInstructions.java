@@ -20,7 +20,6 @@ package org.powertools.engine.core;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-
 import org.powertools.engine.BusinessDayChecker;
 import org.powertools.engine.ExecutionException;
 import org.powertools.engine.Function;
@@ -285,10 +284,16 @@ public final class BuiltinInstructions implements InstructionSet {
 
 
     @KeywordName ("RegisterFunction")
-    public void RegisterFunction_As_ (String name, String className) {
+    public void RegisterFunction_ (String className) {
         Class<?> aClass = getClass (className);
         if (Function.class.isAssignableFrom (aClass)) {
-            mRunTime.getFunctions ().add (null);
+            try {
+                mRunTime.getFunctions ().add ((Function) aClass.newInstance ());
+            } catch (InstantiationException ie) {
+                throw new ExecutionException (String.format ("could not create object for function class '%s'", className));
+            } catch (IllegalAccessException ex) {
+                throw new ExecutionException (String.format ("could not create object for function class '%s'", className));
+            }
         } else {
             throw new ExecutionException (String.format ("class '%s' does not extend class Function", className));
         }

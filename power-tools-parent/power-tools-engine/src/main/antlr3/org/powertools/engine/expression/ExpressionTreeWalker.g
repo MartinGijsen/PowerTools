@@ -29,8 +29,12 @@ package org.powertools.engine.expression;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.regex.Pattern;
 
+import org.powertools.engine.Function;
+import org.powertools.engine.Functions;
 import org.powertools.engine.symbol.Scope;
 }
 
@@ -40,7 +44,14 @@ import org.powertools.engine.symbol.Scope;
     private final static Pattern cRealPattern    = Pattern.compile ("-?\\d+\\.\\d+");
     private final static Pattern cDatePattern    = Pattern.compile ("\\d\\d-\\d\\d-\\d\\d\\d\\d");
 
+    private Functions mFunctions;
     private Scope mScope;
+
+
+    ExpressionTreeWalker (Functions functions, TreeNodeStream stream) {
+        this (stream);
+        mFunctions = functions;
+    }
 
     private Value createValue (String valueString) {
         if (cIntegerPattern.matcher (valueString).matches ()) {
@@ -58,6 +69,11 @@ import org.powertools.engine.symbol.Scope;
         return createValue (mScope.getSymbol (name).getValue (name));
     }
 
+    private Value invokeFunction (String name, String[] params) {
+        Function function = mFunctions.get (name);
+        return createValue (function.checkNrOfArgsAndExecute (params));
+    }
+
     private Value getDay (int offset) {
         Calendar calendar = GregorianCalendar.getInstance ();
         calendar.add (Calendar.DATE, offset);
@@ -71,7 +87,8 @@ main [Scope scope] returns [Value v]
     ;
 
 expr returns [Value v]
-    :   ^('or' e1=expr e2=expr)  { v = $e1.v.or ($e2.v); }
+    :
+    (   ^('or' e1=expr e2=expr)  { v = $e1.v.or ($e2.v); }
     |   ^('and' e1=expr e2=expr) { v = $e1.v.and ($e2.v); }
     |   ^('not' e1=expr)         { v = $e1.v.not (); }
     |   ^('=' e1=expr e2=expr)   { v = $e1.v.equal ($e2.v); }
@@ -92,13 +109,24 @@ expr returns [Value v]
     |   n=NumberLiteral          { v = createValue ($n.getText ()); }
     |   d=DateLiteral            { v = new DateValue ($d.getText ()); }
     |   i=IdentifierPlus         { v = getSymbol ($i.getText ()); }
+    |   i=Identifier             { v = getSymbol ($i.getText ()); }
     |   'yesterday'              { v = getDay (-1); }
     |   'today'                  { v = new DateValue (GregorianCalendar.getInstance ()); }
     |   'tomorrow'               { v = getDay (1); }
+    |   ^('(' i=Identifier parameters) {
+            v = invokeFunction ($i.getText (), $parameters.values.toArray (new String[0]));
+        }
     |   ^(DatePlus day=expr nr=expr (p='days' | p='weeks' | p='months' | p='years' | p='business' 'days')) {
             v = $day.v.toDateValue ().add ($nr.v.toString (), $p.getText ());
         }
     |	^(DateMinus day=expr nr=expr (p='days' | p='weeks' | p='months' | p='years' | p='business' 'days')) {
             v = $day.v.toDateValue ().subtract ($nr.v.toString (), $p.getText ());
         }
+    )
+    ;
+
+parameters returns [List<String> values]
+    :   { List<String> localValues = new LinkedList<String> (); }
+        ^(Parameters (expr { localValues.add ($expr.v.toString ()); } )*)
+        { values = localValues; }
     ;

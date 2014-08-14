@@ -28,6 +28,7 @@ tokens {
     UnaryMinus;
     DatePlus;
     DateMinus;
+    Parameters;
 }
 
 @lexer::header {
@@ -75,7 +76,7 @@ booleanExpr
 
 comparableExpression
     :   (term '++') => stringExpr
-    |   (day | IdentifierPlus dateOperator addExpr period) => dateExpr
+    |   (day | (Identifier | IdentifierPlus) dateOperator addExpr period) => dateExpr
     |   addExpr
     ;
 
@@ -85,7 +86,7 @@ stringExpr
 
 dateExpr
     :   (   day
-        |   IdentifierPlus dateOperator^ addExpr period
+        |   (Identifier | IdentifierPlus) dateOperator^ addExpr period
         )
         (dateOperator^ addExpr period)*
     ;
@@ -120,9 +121,20 @@ term
     :   StringLiteral
     |   'true'
     |   'false'
+    |   (Identifier '(') => functionCall
+    |	Identifier
     |   IdentifierPlus
     |   NumberLiteral
-    |   '('! expr ')'!
+    |   '(' expr ')' -> expr
+    ;
+
+functionCall
+    :   Identifier '(' parameters ')'
+        -> ^('(' Identifier parameters)
+    ;
+
+parameters
+    :   (expr (',' expr)* )? -> ^(Parameters expr*)
     ;
 
 StringLiteral
@@ -135,11 +147,12 @@ StringLiteral
         }
     ;
 
-Spaces:                 (' ')+ { skip(); };
-IdentifierPlus:         Identifier ('.' (Digits | Identifier) )*;
-fragment Identifier:    Alpha (Alpha | Digit | '_')*;
-fragment Alpha:         'a'..'z'|'A'..'Z';
-DateLiteral:            Digit Digit '-' Digit Digit '-' Digit Digit Digit Digit;
-NumberLiteral:          Digits ('.' Digits)?;
-fragment Digits:        Digit+;
-fragment Digit:         '0'..'9';
+Spaces:                      (' ')+ { skip(); };
+IdentifierPlus:              IdentifierFragment ('.' (Digits | IdentifierFragment) )+;
+Identifier:                  IdentifierFragment;
+fragment IdentifierFragment: Alpha (Alpha | Digit | '_')*;
+fragment Alpha:              'a'..'z'|'A'..'Z';
+DateLiteral:                 Digit Digit '-' Digit Digit '-' Digit Digit Digit Digit;
+NumberLiteral:               Digits ('.' Digits)?;
+fragment Digits:             Digit+;
+fragment Digit:              '0'..'9';

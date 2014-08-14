@@ -18,11 +18,11 @@
 
 package org.powertools.engine.core.runtime;
 
-import org.powertools.engine.Function;
-import org.powertools.engine.Functions;
 import java.util.HashMap;
 import java.util.Map;
 import org.powertools.engine.ExecutionException;
+import org.powertools.engine.Function;
+import org.powertools.engine.Functions;
 
 
 public class FunctionsImpl implements Functions {
@@ -38,6 +38,12 @@ public class FunctionsImpl implements Functions {
         add (new Function ("abs", 1) {
             public String execute (String[] args) {
                 return Integer.toString (Math.abs (Integer.parseInt (args[0])));
+            }
+        });
+        add (new Function ("random", 1) {
+            public String execute (String[] args) {
+                checkNrOfArgsAndExecute (args);
+                return Double.toString (Math.floor (Math.random () * Integer.parseInt (args[0])));
             }
         });
     }
