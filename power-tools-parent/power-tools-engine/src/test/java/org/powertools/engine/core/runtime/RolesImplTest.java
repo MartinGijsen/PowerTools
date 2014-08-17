@@ -16,7 +16,7 @@
  *	along with the PowerTools engine. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.powertools.engine.core;
+package org.powertools.engine.core.runtime;
 
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
@@ -28,6 +28,8 @@ import org.powertools.engine.Roles;
 import org.powertools.engine.RunTime;
 import org.powertools.engine.Symbol;
 import org.powertools.engine.TestRunResultPublisher;
+import org.powertools.engine.Currencies;
+import org.powertools.engine.Functions;
 import org.powertools.engine.symbol.Scope;
 
 
@@ -149,11 +151,11 @@ public class RolesImplTest {
 			throw new UnsupportedOperationException ("Not supported yet.");
 		}
 
-		public boolean enterTestCase(String name, String description) {
+		public void enterTestCase(String name, String description) {
 			throw new UnsupportedOperationException ("Not supported yet.");
 		}
 
-		public boolean leaveTestCase() {
+		public void leaveTestCase() {
 			throw new UnsupportedOperationException ("Not supported yet.");
 		}
 
@@ -174,7 +176,27 @@ public class RolesImplTest {
 		}
 
         public TestRunResultPublisher getPublisher() {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            throw new UnsupportedOperationException("Not supported yet.");
         }
-	}
+
+        public void addCurrency (String name, int nrOfDecimals) {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+    
+        public void addCurrencyAlias (String alias, String name) {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        public void removeCurrency (String name) {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        public Currencies getCurrencies () {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        public Functions getFunctions() {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+    }
 }

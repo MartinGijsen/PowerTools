@@ -18,14 +18,15 @@
 
 package org.powertools.engine.fitnesse.sources;
 
+import fit.Fixture;
+import fit.Parse;
 import org.powertools.engine.TestRunResultPublisher;
 import org.powertools.engine.fitnesse.Reference;
 import org.powertools.engine.fitnesse.fixtures.DataFixture;
+import org.powertools.engine.fitnesse.fixtures.DataToFixture;
+import org.powertools.engine.fitnesse.fixtures.EndInstructionFixture;
 import org.powertools.engine.fitnesse.fixtures.InstructionFixture;
 import org.powertools.engine.symbol.Scope;
-
-import fit.Fixture;
-import fit.Parse;
 
 
 public class TestSourceFactory {
@@ -37,12 +38,12 @@ public class TestSourceFactory {
         return new ScenarioSource (table, scope, logFilePath, publisher, reference);
     }
 
-    public FitNesseTestSource createTestCaseSource (Fixture fixture, Parse table, Scope scope, String logFilePath, TestRunResultPublisher publisher, Reference reference) {
-        return new TestCaseSource (fixture, table, scope, logFilePath, publisher, reference);
+    public FitNesseTestSource createTestCaseSource (Fixture fixture, Parse table, Scope scope, String logFilePath, TestRunResultPublisher publisher, Reference reference, boolean inRightPlace) {
+        return new TestCaseSource (fixture, table, scope, logFilePath, publisher, reference, inRightPlace);
     }
 
-    public FitNesseTestSource createTestCaseSource (Parse table, Scope scope, String logFilePath, TestRunResultPublisher publisher, Reference reference) {
-        return new TestCaseSource (table, scope, logFilePath, publisher, reference);
+    public FitNesseTestSource createTestCaseSource (Parse table, Scope scope, String logFilePath, TestRunResultPublisher publisher, Reference reference, boolean inRightPlace) {
+        return new TestCaseSource (table, scope, logFilePath, publisher, reference, inRightPlace);
     }
 
     public FitNesseTestSource createDataSource (DataFixture fixture, Parse table, Scope scope, String logFilePath, TestRunResultPublisher publisher, Reference reference) {
@@ -51,6 +52,10 @@ public class TestSourceFactory {
 
     public FitNesseTestSource createDataSource (Parse table, Scope scope, String logFilePath, TestRunResultPublisher publisher, Reference reference) {
         return new DataSource (table, scope, logFilePath, publisher, reference);
+    }
+
+    public FitNesseTestSource createDataSource (DataToFixture fixture, Parse table, Scope scope, String logFilePath, TestRunResultPublisher publisher, Reference reference) {
+        return new DataToSource (fixture, table, scope, logFilePath, publisher, reference);
     }
 
     public FitNesseTestSource createDummySource (Parse table, String logFilePath, TestRunResultPublisher publisher, Reference reference) {
@@ -64,5 +69,9 @@ public class TestSourceFactory {
 
     public InstructionSource createInstructionSource (Parse table, Scope scope, String logFilePath, TestRunResultPublisher publisher, Reference reference) {
         return new InstructionSource (table, scope, logFilePath, publisher, reference);
+    }
+
+    public EndInstructionSource createEndInstructionSource (EndInstructionFixture fixture, Parse table, Scope scope, String logFilePath, TestRunResultPublisher publisher, Reference reference, boolean inRightPlace) {
+        return new EndInstructionSource (fixture, table, scope, logFilePath, publisher, reference, inRightPlace);
     }
 }

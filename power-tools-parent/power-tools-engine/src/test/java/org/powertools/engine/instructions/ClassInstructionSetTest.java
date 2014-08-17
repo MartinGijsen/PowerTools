@@ -30,14 +30,14 @@ public class ClassInstructionSetTest {
     
     @Test
     public void testGetName () {
-        ClassInstructionSet instructionSet = new ClassInstructionSet (NAME, null);
+        ClassInstructionSet instructionSet = new ClassInstructionSet (NAME, null, null);
         assertEquals (NAME, instructionSet.getName ());
     }
 
     @Test
     public void testSetupCleanup () {
         InstructionSetImpl userInstructionSet = new InstructionSetImpl ();
-        ClassInstructionSet instructionSet    = new ClassInstructionSet (NAME, userInstructionSet);
+        ClassInstructionSet instructionSet    = new ClassInstructionSet (NAME, userInstructionSet, null);
         assertFalse (userInstructionSet.isSetupCalled ());
         assertFalse (userInstructionSet.isCleanupCalled ());
         instructionSet.setup ();
@@ -51,7 +51,7 @@ public class ClassInstructionSetTest {
     @Test
     public void testSetupCleanupWithReflection () {
         InstructionSetClass userInstructionSet = new InstructionSetClass ();
-        ClassInstructionSet instructionSet     = new ClassInstructionSet (NAME, userInstructionSet);
+        ClassInstructionSet instructionSet     = new ClassInstructionSet (NAME, userInstructionSet, null);
         assertFalse (userInstructionSet.isSetupCalled ());
         assertFalse (userInstructionSet.isCleanupCalled ());
         instructionSet.setup ();
@@ -65,7 +65,7 @@ public class ClassInstructionSetTest {
     @Test
     public void testSetupCleanupWithExceptions () {
         InstructionSetClassWithIssues userInstructionSet = new InstructionSetClassWithIssues ();
-        ClassInstructionSet instructionSet               = new ClassInstructionSet (NAME, userInstructionSet);
+        ClassInstructionSet instructionSet               = new ClassInstructionSet (NAME, userInstructionSet, null);
         try {
             instructionSet.setup ();
             fail ("no exception");
@@ -84,7 +84,7 @@ public class ClassInstructionSetTest {
     public void testGetExecutorUnknownInstruction () {
         String instructionName                = "unknown instruction name";
         InstructionSetImpl userInstructionSet = new InstructionSetImpl ();
-        ClassInstructionSet instructionSet    = new ClassInstructionSet (NAME, userInstructionSet);
+        ClassInstructionSet instructionSet    = new ClassInstructionSet (NAME, userInstructionSet, null);
         assertNull (instructionSet.getExecutor (instructionName));
     }
 
@@ -92,7 +92,7 @@ public class ClassInstructionSetTest {
     public void testGetExecutorInstructionNoParameters () {
         String instructionName                = "instruction  name";
         InstructionSetImpl userInstructionSet = new InstructionSetImpl ();
-        ClassInstructionSet instructionSet    = new ClassInstructionSet (NAME, userInstructionSet);
+        ClassInstructionSet instructionSet    = new ClassInstructionSet (NAME, userInstructionSet, null);
         assertTrue (instructionSet.getExecutor (instructionName) instanceof MethodExecutor);
     }
 
@@ -100,7 +100,7 @@ public class ClassInstructionSetTest {
     public void testGetExecutorInstructionWithParameters () {
         String instructionName                = "instruction _ name _";
         InstructionSetImpl userInstructionSet = new InstructionSetImpl ();
-        ClassInstructionSet instructionSet    = new ClassInstructionSet (NAME, userInstructionSet);
+        ClassInstructionSet instructionSet    = new ClassInstructionSet (NAME, userInstructionSet, null);
         assertTrue (instructionSet.getExecutor (instructionName) instanceof MethodExecutor);
     }
 
@@ -108,7 +108,7 @@ public class ClassInstructionSetTest {
     public void testGetExecutorAnnotatedInstructionWithParameters () {
         String instructionName                = "alternative instruction name";
         InstructionSetImpl userInstructionSet = new InstructionSetImpl ();
-        ClassInstructionSet instructionSet    = new ClassInstructionSet (NAME, userInstructionSet);
+        ClassInstructionSet instructionSet    = new ClassInstructionSet (NAME, userInstructionSet, null);
         assertTrue (instructionSet.getExecutor (instructionName) instanceof ShuffledParametersMethodExecutor);
     }
 

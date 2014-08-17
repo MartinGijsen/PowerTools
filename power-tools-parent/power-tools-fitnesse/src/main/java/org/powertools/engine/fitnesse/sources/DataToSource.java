@@ -21,6 +21,7 @@ package org.powertools.engine.fitnesse.sources;
 import fit.Fixture;
 import fit.Parse;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import org.powertools.engine.TestRunResultPublisher;
 import org.powertools.engine.fitnesse.Reference;
@@ -28,47 +29,60 @@ import org.powertools.engine.sources.TestLineImpl;
 import org.powertools.engine.symbol.Scope;
 
 
-final class DataSource extends FitNesseTestSource {
+final class DataToSource extends FitNesseTestSource {
     private String mInstructionName;
+    private List<String> mColumnNames;
 
-    DataSource (Fixture fixture, Parse table, Scope scope, String logFilePath, TestRunResultPublisher publisher, Reference reference) {
+    DataToSource (Fixture fixture, Parse table, Scope scope, String logFilePath, TestRunResultPublisher publisher, Reference reference) {
         super (fixture, table, scope, logFilePath, publisher, reference);
+        mColumnNames = new LinkedList<String> ();
     }
 
-    DataSource (Parse table, Scope scope, String logFilePath, TestRunResultPublisher publisher, Reference reference) {
+    DataToSource (Parse table, Scope scope, String logFilePath, TestRunResultPublisher publisher, Reference reference) {
         super (table, scope, logFilePath, publisher, reference);
+        mColumnNames = new LinkedList<String> ();
     }
 
 
     @Override
     public void initialize () {
-        processFixtureLine ();
+        processMyFixtureLine ();
         processHeaderLine ();
+    }
+
+    private void processMyFixtureLine () {
+        copyRow (mRow);
+        linkToLogFile (mRow.parts);
+        mPublisher.publishTestLine (mTestLine);
+        mInstructionName = (mTestLine.getNrOfParts () >= 2 ? mTestLine.getPart (1) : null);
+        if (mTestLine.getNrOfParts () != 2) {
+            mPublisher.publishError ("fixture line must have two cells");
+        }
+        mPublisher.publishEndOfTestLine ();
     }
 
     private void processHeaderLine () {
         mRow = mRow.more;
         if (mRow != null) {
             fillDataTestLine ();
+            linkToLogFile (mRow.parts);
             mPublisher.publishTestLine (mTestLine);
 
-            int nrOfParts                   = mTestLine.getNrOfParts ();
-            StringBuilder instructionNameSb = new StringBuilder ();
+            int nrOfParts = mTestLine.getNrOfParts ();
             for (int partNr = 1; partNr < nrOfParts; ++partNr) {
                 String part = mTestLine.getPart (partNr);
                 if (part.isEmpty ()) {
                     mPublisher.publishError ("empty column name(s)");
                     break;
+                } else if (mColumnNames.contains (part)) {
+                    mPublisher.publishError ("duplicate column name(s)");
+                    break;
                 } else {
-                    for (String word : part.split (" +")) {
-                        instructionNameSb.append (word).append (" ");
-                    }
-                    instructionNameSb.append ("_ ");
+                    mColumnNames.add (part);
                 }
             }
-            mPublisher.publishEndOfTestLine ();
 
-            mInstructionName = instructionNameSb.toString ().trim ();
+            mPublisher.publishEndOfTestLine ();
         }
     }
 
@@ -87,13 +101,33 @@ final class DataSource extends FitNesseTestSource {
     public TestLineImpl getTestLine () {
         if (mRow != null) {
             while ((mRow = mRow.more) != null) {
-                fillDataTestLine ();
-                mTestLine.setPart (0, mInstructionName);
-                linkToLogFile (mRow.parts);
-                return mTestLine;
+                if (mColumnNames.size () == countCells (mRow)) {
+                    setParts ();
+                    linkToLogFile (mRow.parts);
+                    return mTestLine;
+                } else {
+                    fillDataTestLine ();
+                    mTestLine.setPart (0, mInstructionName);
+                    mPublisher.publishTestLine (mTestLine);
+                    linkToLogFile (mRow.parts);
+                    mPublisher.publishError ("instruction length does not match header length");
+                    mPublisher.publishEndOfTestLine ();
+                }
             }
         }
 
         return null;
+    }
+    
+    private void setParts () {
+        List<String> parts = new LinkedList<String> ();
+        parts.add (mInstructionName);
+        Parse cell = mRow.parts;
+        for (String columnName : mColumnNames) {
+            parts.add (columnName);
+            parts.add (cell.text ());
+            cell = cell.more;
+        }
+        mTestLine.setParts (parts);
     }
 }

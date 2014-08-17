@@ -18,24 +18,21 @@
 
 package org.powertools.engine.fitnesse;
 
+import fit.Parse;
+import fitnesse.testsystems.TestSummary;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-
-import org.powertools.engine.fitnesse.sources.InstructionSource;
-import org.powertools.engine.fitnesse.sources.FitNesseTestSource;
-import org.powertools.engine.fitnesse.sources.TestSourceFactory;
-
 import org.powertools.engine.Context;
 import org.powertools.engine.core.Engine;
 import org.powertools.engine.core.RunTimeImpl;
+import org.powertools.engine.fitnesse.sources.FitNesseTestSource;
+import org.powertools.engine.fitnesse.sources.InstructionSource;
+import org.powertools.engine.fitnesse.sources.TestSourceFactory;
 import org.powertools.engine.reports.ReportFactory;
 import org.powertools.engine.sources.Procedure;
 import org.powertools.engine.symbol.Scope;
-
-import fit.Parse;
-import fitnesse.testsystems.TestSummary;
 
 
 public final class FitNesseEngine2 extends Engine {
@@ -106,7 +103,7 @@ public final class FitNesseEngine2 extends Engine {
         } else if ("data".equalsIgnoreCase (tableType)) {
             return mSourceFactory.createDataSource (table, globalScope, mLogFilePath, mPublisher, mReference);
         } else if ("testcase".equalsIgnoreCase (tableType) || "test case".equalsIgnoreCase (tableType)) {
-            return mSourceFactory.createTestCaseSource (table, globalScope, mLogFilePath, mPublisher, mReference);
+            return mSourceFactory.createTestCaseSource (table, globalScope, mLogFilePath, mPublisher, mReference, true);
         } else {
             return mSourceFactory.createDummySource (table, mLogFilePath, mPublisher, mReference);
         }

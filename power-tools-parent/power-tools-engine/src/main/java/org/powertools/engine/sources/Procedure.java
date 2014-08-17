@@ -20,6 +20,7 @@ package org.powertools.engine.sources;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import org.powertools.engine.ExecutionException;
 
@@ -28,13 +29,13 @@ import org.powertools.engine.ExecutionException;
 public final class Procedure {
     private final String mName;
     private final List<ProcedureParameter> mParameters;
-    private final List<List<String>> mInstructions;
+    private final List<List<List<String>>> mInstructionTables;
 
 
     public Procedure (String name) {
-        mName         = name;
-        mParameters   = new ArrayList<ProcedureParameter> ();
-        mInstructions = new ArrayList<List<String>> ();
+        mName              = name;
+        mParameters        = new ArrayList<ProcedureParameter> ();
+        mInstructionTables = new LinkedList<List<List<String>>> ();
     }
 
 
@@ -54,8 +55,8 @@ public final class Procedure {
         mParameters.add (new ProcedureParameter (realName, isOutput));
     }
 
-    public void addInstruction (List<String> instruction) {
-        mInstructions.add (instruction);
+    public void addTable (List<List<String>> table) {
+        mInstructionTables.add (table);
     }
 
     List<ProcedureParameter> getParameters () {
@@ -63,6 +64,45 @@ public final class Procedure {
     }
 
     Iterator<List<String>> instructionIterator () {
-        return mInstructions.iterator ();
+        return new MyIterator ();
+    }
+    
+    private class MyIterator implements Iterator<List<String>> {
+        private final Iterator<List<List<String>>> mTableIterator;
+        
+        private Iterator<List<String>> mInstructionIterator;
+        
+        
+        MyIterator () {
+            mTableIterator       = mInstructionTables.iterator ();
+            mInstructionIterator = null;
+        }
+        
+        public boolean hasNext () {
+            if (mInstructionIterator == null) {
+                if (mTableIterator.hasNext ()) {
+                    mInstructionIterator = mTableIterator.next ().iterator ();
+                } else {
+                    return false;
+                }
+            }
+            while (!mInstructionIterator.hasNext ()) {
+                if (mTableIterator.hasNext ()) {
+                    mInstructionIterator = mTableIterator.next ().iterator ();
+                } else {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        public List<String> next () {
+            return mInstructionIterator.next ();
+        }
+
+        public void remove () {
+            throw new UnsupportedOperationException ("Not supported");
+        }
+        
     }
 }

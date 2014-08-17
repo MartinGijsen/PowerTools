@@ -16,16 +16,21 @@
  * along with the PowerTools engine. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.powertools.engine.instructions;
-
-import org.junit.Test;
-import static org.junit.Assert.*;
+package org.powertools.engine.fitnesse.fixtures;
 
 
-public class InstructionSetFactoryTest {
-    @Test
-    public void testCreateClassInstructionSet () {
-        InstructionSetFactory factory = new InstructionSetFactory (null, null);
-        assertNotNull (factory.createClassInstructionSet ("", null));
+import fit.Fixture;
+import fit.Parse;
+import org.powertools.engine.fitnesse.FitNesseEngine;
+
+
+public final class DataToFixture extends Fixture {
+    public DataToFixture () {
+        super ();
+    }
+
+    @Override
+    public void doTable (Parse table) {
+        FitNesseEngine.getInstance ().run (this, table);
     }
 }

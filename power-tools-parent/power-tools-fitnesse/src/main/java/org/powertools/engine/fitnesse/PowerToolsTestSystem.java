@@ -28,17 +28,21 @@ import fitnesse.testsystems.CompositeTestSystemListener;
 import fitnesse.testsystems.TestPage;
 import fitnesse.testsystems.TestSystem;
 import fitnesse.testsystems.TestSystemListener;
+import java.net.URLClassLoader;
 
 
 public final class PowerToolsTestSystem implements TestSystem {
     private final CompositeTestSystemListener mTestSystemListener;
+    //private final URLClassLoader mClassLoader;
 
     private FitNesseEngine2 mEngine;
 
 
-    PowerToolsTestSystem () {
+    PowerToolsTestSystem (URLClassLoader classLoader) {
+        //mClassLoader        = classLoader;
         mTestSystemListener = new CompositeTestSystemListener ();
         mEngine             = null;
+        Thread.currentThread ().setContextClassLoader (classLoader);
     }
 
     @Override
@@ -53,6 +57,7 @@ public final class PowerToolsTestSystem implements TestSystem {
 
     @Override
     public void start () throws IOException {
+        mEngine = new FitNesseEngine2 ();
         mTestSystemListener.testSystemStarted (this);
     }
 
@@ -70,14 +75,12 @@ public final class PowerToolsTestSystem implements TestSystem {
         } catch (FitParseException fpe) {
             return;
         }
-        mEngine = new FitNesseEngine2 ();
         while (table != null) {
             mEngine.executeTable (table);
             mTestSystemListener.testOutputChunk (toHtml (table));
             table = table.more;
         }
         mTestSystemListener.testComplete (page, mEngine.getSummary ());
-        mEngine = null;
     }
 
     private String toHtml (Parse table) {
@@ -96,7 +99,7 @@ public final class PowerToolsTestSystem implements TestSystem {
 
     @Override
     public void bye () {
-        // ignore
+        mEngine = null;
     }
 
     @Override

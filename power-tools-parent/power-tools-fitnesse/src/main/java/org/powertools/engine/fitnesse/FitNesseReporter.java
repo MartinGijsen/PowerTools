@@ -43,18 +43,12 @@ class FitNesseReporter implements TestResultSubscriber {
 
     @Override
     public void processStackTrace (String[] stackTraceLines) {
-        if (!mAnyErrors) {
-            mSource.processError ();
-            mAnyErrors = true;
-        }
+        mAnyErrors = true;
     }
 
     @Override
     public void processError (String error) {
-        if (!mAnyErrors) {
-            mSource.processError ();
-            mAnyErrors = true;
-        }
+        mAnyErrors = true;
     }
 
     @Override
@@ -73,9 +67,11 @@ class FitNesseReporter implements TestResultSubscriber {
 
     @Override
     public void processDecreaseLevel () {
-        --mLevel;
+        if (--mLevel == 0) {
+            mSource.processFinished (mAnyErrors);
+            mAnyErrors = false;
+        }
     }
-
 
     // ignored events
     @Override

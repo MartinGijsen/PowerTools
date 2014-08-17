@@ -21,7 +21,6 @@ package org.powertools.engine.sources;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -128,18 +127,21 @@ abstract class ExcelTestSource extends TestSource {
     }
 
     private void processProcedureBody (Procedure procedure) {
-        List<String> parts = new LinkedList<String> ();
-        while (readNextLine (parts)) {
-            mTestLine.setParts (parts);
+        List<List<String>> instructions = new LinkedList<List<String>> ();
+        List<String> instruction = new LinkedList<String> ();
+        while (readNextLine (instruction)) {
+            mTestLine.setParts (instruction);
             mPublisher.publishTestLine (mTestLine);
-            if (parts.get (0).equals (END_PROCEDURE_INSTRUCTION)) {
+            
+            if (instruction.get (0).equals (END_PROCEDURE_INSTRUCTION)) {
+                procedure.addTable (instructions);
                 mPublisher.publishEndOfTestLine ();
                 return;
             } else if (procedure != null) {
-                procedure.addInstruction (parts);
+                instructions.add (instruction);
             }
             mPublisher.publishEndOfTestLine ();
-            parts = new LinkedList<String> ();
+            instruction = new LinkedList<String> ();
         }
         throw new ExecutionException ("instruction incomplete at end of sheet");
     }

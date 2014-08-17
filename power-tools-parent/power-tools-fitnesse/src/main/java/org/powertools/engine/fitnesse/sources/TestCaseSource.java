@@ -18,30 +18,31 @@
 
 package org.powertools.engine.fitnesse.sources;
 
+import fit.Fixture;
+import fit.Parse;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.powertools.engine.TestRunResultPublisher;
 import org.powertools.engine.fitnesse.Reference;
 import org.powertools.engine.symbol.Scope;
 
-import fit.Fixture;
-import fit.Parse;
-
 
 public final class TestCaseSource extends ScenarioSource {
     private final String[] mArgs;
+    private final boolean mInRightPlace;
 
-    TestCaseSource (Fixture fixture, Parse table, Scope scope, String logFilePath, TestRunResultPublisher publisher, Reference reference) {
+    TestCaseSource (Fixture fixture, Parse table, Scope scope, String logFilePath, TestRunResultPublisher publisher, Reference reference, boolean inRightPlace) {
         super (fixture, table, new Scope (scope), logFilePath, publisher, reference);
-        mArgs = getArgs (table);
+        mArgs         = getArgs (table);
+        mInRightPlace = inRightPlace;
     }
 
-    TestCaseSource (Parse table, Scope scope, String logFilePath, TestRunResultPublisher publisher, Reference reference) {
+    TestCaseSource (Parse table, Scope scope, String logFilePath, TestRunResultPublisher publisher, Reference reference, boolean inRightPlace) {
         super (table, new Scope (scope), logFilePath, publisher, reference);
-        mArgs = getArgs (table);
+        mArgs         = getArgs (table);
+        mInRightPlace = inRightPlace;
     }
-    
+
     private String[] getArgs (Parse table) {
         List<String> argumentList = new ArrayList<String> ();
         for (Parse parameter = table.parts.parts.more; parameter != null; parameter = parameter.more) {

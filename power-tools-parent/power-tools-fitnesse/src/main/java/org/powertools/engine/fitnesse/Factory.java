@@ -21,12 +21,27 @@ package org.powertools.engine.fitnesse;
 import fitnesse.testsystems.Descriptor;
 import fitnesse.testsystems.TestSystem;
 import fitnesse.testsystems.TestSystemFactory;
+
+import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
 
 
 public class Factory implements TestSystemFactory {
     @Override
     public TestSystem create (Descriptor descriptor) throws IOException {
-        return new PowerToolsTestSystem ();
+        URLClassLoader classLoader = new URLClassLoader (getUrlsFromClassPath (descriptor), getClass ().getClassLoader ());
+        return new PowerToolsTestSystem (classLoader);
+    }
+
+    private URL[] getUrlsFromClassPath (Descriptor descriptor) throws MalformedURLException {
+        String[] paths = descriptor.getClassPath ().split (System.getProperty ("path.separator"));
+        URL[] urls     = new URL[paths.length];
+        for (int i = 0; i < paths.length; i++) {
+            urls[i] = new File (paths[i]).toURI ().toURL ();
+        }
+        return urls;
     }
 }

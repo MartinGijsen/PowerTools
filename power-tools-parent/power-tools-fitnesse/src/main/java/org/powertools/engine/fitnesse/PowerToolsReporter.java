@@ -50,12 +50,4 @@ final class PowerToolsReporter extends FitNesseReporter {
         }
         super.processEndOfTestLine ();
     }
-
-    @Override
-    public void processDecreaseLevel () {
-        if (--mLevel == 0) {
-            mSource.processFinished (mAnyErrors);
-            mAnyErrors = false;
-        }
-    }
 }

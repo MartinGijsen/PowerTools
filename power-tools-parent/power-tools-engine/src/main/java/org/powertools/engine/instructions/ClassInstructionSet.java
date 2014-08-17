@@ -1,4 +1,4 @@
-/* Copyright 2012 by Martin Gijsen (www.DeAnalist.nl)
+/* Copyright 2012-2014 by Martin Gijsen (www.DeAnalist.nl)
  *
  * This file is part of the PowerTools engine.
  *
@@ -21,7 +21,7 @@ package org.powertools.engine.instructions;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-
+import java.util.Map;
 import org.powertools.engine.ExecutionException;
 import org.powertools.engine.KeywordName;
 import org.powertools.engine.ParameterOrder;
@@ -65,7 +65,7 @@ final class ClassInstructionSet implements InstructionSet {
     @Override
     public Executor getExecutor (String instructionName) {
         String methodName = getMethodName (instructionName);
-        Method method = getMethod (methodName);
+        Method method     = getMethod (methodName);
         if (method == null) {
             method = getAnnotatedMethod (methodName);
             if (method == null) {
@@ -73,6 +73,8 @@ final class ClassInstructionSet implements InstructionSet {
             } else if (method.isAnnotationPresent (KeywordName.class) && method.isAnnotationPresent (ParameterOrder.class)) {
                 return new ShuffledParametersMethodExecutor (mObject, method, mParameterConvertors);
             }
+        } else if (method.getParameterTypes ().length == 1 && Map.class.isAssignableFrom (method.getParameterTypes ()[0])) {
+            return new MapMethodExecutor (mObject, method);
         }
         return new MethodExecutor (mObject, method, mParameterConvertors);
     }

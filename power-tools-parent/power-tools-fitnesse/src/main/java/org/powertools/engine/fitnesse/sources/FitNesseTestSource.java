@@ -18,17 +18,15 @@
 
 package org.powertools.engine.fitnesse.sources;
 
+import fit.Fixture;
+import fit.Parse;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.powertools.engine.TestRunResultPublisher;
 import org.powertools.engine.fitnesse.FitNesse;
 import org.powertools.engine.fitnesse.Reference;
 import org.powertools.engine.sources.TestSource;
 import org.powertools.engine.symbol.Scope;
-
-import fit.Fixture;
-import fit.Parse;
 
 
 public abstract class FitNesseTestSource extends TestSource {
@@ -58,8 +56,7 @@ public abstract class FitNesseTestSource extends TestSource {
 
     
     protected final void processFixtureLine () {
-        mTestLine.createParts (1);
-        mTestLine.setPart (0, mRow.parts.text ());
+        copyRow (mRow);
         linkToLogFile (mRow.parts);
         mPublisher.publishTestLine (mTestLine);
         if (mTestLine.getNrOfParts () != 1) {
@@ -68,10 +65,6 @@ public abstract class FitNesseTestSource extends TestSource {
         mPublisher.publishEndOfTestLine ();
     }
 
-
-    public void processError () {
-        mReporter.processError (mRow);
-    }
 
     public void processFinished (boolean anyErrors) {
         mReporter.processFinished (mRow, anyErrors);
@@ -82,6 +75,23 @@ public abstract class FitNesseTestSource extends TestSource {
         cell.body = String.format ("<A href=\"%s#id%s\">%s</A>", mLogFilePath, mReference.advance (), cell.body);
     }
 
+    protected final void copyRow (Parse row) {
+        int nrOfCells = countCells (row);
+        mTestLine.createParts (nrOfCells);
+        int cellNr = 0;
+        for (Parse cell = row.parts; cell != null; cell = cell.more) {
+            mTestLine.setPart (cellNr++, cell.text ());
+        }
+    }
+    
+    static int countCells (Parse row) {
+        int nrOfCells = 0;
+        for (Parse cell = row.parts; cell != null; cell = cell.more) {
+            ++nrOfCells;
+        }
+        return nrOfCells;
+    }
+    
     protected final List<String> readSentence (Parse instructionNameCell) {
         String instructionName = instructionNameCell.text ();
         Parse currentCell      = instructionNameCell;
@@ -107,7 +117,6 @@ public abstract class FitNesseTestSource extends TestSource {
 
 
     private interface RowResultReporter {
-        void processError (Parse row);
         void processFinished (Parse row, boolean anyErrors);
     }
     
@@ -119,28 +128,22 @@ public abstract class FitNesseTestSource extends TestSource {
         }
 
         @Override
-        public void processError (Parse row) {
-            mFixture.wrong (row);
-        }
-
-        @Override
         public void processFinished (Parse row, boolean anyErrors) {
             if (!anyErrors) {
                 mFixture.right (row);
+            } else {
+                mFixture.wrong (row);
             }
         }
     }
-    
-    private static class NewReporter implements RowResultReporter {
-        @Override
-        public final void processError (Parse row) {
-            row.addToTag (" class=\"fail\"");
-        }
 
+    private static class NewReporter implements RowResultReporter {
         @Override
         public final void processFinished (Parse row, boolean anyErrors) {
             if (!anyErrors) {
                 row.addToTag (" class=\"pass\"");
+            } else {
+                row.addToTag (" class=\"fail\"");
             }
         }
     }

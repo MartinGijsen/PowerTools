@@ -16,16 +16,23 @@
  * along with the PowerTools engine. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.powertools.engine.instructions;
+package org.powertools.engine.fitnesse.demo;
 
-import org.junit.Test;
-import static org.junit.Assert.*;
+import java.util.Map;
+import org.powertools.engine.RunTime;
+import org.powertools.engine.TestRunResultPublisher;
 
 
-public class InstructionSetFactoryTest {
-    @Test
-    public void testCreateClassInstructionSet () {
-        InstructionSetFactory factory = new InstructionSetFactory (null, null);
-        assertNotNull (factory.createClassInstructionSet ("", null));
+public class Instructions {
+    private final TestRunResultPublisher mPublisher;
+    
+    public Instructions (RunTime runTime) {
+        mPublisher = runTime.getPublisher ();
+    }
+    
+    public void DoSomething (Map<String, String> args) {
+        for (String key : args.keySet ()) {
+            mPublisher.publishInfo (key + " -> " + args.get (key));
+        }
     }
 }

@@ -1,4 +1,4 @@
-/* Copyright 2012-2014 by Martin Gijsen (www.DeAnalist.nl)
+/* Copyright 2014 by Martin Gijsen (www.DeAnalist.nl)
  *
  * This file is part of the PowerTools engine.
  *
@@ -20,47 +20,33 @@ package org.powertools.engine.instructions;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
 import org.powertools.engine.ExecutionException;
 import org.powertools.engine.TestLine;
 
 
-class MethodExecutor implements Executor {
-    protected final Object mObject;
-    protected final Method mMethod;
-    protected final Object[] mArguments;
-    protected final ParameterConvertors mConvertors;
+final class MapMethodExecutor implements Executor {
+    private final Object mObject;
+    private final Method mMethod;
+    private final Map<String, String> mArguments;
 
 
-    MethodExecutor (Object object, Method method, ParameterConvertors convertors) {
-        mObject     = object;
-        mMethod     = method;
-        mArguments  = new Object[method.getParameterTypes ().length];
-        mConvertors = convertors;
+    MapMethodExecutor (Object object, Method method) {
+        mObject    = object;
+        mMethod    = method;
+        mArguments = new HashMap<String, String> ();
     }
 
     @Override
     public final boolean execute (TestLine testLine) {
-        getArguments (testLine);
+        int nrOfArgs = testLine.getNrOfParts () - 1;
+        for (int argNr = 0; argNr < nrOfArgs; argNr += 2) {
+            mArguments.put (testLine.getPart (argNr + 1), testLine.getPart (argNr + 2));
+        }
         return invokeMethodAndHandleExceptions ();
     }
 
-
-    protected void getArguments (TestLine testLine) {
-        Class<?>[] parameterTypes = mMethod.getParameterTypes ();
-        int nrOfParameters        = parameterTypes.length;
-        checkNrOfArguments (testLine, nrOfParameters);
-
-        for (int argNr = 0; argNr < nrOfParameters; ++argNr) {
-            mArguments[argNr] = mConvertors.get (parameterTypes[argNr]).toObject (testLine.getPart (argNr + 1));
-        }
-    }
-
-    protected final void checkNrOfArguments (TestLine testLine, int maxNrOfArgs) {
-        int actualNrOfArgs = testLine.getNrOfParts () - 1;
-        if (actualNrOfArgs > maxNrOfArgs) {
-            throw new ExecutionException (String.format ("instruction %s expects %d arguments but receives %d", testLine.getPart (0), maxNrOfArgs, actualNrOfArgs));
-        }
-    }
 
     private boolean invokeMethodAndHandleExceptions () {
         try {

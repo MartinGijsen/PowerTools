@@ -32,7 +32,7 @@ import org.powertools.engine.symbol.Scope;
 public class ExpressionEvaluatorDateTest {
 	private static final SimpleDateFormat mFormat = new SimpleDateFormat ("dd-MM-yyyy");
 	
-    private final ExpressionEvaluator mEvaluator = new ExpressionEvaluator ();
+    private final ExpressionEvaluator mEvaluator = new ExpressionEvaluator (null);
 
     private Scope mScope;
 

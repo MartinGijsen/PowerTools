@@ -16,7 +16,7 @@
  *	along with the PowerTools engine. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.powertools.engine.core;
+package org.powertools.engine.core.runtime;
 
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -29,7 +29,7 @@ import org.powertools.engine.symbol.Scope;
 public class TestSourceStackTest {
 	@Test
 	public void testGetCurrentTestSource () {
-		TestSourceStack stack = new TestSourceStack ();
+		TestSourceStack stack = new TestSourceStackImpl ();
 		TestSource testSource = new TestSourceImpl (stack.getCurrentScope ());
 		stack.initAndPush (testSource);
 		assertEquals (testSource, stack.getCurrentTestSource ());
@@ -37,7 +37,7 @@ public class TestSourceStackTest {
 
 	@Test
 	public void testGetGlobalScopeGetCurrentScope () {
-		TestSourceStack stack = new TestSourceStack ();
+		TestSourceStack stack = new TestSourceStackImpl ();
 		Scope globalScope     = stack.getGlobalScope ();
 		assertNotNull (globalScope);
 		Scope localScope      = new Scope (globalScope);
@@ -47,7 +47,7 @@ public class TestSourceStackTest {
 
 	@Test
 	public void testRun () {
-        TestSourceStack stack = new TestSourceStack ();
+        TestSourceStack stack = new TestSourceStackImpl ();
         TestSourceImpl source = new TestSourceImpl (stack.getCurrentScope ());
         stack.initAndPush (source);
 		assertFalse (source.isCreateCalled ());
@@ -57,7 +57,7 @@ public class TestSourceStackTest {
 
 	@Test
 	public void testGetTestLine () {
-		TestSourceStack stack = new TestSourceStack ();
+		TestSourceStack stack = new TestSourceStackImpl ();
 		stack.initAndPush (new TestSourceImpl (stack.getCurrentScope ()));
 		stack.initAndPush (new TestSourceImpl (stack.getCurrentScope ()));
 		assertNotNull (stack.getTestLine ());
@@ -67,7 +67,7 @@ public class TestSourceStackTest {
 
 	@Test
 	public void testCreateAndPushTestCase () {
-		TestSourceStack stack = new TestSourceStack ();
+		TestSourceStack stack = new TestSourceStackImpl ();
 		stack.initAndPush (new TestSourceImpl (stack.getCurrentScope ()));
 		assertTrue (stack.createAndPushTestCase ("test case name 1", "test case description 1"));
 		assertTrue (stack.inATestCase ());
@@ -79,7 +79,7 @@ public class TestSourceStackTest {
 
 	@Test
 	public void pushTestCaseNestedAndNotInTestCase () {
-		TestSourceStack stack = new TestSourceStack ();
+		TestSourceStack stack = new TestSourceStackImpl ();
 		stack.initAndPush (new TestSourceImpl (stack.getCurrentScope ()));
 		assertTrue (stack.createAndPushTestCase ("test case name 1", "test case description 1"));
 		stack.initAndPush (new TestSourceImpl (stack.getCurrentScope ()));
@@ -89,7 +89,7 @@ public class TestSourceStackTest {
 	@Test
 	public void testPopTestCase_EmptyStack () {
 		try {
-			TestSourceStack stack = new TestSourceStack ();
+			TestSourceStack stack = new TestSourceStackImpl ();
 			stack.popTestCase ();
 			fail ("no exception");
 		} catch (ExecutionException ee) {
@@ -100,7 +100,7 @@ public class TestSourceStackTest {
 	@Test
 	public void testPopTestCase_NoTestCase () {
 		try {
-			TestSourceStack stack = new TestSourceStack ();
+			TestSourceStack stack = new TestSourceStackImpl ();
     		stack.initAndPush (new TestSourceImpl (stack.getCurrentScope ()));
 			stack.popTestCase ();
 			fail ("no exception");
