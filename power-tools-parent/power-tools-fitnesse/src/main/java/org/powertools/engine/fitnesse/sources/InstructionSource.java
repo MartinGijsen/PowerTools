@@ -21,7 +21,7 @@ package org.powertools.engine.fitnesse.sources;
 import fit.Fixture;
 import fit.Parse;
 import java.util.ArrayList;
-import java.util.LinkedList;
+import java.util.Iterator;
 import java.util.List;
 import org.powertools.engine.TestRunResultPublisher;
 import org.powertools.engine.fitnesse.Reference;
@@ -97,37 +97,19 @@ public final class InstructionSource extends FitNesseTestSource {
 
     @Override
     public TestLineImpl getTestLine () {
-//        List<List<String>> table = new LinkedList<List<String>> ();
-//        if (mRow != null) {
-//            // Do not return instructions for execution.
-//            // Add them to the procedure instead, unevaluated.
-//            // They are executed when the procedure is called.
-//            while ((mRow = mRow.more) != null) {
-//                table.add (mRow.parts.parts);
-//                processSentence (readSentence (mRow.parts));
-//            }
-//        }
-//        mProcedure.addTable (table);
-
-        // indicate there are no instructions to execute from this source
+        // there are no instructions to execute from this source
         return null;
     }
 
+    // TODO: move bulk of code to ScenarioSource
     public boolean addScenario (Parse table) {
         String tableType = table.parts.parts.text ().toLowerCase ();
-//        if (type.equals ("instruction")) {
-//            mRow = table.parts.more.more;
-//        } else if (type.equals ("scenario")) {
-//            mRow = table.parts.more;
-//        } else {
-//            throw new ExecutionException ("invalid table type for inside instruction: " + type);
-//        }
         if (tableType.equals ("scenario")) {
             mRow = table.parts;
             processFixtureLine ();
         }
 
-        List<List<String>> instructions = new LinkedList<List<String>> ();
+        List<List<String>> instructions = new ArrayList<List<String>> ();
         if (mRow != null) {
             while ((mRow = mRow.more) != null) {
                 List<String> instruction = readSentence (mRow.parts);
@@ -154,11 +136,13 @@ public final class InstructionSource extends FitNesseTestSource {
         }
     }
 
+    
+    // TODO: move bulk of code to DataSource
     public void addData (Parse table) {
         mRow = table.parts;
         processFixtureLine ();
         String instructionName = getDataInstructionName ();
-        List<List<String>> instructions = new LinkedList<List<String>> ();
+        List<List<String>> instructions = new ArrayList<List<String>> ();
         if (mRow != null) {
             while ((mRow = mRow.more) != null) {
                 List<String> instruction = readData (instructionName);
@@ -201,12 +185,8 @@ public final class InstructionSource extends FitNesseTestSource {
     private void fillDataTestLine () {
         List<String> parts = new ArrayList<String> ();
         parts.add ("");
-//        Parse currentCell = mRow.parts;
         for (Parse currentCell = mRow.parts; currentCell != null; currentCell = currentCell.more) {
-//        do {
             parts.add (currentCell.text ());
-//            currentCell = currentCell.more;
-//        } while (currentCell != null);
         }
         mTestLine.setParts (parts);
     }
@@ -222,6 +202,122 @@ public final class InstructionSource extends FitNesseTestSource {
     }
 
     private void processData (List<String> parts) {
+        if (!parts.isEmpty ()) {
+            linkToLogFile (mRow.parts);
+            mTestLine.setParts (parts);
+            mPublisher.publishTestLine (mTestLine);
+        }
+    }
+    
+
+    // TODO: move bulk of code to DataToSource
+    public void addDataTo (Parse table) {
+        mRow = table.parts;
+        String instructionName          = checkFixtureLine ();
+        List<String> columnNames        = processDataToHeaderLine ();
+        List<List<String>> instructions = new ArrayList<List<String>> ();
+        if (mRow != null) {
+            while ((mRow = mRow.more) != null) {
+                List<String> instruction = readData2 (instructionName, columnNames);
+                instructions.add (instruction);
+                processData2 (instruction);
+            }
+        }
+
+        mProcedure.addTable (instructions);
+        mPublisher.publishEndOfSection ();
+    }
+
+    private String checkFixtureLine () {
+        copyRow (mRow);
+        linkToLogFile (mRow.parts);
+        mPublisher.publishTestLine (mTestLine);
+        String instructionName = (mTestLine.getNrOfParts () >= 2 ? mTestLine.getPart (1) : null);
+        if (mTestLine.getNrOfParts () != 2) {
+            mPublisher.publishError ("fixture line must have two cells");
+        }
+        mPublisher.publishEndOfTestLine ();
+        return instructionName;
+    }
+
+    private List<String> processDataToHeaderLine () {
+        mRow = mRow.more;
+        List<String> columnNames = new ArrayList<String> ();
+        if (mRow != null) {
+            fillDataToTestLine ();
+            linkToLogFile (mRow.parts);
+            mPublisher.publishTestLine (mTestLine);
+
+            int nrOfParts = mTestLine.getNrOfParts ();
+            for (int partNr = 1; partNr < nrOfParts; ++partNr) {
+                String part = mTestLine.getPart (partNr);
+                if (part.isEmpty ()) {
+                    mPublisher.publishError ("empty column name(s)");
+                    break;
+                } else if (columnNames.contains (part)) {
+                    mPublisher.publishError ("duplicate column name(s)");
+                    break;
+                } else {
+                    columnNames.add (part);
+                }
+            }
+
+            mPublisher.publishEndOfTestLine ();
+        }
+        return columnNames;
+    }
+
+    private String getDataToInstructionName () {
+        mRow = mRow.more;
+        if (mRow != null) {
+            fillDataToTestLine ();
+            mPublisher.publishTestLine (mTestLine);
+
+            int nrOfParts                   = mTestLine.getNrOfParts ();
+            StringBuilder instructionNameSb = new StringBuilder ();
+            for (int partNr = 1; partNr < nrOfParts; ++partNr) {
+                String part = mTestLine.getPart (partNr);
+                if (part.isEmpty ()) {
+                    mPublisher.publishError ("empty column name(s)");
+                    break;
+                } else {
+                    for (String word : part.split (" +")) {
+                        instructionNameSb.append (word).append (" ");
+                    }
+                    instructionNameSb.append ("_ ");
+                }
+            }
+            mPublisher.publishEndOfTestLine ();
+
+            return instructionNameSb.toString ().trim ();
+        }
+        return null;
+    }
+
+    private void fillDataToTestLine () {
+        List<String> parts = new ArrayList<String> ();
+        parts.add ("");
+        Parse currentCell = mRow.parts;
+        do {
+            parts.add (currentCell.text ());
+            currentCell = currentCell.more;
+        } while (currentCell != null);
+        mTestLine.setParts (parts);
+    }
+
+    private List<String> readData2 (String instructionName, List<String> columnNames) {
+        List<String> parts = new ArrayList<String> ();
+        parts.add (instructionName);
+        Iterator<String> columnNameIter = columnNames.iterator ();
+        for (Parse currentCell = mRow.parts; currentCell != null; currentCell = currentCell.more) {
+            parts.add (columnNameIter.next ());
+            parts.add (currentCell.text ());
+        }
+        mTestLine.setParts (parts);
+        return parts;
+    }
+
+    private void processData2 (List<String> parts) {
         if (!parts.isEmpty ()) {
             linkToLogFile (mRow.parts);
             mTestLine.setParts (parts);

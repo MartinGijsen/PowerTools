@@ -54,7 +54,7 @@ public class TestSourceFactory {
         return new DataSource (table, scope, logFilePath, publisher, reference);
     }
 
-    public FitNesseTestSource createDataSource (DataToFixture fixture, Parse table, Scope scope, String logFilePath, TestRunResultPublisher publisher, Reference reference) {
+    public FitNesseTestSource createDataToSource (DataToFixture fixture, Parse table, Scope scope, String logFilePath, TestRunResultPublisher publisher, Reference reference) {
         return new DataToSource (fixture, table, scope, logFilePath, publisher, reference);
     }
 

@@ -132,9 +132,9 @@ public final class FitNesseEngine extends Engine {
 
     public void run (DataToFixture fixture, Parse table) {
         if (mSource != null) {
-            mSource.addData (table);
+            mSource.addDataTo (table);
         } else {
-            run (mSourceFactory.createDataSource (fixture, table, mRunTime.getGlobalScope (), mLogFilePath, mPublisher, mReference));
+            run (mSourceFactory.createDataToSource (fixture, table, mRunTime.getGlobalScope (), mLogFilePath, mPublisher, mReference));
         }
     }
 

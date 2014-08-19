@@ -30,9 +30,11 @@ import org.powertools.engine.symbol.Scope;
 
 
 final class DataToSource extends FitNesseTestSource {
-    private String mInstructionName;
-    private List<String> mColumnNames;
+    private final List<String> mColumnNames;
 
+    private String mInstructionName;
+
+    
     DataToSource (Fixture fixture, Parse table, Scope scope, String logFilePath, TestRunResultPublisher publisher, Reference reference) {
         super (fixture, table, scope, logFilePath, publisher, reference);
         mColumnNames = new LinkedList<String> ();
@@ -46,11 +48,11 @@ final class DataToSource extends FitNesseTestSource {
 
     @Override
     public void initialize () {
-        processMyFixtureLine ();
+        checkFixtureLine ();
         processHeaderLine ();
     }
 
-    private void processMyFixtureLine () {
+    private void checkFixtureLine () {
         copyRow (mRow);
         linkToLogFile (mRow.parts);
         mPublisher.publishTestLine (mTestLine);
