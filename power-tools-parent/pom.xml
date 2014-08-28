@@ -12,5 +12,6 @@
     <module>power-tools-graph</module>
     <module>power-tools-windows</module>
     <module>distribution</module>
+    <module>power-tools-ssh</module>
   </modules>
 </project>
