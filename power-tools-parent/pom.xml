@@ -13,5 +13,6 @@
     <module>power-tools-windows</module>
     <module>distribution</module>
     <module>power-tools-ssh</module>
+    <module>power-tools-database</module>
   </modules>
 </project>

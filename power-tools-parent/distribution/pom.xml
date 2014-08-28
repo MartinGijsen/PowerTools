@@ -38,6 +38,16 @@
       <artifactId>power-tools-windows</artifactId>
       <version>${project.version}</version>
     </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>power-tools-ssh</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>power-tools-database</artifactId>
+      <version>${project.version}</version>
+    </dependency>
   </dependencies>
 
   <build>
