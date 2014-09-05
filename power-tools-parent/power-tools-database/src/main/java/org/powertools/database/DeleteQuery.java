@@ -1,16 +1,7 @@
 package org.powertools.database;
 
-import static org.powertools.database.Query.column;
-
 
 public class DeleteQuery {
-    public static void main (String[] args) {
-        DeleteQuery query = new DeleteQuery ("t")
-                .where (column ("y1").equal ("abc"));
-        System.out.println (query.toString ());
-    }
-    
-    
     private final TableName mTableName;
 
     private BooleanExpression mCondition;

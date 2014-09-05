@@ -2,16 +2,6 @@ package org.powertools.database;
 
 
 public class InsertQuery extends Query {
-    public static void main (String[] args) {
-        InsertQuery query = new InsertQuery ("t")
-                .forColumn ("x1")
-                .forColumn ("x2")
-                .value ("y1")
-                .value ("y2");
-        System.out.println (query.toString ());
-    }
-    
-    
     private final TableName mTableName;
     private final MyList mColumnNames;
     private final MyList mValues;

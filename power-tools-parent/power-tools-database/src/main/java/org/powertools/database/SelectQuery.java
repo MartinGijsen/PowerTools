@@ -2,20 +2,6 @@ package org.powertools.database;
 
 
 public class SelectQuery extends Query {
-    public static void main (String[] args) {
-        SelectQuery query = new SelectQuery ()
-                .select ("x")
-                .select (table ("t").column ("x"))
-                .from ("t")
-                .from (table ("t"))
-                //.where (equals ("y", "value"))
-                //.where (equals (table ("t").column ("y"), "value"))
-                .where (table ("t").column ("y").equal ("value"))
-                .where (table ("t1").column ("y").equal (table ("t2").column ("z")));
-        System.out.println (query.toString ());
-    }
-    
-    
     private final MyList mColumnNames;
     private final MyList mTableNames;
 
