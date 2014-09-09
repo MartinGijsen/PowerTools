@@ -1,3 +1,21 @@
+/* Copyright 2014 by Martin Gijsen (www.DeAnalist.nl)
+ *
+ * This file is part of the PowerTools engine.
+ *
+ * The PowerTools engine is free software: you can redistribute it and/or
+ * modify it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
+ *
+ * The PowerTools engine is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with the PowerTools engine. If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package org.powertools.database;
 
 import java.sql.Connection;
@@ -20,31 +38,37 @@ public final class Database {
     private final String mPassword;
 
     private Connection mConnection;
+    private boolean mFirstConnect;
 
 
-    Database (String name, String connectString, String userName, String password) {
+    public Database (String name, String connectString, String userName, String password) {
         mName          = name;
         mConnectString = connectString;
         mUserName      = userName;
         mPassword      = password;
+        mConnection    = null;
+        mFirstConnect  = true;
     }
 
-    String getName () {
+    public String getName () {
         return mName;
     }
     
-    boolean connect () {
-        try {
-            if (mConnection == null) {
-                mConnection = DriverManager.getConnection (mConnectString, mUserName, mPassword);
+    private void connectOnce () {
+        if (mFirstConnect) {
+            try {
+                if (mConnection == null) {
+                    mConnection = DriverManager.getConnection (mConnectString, mUserName, mPassword);
+                }
+            } catch (SQLException sqle) {
+                throw new ExecutionException ("failed to connect to " + mName + ": " + sqle.getMessage (), sqle.getStackTrace ());
             }
-            return true;
-        } catch (SQLException sqle) {
-            throw newSqlException (sqle);
+        } else if (mConnection == null) {
+            throw new ExecutionException ("not connected to database " + mName);
         }
     }
 
-    void disconnect () {
+    public void disconnect () {
         if (mConnection != null) {
             try {
                 mConnection.close ();
@@ -56,66 +80,59 @@ public final class Database {
     }
     
     
-    Map<String, String> getRow (String tableName, List<String> columnNames, String keyName, String keyValue) throws SQLException {
-        connect ();
+    public Map<String, String> getRow (String tableName, List<String> columnNames, String keyName, String keyValue) throws SQLException {
+        connectOnce ();
         String query = String.format ("SELECT %s FROM %s WHERE %s = %s",
-                        getColumnNames (columnNames), tableName, keyName, keyValue);
+                                      getColumnNames (columnNames), tableName, keyName, keyValue);
         Statement statement = null;
         try {
             statement           = mConnection.createStatement ();
             ResultSet resultset = statement.executeQuery (query);
             return createRow (resultset, columnNames);
         } finally {
-            if (statement != null) {
-                statement.close ();
-            }
+            close (statement);
         }
     }
 
-    Map<String, String> getRow (String tableName, String keyName, String keyValue) throws SQLException {
+    public Map<String, String> getRow (String tableName, String keyName, String keyValue) throws SQLException {
         SelectQuery query = new SelectQuery ()
                 .select ("*")
                 .from (tableName)
-                .where (column (keyName).equal (keyValue));
+                .where (column (keyName).equal (new Value (keyValue)));
         return getRow (query.toString ());
         //return getRow (String.format ("SELECT * FROM %s WHERE %s = %s", tableName, keyName, keyValue));
     }
 
-    Map<String, String> getRow (String query) throws SQLException {
-        connect ();
+    public Map<String, String> getRow (String query) throws SQLException {
+        connectOnce ();
         Statement statement = null;
         try {
             statement           = mConnection.createStatement ();
             ResultSet resultSet = statement.executeQuery (query);
             return createRow (resultSet);
         } finally {
-            if (statement != null) {
-                statement.close ();
-            }
+            close (statement);
         }
     }
 
-    List<Map<String, String>> getRows (String tableName, String keyName, String keyValue) throws SQLException {
-        connect ();
+    public List<Map<String, String>> getRows (String tableName, String keyName, String keyValue) throws SQLException {
+        connectOnce ();
         SelectQuery query = new SelectQuery ()
                 .select ("*")
                 .from (tableName)
-                .where (column (keyName).equal (keyValue));
+                .where (column (keyName).equal (new Value (keyValue)));
         Statement statement = null;
         try {
             statement           = mConnection.createStatement ();
             ResultSet resultSet = statement.executeQuery (query.toString ());
-            //ResultSet resultSet = statement.executeQuery (String.format ("SELECT * FROM %s WHERE %s = %s", tableName, keyName, keyValue));
             return createRows (resultSet);
         } finally {
-            if (statement != null) {
-                statement.close ();
-            }
+            close (statement);
         }
     }
 
-    List<Map<String, String>> getRows (String tableName) throws SQLException {
-        connect ();
+    public List<Map<String, String>> getRows (String tableName) throws SQLException {
+        connectOnce ();
         SelectQuery query = new SelectQuery ()
                 .select ("*")
                 .from (tableName);
@@ -123,12 +140,9 @@ public final class Database {
         try {
             statement           = mConnection.createStatement ();
             ResultSet resultSet = statement.executeQuery (query.toString ());
-            //ResultSet resultSet = statement.executeQuery (String.format ("SELECT * FROM %s", tableName));
             return createRows (resultSet);
         } finally {
-            if (statement != null) {
-                statement.close ();
-            }
+            close (statement);
         }
     }
 
@@ -192,6 +206,16 @@ public final class Database {
         return row;
     }
 
+    private void close (Statement statement) {
+        if (statement != null) {
+            try {
+                statement.close ();
+            } catch (SQLException sqle) {
+                // ignore
+            }
+        }
+    }
+    
     private ExecutionException newSqlException (SQLException sqle) {
         return new ExecutionException ("SQL exception: " + sqle.getMessage (), sqle.getStackTrace ());
     }

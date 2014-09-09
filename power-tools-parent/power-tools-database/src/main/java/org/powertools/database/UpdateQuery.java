@@ -18,39 +18,57 @@
 
 package org.powertools.database;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import org.powertools.engine.ExecutionException;
 
 
-final class MyList {
-    private final String mName;
-    private final List<ListItem> mItems;
-    
-    MyList (String name) {
-        mName  = name;
-        mItems = new LinkedList<ListItem> ();
+public class UpdateQuery extends Query {
+    private final TableName mTableName;
+    private final Map<String, String> mValues;
+    private final WhereClause mWhereClause;
+
+
+    public UpdateQuery (String tableName) {
+        this (new TableName (tableName));
     }
     
-    void add (ListItem item) {
-        mItems.add (item);
+    public UpdateQuery (TableName tableName) {
+        super ();
+        mTableName   = tableName;
+        mValues      = new HashMap<String, String> ();
+        mWhereClause = new WhereClause ();
+    }
+
+    public UpdateQuery value (String columnName, String value) {
+        mValues.put (columnName, value);
+        return this;
+    }
+
+    public UpdateQuery where (BooleanExpression condition) {
+        mWhereClause.add (condition);
+        return this;
     }
     
     @Override
     public String toString () {
-        if (mItems.isEmpty ()) {
-            throw new ExecutionException ("query contains no " + mName);
+        return String.format ("UPDATE %s SET %s%s", mTableName, getValues (), mWhereClause.toString ());
+    }
+    
+    private String getValues () {
+        if (mValues.isEmpty ()) {
+            throw new ExecutionException ("update query contains no values");
         }
 
         StringBuilder sb = new StringBuilder ();
         boolean isFirst  = true;
-        for (ListItem item : mItems) {
+        for (String columnName : mValues.keySet ()) {
             if (isFirst) {
-                sb.append (item.toString ());
                 isFirst = false;
             } else {
-                sb.append (", ").append (item.toString());
+                sb.append (", ");
             }
+            sb.append (columnName).append ("=").append (mValues.get (columnName));
         }
         return sb.toString ();
     }

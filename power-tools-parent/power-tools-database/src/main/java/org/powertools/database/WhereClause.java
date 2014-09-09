@@ -19,16 +19,19 @@
 package org.powertools.database;
 
 
-public abstract class Query {
-    public static TableName table (String name) {
-        return new TableName (name);
-    }
+final class WhereClause {
+    private BooleanExpression mCondition;
 
-    public static ColumnName column (String name) {
-        return new ColumnName (name);
+    WhereClause () {
+        mCondition = null;
     }
     
-    public static Value value (String value) {
-        return new Value (value);
+    void add (BooleanExpression condition) {
+        mCondition = (mCondition == null ? condition : new AndExpression (mCondition, condition));
+    }
+
+    @Override
+    public String toString () {
+        return (mCondition == null ? "" : " WHERE " + mCondition.toString ());
     }
 }

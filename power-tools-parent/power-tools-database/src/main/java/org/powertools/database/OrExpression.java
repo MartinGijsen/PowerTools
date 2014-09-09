@@ -19,16 +19,17 @@
 package org.powertools.database;
 
 
-public abstract class Query {
-    public static TableName table (String name) {
-        return new TableName (name);
-    }
-
-    public static ColumnName column (String name) {
-        return new ColumnName (name);
+public class OrExpression implements BooleanExpression {
+    private final BooleanExpression mCondition1;
+    private final BooleanExpression mCondition2;
+    
+    OrExpression (BooleanExpression condition1, BooleanExpression condition2) {
+        mCondition1 = condition1;
+        mCondition2 = condition2;
     }
     
-    public static Value value (String value) {
-        return new Value (value);
+    @Override
+    public String toString () {
+        return mCondition1.toString () + " OR " + mCondition2.toString ();
     }
 }
