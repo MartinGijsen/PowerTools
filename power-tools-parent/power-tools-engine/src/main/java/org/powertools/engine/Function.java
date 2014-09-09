@@ -23,6 +23,13 @@ public abstract class Function {
     private final String mName;
     private final int mNrOfParams;
 
+    protected static RunTime mRunTime;
+
+    
+    public static void setRunTime (RunTime runTime) {
+        mRunTime = runTime;
+    }
+    
     public Function (String name, int nrOfParameters) {
         mName       = name;
         mNrOfParams = nrOfParameters;

@@ -19,11 +19,12 @@
 package org.powertools.engine.core;
 
 import org.powertools.engine.ExecutionException;
+import org.powertools.engine.Function;
 import org.powertools.engine.TestRunResultPublisher;
 import org.powertools.engine.sources.Procedure;
 import org.powertools.engine.sources.ProcedureException;
-import org.powertools.engine.sources.TestSource;
 import org.powertools.engine.sources.TestLineImpl;
+import org.powertools.engine.sources.TestSource;
 
 
 /**
@@ -59,6 +60,7 @@ public abstract class Engine {
         mPublisher    = runTime.getPublisher ();
         mInstructions = new Instructions (runTime, mPublisher);
         mAborting     = false;
+        Function.setRunTime (runTime);
     }
 
     protected final void registerBuiltinInstructions () {
