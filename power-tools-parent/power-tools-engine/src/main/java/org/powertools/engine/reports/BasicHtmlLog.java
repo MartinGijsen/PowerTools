@@ -22,7 +22,6 @@ import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-
 import org.powertools.engine.TestLine;
 
 
@@ -98,7 +97,7 @@ public abstract class BasicHtmlLog implements TestLineSubscriber, TestResultSubs
     @Override
     public void processInfo (String message) {
         writeTableRowStartWithTimestamp (mWriter);
-        mWriter.format ("<TD colspan=\"10\">%s</TD></TR>", message).println ();
+        mWriter.format ("<TD colspan=\"10\">%s</TD></TR>", text2HTML (message)).println ();
     }
 
     @Override
@@ -122,5 +121,9 @@ public abstract class BasicHtmlLog implements TestLineSubscriber, TestResultSubs
     protected void writeTableRowStartWithTimestamp (PrintWriter writer) {
         Calendar c = Calendar.getInstance ();
         writer.format("<TR><TD>%1$tT</TD>", c);
+    }
+    
+    private static String text2HTML (String text) {
+        return text.replaceAll ("\n", "\n<BR/>");
     }
 }
