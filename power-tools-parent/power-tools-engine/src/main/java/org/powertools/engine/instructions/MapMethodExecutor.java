@@ -40,6 +40,7 @@ final class MapMethodExecutor implements Executor {
 
     @Override
     public final boolean execute (TestLine testLine) {
+        mArguments.clear ();
         int nrOfArgs = testLine.getNrOfParts () - 1;
         for (int argNr = 0; argNr < nrOfArgs; argNr += 2) {
             mArguments.put (testLine.getPart (argNr + 1), testLine.getPart (argNr + 2));
