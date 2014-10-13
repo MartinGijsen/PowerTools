@@ -27,12 +27,29 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import static org.powertools.database.Query.column;
 import org.powertools.engine.ExecutionException;
 
 
 public final class Database {
-    private final String mName;
+    public enum JdbcClient {
+        ORACLE_THIN_CLIENT ("jdbc:oracle:thin");
+        
+        private final String mText;
+        
+        JdbcClient (String text) {
+            mText = text;
+        }
+        
+        @Override
+        public String toString () {
+            return mText;
+        }
+    }
+    
+    
+//    private final String mHostName;
+//    private final JdbcClient mClient;
+    private final String mDatabaseName;
     private final String mConnectString;
     private final String mUserName;
     private final String mPassword;
@@ -41,30 +58,39 @@ public final class Database {
     private boolean mFirstConnect;
 
 
-    public Database (String name, String connectString, String userName, String password) {
-        mName          = name;
+    public Database (String hostName, JdbcClient client, String databaseName, String userName, String password) {
+//        mHostName      = hostName;
+//        mClient        = client;
+        mDatabaseName  = databaseName;
+        mConnectString = String.format ("%s:@//%s:1521/%s", client, hostName, mDatabaseName);
+        mUserName      = userName;
+        mPassword      = password;
+        mFirstConnect  = true;
+    }
+
+    public Database (String connectString, String databaseName, String userName, String password) {
+        mDatabaseName  = databaseName;
         mConnectString = connectString;
         mUserName      = userName;
         mPassword      = password;
-        mConnection    = null;
         mFirstConnect  = true;
     }
 
     public String getName () {
-        return mName;
+        return mDatabaseName;
     }
-    
+
     private void connectOnce () {
         if (mFirstConnect) {
             try {
-                if (mConnection == null) {
-                    mConnection = DriverManager.getConnection (mConnectString, mUserName, mPassword);
-                }
+                mFirstConnect        = false;
+                //String connectString = String.format ("%s:@//%s:1521/%s", mClient, mHostName, mDatabaseName);
+                mConnection          = DriverManager.getConnection (mConnectString, mUserName, mPassword);
             } catch (SQLException sqle) {
-                throw new ExecutionException ("failed to connect to " + mName + ": " + sqle.getMessage (), sqle.getStackTrace ());
+                throw newSqlException (sqle);
             }
         } else if (mConnection == null) {
-            throw new ExecutionException ("not connected to database " + mName);
+            throw new ExecutionException ("not connected to database " + getName ());
         }
     }
 
@@ -80,29 +106,6 @@ public final class Database {
     }
     
     
-    public Map<String, String> getRow (String tableName, List<String> columnNames, String keyName, String keyValue) throws SQLException {
-        connectOnce ();
-        String query = String.format ("SELECT %s FROM %s WHERE %s = %s",
-                                      getColumnNames (columnNames), tableName, keyName, keyValue);
-        Statement statement = null;
-        try {
-            statement           = mConnection.createStatement ();
-            ResultSet resultset = statement.executeQuery (query);
-            return createRow (resultset, columnNames);
-        } finally {
-            close (statement);
-        }
-    }
-
-    public Map<String, String> getRow (String tableName, String keyName, String keyValue) throws SQLException {
-        SelectQuery query = new SelectQuery ()
-                .select ("*")
-                .from (tableName)
-                .where (column (keyName).equal (new Value (keyValue)));
-        return getRow (query.toString ());
-        //return getRow (String.format ("SELECT * FROM %s WHERE %s = %s", tableName, keyName, keyValue));
-    }
-
     public Map<String, String> getRow (String query) throws SQLException {
         connectOnce ();
         Statement statement = null;
@@ -114,23 +117,7 @@ public final class Database {
             close (statement);
         }
     }
-
-    public List<Map<String, String>> getRows (String tableName, String keyName, String keyValue) throws SQLException {
-        connectOnce ();
-        SelectQuery query = new SelectQuery ()
-                .select ("*")
-                .from (tableName)
-                .where (column (keyName).equal (new Value (keyValue)));
-        Statement statement = null;
-        try {
-            statement           = mConnection.createStatement ();
-            ResultSet resultSet = statement.executeQuery (query.toString ());
-            return createRows (resultSet);
-        } finally {
-            close (statement);
-        }
-    }
-
+    
     public List<Map<String, String>> getRows (String tableName) throws SQLException {
         connectOnce ();
         SelectQuery query = new SelectQuery ()
@@ -146,33 +133,6 @@ public final class Database {
         }
     }
 
-    private String getColumnNames (List<String> columnNames) {
-        if (columnNames.isEmpty ()) {
-            throw new ExecutionException ("no column names provided for query");
-        }
-        
-        StringBuilder sb = new StringBuilder ();
-        boolean isFirst  = true;
-        for (String columnName : columnNames) {
-            if (isFirst) {
-                sb.append (columnName);
-                isFirst = false;
-            } else {
-                sb.append (", ").append (columnName);
-            }
-        }
-        return sb.toString ();
-    }
-
-
-    private Map<String, String> createRow (ResultSet resultSet, List<String> columnNames) throws SQLException {
-        if (!resultSet.next ()) {
-            throw new RuntimeException ("no record found");
-        } else {
-            return createOneRow (resultSet, columnNames);
-        }
-    }
-
     private Map<String, String> createRow (ResultSet resultSet) throws SQLException {
         if (!resultSet.next ()) {
             throw new RuntimeException ("no record found");
@@ -182,11 +142,11 @@ public final class Database {
     }
     
     private List<Map<String, String>> createRows (ResultSet resultSet) throws SQLException {
-        List<Map<String, String>> list = new LinkedList<Map<String, String>> ();
+        List<Map<String, String>> rows = new LinkedList<Map<String, String>> ();
         while (resultSet.next ()) {
-            list.add (createOneRow (resultSet));
+            rows.add (createOneRow (resultSet));
         }
-        return list;
+        return rows;
     }
 
     private Map<String, String> createOneRow (ResultSet resultSet) throws SQLException {
@@ -194,14 +154,6 @@ public final class Database {
         int numColumns = resultSet.getMetaData ().getColumnCount ();
         for (int i = 1 ; i <= numColumns ; ++i) {
             row.put (resultSet.getMetaData ().getColumnName (i), resultSet.getString (i));
-        }
-        return row;
-    }
-
-    private Map<String, String> createOneRow (ResultSet resultSet, List<String> columnNames) throws SQLException {
-        Map<String, String> row = new HashMap<String, String> ();
-        for (String columnName : columnNames) {
-            row.put (columnName, resultSet.getString (columnName));
         }
         return row;
     }
@@ -215,7 +167,7 @@ public final class Database {
             }
         }
     }
-    
+
     private ExecutionException newSqlException (SQLException sqle) {
         return new ExecutionException ("SQL exception: " + sqle.getMessage (), sqle.getStackTrace ());
     }
