@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.List;
 
 
 public class Factory implements TestSystemFactory {
@@ -37,10 +38,10 @@ public class Factory implements TestSystemFactory {
     }
 
     private URL[] getUrlsFromClassPath (Descriptor descriptor) throws MalformedURLException {
-        String[] paths = descriptor.getClassPath ().split (System.getProperty ("path.separator"));
-        URL[] urls     = new URL[paths.length];
-        for (int i = 0; i < paths.length; i++) {
-            urls[i] = new File (paths[i]).toURI ().toURL ();
+        List<String> elements = descriptor.getClassPath ().getElements ();
+        URL[] urls            = new URL[elements.size ()];
+        for (int i = 0; i < elements.size (); i++) {
+            urls[i] = new File (elements.get (i)).toURI ().toURL ();
         }
         return urls;
     }

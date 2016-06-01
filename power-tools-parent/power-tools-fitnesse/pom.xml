@@ -6,14 +6,14 @@
     <version>0.0.1-SNAPSHOT</version>
   </parent>
   <properties>
-    <fitnesse.version>20121220</fitnesse.version>
+    <fitnesse.version>20160515</fitnesse.version>
   </properties>
   <artifactId>power-tools-fitnesse</artifactId>
   <dependencies>
     <dependency>
       <groupId>org.fitnesse</groupId>
       <artifactId>fitnesse</artifactId>
-      <version>20140201</version>
+      <version>20160515</version>
       <classifier>standalone</classifier>
     </dependency>
     <dependency>

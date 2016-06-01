@@ -71,7 +71,7 @@ public final class PowerToolsTestSystem implements TestSystem {
         mTestSystemListener.testStarted (page);
         Parse table;
         try {
-            table = new Parse (page.getDecoratedData ().getHtml ());
+            table = new Parse (page.getHtml ());
         } catch (FitParseException fpe) {
             return;
         }

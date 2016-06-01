@@ -18,6 +18,7 @@
 
 package org.powertools.engine.fitnesse;
 
+import fitnesse.testsystems.ExecutionResult;
 import fitnesse.testsystems.TestSummary;
 
 
@@ -33,20 +34,20 @@ final class PowerToolsReporter extends FitNesseReporter {
 
     @Override
     public void processStackTrace (String[] stackTraceLines) {
-        ++mSummary.exceptions;
+        mSummary.add (ExecutionResult.ERROR);
         super.processStackTrace (stackTraceLines);
     }
 
     @Override
     public void processError (String error) {
-        ++mSummary.wrong;
+        mSummary.add (ExecutionResult.FAIL);
         super.processError (error);
     }
 
     @Override
     public void processEndOfTestLine () {
         if (!mAnyErrors) {
-            ++mSummary.right;
+            mSummary.add (ExecutionResult.PASS);
         }
         super.processEndOfTestLine ();
     }
