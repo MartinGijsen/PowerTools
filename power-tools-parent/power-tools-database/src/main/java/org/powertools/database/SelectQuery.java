@@ -22,11 +22,12 @@ import java.util.List;
 
 
 public class SelectQuery extends Query {
-    private final MyList mColumnNames;
-    private final MyList mTableNames;
-    private final WhereClause mWhereClause;
+    private final MyList        mColumnNames;
+    private final MyList        mTableNames;
+    private final WhereClause   mWhereClause;
+    private final GroupByClause mGroupByClause;
     
-    
+
     public SelectQuery (String columnName) {
         this ();
         select (columnName);
@@ -34,9 +35,10 @@ public class SelectQuery extends Query {
 
     public SelectQuery () {
         super ();
-        mColumnNames = new MyList ("column names");
-        mTableNames  = new MyList ("table names");
-        mWhereClause = new WhereClause ();
+        mColumnNames   = new MyList ("column names");
+        mTableNames    = new MyList ("table names");
+        mWhereClause   = new WhereClause ();
+        mGroupByClause = new GroupByClause ();
     }
 
 
@@ -47,6 +49,11 @@ public class SelectQuery extends Query {
 
     public SelectQuery select (ColumnName columnName) {
         mColumnNames.add (columnName);
+        return this;
+    }
+
+    public SelectQuery select (Alias alias) {
+        mColumnNames.add (alias);
         return this;
     }
 
@@ -73,22 +80,18 @@ public class SelectQuery extends Query {
         return this;
     }
 
-    // join
-//    public SelectQuery join (ColumnName column1, ColumnName column2) {
-//        TableName tableName = column1.getTableName ();
-//        if (!mTableNames.contains (tableName)) {
-//            from (tableName);
-//        }
-//        tableName = column2.getTableName ();
-//        if (!mTableNames.contains (tableName)) {
-//            from (tableName);
-//        }
-//        where (CompareExpression.equal (column1, column2));
-//        return this;
-//    }
-    
+    // group by
+    public SelectQuery groupBy (String columnName) {
+        return groupBy (new ColumnName (columnName));
+    }
+
+    public SelectQuery groupBy (ColumnName columnName) {
+        mGroupByClause.add (columnName);
+        return this;
+    }
+
     @Override
     public String toString () {
-        return String.format ("SELECT %s FROM %s%s", mColumnNames.toString (), mTableNames.toString (), mWhereClause.toString ());
+        return String.format ("SELECT %s FROM %s%s%s", mColumnNames.toString (), mTableNames.toString (), mWhereClause.toString (), mGroupByClause.toString ());
     }
 }

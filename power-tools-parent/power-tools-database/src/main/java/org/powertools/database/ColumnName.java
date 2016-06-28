@@ -22,24 +22,28 @@ package org.powertools.database;
 public final class ColumnName implements ListItem, Expression {
     private final TableName mTableName;
     private final String mName;
-    
+
     private static boolean mAddQuotes = false;
     
+
+    ColumnName (String name) {
+        this (null, name);
+    }
+    
+    ColumnName (TableName tableName, String name) {
+        mTableName = tableName;
+        mName      = name;
+    }
 
     public static void setAddQuotes (boolean addQuotes) {
         mAddQuotes = addQuotes;
     }
     
-    
-    public ColumnName (String name) {
-        this (null, name);
-    }
-    
-    public ColumnName (TableName tableName, String name) {
-        mTableName = tableName;
-        mName      = name;
-    }
 
+    public Alias as (String name) {
+        return new Alias (this, name);
+    }
+    
     public TableName getTableName () {
         return mTableName;
     }

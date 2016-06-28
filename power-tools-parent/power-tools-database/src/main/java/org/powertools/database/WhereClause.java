@@ -32,6 +32,6 @@ final class WhereClause {
 
     @Override
     public String toString () {
-        return (mCondition == null ? "" : " WHERE " + mCondition.toString ());
+        return mCondition == null ? "" : " WHERE " + mCondition.toString ();
     }
 }

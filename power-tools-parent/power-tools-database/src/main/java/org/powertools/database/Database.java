@@ -22,6 +22,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.SQLRecoverableException;
 import java.sql.Statement;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -47,8 +48,6 @@ public final class Database {
     }
     
     
-//    private final String mHostName;
-//    private final JdbcClient mClient;
     private final String mDatabaseName;
     private final String mConnectString;
     private final String mUserName;
@@ -59,13 +58,7 @@ public final class Database {
 
 
     public Database (String hostName, JdbcClient client, String databaseName, String userName, String password) {
-//        mHostName      = hostName;
-//        mClient        = client;
-        mDatabaseName  = databaseName;
-        mConnectString = String.format ("%s:@//%s:1521/%s", client, hostName, mDatabaseName);
-        mUserName      = userName;
-        mPassword      = password;
-        mFirstConnect  = true;
+        this (String.format ("%s:@//%s:1521/%s", client, hostName, databaseName), databaseName, userName, password);
     }
 
     public Database (String connectString, String databaseName, String userName, String password) {
@@ -79,18 +72,28 @@ public final class Database {
     public String getName () {
         return mDatabaseName;
     }
-
-    private void connectOnce () {
+    
+    private Connection getConnection () {
         if (mFirstConnect) {
-            try {
-                mFirstConnect        = false;
-                //String connectString = String.format ("%s:@//%s:1521/%s", mClient, mHostName, mDatabaseName);
-                mConnection          = DriverManager.getConnection (mConnectString, mUserName, mPassword);
-            } catch (SQLException sqle) {
-                throw newSqlException (sqle);
-            }
+            openConnection ();
+            mFirstConnect = false;
         } else if (mConnection == null) {
-            throw new ExecutionException ("not connected to database " + getName ());
+            throw new ExecutionException ("not connected to database '%s'", mDatabaseName);
+        }
+        return mConnection;
+    }
+
+    private Connection reconnect () {
+        disconnect ();
+        openConnection ();
+        return mConnection;
+    }
+    
+    private void openConnection () {
+        try {
+            mConnection = DriverManager.getConnection (mConnectString, mUserName, mPassword);
+        } catch (SQLException sqle) {
+            throw new ExecutionException ("failed to connect to " + mDatabaseName + ": " + sqle.getMessage (), sqle.getStackTrace ());
         }
     }
 
@@ -100,36 +103,82 @@ public final class Database {
                 mConnection.close ();
                 mConnection = null;
             } catch (SQLException sqle) {
-                throw newSqlException (sqle);
+                throw new ExecutionException ("SQL exception: " + sqle.getMessage (), sqle.getStackTrace ());
             }
         }
     }
     
     
+    public Map<String, String> getRow (String tableName, List<String> columnNames, String keyName, String keyValue) throws SQLException {
+        SelectQuery query = new SelectQuery ()
+                .from (tableName)
+                .where (Query.column (keyName).equal (new Value (keyValue)));
+        for (String columnName : columnNames) {
+            query.select (columnName);
+        }
+        return getRow (query.toString ());
+    }
+
+    public Map<String, String> getRow (String tableName, String keyName, String keyValue) throws SQLException {
+        SelectQuery query = new SelectQuery ()
+                .select ("*")
+                .from (tableName)
+                .where (Query.column (keyName).equal (new Value (keyValue)));
+        return getRow (query.toString ());
+    }
+
     public Map<String, String> getRow (String query) throws SQLException {
-        connectOnce ();
+        Statement statement = null;
+        Map<String, String> record;
+        try {
+            try {
+                statement = getConnection ().createStatement ();
+                record    = createRow (statement.executeQuery (query));
+            } catch (SQLRecoverableException sqlre) {
+                statement = reconnect ().createStatement ();
+                record    = createRow (statement.executeQuery (query));
+            }
+        } catch (SQLException sqle) {
+            if (sqle.getMessage ().contains ("no record found")) {
+                throw new ExecutionException ("no record found");
+            } else {
+                throw sqle;
+            }
+        } finally {
+            close (statement);
+        }
+        return record;
+    }
+
+    public List<Map<String, String>> getRows (String tableName, String keyName, String keyValue) throws SQLException {
+        SelectQuery query = new SelectQuery ()
+                .select ("*")
+                .from (tableName)
+                .where (Query.column (keyName).equal (new Value (keyValue)));
+        return getRows (query.toString ());
+    }
+
+    public List<Map<String, String>> getRows (String query) throws SQLException {
         Statement statement = null;
         try {
-            statement           = mConnection.createStatement ();
+            statement           = getConnection ().createStatement ();
             ResultSet resultSet = statement.executeQuery (query);
-            return createRow (resultSet);
+            return createRows (resultSet);
         } finally {
             close (statement);
         }
     }
-    
-    public List<Map<String, String>> getRows (String tableName) throws SQLException {
-        connectOnce ();
-        SelectQuery query = new SelectQuery ()
-                .select ("*")
-                .from (tableName);
-        Statement statement = null;
-        try {
-            statement           = mConnection.createStatement ();
-            ResultSet resultSet = statement.executeQuery (query.toString ());
-            return createRows (resultSet);
-        } finally {
-            close (statement);
+
+    private Map<String, String> createRow (ResultSet resultSet, List<String> columnNames) throws SQLException {
+        if (!resultSet.next ()) {
+            throw new RuntimeException ("no record found");
+        } else {
+            Map<String, String> row = createOneRow (resultSet, columnNames);
+            if (resultSet.next()) {
+                throw new RuntimeException ("more than one record found");
+            } else {
+                return row;
+            }
         }
     }
 
@@ -137,7 +186,12 @@ public final class Database {
         if (!resultSet.next ()) {
             throw new RuntimeException ("no record found");
         } else {
-            return createOneRow (resultSet);
+            Map<String, String> row = createOneRow (resultSet);
+            if (resultSet.next()) {
+                throw new RuntimeException ("more than one record found");
+            } else {
+                return row;
+            }
         }
     }
     
@@ -158,6 +212,24 @@ public final class Database {
         return row;
     }
 
+    private Map<String, String> createOneRow (ResultSet resultSet, List<String> columnNames) throws SQLException {
+        Map<String, String> row = new HashMap<String, String> ();
+        for (String columnName : columnNames) {
+            row.put (columnName, resultSet.getString (columnName));
+        }
+        return row;
+    }
+
+    public void executeStatement (String statement) throws SQLException {
+        Statement stat = null;
+        try {
+            stat = getConnection ().createStatement ();
+            stat.execute (statement);
+        } finally {
+            close (stat);
+        }
+    }
+    
     private void close (Statement statement) {
         if (statement != null) {
             try {
@@ -166,9 +238,5 @@ public final class Database {
                 // ignore
             }
         }
-    }
-
-    private ExecutionException newSqlException (SQLException sqle) {
-        return new ExecutionException ("SQL exception: " + sqle.getMessage (), sqle.getStackTrace ());
     }
 }

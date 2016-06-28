@@ -39,7 +39,7 @@ final class MyList {
     @Override
     public String toString () {
         if (mItems.isEmpty ()) {
-            throw new ExecutionException ("query contains no " + mName);
+            throw new ExecutionException ("<empty>");
         }
 
         StringBuilder sb = new StringBuilder ();
