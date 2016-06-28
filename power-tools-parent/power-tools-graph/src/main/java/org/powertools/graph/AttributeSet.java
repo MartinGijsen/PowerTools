@@ -21,7 +21,7 @@ package org.powertools.graph;
 
 abstract class AttributeSet {
     protected String mLabel;
-    protected Style mStyle;
+    protected Style  mStyle;
     protected Colour mLineColour;
     protected String mLineWidth;
     protected Colour mFillColour;

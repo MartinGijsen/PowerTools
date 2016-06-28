@@ -24,10 +24,11 @@ public enum Style {
     SOLID     ("solid"),
     DASHED    ("dashed"),
     DOTTED    ("dotted"),
-    INVISIBLE ("invis"),
     BOLD      ("bold"),
-    FILLED    ("filled"),
-    ROUNDED   ("rounded");
+    ROUNDED   ("rounded"),
+    DIAGONALS ("diagonals"),
+    INVISIBLE ("invis"),
+    FILLED    ("filled");
 
     private final String text;
 

@@ -26,6 +26,15 @@ import java.io.PrintWriter;
 
 public final class GraphViz implements Renderer {
     private static final String DEFAULT_DEFAULT_TYPE = "png";
+    private static final String LABEL                = "label";
+    private static final String SHAPE                = "shape";
+    private static final String COLOR                = "color";
+    private static final String STYLE                = "style";
+    private static final String PEN_WIDTH            = "penwidth";
+    private static final String FILL_COLOR           = "fillcolor";
+    private static final String FONT_COLOR           = "fontcolor";
+    private static final String FONT_NAME            = "fontname";
+    private static final String FONT_SIZE            = "fontsize";
 
     private final String mPath;
 
@@ -75,6 +84,7 @@ public final class GraphViz implements Renderer {
 
     @Override
     public void write (String filename, String fileType, DirectedGraph graph) {
+        openDotFile ();
         writeDotFile (graph);
         generateImages (filename, fileType);
     }
@@ -128,14 +138,14 @@ public final class GraphViz implements Renderer {
         writeGraphAttribute (graph.getDistanceBetweenRanks () >= 0, "ranksep", "" + graph.getDistanceBetweenRanks ());
         writeGraphAttribute (graph.getDistanceBetweenNodes () >= 0, "nodesep", "" + graph.getDistanceBetweenNodes ());
 
-        writeGraphAttribute (!graph.getLabel ().isEmpty (), "label", graph.getLabel ());
-        writeGraphAttribute (graph.getStyle () != Style.DEFAULT, "style", graph.getStyle ().toString ());
-        writeGraphAttribute (graph.getLineColour () != Colour.DEFAULT, "color", graph.getLineColour ().toString ());
-        writeGraphAttribute (!graph.getLineWidth ().isEmpty (), "penwidth", graph.getLineWidth ());
+        writeGraphAttribute (!graph.getLabel ().isEmpty (), LABEL, graph.getLabel ());
+        writeGraphAttribute (graph.getStyle () != Style.DEFAULT, STYLE, graph.getStyle ().toString ());
+        writeGraphAttribute (graph.getLineColour () != Colour.DEFAULT, COLOR, graph.getLineColour ().toString ());
+        writeGraphAttribute (!graph.getLineWidth ().isEmpty (), PEN_WIDTH, graph.getLineWidth ());
         writeGraphAttribute (graph.getFillColour () != Colour.DEFAULT, "bgcolor", graph.getFillColour ().toString ());
-        writeGraphAttribute (graph.getTextColour () != Colour.DEFAULT, "fontcolor", graph.getTextColour ().toString ());
-        writeGraphAttribute (!graph.getFontName ().isEmpty (), "fontname", graph.getFontName ());
-        writeGraphAttribute (!graph.getFontSize ().isEmpty (), "fontsize", graph.getFontSize ());
+        writeGraphAttribute (graph.getTextColour () != Colour.DEFAULT, FONT_COLOR, graph.getTextColour ().toString ());
+        writeGraphAttribute (!graph.getFontName ().isEmpty (), FONT_NAME, graph.getFontName ());
+        writeGraphAttribute (!graph.getFontSize ().isEmpty (), FONT_SIZE, graph.getFontSize ());
 
         writeDefaultNodeAttributes (graph);
     }
@@ -160,15 +170,15 @@ public final class GraphViz implements Renderer {
 
     private void writeCluster (Cluster cluster) {
         mWriter.println ("\tsubgraph cluster_" + Integer.toString (++mLastClusterNr) + " {");
-        writeClusterAttribute (!cluster.getLabel ().isEmpty (), "label", cluster.getLabel ());
+        writeClusterAttribute (!cluster.getLabel ().isEmpty (), LABEL, cluster.getLabel ());
 
-        writeClusterAttribute (cluster.getStyle () != Style.DEFAULT, "style", cluster.getStyle ().toString ());
-        writeClusterAttribute (cluster.getLineColour () != Colour.DEFAULT, "color", cluster.getLineColour ().toString ());
-        writeClusterAttribute (!cluster.getLineWidth ().isEmpty (), "penwidth", cluster.getLineWidth ());
-        writeClusterAttribute (cluster.getFillColour () != Colour.DEFAULT, "fillcolor", cluster.getFillColour ().toString ());
-        writeClusterAttribute (cluster.getTextColour () != Colour.DEFAULT, "fontcolor", cluster.getTextColour ().toString ());
-        writeClusterAttribute (!cluster.getFontName ().isEmpty (), "fontname", cluster.getFontName ());
-        writeClusterAttribute (!cluster.getFontSize ().isEmpty (), "fontsize", cluster.getFontSize ());
+        writeClusterAttribute (cluster.getStyle () != Style.DEFAULT, STYLE, cluster.getStyle ().toString ());
+        writeClusterAttribute (cluster.getLineColour () != Colour.DEFAULT, COLOR, cluster.getLineColour ().toString ());
+        writeClusterAttribute (!cluster.getLineWidth ().isEmpty (), PEN_WIDTH, cluster.getLineWidth ());
+        writeClusterAttribute (cluster.getFillColour () != Colour.DEFAULT, FILL_COLOR, cluster.getFillColour ().toString ());
+        writeClusterAttribute (cluster.getTextColour () != Colour.DEFAULT, FONT_COLOR, cluster.getTextColour ().toString ());
+        writeClusterAttribute (!cluster.getFontName ().isEmpty (), FONT_NAME, cluster.getFontName ());
+        writeClusterAttribute (!cluster.getFontSize ().isEmpty (), FONT_SIZE, cluster.getFontSize ());
 
         writeDefaultNodeAttributes (cluster);
 
@@ -189,16 +199,16 @@ public final class GraphViz implements Renderer {
     private void writeNodes (DirectedGraph graph) {
         for (Node node : graph.mNodes.values ()) {
             // TO DO: make sure node is written if it is not on any edge or in a cluster or has an attribute
-            writeNodeAttribute (!node.getLabel ().isEmpty (), node, "label", node.getLabel ());
-            writeNodeAttribute (node.getShape () != Shape.DEFAULT, node, "shape", node.getShape ().toString ());
+            writeNodeAttribute (!node.getLabel ().isEmpty (), node, LABEL, node.getLabel ());
+            writeNodeAttribute (node.getShape () != Shape.DEFAULT, node, SHAPE, node.getShape ().toString ());
 
-            writeNodeAttribute (node.getStyle () != Style.DEFAULT, node, "style", node.getStyle ().toString ());
-            writeNodeAttribute (node.getLineColour () != Colour.DEFAULT, node, "color", node.getLineColour ().toString ());
-            writeNodeAttribute (!node.getLineWidth ().isEmpty (), node, "penwidth", node.getLineWidth ());
-            writeNodeAttribute (node.getFillColour () != Colour.DEFAULT, node, "fillcolor", node.getFillColour ().toString ());
-            writeNodeAttribute (node.getTextColour () != Colour.DEFAULT, node, "fontcolor", node.getTextColour ().toString ());
-            writeNodeAttribute (!node.getFontName ().isEmpty (), node, "fontname", node.getFontName ());
-            writeNodeAttribute (!node.getFontSize ().isEmpty (), node, "fontsize", node.getFontSize ());
+            writeNodeAttribute (node.getStyle () != Style.DEFAULT, node, STYLE, node.getStyle ().toString ());
+            writeNodeAttribute (node.getLineColour () != Colour.DEFAULT, node, COLOR, node.getLineColour ().toString ());
+            writeNodeAttribute (!node.getLineWidth ().isEmpty (), node, PEN_WIDTH, node.getLineWidth ());
+            writeNodeAttribute (node.getFillColour () != Colour.DEFAULT, node, FILL_COLOR, node.getFillColour ().toString ());
+            writeNodeAttribute (node.getTextColour () != Colour.DEFAULT, node, FONT_COLOR, node.getTextColour ().toString ());
+            writeNodeAttribute (!node.getFontName ().isEmpty (), node, FONT_NAME, node.getFontName ());
+            writeNodeAttribute (!node.getFontSize ().isEmpty (), node, FONT_SIZE, node.getFontSize ());
         }
     }
 
@@ -212,15 +222,15 @@ public final class GraphViz implements Renderer {
         for (Node node : graph.mNodes.values ()) {
             for (Edge edge : graph.getEdgesFrom (node)) {
                 mWriter.append (String.format ("\t\"%s\" -> \"%s\"", edge.getSource ().getName (), edge.getTarget ().getName ()));
-                writeEdgeAttribute (!edge.getLabel ().isEmpty (), "label", edge.getLabel ());
+                writeEdgeAttribute (!edge.getLabel ().isEmpty (), LABEL, edge.getLabel ());
 
-                writeEdgeAttribute (edge.getStyle () != Style.DEFAULT, "style", edge.getStyle ().toString ());
-                writeEdgeAttribute (edge.getLineColour () != Colour.DEFAULT, "color", edge.getLineColour ().toString ());
-                writeEdgeAttribute (!edge.getLineWidth ().isEmpty (), "penwidth", edge.getLineWidth ());
-                writeEdgeAttribute (edge.getFillColour () != Colour.DEFAULT, "fillcolor", edge.getFillColour ().toString ());
-                writeEdgeAttribute (edge.getTextColour () != Colour.DEFAULT, "fontcolor", edge.getTextColour ().toString ());
-                writeEdgeAttribute (!edge.getFontName ().isEmpty (), "fontname", edge.getFontName ());
-                writeEdgeAttribute (!edge.getFontSize ().isEmpty (), "fontsize", edge.getFontSize ());
+                writeEdgeAttribute (edge.getStyle () != Style.DEFAULT, STYLE, edge.getStyle ().toString ());
+                writeEdgeAttribute (edge.getLineColour () != Colour.DEFAULT, COLOR, edge.getLineColour ().toString ());
+                writeEdgeAttribute (!edge.getLineWidth ().isEmpty (), PEN_WIDTH, edge.getLineWidth ());
+                writeEdgeAttribute (edge.getFillColour () != Colour.DEFAULT, FILL_COLOR, edge.getFillColour ().toString ());
+                writeEdgeAttribute (edge.getTextColour () != Colour.DEFAULT, FONT_COLOR, edge.getTextColour ().toString ());
+                writeEdgeAttribute (!edge.getFontName ().isEmpty (), FONT_NAME, edge.getFontName ());
+                writeEdgeAttribute (!edge.getFontSize ().isEmpty (), FONT_SIZE, edge.getFontSize ());
                 mWriter.println (";");
             }
         }
@@ -233,15 +243,15 @@ public final class GraphViz implements Renderer {
     }
 
     private void writeDefaultNodeAttributes (AttributeSetWithDefaultNodeAttributes attributes) {
-        writeDefaultNodeAttribute (attributes.getDefaultNodeShape () != Shape.DEFAULT, "shape", attributes.getDefaultNodeShape ().toString ());
+        writeDefaultNodeAttribute (attributes.getDefaultNodeShape () != Shape.DEFAULT, SHAPE, attributes.getDefaultNodeShape ().toString ());
 
-        writeDefaultNodeAttribute (attributes.getDefaultNodeStyle () != Style.DEFAULT, "style", attributes.getDefaultNodeStyle ().toString ());
-        writeDefaultNodeAttribute (attributes.getDefaultNodeLineColour () != Colour.DEFAULT, "color", attributes.getDefaultNodeLineColour ().toString ());
-        writeDefaultNodeAttribute (!attributes.getDefaultNodeLineWidth ().isEmpty (), "penwidth", attributes.getDefaultNodeLineWidth ());
-        writeDefaultNodeAttribute (attributes.getDefaultNodeFillColour () != Colour.DEFAULT, "fillcolor", attributes.getDefaultNodeFillColour ().toString ());
-        writeDefaultNodeAttribute (attributes.getDefaultNodeTextColour () != Colour.DEFAULT, "fontcolor", attributes.getDefaultNodeTextColour ().toString ());
-        writeDefaultNodeAttribute (!attributes.getDefaultNodeFontName ().isEmpty (), "fontname", attributes.getDefaultNodeFontName ());
-        writeDefaultNodeAttribute (!attributes.getDefaultNodeFontSize ().isEmpty (), "fontsize", attributes.getDefaultNodeFontSize ());
+        writeDefaultNodeAttribute (attributes.getDefaultNodeStyle () != Style.DEFAULT, STYLE, attributes.getDefaultNodeStyle ().toString ());
+        writeDefaultNodeAttribute (attributes.getDefaultNodeLineColour () != Colour.DEFAULT, COLOR, attributes.getDefaultNodeLineColour ().toString ());
+        writeDefaultNodeAttribute (!attributes.getDefaultNodeLineWidth ().isEmpty (), PEN_WIDTH, attributes.getDefaultNodeLineWidth ());
+        writeDefaultNodeAttribute (attributes.getDefaultNodeFillColour () != Colour.DEFAULT, FILL_COLOR, attributes.getDefaultNodeFillColour ().toString ());
+        writeDefaultNodeAttribute (attributes.getDefaultNodeTextColour () != Colour.DEFAULT, FONT_COLOR, attributes.getDefaultNodeTextColour ().toString ());
+        writeDefaultNodeAttribute (!attributes.getDefaultNodeFontName ().isEmpty (), FONT_NAME, attributes.getDefaultNodeFontName ());
+        writeDefaultNodeAttribute (!attributes.getDefaultNodeFontSize ().isEmpty (), FONT_SIZE, attributes.getDefaultNodeFontSize ());
     }
 
     private void writeDefaultNodeAttribute (boolean condition, String attributeName, String value) {
@@ -286,7 +296,7 @@ public final class GraphViz implements Renderer {
                 mFile.delete ();
             }
         } catch (IOException ioe) {
-            throw new GraphException ("could not write picture");
+            throw new GraphException ("could not write picture: " + ioe.getMessage ());
         } catch (InterruptedException ie) {
             throw new GraphException ("wait interrupted");
         }
@@ -296,7 +306,7 @@ public final class GraphViz implements Renderer {
         if (mPath == null || "".equals (mPath)) {
             return "";
         } else {
-            return mPath + "/";
+            return mPath + "\\";
         }
     }
 }

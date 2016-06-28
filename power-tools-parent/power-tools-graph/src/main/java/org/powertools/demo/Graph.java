@@ -29,6 +29,10 @@ import org.powertools.graph.Style;
 
 
 public class Graph {
+    private Graph () {
+        // do nothing
+    }
+    
     public static void main (String[] args) {
         createGraphWithoutEdgeLabels ();
         createGraphWithEdgeLabels ();
