@@ -169,10 +169,6 @@ public final class WebDriverKeywords implements InstructionSet {
         return mInstructions.ClickItemWhere_Is_AndWait (keyTypeString, value);
     }
 
-    // public boolean MoveMouseOver (String itemName) {
-    //   return mInstructions.MoveMouseOver_ (itemName);
-    // }
-
     public boolean TypeIntoItem (String itemName, String text) {
         return mInstructions.Type_IntoItem_ (text, itemName);
     }

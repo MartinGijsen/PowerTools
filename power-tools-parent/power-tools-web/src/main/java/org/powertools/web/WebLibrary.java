@@ -62,7 +62,95 @@ public abstract class WebLibrary implements InstructionSet {
         cXpath
     }
 
+    protected interface ItemTypeName {
+        String cButton           = "button";
+        String cCheckbox         = "checkbox";
+        String cCombobox         = "combobox";
+        String cFrame            = "frame";
+        String cImage            = "image";
+        String cLink             = "link";
+        String cListbox          = "listbox";
+        String cListboxItem      = "listbox item";
+        String cRadioButtonGroup = "radio button group";
+        String cRadioButton      = "radio button";
+        String cText             = "text input";
+    }
+
+    protected interface KeyTypeName {
+        String cClass        = "class";
+        String cCss          = "css";
+        String cDom          = "dom";
+        String cId           = "id";
+        String cIndex        = "index";
+        String cName         = "name";
+        String cPartialText  = "partial text";
+        String cTag          = "tag";
+        String cText         = "text";
+        String cValue        = "value";
+        String cXpath        = "xpath";
+    }
+
+    protected interface BrowserName {
+        String cFirefox          = "firefox";
+        String cIe               = "ie";
+        String cInternetExplorer = "internet explorer";
+        String cChrome           = "chrome";
+    }
+
+
     public IBrowser mBrowser;
+
+    protected final RunTime mRunTime;
+
+    protected int mLastScreenshotNr;
+
+    private static final Map<String, ItemType> cItemTypesMap;
+    private static final Map<String, BrowserType> cBrowserTypesMap;
+    private static final Map<String, KeyType> cKeyTypesMap;
+
+    private final Map<String, Item> mItemMap;
+
+    static {
+        cItemTypesMap = new HashMap<String, ItemType> ();
+        cItemTypesMap.put (ItemTypeName.cButton,           ItemType.cButton);
+        cItemTypesMap.put (ItemTypeName.cCheckbox,         ItemType.cCheckbox);
+        cItemTypesMap.put (ItemTypeName.cCombobox,         ItemType.cCombobox);
+        cItemTypesMap.put (ItemTypeName.cFrame,            ItemType.cFrame);
+        cItemTypesMap.put (ItemTypeName.cImage,            ItemType.cImage);
+        cItemTypesMap.put (ItemTypeName.cLink,             ItemType.cLink);
+        cItemTypesMap.put (ItemTypeName.cListbox,          ItemType.cListbox);
+        cItemTypesMap.put (ItemTypeName.cListboxItem,      ItemType.cListboxItem);
+        cItemTypesMap.put (ItemTypeName.cRadioButton,      ItemType.cRadioButton);
+        cItemTypesMap.put (ItemTypeName.cRadioButtonGroup, ItemType.cRadioButtonGroup);
+        cItemTypesMap.put (ItemTypeName.cText,             ItemType.cText);
+
+        cBrowserTypesMap = new HashMap<String, BrowserType> ();
+        cBrowserTypesMap.put (BrowserName.cFirefox,          BrowserType.cFirefox);
+        cBrowserTypesMap.put (BrowserName.cIe,               BrowserType.cInternetExplorer);
+        cBrowserTypesMap.put (BrowserName.cInternetExplorer, BrowserType.cInternetExplorer);
+        cBrowserTypesMap.put (BrowserName.cChrome,           BrowserType.cChrome);
+
+        cKeyTypesMap = new HashMap<String, KeyType> ();
+        cKeyTypesMap.put (KeyTypeName.cClass,       KeyType.cClass);
+        cKeyTypesMap.put (KeyTypeName.cCss,         KeyType.cCss);
+        cKeyTypesMap.put (KeyTypeName.cDom,         KeyType.cDom);
+        cKeyTypesMap.put (KeyTypeName.cId,          KeyType.cId);
+        cKeyTypesMap.put (KeyTypeName.cIndex,       KeyType.cIndex);
+        cKeyTypesMap.put (KeyTypeName.cName,        KeyType.cName);
+        cKeyTypesMap.put (KeyTypeName.cPartialText, KeyType.cPartialText);
+        cKeyTypesMap.put (KeyTypeName.cText,        KeyType.cText);
+        cKeyTypesMap.put (KeyTypeName.cValue,       KeyType.cValue);
+        cKeyTypesMap.put (KeyTypeName.cXpath,       KeyType.cXpath);
+        cKeyTypesMap.put (KeyTypeName.cTag,         KeyType.cTag);
+    }
+
+
+    protected WebLibrary (RunTime runTime) {
+        mRunTime          = runTime;
+        mLastScreenshotNr = 0;
+        mItemMap          = new HashMap<String, Item> ();
+    }
+
 
     public final Object getTesttool () {
         return mBrowser.getTestTool ();
@@ -170,7 +258,7 @@ public abstract class WebLibrary implements InstructionSet {
     public final void Name_ParentName_Type_Key_Value_ (String name, String parentName, String type, String keyTypeString, String value) {
         if (parametersValid (name, type, keyTypeString, value)) {
             try {
-                Item parentItem = ("".equals (parentName) ? null : findItem (parentName));
+                Item parentItem = "".equals (parentName) ? null : findItem (parentName);
                 Item item       = createItem (name, parentItem, type, keyTypeString, value);
                 if (mItemMap.containsKey (item.mLogicalName)) {
                     mRunTime.reportError ("duplicate item name: " + item.mLogicalName);
@@ -268,7 +356,7 @@ public abstract class WebLibrary implements InstructionSet {
         if (item != null) {
             String actualText = mBrowser.getItemText (item);
             if (actualText == null) {
-                //mPublisher.publishError ("item not found on this page or not unique");
+                // ignore
             } else if (!actualText.isEmpty ()) {
                 mRunTime.reportValueError ("item " + itemName, actualText, "<empty>");
             } else {
@@ -284,7 +372,7 @@ public abstract class WebLibrary implements InstructionSet {
         if (item != null) {
             String actualText = mBrowser.getItemText (item);
             if (actualText == null) {
-                //mPublisher.publishError ("item not found on this page or not unique");
+                // ignore
             } else if (actualText.isEmpty ()) {
                 mRunTime.reportError ("item " + itemName + " is empty");
             } else {
@@ -300,7 +388,7 @@ public abstract class WebLibrary implements InstructionSet {
         if (item != null) {
             String actualText = mBrowser.getItemText (item);
             if (actualText == null) {
-                //mPublisher.publishError ("item not found on this page or not unique");
+                // ignore
             } else if (!actualText.equals (expectedText)) {
                 mRunTime.reportValueError ("item " + itemName, actualText, expectedText);
             } else {
@@ -316,7 +404,7 @@ public abstract class WebLibrary implements InstructionSet {
         if (item != null) {
             String actualText = mBrowser.getItemText (item);
             if (actualText == null) {
-                //mPublisher.publishError ("item not found on this page or not unique");
+                // ignore
             } else if (actualText.equals (unexpectedText)) {
                 mRunTime.reportError ("actual text is '" + actualText + "'");
             } else {
@@ -332,7 +420,7 @@ public abstract class WebLibrary implements InstructionSet {
         if (item != null) {
             String actualText = mBrowser.getItemText (item);
             if (actualText == null) {
-                //mPublisher.publishError ("item not found on this page or not unique");
+                // ignore
             } else if (actualText.indexOf (expectedText) < 0) {
                 mRunTime.reportError ("expected text '" + expectedText + "' not found in actual text '" + actualText + "'");
             } else {
@@ -348,7 +436,7 @@ public abstract class WebLibrary implements InstructionSet {
         if (item != null) {
             String actualText = mBrowser.getItemText (item);
             if (actualText == null) {
-                //mPublisher.publishError ("item not found on this page or not unique");
+                // ignore
             } else if (actualText.indexOf (unexpectedText) >= 0) {
                 mRunTime.reportError ("unexpected text '" + unexpectedText + "' found in actual text '" + actualText + "'");
             } else {
@@ -663,58 +751,6 @@ public abstract class WebLibrary implements InstructionSet {
     }
 
 
-    // protected members
-
-    // names for item types
-    protected interface ItemTypeName {
-        String cButton           = "button";
-        String cCheckbox         = "checkbox";
-        String cCombobox         = "combobox";
-        String cFrame            = "frame";
-        String cImage            = "image";
-        String cLink             = "link";
-        String cListbox          = "listbox";
-        String cListboxItem      = "listbox item";
-        String cRadioButtonGroup = "radio button group";
-        String cRadioButton      = "radio button";
-        String cText             = "text input";
-    }
-
-    // names for key types
-    protected interface KeyTypeName {
-        String cClass        = "class";
-        String cCss          = "css";
-        String cDom          = "dom";
-        String cId           = "id";
-        String cIndex        = "index";
-        String cName         = "name";
-        String cPartialText  = "partial text";
-        String cTag          = "tag";
-        String cText         = "text";
-        String cValue        = "value";
-        String cXpath        = "xpath";
-    }
-
-    // names for browsers
-    protected interface BrowserName {
-        String cFirefox          = "firefox";
-        String cIe               = "ie";
-        String cInternetExplorer = "internet explorer";
-        String cChrome           = "chrome";
-    }
-
-    protected final RunTime mRunTime;
-
-    protected int mLastScreenshotNr;
-
-
-    protected WebLibrary (RunTime runTime) {
-        mRunTime          = runTime;
-        mLastScreenshotNr = 0;
-        mItemMap          = new HashMap<String, Item> ();
-    }
-
-
     protected final String completeUrl (String url) {
         return url.startsWith ("http") ? url : "http:" + url;
     }
@@ -728,14 +764,6 @@ public abstract class WebLibrary implements InstructionSet {
     }
 
 
-    // private members
-    private static final Map<String, ItemType> cItemTypesMap;
-    private static final Map<String, BrowserType> cBrowserTypesMap;
-    private static final Map<String, KeyType> cKeyTypesMap;
-
-    private final Map<String, Item> mItemMap;
-
-
     private boolean makeBoolean (String text) {
         if ("true".equalsIgnoreCase (text) || "on".equalsIgnoreCase (text)) {
             return true;
@@ -743,38 +771,5 @@ public abstract class WebLibrary implements InstructionSet {
             return false;
         }
         throw new IllegalArgumentException ("Invalid boolean value: " + text + " valid values: true/false/on/off");
-    }
-
-    static {
-        cItemTypesMap = new HashMap<String, ItemType> ();
-        cItemTypesMap.put (ItemTypeName.cButton,      ItemType.cButton);
-        cItemTypesMap.put (ItemTypeName.cCheckbox,    ItemType.cCheckbox);
-        cItemTypesMap.put (ItemTypeName.cCombobox,    ItemType.cCombobox);
-        cItemTypesMap.put (ItemTypeName.cFrame,       ItemType.cFrame);
-        cItemTypesMap.put (ItemTypeName.cImage,       ItemType.cImage);
-        cItemTypesMap.put (ItemTypeName.cLink,        ItemType.cLink);
-        cItemTypesMap.put (ItemTypeName.cListbox,     ItemType.cListbox);
-        cItemTypesMap.put (ItemTypeName.cListboxItem, ItemType.cListboxItem);
-        cItemTypesMap.put (ItemTypeName.cRadioButton, ItemType.cRadioButton);
-        cItemTypesMap.put (ItemTypeName.cText,        ItemType.cText);
-
-        cBrowserTypesMap = new HashMap<String, BrowserType> ();
-        cBrowserTypesMap.put (BrowserName.cFirefox,          BrowserType.cFirefox);
-        cBrowserTypesMap.put (BrowserName.cIe,               BrowserType.cInternetExplorer);
-        cBrowserTypesMap.put (BrowserName.cInternetExplorer, BrowserType.cInternetExplorer);
-        cBrowserTypesMap.put (BrowserName.cChrome,           BrowserType.cChrome);
-
-        cKeyTypesMap = new HashMap<String, KeyType> ();
-        cKeyTypesMap.put (KeyTypeName.cClass,       KeyType.cClass);
-        cKeyTypesMap.put (KeyTypeName.cCss,         KeyType.cCss);
-        cKeyTypesMap.put (KeyTypeName.cDom,         KeyType.cDom);
-        cKeyTypesMap.put (KeyTypeName.cId,          KeyType.cId);
-        cKeyTypesMap.put (KeyTypeName.cIndex,       KeyType.cIndex);
-        cKeyTypesMap.put (KeyTypeName.cName,        KeyType.cName);
-        cKeyTypesMap.put (KeyTypeName.cPartialText, KeyType.cPartialText);
-        cKeyTypesMap.put (KeyTypeName.cText,        KeyType.cText);
-        cKeyTypesMap.put (KeyTypeName.cValue,       KeyType.cValue);
-        cKeyTypesMap.put (KeyTypeName.cXpath,       KeyType.cXpath);
-        cKeyTypesMap.put (KeyTypeName.cTag,         KeyType.cTag);
     }
 }
