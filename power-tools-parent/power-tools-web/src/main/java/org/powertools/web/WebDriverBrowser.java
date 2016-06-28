@@ -50,6 +50,16 @@ import org.powertools.web.WebLibrary.KeyType;
 
 
 class WebDriverBrowser implements IBrowser {
+    protected static final int ONE_SECOND_TIMEOUT = 1000;
+
+    protected final RunTime mRunTime;
+
+    protected int mShortDefaultTimeoutInSeconds = 10;
+    protected int mLongDefaultTimeoutInSeconds  = 30;
+    protected WebDriver mDriver;
+
+    protected boolean webBrowserRunsOnGrid;
+
     private static final String CHROMEDRIVER_LOG_FILENAME = "chromedriver.log";
 
 
@@ -633,18 +643,6 @@ class WebDriverBrowser implements IBrowser {
     public Object getTestTool () {
         return mDriver;
     }
-
-
-    // protected members
-    protected static final int ONE_SECOND_TIMEOUT = 1000;
-
-    protected final RunTime mRunTime;
-
-    protected int mShortDefaultTimeoutInSeconds = 10;
-    protected int mLongDefaultTimeoutInSeconds  = 30;
-    protected WebDriver mDriver;
-
-    protected boolean webBrowserRunsOnGrid;
 
 
     private WebElement getUniqueElement (By locator) {

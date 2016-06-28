@@ -22,6 +22,12 @@ import org.powertools.web.WebLibrary.ItemType;
 
 
 final class XpathItem extends Item {
+    private static final String cParameterMarker = "%";
+
+    private final String[] mSections;
+    private final String[] mParameters;
+
+
     XpathItem (String logicalName, ItemType type, String value) {
         this (logicalName, null, type, value);
     }
@@ -75,14 +81,6 @@ final class XpathItem extends Item {
             return parentXpath + xpath;
         }
     }
-
-
-    // private members
-    private static final String cParameterMarker = "%";
-
-    private final String[] mSections;
-    private final String[] mParameters;
-
 
     private String getProcessedXpath () {
         if (mParameters == null) {

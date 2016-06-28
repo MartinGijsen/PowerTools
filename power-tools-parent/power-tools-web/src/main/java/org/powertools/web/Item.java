@@ -23,6 +23,14 @@ import org.powertools.web.WebLibrary.KeyType;
 
 
 public class Item {
+    protected final String mValue;
+
+    final String   mLogicalName;
+    final Item     mParent;
+    final ItemType mType;
+    final KeyType  mKeyType;
+
+    
     Item (String logicalName, Item parent, ItemType type, KeyType keyType, String value) {
         mLogicalName = logicalName;
         mParent      = parent;
@@ -47,14 +55,4 @@ public class Item {
     public String getValue () {
         return mValue;
     }
-
-
-    final String mLogicalName;
-    final Item mParent;
-    final ItemType mType;
-    final KeyType mKeyType;
-
-
-    // protected members
-    protected final String mValue;
 }
