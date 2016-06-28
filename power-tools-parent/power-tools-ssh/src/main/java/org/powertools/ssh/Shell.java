@@ -29,7 +29,7 @@ import org.powertools.engine.ExecutionException;
 
 
 public class Shell {
-    private final static int SECONDS = 1000;
+    private static final int SECONDS = 1000;
 
     private final String mName;
     private final Server mServer;
@@ -120,17 +120,6 @@ public class Shell {
         }
     }
 
-//    String executeCommand (String command) {
-//        try {
-//            mOutput = "";
-//            mOs.write ((command + "\n").getBytes ());
-//            mOs.flush ();
-//            return "";// ................
-//        } catch (IOException ioe) {
-//            throw newException (ioe);
-//        }
-//    }
-    
     void close () throws IOException {
         mIs.close ();
         mOs.close ();

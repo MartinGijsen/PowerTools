@@ -51,7 +51,7 @@ class Server {
 
     void add (User user) {
         if (mUsers.containsKey (user.mName)) {
-            throw new ExecutionException (String.format ("server %s already has a user named %s", mName, user.mName));
+            throw new ExecutionException ("server %s already has a user named %s", mName, user.mName);
         } else {
             mUsers.put (user.mName, user);
         }
@@ -75,7 +75,7 @@ class Server {
                 return user;
             }
         }
-        throw new ExecutionException (String.format ("server %s has not 1 user but %d", mName, mUsers.size ()));
+        throw new ExecutionException ("server %s has not 1 user but %d", mName, mUsers.size ());
     }
     
     
@@ -104,13 +104,13 @@ class Server {
                 return;
             }
  
-            File _lfile = new File (localPath);
+            File localFile = new File (localPath);
  
             if (ptimestamp) {
-                command = "T " + (_lfile.lastModified () / 1000) + " 0";
+                command = "T " + (localFile.lastModified () / 1000) + " 0";
                 // The access time should be sent here,
                 // but it is not accessible with JavaAPI ;-<
-                command += (" " + (_lfile.lastModified () / 1000) + " 0\n");
+                command += (" " + (localFile.lastModified () / 1000) + " 0\n");
                 out.write (command.getBytes ());
                 out.flush ();
                 if (checkAck (in) != 0) {
@@ -119,7 +119,7 @@ class Server {
             }
  
             // send "C0644 filesize filename", where filename should not include '/'
-            long filesize = _lfile.length ();
+            long filesize = localFile.length ();
             command = "C0644 " + filesize + " ";
             if (localPath.lastIndexOf ('/') > 0) {
                 command += localPath.substring (localPath.lastIndexOf ('/') + 1);
@@ -138,7 +138,9 @@ class Server {
             byte[] buf = new byte[1024];
             while (true) {
                 int len = fis.read (buf, 0, buf.length);
-                if (len <= 0) break;
+                if (len <= 0) {
+                    break;
+                }
                 out.write (buf, 0, len);
             }
             fis.close ();
@@ -158,10 +160,11 @@ class Server {
             return;
         } catch (Exception e) {
             try {
-                if (fis != null)
+                if (fis != null) {
                     fis.close ();
+                }
             } catch (Exception ee) {
-                ;
+                // ignore
             }
             throw new ExecutionException (e.getMessage (), e.getStackTrace ());
         }
@@ -173,11 +176,15 @@ class Server {
         //          1 for error,
         //          2 for fatal error,
         //          -1
-        if (b == 0) return b;
-        if (b == -1) return b;
+        if (b == 0) {
+            return b;
+        }
+        if (b == -1) {
+            return b;
+        }
  
         if (b == 1 || b == 2) {
-            StringBuffer sb = new StringBuffer ();
+            StringBuilder sb = new StringBuilder ();
             int c;
             do {
                 c = in.read ();

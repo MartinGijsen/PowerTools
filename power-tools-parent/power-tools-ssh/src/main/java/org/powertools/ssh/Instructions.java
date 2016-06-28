@@ -22,22 +22,16 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import org.powertools.engine.ExecutionException;
-import org.powertools.engine.RunTime;
 
 
 public class Instructions {
-//    private final RunTime mRuntime;
     private final Map<String, Server> mServers;
     private final Map<String, Shell> mShells;
 
-//    private Shell mSelectedShell;
     
-    
-    public Instructions (RunTime runTime) {
-//        mRuntime       = runTime;
-        mServers       = new HashMap<String, Server> ();
-        mShells        = new HashMap<String, Shell> ();
-//        mSelectedShell = null;
+    public Instructions () {
+        mServers = new HashMap<String, Server> ();
+        mShells  = new HashMap<String, Shell> ();
     }
 
 
@@ -52,7 +46,7 @@ public class Instructions {
     
     private void registerServer (String name, Server server) {
         if (mServers.containsKey (name)) {
-            throw new ExecutionException (String.format ("a server named '%s' is already registered", name));
+            throw new ExecutionException ("a server named '%s' is already registered", name);
         } else {
             mServers.put (name, server);
         }
@@ -65,7 +59,7 @@ public class Instructions {
     private Server getServer (String name) {
         Server server = mServers.get (name);
         if (server == null) {
-            throw new ExecutionException (String.format ("no server named '%s' is registered", name));
+            throw new ExecutionException ("no server named '%s' is registered", name);
         }
         return server;
     }
@@ -83,7 +77,7 @@ public class Instructions {
                 return shell.getOutput ();
             }
         }
-        throw new ExecutionException (String.format ("there is not 1 server registered but %d", mServers.size ()));
+        throw new ExecutionException ("there is not 1 server registered but %d", mServers.size ());
     }
     
     public void executeCommandOnServer (String serverName, String command) {
@@ -101,7 +95,7 @@ public class Instructions {
     // shells
     public void openShell (String name, String serverName) {
         if (isKnownShellName (name)) {
-            throw new ExecutionException (String.format ("a shell named '%s' already exists", name));
+            throw new ExecutionException ("a shell named '%s' already exists", name);
         } else {
             mShells.put (name, getServer (serverName).openShell (name));
         }
@@ -111,15 +105,6 @@ public class Instructions {
         return mShells.containsKey (name);
     }
 
-//    public void openAndSelectShell (String name, String serverName) {
-//        openShell (name, serverName);
-//        mSelectedShell = getShell (name);
-//    }
-//
-//    public void selectShell (String name) {
-//        mSelectedShell = getShell (name);
-//    }
-    
     public void closeShell (String name) throws IOException {
         getShell (name).close ();
     }
@@ -127,7 +112,7 @@ public class Instructions {
     private Shell getShell (String name) {
         Shell shell = mShells.get (name);
         if (shell == null) {
-            throw new ExecutionException (String.format ("no shell named '%s' exists", name));
+            throw new ExecutionException ("no shell named '%s' exists", name);
         }
         return shell;
     }
