@@ -21,7 +21,7 @@ package org.powertools.engine.fitnesse;
 import java.util.Date;
 
 import org.powertools.engine.fitnesse.sources.FitNesseTestSource;
-import org.powertools.engine.reports.TestResultSubscriber;
+import org.powertools.engine.TestResultSubscriber;
 
 
 class FitNesseReporter implements TestResultSubscriber {

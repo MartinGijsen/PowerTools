@@ -16,15 +16,12 @@
  * along with the PowerTools engine. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.powertools.engine.reports;
+package org.powertools.engine;
 
-import org.powertools.engine.TestLine;
+import java.util.Date;
 
 
-public interface TestLineSubscriber extends TestSubscriber {
-//  void processBeginSection ();
-    void processTestLine (TestLine testLine);
-    void processCommentLine (String testLine);
-    void processCommentLine (TestLine testLine);
-    void processEndSection ();
+public interface TestSubscriber {
+    void start (Date dateTime);
+    void finish (Date dateTime);
 }

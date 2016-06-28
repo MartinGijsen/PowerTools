@@ -21,7 +21,7 @@ package org.powertools.web;
 import org.powertools.engine.KeywordName;
 import org.powertools.engine.RunTime;
 import org.powertools.engine.TestRunResultPublisher;
-import org.powertools.engine.reports.TestResultSubscriber;
+import org.powertools.engine.TestResultSubscriber;
 
 
 public final class WebDriverLibrary extends WebLibrary {

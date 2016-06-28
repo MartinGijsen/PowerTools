@@ -18,6 +18,7 @@
 
 package org.powertools.engine.reports;
 
+import org.powertools.engine.ModelSubscriber;
 import java.util.Date;
 import org.powertools.graph.DirectedGraph;
 import org.powertools.graph.Edge;

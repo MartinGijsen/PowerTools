@@ -19,7 +19,7 @@
 package org.powertools.engine.sources.model;
 
 import java.util.Date;
-import org.powertools.engine.reports.ModelSubscriber;
+import org.powertools.engine.ModelSubscriber;
 
 
 /*

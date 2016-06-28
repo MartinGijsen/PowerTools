@@ -18,6 +18,10 @@
 
 package org.powertools.engine.reports;
 
+import org.powertools.engine.ModelSubscriber;
+import org.powertools.engine.TestLineSubscriber;
+import org.powertools.engine.TestCaseSubscriber;
+import org.powertools.engine.TestResultSubscriber;
 import java.util.Date;
 
 import org.powertools.engine.TestLine;

@@ -19,10 +19,6 @@
 package org.powertools.engine;
 
 import java.util.Date;
-import org.powertools.engine.reports.ModelSubscriber;
-import org.powertools.engine.reports.TestCaseSubscriber;
-import org.powertools.engine.reports.TestLineSubscriber;
-import org.powertools.engine.reports.TestResultSubscriber;
 
 
 public interface TestRunResultPublisher {

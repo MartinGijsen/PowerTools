@@ -20,7 +20,7 @@ package org.powertools.web;
 
 import java.util.Date;
 
-import org.powertools.engine.reports.TestResultSubscriber;
+import org.powertools.engine.TestResultSubscriber;
 
 
 public class TestResultSubscriberMakeScreenshotByError implements TestResultSubscriber {

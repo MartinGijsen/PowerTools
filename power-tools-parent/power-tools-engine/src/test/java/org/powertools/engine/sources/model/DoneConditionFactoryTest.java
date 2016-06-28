@@ -26,10 +26,10 @@ import org.junit.Test;
 import org.powertools.engine.ExecutionException;
 import org.powertools.engine.TestLine;
 import org.powertools.engine.TestRunResultPublisher;
-import org.powertools.engine.reports.ModelSubscriber;
-import org.powertools.engine.reports.TestCaseSubscriber;
-import org.powertools.engine.reports.TestLineSubscriber;
-import org.powertools.engine.reports.TestResultSubscriber;
+import org.powertools.engine.ModelSubscriber;
+import org.powertools.engine.TestCaseSubscriber;
+import org.powertools.engine.TestLineSubscriber;
+import org.powertools.engine.TestResultSubscriber;
 
 
 public class DoneConditionFactoryTest {

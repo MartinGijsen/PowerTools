@@ -18,6 +18,11 @@
 
 package org.powertools.engine.reports;
 
+import org.powertools.engine.ModelSubscriber;
+import org.powertools.engine.TestCaseSubscriber;
+import org.powertools.engine.TestLineSubscriber;
+import org.powertools.engine.TestResultSubscriber;
+import org.powertools.engine.TestSubscriber;
 import org.powertools.engine.TestRunResultPublisher;
 import java.util.Date;
 import java.util.GregorianCalendar;

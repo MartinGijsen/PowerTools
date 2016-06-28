@@ -1,4 +1,4 @@
-/* Copyright 2014 by Martin Gijsen (www.DeAnalist.nl)
+/* Copyright 2012 by Martin Gijsen (www.DeAnalist.nl)
  *
  * This file is part of the PowerTools engine.
  *
@@ -16,12 +16,10 @@
  * along with the PowerTools engine. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.powertools.engine.reports;
+package org.powertools.engine;
 
 
-public interface ModelSubscriber extends TestSubscriber {
-    void processNewState (String name);
-    void processNewTransition (String sourceNodeName, String targetNodeName);
-    void processAtState (String name);
-    void processAtTransition (String sourceNodeName, String targetNodeName);
+public interface TestCaseSubscriber extends TestSubscriber {
+    void processBegin (String id, String description);
+    void processEnd ();
 }

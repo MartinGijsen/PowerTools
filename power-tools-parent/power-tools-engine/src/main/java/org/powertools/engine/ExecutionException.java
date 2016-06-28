@@ -35,6 +35,39 @@ public final class ExecutionException extends RuntimeException {
         mHasStackTrace = false;
     }
 
+    public ExecutionException (String errorMessage, String parameter) {
+        this (String.format (errorMessage, parameter));
+    }
+
+    public ExecutionException (String errorMessage, String parameter1, String parameter2) {
+        this (String.format (errorMessage, parameter1, parameter2));
+    }
+
+    public ExecutionException (String errorMessage, String parameter1, String parameter2, String parameter3) {
+        this (String.format (errorMessage, parameter1, parameter2, parameter3));
+    }
+
+    public ExecutionException (String errorMessage, String parameter1, String parameter2, String parameter3, String parameter4) {
+        this (String.format (errorMessage, parameter1, parameter2, parameter3, parameter4));
+    }
+
+    public ExecutionException (String errorMessage, int parameter) {
+        this (String.format (errorMessage, parameter));
+    }
+
+    public ExecutionException (String errorMessage, String parameter1, int parameter2) {
+        this (String.format (errorMessage, parameter1, parameter2));
+    }
+
+    public ExecutionException (String errorMessage, String parameter1, int parameter2, int parameter3) {
+        this (String.format (errorMessage, parameter1, parameter2, parameter3));
+    }
+
+    public ExecutionException (String errorMessage, boolean parameter1, boolean parameter2) {
+        this (String.format (errorMessage, parameter1, parameter2));
+    }
+
+    
     public ExecutionException (String errorMessage, StackTraceElement[] stackTrace) {
         super (errorMessage);
         setStackTrace (stackTrace);

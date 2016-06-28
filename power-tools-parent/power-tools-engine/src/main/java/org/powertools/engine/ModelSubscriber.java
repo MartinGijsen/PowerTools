@@ -1,4 +1,4 @@
-/* Copyright 2012 by Martin Gijsen (www.DeAnalist.nl)
+/* Copyright 2014 by Martin Gijsen (www.DeAnalist.nl)
  *
  * This file is part of the PowerTools engine.
  *
@@ -16,12 +16,12 @@
  * along with the PowerTools engine. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.powertools.engine.reports;
-
-import java.util.Date;
+package org.powertools.engine;
 
 
-interface TestSubscriber {
-    void start (Date dateTime);
-    void finish (Date dateTime);
+public interface ModelSubscriber extends TestSubscriber {
+    void processNewState (String name);
+    void processNewTransition (String sourceNodeName, String targetNodeName);
+    void processAtState (String name);
+    void processAtTransition (String sourceNodeName, String targetNodeName);
 }

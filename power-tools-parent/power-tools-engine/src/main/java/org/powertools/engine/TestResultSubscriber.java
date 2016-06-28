@@ -16,10 +16,17 @@
  * along with the PowerTools engine. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.powertools.engine.reports;
+package org.powertools.engine;
 
 
-public interface TestCaseSubscriber extends TestSubscriber {
-    void processBegin (String id, String description);
-    void processEnd ();
+public interface TestResultSubscriber extends TestSubscriber {
+    void processStackTrace (String[] stackTraceLines);
+    void processError   (String message);
+    void processWarning (String message);
+    void processInfo    (String message);
+    void processLink    (String message);
+    void processEndOfTestLine ();
+
+    void processIncreaseLevel ();
+    void processDecreaseLevel ();
 }
