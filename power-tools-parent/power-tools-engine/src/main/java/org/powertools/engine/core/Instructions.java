@@ -25,7 +25,7 @@ import org.powertools.engine.ExecutionException;
 import org.powertools.engine.TestRunResultPublisher;
 import org.powertools.engine.instructions.Executor;
 import org.powertools.engine.instructions.InstructionSet;
-import org.powertools.engine.instructions.ProcedureRunner;
+import org.powertools.engine.ProcedureRunner;
 import org.powertools.engine.instructions.Procedures;
 import org.powertools.engine.sources.Procedure;
 
@@ -37,7 +37,7 @@ import org.powertools.engine.sources.Procedure;
  * An instruction set for procedures is already available.
  * Any number of instruction sets can be added.
  * <BR/><BR/>
- * An intruction name to search for can include the instruction set name.
+ * An instruction name to search for can include the instruction set name.
  * An executor cache ensures that an instruction only has to be looked up once.
  * <BR/><BR/>
  * It is emptied when an instruction set is added to avoid name conflicts.
@@ -56,12 +56,21 @@ final class Instructions {
     }
 
     void addInstructionSet (InstructionSet set) {
-        if (!mInstructionSets.containsKey (set.getName ())) {
-            mInstructionSets.put (set.getName (), set);
+        String name = set.getName ();
+        if (!mInstructionSets.containsKey (name)) {
+            mInstructionSets.put (name, set);
             set.setup ();
             mExecutorCache.clear ();
         } else {
-            throw new ExecutionException ("an instruction set with this name already exists");
+            throw new ExecutionException ("an instruction set '%s' is already registered", name);
+        }
+    }
+
+    void removeInstructionSet (String name) {
+        if (mInstructionSets.remove (name) != null) {
+            mExecutorCache.clear ();
+        } else {
+            throw new ExecutionException ("no instruction set '%s' is registered", name);
         }
     }
 
@@ -81,18 +90,14 @@ final class Instructions {
         } else {
             String instructionSetName  = instructionName.substring (0, position);
             String realInstructionName = instructionName.substring (position + 1);
-            return createExecutor (instructionSetName, realInstructionName);
+            return getInstructionSet (instructionSetName).getExecutor (realInstructionName);
         }
-    }
-
-    private Executor createExecutor (String instructionSetName, String instructionName) {
-        return getInstructionSet (instructionSetName).getExecutor (instructionName);
     }
 
     private InstructionSet getInstructionSet (String instructionSetName) {
         InstructionSet instructionSet = mInstructionSets.get (instructionSetName);
         if (instructionSet == null) {
-            throw new ExecutionException ("unknown instruction set: " + instructionSetName);
+            throw new ExecutionException ("unknown instruction set '%s'", instructionSetName);
         } else {
             return instructionSet;
         }
@@ -105,29 +110,16 @@ final class Instructions {
             if (executor == null) {
                 executor = newExecutor;
             } else if (newExecutor != null) {
-                throw new ExecutionException ("more than one implementation of " + instructionName);
+                throw new ExecutionException ("more than one implementation of '%s'", instructionName);
             }
         }
         if (executor != null) {
             mExecutorCache.put (instructionName, executor);
             return executor;
         } else {
-            throw new ExecutionException ("unknown instruction");
+                throw new ExecutionException ("unknown instruction '%s'", instructionName);
         }
     }
-
-//    Set<String> getMethodNames () {
-//        Set<String> methodNames = new HashSet<String> ();
-//        for (InstructionSet instructionSet : mInstructionSets.values ()) {
-//            for (Method method : instructionSet.getClass ().getMethods ()) {
-//                String methodName = method.getName ();
-//                if (Character.isUpperCase (methodName.charAt (0))) {
-//                    methodNames.add (methodName);
-//                }
-//            }
-//        }
-//        return methodNames;
-//    }
 
     void cleanup () {
         for (InstructionSet instructionSet : mInstructionSets.values ()) {

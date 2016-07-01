@@ -44,27 +44,33 @@ abstract class DoneCondition implements ModelSubscriber {
     }
 
     
+    @Override
     public void start(Date dateTime) {
         // ignore
     }
 
+    @Override
     public void finish(Date dateTime) {
         // ignore
     }
 
     
+    @Override
     public void processNewState (String name) {
         // ignore
     }
 
+    @Override
     public void processNewTransition (String sourceNodeName, String targetNodeName) {
         // ignore
     }
 
+    @Override
     public void processAtState (String name) {
         // ignore
     }
 
+    @Override
     public void processAtTransition (String sourceNodeName, String targetNodeName) {
         // ignore
     }

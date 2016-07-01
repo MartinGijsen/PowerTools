@@ -26,8 +26,8 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.powertools.engine.ExecutionException;
+import org.powertools.engine.Scope;
 import org.powertools.engine.TestRunResultPublisher;
-import org.powertools.engine.symbol.Scope;
 
 
 abstract class ExcelTestSource extends TestSource {
@@ -66,7 +66,7 @@ abstract class ExcelTestSource extends TestSource {
         mSheetName        = sheetName.isEmpty () ? workbook.getSheetName (0) : sheetName;
         Sheet sheet       = workbook.getSheet (mSheetName);
         if (sheet == null) {
-            throw new ExecutionException ("sheet '" + mSheetName + "' does not exist");
+            throw new ExecutionException ("sheet '%s' does not exist", sheetName);
         }
         mRowIter = sheet.rowIterator ();
     }
@@ -117,8 +117,8 @@ abstract class ExcelTestSource extends TestSource {
             Procedure procedure = new Procedure (mTestLine.getPart (1));
             for (int partNr = 2; partNr < nrOfParts; ++partNr) {
                 String parameterName = mTestLine.getPart (partNr);
-                boolean isOutput = (parameterName.startsWith (OUTPUT_PARAMETER_PREFIX));
-                String realParameterName = (isOutput ? parameterName.substring (OUTPUT_PARAMETER_PREFIX.length ()).trim () : parameterName);
+                boolean isOutput = parameterName.startsWith (OUTPUT_PARAMETER_PREFIX);
+                String realParameterName = isOutput ? parameterName.substring (OUTPUT_PARAMETER_PREFIX.length ()).trim () : parameterName;
                 procedure.addParameter (realParameterName, isOutput);
             }
             mPublisher.publishEndOfTestLine ();

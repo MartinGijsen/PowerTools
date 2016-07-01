@@ -18,6 +18,8 @@
 
 package org.powertools.engine.expression;
 
+import org.powertools.engine.ExecutionException;
+
 
 final class BooleanValue extends Value {
     private static final String TRUE_STRING  = "true";
@@ -35,7 +37,7 @@ final class BooleanValue extends Value {
 
     BooleanValue (String text) {
         if (!text.equals (TRUE_STRING) && !text.equals (FALSE_STRING)) {
-            throw newException ("not a boolean value: " + text);
+            throw new ExecutionException ("'%s' is not a boolean value", text);
         }
         mValue = text.equals (TRUE_STRING);
     }

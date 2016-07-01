@@ -18,20 +18,21 @@
 
 package org.powertools.engine.core.runtime;
 
+import org.powertools.engine.Scope;
 import org.powertools.engine.sources.TestLineImpl;
 import org.powertools.engine.sources.TestSource;
-import org.powertools.engine.symbol.Scope;
 
 
 public interface TestSourceStack {
-    void abort();
-    boolean createAndPushTestCase(String name, String description);
-    Scope getCurrentScope();
-    TestSource getCurrentTestSource();
-    Scope getGlobalScope();
-    TestLineImpl getTestLine();
-    boolean inATestCase();
-    void initAndPush(TestSource source);
-    void popTestCase();
-    void run(String fileName);
+    void abort ();
+    boolean createAndPushTestCase (String name, String description);
+    Scope getCurrentScope ();
+    TestSource getCurrentTestSource ();
+    Scope getGlobalScope ();
+    TestLineImpl getTestLine ();
+    boolean inATestCase ();
+    void initAndPush (TestSource source);
+    void abortTestCase ();
+    void popTestCase ();
+    void run (String fileName);
 }

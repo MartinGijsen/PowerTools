@@ -18,6 +18,8 @@
 
 package org.powertools.engine.symbol;
 
+import org.powertools.engine.Scope;
+
 
 public final class Structure extends StructuredSymbol {
     Structure (String name, Scope scope) {

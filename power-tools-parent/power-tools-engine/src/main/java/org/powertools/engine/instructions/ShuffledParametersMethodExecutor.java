@@ -1,4 +1,4 @@
-/* Copyright 2012 by Martin Gijsen (www.DeAnalist.nl)
+/* Copyright 2012-2014 by Martin Gijsen (www.DeAnalist.nl)
  *
  * This file is part of the PowerTools engine.
  *
@@ -56,19 +56,19 @@ final class ShuffledParametersMethodExecutor extends MethodExecutor {
     }
 
     private ExecutionException createException () {
-        return new ExecutionException (String.format ("incorrect @ParameterOrder annotation for instruction %s (all %s parameters must be referenced once)", mMethod.getName (), mMethod.getParameterTypes ().length));
+        return new ExecutionException ("incorrect @ParameterOrder annotation for instruction %s (all %d parameters must be referenced once)", mMethod.getName (), mMethod.getParameterTypes ().length);
     }
 
     @Override
-    protected void getArguments (TestLine testLine) {
+    Object[] getArguments () {
         Class<?>[] parameterTypes = mMethod.getParameterTypes ();
         int nrOfParameters        = parameterTypes.length;
-        checkNrOfArguments (testLine, nrOfParameters);
+        checkNrOfArguments (mTestLine, nrOfParameters);
 
         for (int argNr = 0; argNr < nrOfParameters; ++argNr) {
             int mappedArgNr = mParameterMapping[argNr];
-            //mArguments[argNr] = getArgument (parameterTypes[mappedArgNr - 1], testLine.getPart (mappedArgNr));
-            mArguments[argNr] = mConvertors.get (parameterTypes[mappedArgNr - 1]).toObject (testLine.getPart (mappedArgNr));
+            mArguments[argNr] = mConvertors.get (parameterTypes[mappedArgNr - 1]).toObject (mTestLine.getPart (mappedArgNr));
         }
+        return mArguments;
     }
 }

@@ -18,6 +18,7 @@
 
 package org.powertools.engine.fitnesse;
 
+import org.powertools.engine.fitnesse.sources.Reference;
 import fit.Parse;
 import fitnesse.testsystems.TestSummary;
 import java.io.File;
@@ -25,6 +26,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import org.powertools.engine.Context;
+import org.powertools.engine.Scope;
 import org.powertools.engine.core.Engine;
 import org.powertools.engine.core.RunTimeImpl;
 import org.powertools.engine.fitnesse.sources.FitNesseTestSource;
@@ -32,7 +34,6 @@ import org.powertools.engine.fitnesse.sources.InstructionSource;
 import org.powertools.engine.fitnesse.sources.TestSourceFactory;
 import org.powertools.engine.reports.ReportFactory;
 import org.powertools.engine.sources.Procedure;
-import org.powertools.engine.symbol.Scope;
 
 
 public final class FitNesseEngine2 extends Engine {
@@ -47,7 +48,6 @@ public final class FitNesseEngine2 extends Engine {
     FitNesseEngine2 () {
         super (new RunTimeImpl (new Context (FitNesse.ROOT_DIRECTORY + "files/testResults")));
 
-        //ReportFactory.createConsole ();
         mLogFilePath = mRunTime.getContext ().getFullLogFilePath ();
         createLog ();
         if (!new ReportFactory (mPublisher).createTestCaseReport (mRunTime.getContext ())) {
@@ -57,7 +57,7 @@ public final class FitNesseEngine2 extends Engine {
         mFitNesseReporter = new PowerToolsReporter (mSummary);
         mPublisher.subscribeToTestResults (mFitNesseReporter);
 
-        registerBuiltinInstructions ();
+        registerBuiltins ();
 
         mPublisher.start (mRunTime.getContext ().getStartTime ());
         
@@ -113,10 +113,7 @@ public final class FitNesseEngine2 extends Engine {
         InstructionSource source = mSourceFactory.createInstructionSource (table, mRunTime.getGlobalScope (), mLogFilePath, mPublisher, mReference);
         mFitNesseReporter.setSource (source);
         mRunTime.invokeSource (source);
-        Procedure procedure = source.getProcedure ();
-        if (procedure != null) {
-            addProcedure (procedure);
-        }
+        addProcedure (source.getProcedure ());
     }
     
     TestSummary getSummary () {

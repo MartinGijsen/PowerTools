@@ -29,7 +29,8 @@ import org.powertools.engine.Symbol;
 import org.powertools.engine.TestRunResultPublisher;
 import org.powertools.engine.Currencies;
 import org.powertools.engine.Functions;
-import org.powertools.engine.symbol.Scope;
+import org.powertools.engine.Scope;
+import org.powertools.engine.util.PowerToolsParser;
 
 
 public class RandomTransitionSelectorTest {
@@ -244,6 +245,14 @@ public class RandomTransitionSelectorTest {
 
         public Functions getFunctions() {
             throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        public PowerToolsParser getPowerToolsParser() {
+            throw new UnsupportedOperationException ("Not supported yet.");
+        }
+
+        public void abortTestCase() {
+            throw new UnsupportedOperationException ("Not supported yet.");
         }
     }
 }

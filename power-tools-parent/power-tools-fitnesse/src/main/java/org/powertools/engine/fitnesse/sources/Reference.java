@@ -16,16 +16,23 @@
  * along with the PowerTools engine. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.powertools.engine.instructions;
-
-import org.junit.Test;
-import static org.junit.Assert.*;
+package org.powertools.engine.fitnesse.sources;
 
 
-public class InstructionSetFactoryTest {
-    @Test
-    public void testCreateClassInstructionSet () {
-        InstructionSetFactory factory = new InstructionSetFactory (null);
-        assertNotNull (factory.createClassInstructionSet ("", null));
+public class Reference {
+    private int mCounter;
+    
+    public Reference () {
+        mCounter = 0;
+    }
+
+    public Reference advance () {
+        ++mCounter;
+        return this;
+    }
+    
+    @Override
+    public String toString () {
+        return Integer.toString (mCounter);
     }
 }

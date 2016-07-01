@@ -21,10 +21,12 @@ package org.powertools.engine.core;
 import org.powertools.engine.ExecutionException;
 import org.powertools.engine.Function;
 import org.powertools.engine.TestRunResultPublisher;
+import org.powertools.engine.instructions.Executor;
 import org.powertools.engine.sources.Procedure;
 import org.powertools.engine.sources.ProcedureException;
 import org.powertools.engine.sources.TestLineImpl;
 import org.powertools.engine.sources.TestSource;
+import org.powertools.engine.util.StringUtil;
 
 
 /**
@@ -63,8 +65,9 @@ public abstract class Engine {
         Function.setRunTime (runTime);
     }
 
-    protected final void registerBuiltinInstructions () {
+    protected final void registerBuiltins () {
         BuiltinInstructions.register (mRunTime, mInstructions);
+        new BuiltinFunctions (mRunTime.getFunctions (), mRunTime.getPowerToolsParser ());
     }
 
 
@@ -110,7 +113,9 @@ public abstract class Engine {
     }
 
     protected final void addProcedure (Procedure procedure) {
-        mInstructions.addProcedure (procedure);
+        if (procedure != null) {
+            mInstructions.addProcedure (procedure);
+        }
     }
 
     protected final boolean evaluateTestLine () {
@@ -119,10 +124,14 @@ public abstract class Engine {
             return true;
         } catch (ExecutionException ee) {
             mPublisher.publishTestLine (mTestLine);
-            mPublisher.publishError (ee.getMessage ());
+            handleEngineException (ee);
             mPublisher.publishEndOfTestLine ();
-            return false;
+        } catch (Exception e) {
+            mPublisher.publishTestLine (mTestLine);
+            handleOtherException (e);
+            mPublisher.publishEndOfTestLine ();
         }
+        return false;
     }
 
     private boolean isAnInstruction () {
@@ -131,6 +140,8 @@ public abstract class Engine {
 
     private void processTestLine () {
         try {
+            mPublisher.publishTestLine (mTestLine);
+            checkParts ();
             executeInstruction ();
         } catch (ExecutionException ee) {
             handleEngineException (ee);
@@ -143,9 +154,20 @@ public abstract class Engine {
         mPublisher.publishEndOfTestLine ();
     }
 
+    private void checkParts () {
+        int nrOfParts = mTestLine.getNrOfParts ();
+        for (int partNr = 0; partNr < nrOfParts; ++partNr) {
+            String part  = mTestLine.getPart (partNr);
+            int position = StringUtil.indexOfNonPrintableCharacter (part);
+            if (position >= 0) {
+                mPublisher.publishWarning (String.format ("unexpected character nr %d at position %d in '%s'", (int) part.charAt (position) + 1, position, part));
+            }
+        }
+    }
+    
     private void executeInstruction () {
-        mPublisher.publishTestLine (mTestLine);
-        if (!mInstructions.getExecutor (mTestLine.getPart (0)).execute (mTestLine)) {
+        Executor executor = mInstructions.getExecutor (mTestLine.getPart (0));
+        if (!executor.execute (mTestLine)) {
             mPublisher.publishError ("instruction returned 'false'");
         }
     }

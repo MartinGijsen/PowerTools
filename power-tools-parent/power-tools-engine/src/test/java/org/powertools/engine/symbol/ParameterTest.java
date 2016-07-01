@@ -21,6 +21,7 @@ package org.powertools.engine.symbol;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.powertools.engine.ExecutionException;
+import org.powertools.engine.Scope;
 import org.powertools.engine.Symbol;
 
 
@@ -32,9 +33,9 @@ public class ParameterTest {
 	@Test
 	public void testSetValue () {
 		String VARIABLE_NAME = "variableName";
-		Scope parentScope = new Scope (null);
+		Scope parentScope = new ScopeImpl (null);
 		parentScope.createVariable (VARIABLE_NAME, VALUE1);
-		Parameter parameter = new Parameter (PARAMETER_NAME, new Scope (parentScope), VARIABLE_NAME);
+		Parameter parameter = new Parameter (PARAMETER_NAME, new ScopeImpl (parentScope), VARIABLE_NAME);
 		assertEquals (VALUE1, parameter.getValue (VARIABLE_NAME));
 		parameter.setValue (VARIABLE_NAME, VALUE2);
 		assertEquals (VALUE2, parameter.getValue (VARIABLE_NAME));
@@ -44,11 +45,11 @@ public class ParameterTest {
 	public void testClear () {
 		String STRUCTURE_NAME	= "structureName";
 		String FIELD_NAME		= "fieldName";
-		Scope parentScope		= new Scope (null);
+		Scope parentScope		= new ScopeImpl (null);
 		Symbol structure		= parentScope.createStructure (STRUCTURE_NAME);
 		structure.setValue (STRUCTURE_NAME + "." + FIELD_NAME, VALUE1);
 
-		Parameter parameter = new Parameter (PARAMETER_NAME, new Scope (parentScope), STRUCTURE_NAME);
+		Parameter parameter = new Parameter (PARAMETER_NAME, new ScopeImpl (parentScope), STRUCTURE_NAME);
 		assertEquals (VALUE1, parameter.getValue (STRUCTURE_NAME + "." + FIELD_NAME));
 		parameter.clear (STRUCTURE_NAME);
 		try {

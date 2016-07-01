@@ -18,6 +18,8 @@
 
 package org.powertools.engine.symbol;
 
+import org.powertools.engine.Scope;
+
 
 final class Parameter extends SymbolImpl {
     private final String mValue;

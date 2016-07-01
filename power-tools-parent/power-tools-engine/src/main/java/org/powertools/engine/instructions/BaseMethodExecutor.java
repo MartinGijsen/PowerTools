@@ -24,36 +24,38 @@ import org.powertools.engine.ExecutionException;
 import org.powertools.engine.TestLine;
 
 
-abstract class BasicMethodExecutor implements Executor {
+abstract class BaseMethodExecutor implements Executor {
     protected final Object mObject;
     protected final Method mMethod;
 
+    protected TestLine mTestLine;
 
-    BasicMethodExecutor (Object object, Method method) {
+    BaseMethodExecutor (Object object, Method method) {
         mObject = object;
         mMethod = method;
     }
 
     @Override
     public final boolean execute (TestLine testLine) {
-        Object arguments = getArguments (testLine);
-        return invokeMethodAndHandleExceptions (arguments);
+        mTestLine = testLine;
+        return invokeMethodAndHandleExceptions ();
     }
 
-    abstract Object getArguments (TestLine testLine);
+    // TODO: why abstract here if not used here?
+    abstract Object getArguments ();
 
-    final static void checkNrOfArguments (TestLine testLine, int maxNrOfArgs) {
+    protected final void checkNrOfArguments (TestLine testLine, int maxNrOfArgs) {
         int actualNrOfArgs = testLine.getNrOfParts () - 1;
         if (actualNrOfArgs > maxNrOfArgs) {
-            throw new ExecutionException (String.format ("instruction %s expects %d arguments but receives %d", testLine.getPart (0), maxNrOfArgs, actualNrOfArgs));
+            throw new ExecutionException ("instruction %s expects %d arguments but receives %d", testLine.getPart (0), maxNrOfArgs, actualNrOfArgs);
         }
     }
 
-    private boolean invokeMethodAndHandleExceptions (Object arguments) {
+    private boolean invokeMethodAndHandleExceptions () {
         try {
-            return invokeMethod (arguments);
+            return invokeMethod ();
         } catch (IllegalAccessException iae) {
-            throw new ExecutionException ("illegal access exception: " + iae.getCause ().toString ());
+            throw new ExecutionException ("no access to method '%s' (is class public?)", mMethod.getName ());
         } catch (InvocationTargetException ite) {
             Throwable cause = ite.getCause ();
             if (cause instanceof ExecutionException) {
@@ -64,16 +66,5 @@ abstract class BasicMethodExecutor implements Executor {
         }
     }
 
-    private boolean invokeMethod (Object arguments) throws IllegalAccessException, InvocationTargetException {
-        Class<?> returnType = mMethod.getReturnType ();
-        if (returnType == boolean.class) {
-            return (Boolean) mMethod.invoke (mObject, arguments);
-        } else if (returnType == void.class) {
-            mMethod.invoke (mObject, arguments);
-            return true;
-        } else {
-            mMethod.invoke (mObject, arguments);
-            throw new ExecutionException ("method has invalid return type (must be boolean or void)");
-        }
-    }
+    abstract boolean invokeMethod () throws IllegalAccessException, InvocationTargetException;
 }

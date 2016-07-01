@@ -20,15 +20,13 @@ package org.powertools.engine.fitnesse.sources;
 
 import fit.Fixture;
 import fit.Parse;
-import java.util.ArrayList;
 import java.util.List;
+import org.powertools.engine.Scope;
 import org.powertools.engine.TestRunResultPublisher;
-import org.powertools.engine.fitnesse.Reference;
 import org.powertools.engine.sources.TestLineImpl;
-import org.powertools.engine.symbol.Scope;
 
 
-final class DataSource extends FitNesseTestSource {
+final class DataSource extends BaseDataSource {
     private String mInstructionName;
 
     DataSource (Fixture fixture, Parse table, Scope scope, String logFilePath, TestRunResultPublisher publisher, Reference reference) {
@@ -42,14 +40,24 @@ final class DataSource extends FitNesseTestSource {
 
     @Override
     public void initialize () {
-        processFixtureLine ();
+        processMyFixtureLine ();
         processHeaderLine ();
+    }
+
+    private void processMyFixtureLine () {
+        copyRow (mRow);
+        linkToLogFile (mRow.parts);
+        mPublisher.publishTestLine (mTestLine);
+        if (mTestLine.getNrOfParts () != 1) {
+            mPublisher.publishError ("fixture line must have one or two cells");
+        }
+        mPublisher.publishEndOfTestLine ();
     }
 
     private void processHeaderLine () {
         mRow = mRow.more;
         if (mRow != null) {
-            fillDataTestLine ();
+            mTestLine.setParts (getDataTestLine ());
             mPublisher.publishTestLine (mTestLine);
 
             int nrOfParts                   = mTestLine.getNrOfParts ();
@@ -72,22 +80,13 @@ final class DataSource extends FitNesseTestSource {
         }
     }
 
-    private void fillDataTestLine () {
-        List<String> parts = new ArrayList<String> ();
-        parts.add ("");
-        Parse currentCell = mRow.parts;
-        do {
-            parts.add (currentCell.text ());
-            currentCell = currentCell.more;
-        } while (currentCell != null);
-        mTestLine.setParts (parts);
-    }
-
     @Override
     public TestLineImpl getTestLine () {
         if (mRow != null) {
             while ((mRow = mRow.more) != null) {
-                fillDataTestLine ();
+                List<String> parts = getDataTestLine ();
+                limitLength (parts, mNrOfParameters + 1);
+                mTestLine.setParts (parts);
                 mTestLine.setPart (0, mInstructionName);
                 linkToLogFile (mRow.parts);
                 return mTestLine;

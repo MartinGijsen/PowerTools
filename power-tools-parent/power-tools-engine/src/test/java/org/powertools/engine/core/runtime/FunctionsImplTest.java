@@ -26,18 +26,13 @@ import org.powertools.engine.Functions;
 
 
 public class FunctionsImplTest {
-	private final Functions mFunctions = new FunctionsImpl ();
+    private final Functions mFunctions = new FunctionsImpl ();
 
-    @Test
-    public void testBuiltins () {
-        assertNotNull (mFunctions.get ("abs"));
-    }
-    
     @Test
     public void testAddGetRemove () {
         String NAME = "unknown";
         try {
-            mFunctions.get (NAME);
+            mFunctions.get (NAME, 0);
             fail ("no exception");
         } catch (ExecutionException ee) {
             // ok
@@ -45,16 +40,20 @@ public class FunctionsImplTest {
         
         Function function = new MyFunction (NAME);
         mFunctions.add (function);
-        assertEquals (function, mFunctions.get (NAME));
+        assertEquals (function, mFunctions.get (NAME, 0));
         mFunctions.remove (NAME);
 
         try {
-            mFunctions.get (NAME);
+            mFunctions.get (NAME, 0);
             fail ("no exception");
         } catch (ExecutionException ee) {
             // ok
         }
     }
+    
+    
+    // TODO: test function with parameter(s) and remove
+    
     
     private class MyFunction extends Function {
         MyFunction (String name) {

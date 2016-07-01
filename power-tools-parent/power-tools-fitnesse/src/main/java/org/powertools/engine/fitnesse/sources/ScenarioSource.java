@@ -18,13 +18,11 @@
 
 package org.powertools.engine.fitnesse.sources;
 
-import org.powertools.engine.TestRunResultPublisher;
-import org.powertools.engine.sources.TestLineImpl;
-import org.powertools.engine.symbol.Scope;
-
 import fit.Fixture;
 import fit.Parse;
-import org.powertools.engine.fitnesse.Reference;
+import org.powertools.engine.TestRunResultPublisher;
+import org.powertools.engine.sources.TestLineImpl;
+import org.powertools.engine.Scope;
 
 
 class ScenarioSource extends FitNesseTestSource {

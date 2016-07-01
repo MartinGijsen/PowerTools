@@ -40,7 +40,7 @@ final class State {
     }
 
     String getName () {
-        return (mLabel.isEmpty () ? mName : mLabel + " (" + mName + ")");
+        return mLabel.isEmpty () ? mName : mLabel + " (" + mName + ")";
     }
 
     String getDescription () {

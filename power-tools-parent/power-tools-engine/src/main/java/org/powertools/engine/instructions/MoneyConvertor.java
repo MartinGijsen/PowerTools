@@ -23,13 +23,14 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.powertools.engine.Currency;
 import org.powertools.engine.ParameterConvertor;
+import org.powertools.engine.util.PowerToolsParser;
 
 
-public class MoneyConvertor implements ParameterConvertor {
-    private final static Pattern AMOUNT_AND_CURRENCY_PATTERN = Pattern.compile ("^ *(-?\\d+(,\\d+)?) *([^\\d]+})$");
-    private final static Pattern CURRENCY_AND_AMOUNT_PATTERN = Pattern.compile ("^ *([^\\d]+)(-?\\d+(,\\d+)?)$");
-    private final static Matcher AMOUNT_AND_CURRENCY_MATCHER = AMOUNT_AND_CURRENCY_PATTERN.matcher ("");
-    private final static Matcher CURRENCY_AND_AMOUNT_MATCHER = CURRENCY_AND_AMOUNT_PATTERN.matcher ("");
+public final class MoneyConvertor implements ParameterConvertor {
+    private static final Pattern AMOUNT_AND_CURRENCY_PATTERN = Pattern.compile ("^ *(-?\\d+(,\\d+)?) *([^\\d]+)$");
+    private static final Pattern CURRENCY_AND_AMOUNT_PATTERN = Pattern.compile ("^ *([^\\d]+) *(-?\\d+(,\\d+)?)$");
+    private static final Matcher AMOUNT_AND_CURRENCY_MATCHER = AMOUNT_AND_CURRENCY_PATTERN.matcher ("");
+    private static final Matcher CURRENCY_AND_AMOUNT_MATCHER = CURRENCY_AND_AMOUNT_PATTERN.matcher ("");
     
     private final Currencies mCurrencies;
 
@@ -40,18 +41,18 @@ public class MoneyConvertor implements ParameterConvertor {
     
     @Override
     public Object toObject (String text) {
+        String amount;
+        String currencyText;
         if (AMOUNT_AND_CURRENCY_MATCHER.reset (text).matches ()) {
-            String amount       = AMOUNT_AND_CURRENCY_MATCHER.group (1);
-            String currencyText = AMOUNT_AND_CURRENCY_MATCHER.group (2).trim ();
-            Currency currency   = mCurrencies.get (currencyText);
-            return new MoneyImpl (currency, Double.parseDouble (amount));
+            amount       = AMOUNT_AND_CURRENCY_MATCHER.group (1);
+            currencyText = AMOUNT_AND_CURRENCY_MATCHER.group (3).trim ();
         } else if (CURRENCY_AND_AMOUNT_MATCHER.reset (text).matches ()) {
-            String currencyText = CURRENCY_AND_AMOUNT_MATCHER.group (1).trim ();
-            String amount       = CURRENCY_AND_AMOUNT_MATCHER.group (2);
-            Currency currency   = mCurrencies.get (currencyText);
-            return new MoneyImpl (currency, Double.parseDouble (amount));
+            currencyText = CURRENCY_AND_AMOUNT_MATCHER.group (1).trim ();
+            amount       = CURRENCY_AND_AMOUNT_MATCHER.group (2);
         } else {
             return null;
         }
+        Currency currency = mCurrencies.get (currencyText);
+        return new MoneyImpl (currency, PowerToolsParser.parseDouble (amount));
     }
 }

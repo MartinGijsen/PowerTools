@@ -18,6 +18,8 @@
 
 package org.powertools.engine.expression;
 
+import org.powertools.engine.util.PowerToolsParser;
+
 
 final class RealValue extends Value {
     private double mValue;
@@ -28,11 +30,7 @@ final class RealValue extends Value {
     }
 
     RealValue (String value) {
-        try {
-            mValue = Double.parseDouble (value);
-        } catch (NumberFormatException nfe) {
-            throw newException ("not a real number: " + value);
-        }
+        mValue = PowerToolsParser.parseDouble (value);
     }
 
 
@@ -101,7 +99,7 @@ final class RealValue extends Value {
 
     @Override
     StringValue toStringValue () {
-        return new StringValue (Double.toString (mValue));
+        return new StringValue (toString ());
     }
 
     @Override
@@ -111,6 +109,6 @@ final class RealValue extends Value {
 
     @Override
     public String toString () {
-        return Double.toString (mValue);
+        return PowerToolsParser.formatReal (mValue);
     }
 }

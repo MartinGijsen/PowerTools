@@ -18,11 +18,12 @@
 
 package org.powertools.engine.reports;
 
-import org.powertools.engine.ModelSubscriber;
+import org.powertools.engine.TestLine;
+import org.powertools.engine.TestSubscriber;
 import org.powertools.engine.TestCaseSubscriber;
 import org.powertools.engine.TestLineSubscriber;
+import org.powertools.engine.ModelSubscriber;
 import org.powertools.engine.TestResultSubscriber;
-import org.powertools.engine.TestSubscriber;
 import org.powertools.engine.TestRunResultPublisher;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -30,8 +31,6 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-
-import org.powertools.engine.TestLine;
 
 
 /*
@@ -157,7 +156,7 @@ public final class TestRunResultPublisherImpl implements TestRunResultPublisher 
 
     @Override
     public void publishValueError (String expression, String actualValue, String expectedValue) {
-        String message = "value of '" + expression + "' is '" + actualValue + "' (expected '" + expectedValue + "')";
+        String message = String.format ("value of '%s' is '%s' (expected '%s')", expression, actualValue, expectedValue);
         for (TestResultSubscriber subscriber : mTestResultSubscribers) {
             subscriber.processError (message);
         }

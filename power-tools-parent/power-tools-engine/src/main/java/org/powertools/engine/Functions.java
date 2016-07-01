@@ -21,6 +21,7 @@ package org.powertools.engine;
 
 public interface Functions {
     void add (Function function);
-    Function get (String name);
+    Function get (String name, int nrOfParameters);
     void remove (String name);
+    void remove (String name, int nrOfParameters);
 }

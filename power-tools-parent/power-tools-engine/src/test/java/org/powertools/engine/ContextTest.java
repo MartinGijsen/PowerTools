@@ -26,7 +26,6 @@ import java.util.GregorianCalendar;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import static org.powertools.engine.Context.mDateFormat;
 
 
 public class ContextTest {

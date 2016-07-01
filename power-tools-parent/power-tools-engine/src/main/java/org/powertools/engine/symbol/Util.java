@@ -30,6 +30,10 @@ import org.powertools.engine.Symbol;
 
 
 public final class Util {
+    private Util () {
+        // empty
+    }
+
     public static void copy (Symbol sourceSymbol, Symbol targetSymbol, String[] sourceNames, String targetName) {
         Item sourceItem             = getItem (sourceSymbol, sourceNames);
         List<String> namesList      = new LinkedList<String> ();
@@ -41,16 +45,11 @@ public final class Util {
     }
 
 
-    // private methods
-    private Util () {
-        // empty
-    }
-
     private static Item getItem (Symbol symbol, String[] names) {
         if (symbol instanceof Structure) {
             return ((Structure) symbol).getItem (names);
         } else {
-            throw new ExecutionException ("symbol " + symbol.getName () + " is not a structure");
+            throw new ExecutionException ("symbol '%s' is not a structure", symbol.getName ());
         }
     }
 

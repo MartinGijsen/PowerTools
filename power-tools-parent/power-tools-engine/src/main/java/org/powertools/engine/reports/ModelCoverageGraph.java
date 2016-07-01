@@ -35,19 +35,23 @@ public class ModelCoverageGraph implements ModelSubscriber {
     private int mEdgeNr = 0;
 
     
-    public static void setGraphviz_path (String path) {
-        mGraphvizPath = path;
-    }
-
     public ModelCoverageGraph (String resultsDirectory) {
         mGraph            = new DirectedGraph ();
         mResultsDirectory = resultsDirectory;
     }
     
+
+    public static void setGraphviz_path (String path) {
+        mGraphvizPath = path;
+    }
+
+
+    @Override
     public void processNewState (String name) {
         // ignore
     }
 
+    @Override
     public void processNewTransition (String sourceNodeName, String targetNodeName) {
         Node source = getOrCreateNode (sourceNodeName);
         Node target = getOrCreateNode (targetNodeName);
@@ -62,10 +66,12 @@ public class ModelCoverageGraph implements ModelSubscriber {
         }
     }
 
+    @Override
     public void processAtState (String name) {
         // ignore
     }
 
+    @Override
     public void processAtTransition (String sourceNodeName, String targetNodeName) {
         Node source = mGraph.getNode (sourceNodeName);
         Node target = mGraph.getNode (targetNodeName);
@@ -78,12 +84,14 @@ public class ModelCoverageGraph implements ModelSubscriber {
         }
     }
 
+    @Override
     public void start (Date dateTime) {
         // ignore
     }
 
+    @Override
     public void finish (Date dateTime) {
-        GraphViz graphViz = ("".equals (mGraphvizPath) ? new GraphViz () : new GraphViz (mGraphvizPath));
+        GraphViz graphViz = "".equals (mGraphvizPath) ? new GraphViz () : new GraphViz (mGraphvizPath);
         graphViz.writeDirected (mGraph, mResultsDirectory + "/coverage");
     }
 }

@@ -19,6 +19,7 @@
 package org.powertools.engine.symbol;
 
 import org.powertools.engine.ExecutionException;
+import org.powertools.engine.Scope;
 
 
 public final class RepeatingStringSequence extends BaseSequence {

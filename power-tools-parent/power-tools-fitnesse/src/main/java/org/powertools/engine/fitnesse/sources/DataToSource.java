@@ -20,16 +20,14 @@ package org.powertools.engine.fitnesse.sources;
 
 import fit.Fixture;
 import fit.Parse;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import org.powertools.engine.Scope;
 import org.powertools.engine.TestRunResultPublisher;
-import org.powertools.engine.fitnesse.Reference;
 import org.powertools.engine.sources.TestLineImpl;
-import org.powertools.engine.symbol.Scope;
 
 
-final class DataToSource extends FitNesseTestSource {
+final class DataToSource extends BaseDataSource {
     private final List<String> mColumnNames;
 
     private String mInstructionName;
@@ -66,8 +64,8 @@ final class DataToSource extends FitNesseTestSource {
     private void processHeaderLine () {
         mRow = mRow.more;
         if (mRow != null) {
-            fillDataTestLine ();
-            linkToLogFile (mRow.parts);
+            mTestLine.setParts (getDataTestLine ());
+            //linkToLogFile (mRow.parts);
             mPublisher.publishTestLine (mTestLine);
 
             int nrOfParts = mTestLine.getNrOfParts ();
@@ -88,17 +86,6 @@ final class DataToSource extends FitNesseTestSource {
         }
     }
 
-    private void fillDataTestLine () {
-        List<String> parts = new ArrayList<String> ();
-        parts.add ("");
-        Parse currentCell = mRow.parts;
-        do {
-            parts.add (currentCell.text ());
-            currentCell = currentCell.more;
-        } while (currentCell != null);
-        mTestLine.setParts (parts);
-    }
-
     @Override
     public TestLineImpl getTestLine () {
         if (mRow != null) {
@@ -108,7 +95,9 @@ final class DataToSource extends FitNesseTestSource {
                     linkToLogFile (mRow.parts);
                     return mTestLine;
                 } else {
-                    fillDataTestLine ();
+                    List<String> parts = getDataTestLine ();
+                    limitLength (parts, mNrOfParameters + 1);
+                    mTestLine.setParts (parts);
                     mTestLine.setPart (0, mInstructionName);
                     mPublisher.publishTestLine (mTestLine);
                     linkToLogFile (mRow.parts);

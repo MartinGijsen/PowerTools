@@ -57,7 +57,7 @@ final class StringValue extends Value {
 
     @Override
     RealValue toRealValue () {
-        return new RealValue (Double.parseDouble (mText));
+        return new RealValue (mText);
     }
 
     @Override

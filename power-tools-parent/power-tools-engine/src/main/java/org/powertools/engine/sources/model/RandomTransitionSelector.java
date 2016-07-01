@@ -49,7 +49,7 @@ final class RandomTransitionSelector implements TransitionSelectionStrategy {
 
     @Override
     public Transition selectTransition (DirectedGraph graph, State currentState) {
-        boolean isMainGraph = (graph.equals (mMainGraph));
+        boolean isMainGraph = graph.equals (mMainGraph);
         boolean atEndState  = false;
         if (isMainGraph) {
             if (currentState.mLabel.equalsIgnoreCase (Model.END_STATE_LABEL)) {
@@ -72,7 +72,7 @@ final class RandomTransitionSelector implements TransitionSelectionStrategy {
         if (atEndState) {
             return graph.addTransition (currentState, graph.getBeginState ());
         } else {
-            throw new ExecutionException (String.format ("no transitions out of end node '%s'", currentState.getName ()));
+            throw new ExecutionException ("no transitions out of end node '%s'", currentState.getName ());
         }
     }
 

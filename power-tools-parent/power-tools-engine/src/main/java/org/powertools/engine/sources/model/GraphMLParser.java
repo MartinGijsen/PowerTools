@@ -51,9 +51,6 @@ final class GraphMLParser extends DefaultHandler {
     // edge
     private static final String EDGE_SOURCE_ATTRIBUTE_NAME  = "source";
     private static final String EDGE_TARGET_ATTRIBUTE_NAME  = "target";
-//  private static final String NODE_DESCRIPTION_KEY_NAME   = "d5";
-//  private static final String EDGE_CONDITION_KEY_NAME     = "d8";
-//  private static final String EDGE_ACTION_KEY_NAME        = "d9";
 
     private DirectedGraphImpl mGraph;
     private Stack<Element> mElementStack;
@@ -139,7 +136,7 @@ final class GraphMLParser extends DefaultHandler {
         } else if ("data".equals (name)) {
             mKeyName = attributes.getValue ("key");
         } else if (!knownElements.contains (name)) {
-            throw new ExecutionException ("unsupported element: " + qName);
+            throw new ExecutionException ("unsupported element '%s'", qName);
         }
     }
 

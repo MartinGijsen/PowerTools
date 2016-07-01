@@ -24,13 +24,21 @@ import static org.junit.Assert.assertNotNull;
 import org.junit.Before;
 import org.junit.Test;
 import org.powertools.engine.ExecutionException;
+import org.powertools.engine.Scope;
 import org.powertools.engine.Symbol;
 
 
 public class NumberSequenceTest {
-	@Before
+	private static final String NAME		= "name";
+	private static final int INITIAL_VALUE	= 0;
+	
+	private Scope          mScope;
+	private NumberSequence mSequence;
+
+        
+        @Before
 	public void setUp () throws Exception {
-		mScope		= new Scope (null);
+		mScope		= new ScopeImpl (null);
 		mSequence	= new NumberSequence (NAME, mScope, INITIAL_VALUE);
 	}
 
@@ -66,12 +74,4 @@ public class NumberSequenceTest {
 	public void testGetName () {
 		assertEquals (NAME, mSequence.getName ());
 	}
-
-	
-	// private members
-	private static final String NAME		= "name";
-	private static final int INITIAL_VALUE	= 0;
-	
-	private Scope mScope;
-	private NumberSequence mSequence;
 }

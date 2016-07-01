@@ -48,10 +48,8 @@ final class WeightedTransitionSelector implements TransitionSelectionStrategy {
         Set<Transition> transitions = graph.getTransitions (currentState);
         if (!transitions.isEmpty ()) {
             return selectTransition (transitions);
-//      } else if (model.mCurrentNode.mLabel.equals (Model.END_NODE_LABEL)) {
-//          throw new Model.DoneException ();
         } else {
-            throw new ExecutionException (String.format ("no transitions out of node %s", currentState.getName ()));
+            throw new ExecutionException ("no transitions out of node %s", currentState.getName ());
         }
     }
 
@@ -64,6 +62,6 @@ final class WeightedTransitionSelector implements TransitionSelectionStrategy {
                 return transition;
             }
         }
-        throw new ExecutionException ("did not find find a transition for weight " + selectedWeight);
+        throw new ExecutionException ("did not find find a transition for weight '%d'", selectedWeight);
     }
 }

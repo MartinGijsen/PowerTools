@@ -57,7 +57,7 @@ public class StringValueTest {
 
 	@Test
 	public void testToRealValue () {
-		assertEquals ("1.23", new StringValue ("1.23").toRealValue ().toString ());
+		assertEquals ("1,23", new StringValue ("1,23").toRealValue ().toString ());
 	}
 
 	@Test

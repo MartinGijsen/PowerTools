@@ -31,6 +31,18 @@ public final class DataFixture extends Fixture {
 
     @Override
     public void doTable (Parse table) {
-        FitNesseEngine.getInstance ().run (this, table);
+        if (fixtureLineHasOneParameter (table.parts)) {
+            FitNesseEngine.getInstance ().runDataToFixture (this, table);
+        } else {
+            FitNesseEngine.getInstance ().runDataFixture (this, table);
+        }
+    }
+
+    private boolean fixtureLineHasOneParameter (Parse fixtureLine) {
+        try {
+            return fixtureLine.parts.more.more == null;
+        } catch (NullPointerException npe) {
+            return false;
+        }
     }
 }

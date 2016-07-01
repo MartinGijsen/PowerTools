@@ -20,47 +20,38 @@ package org.powertools.engine.fitnesse.sources;
 
 import fit.Fixture;
 import fit.Parse;
+import java.util.ArrayList;
+import java.util.List;
 import org.powertools.engine.Scope;
 import org.powertools.engine.TestRunResultPublisher;
 import org.powertools.engine.sources.TestLineImpl;
 
 
-public final class EndInstructionSource extends FitNesseTestSource {
-    private final boolean mInRightPlace;
-    
-    EndInstructionSource (Fixture fixture, Parse table, Scope scope, String logFilePath, TestRunResultPublisher publisher, Reference reference, boolean inRightPlace) {
+abstract class BaseDataSource extends FitNesseTestSource {
+    int mNrOfParameters;
+
+    BaseDataSource (Fixture fixture, Parse table, Scope scope, String logFilePath, TestRunResultPublisher publisher, Reference reference) {
         super (fixture, table, scope, logFilePath, publisher, reference);
-        mInRightPlace = inRightPlace;
     }
 
-
-    @Override
-    public void initialize () {
-        if (mInRightPlace) {
-            processFixtureLine ();
-        } else {
-            reportError ();
-            copyRestOfTable ();
-        }
+    BaseDataSource (Parse table, Scope scope, String logFilePath, TestRunResultPublisher publisher, Reference reference) {
+        super (table, scope, logFilePath, publisher, reference);
     }
 
-    private void reportError () {
-        copyRow (mRow);
-        linkToLogFile (mRow.parts);
-        mPublisher.publishTestLine (mTestLine);
-        mPublisher.publishError ("not in an instruction definition");
-        mPublisher.publishEndOfTestLine ();
+    List<String> getDataTestLine () {
+        List<String> parts = new ArrayList<String> ();
+        parts.add ("");
+        Parse currentCell = mRow.parts;
+        do {
+            parts.add (currentCell.text ());
+            currentCell = currentCell.more;
+        } while (currentCell != null);
+        return parts;
     }
     
-    private void copyRestOfTable () {
-        while ((mRow = mRow.more) != null) {
-            copyRow (mRow);
-            mPublisher.publishTestLine (mTestLine);
+    void limitLength (List<String> parts, int maxNrOfParts) {
+        while (parts.size () > maxNrOfParts) {
+            parts.remove (maxNrOfParts);
         }
-    }
-
-    @Override
-    public TestLineImpl getTestLine () {
-        return null;
     }
 }

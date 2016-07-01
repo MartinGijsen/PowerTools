@@ -18,6 +18,7 @@
 
 package org.powertools.engine.instructions;
 
+import org.powertools.engine.ProcedureRunner;
 import org.powertools.engine.TestLine;
 import org.powertools.engine.TestRunResultPublisher;
 import org.powertools.engine.sources.Procedure;

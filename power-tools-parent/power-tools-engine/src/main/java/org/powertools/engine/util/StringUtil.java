@@ -15,17 +15,18 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with the PowerTools engine. If not, see <http://www.gnu.org/licenses/>.
  */
-
-package org.powertools.engine.instructions;
-
-import org.junit.Test;
-import static org.junit.Assert.*;
+package org.powertools.engine.util;
 
 
-public class InstructionSetFactoryTest {
-    @Test
-    public void testCreateClassInstructionSet () {
-        InstructionSetFactory factory = new InstructionSetFactory (null);
-        assertNotNull (factory.createClassInstructionSet ("", null));
+public class StringUtil {
+    public static int indexOfNonPrintableCharacter (String string) {
+        int length = string.length ();
+        for (int position = 0; position < length; ++position) {
+            int ch = string.charAt (position);
+            if (ch < ' ' || ch > '~') {
+                return position;
+            }
+        }
+        return -1;
     }
 }

@@ -1,4 +1,4 @@
-/* Copyright 2014 by Martin Gijsen (www.DeAnalist.nl)
+/* Copyright 2012 by Martin Gijsen (www.DeAnalist.nl)
  *
  * This file is part of the PowerTools engine.
  *
@@ -16,23 +16,12 @@
  * along with the PowerTools engine. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.powertools.engine.fitnesse;
+package org.powertools.engine;
+
+import org.powertools.engine.sources.TestSource;
 
 
-public class Reference {
-    private int mCounter;
-    
-    public Reference () {
-        mCounter = 0;
-    }
-
-    public Reference advance () {
-        ++mCounter;
-        return this;
-    }
-    
-    @Override
-    public String toString () {
-        return Integer.toString (mCounter);
-    }
+public interface ProcedureRunner {
+    void invokeSource (TestSource source);
+    Scope getCurrentScope ();
 }

@@ -22,18 +22,21 @@ import org.powertools.engine.Currency;
 import java.util.HashSet;
 import java.util.Set;
 import org.powertools.engine.ExecutionException;
+import org.powertools.engine.util.PowerToolsParser;
 
 
 final class CurrencyImpl implements Currency {
     private final Set<String> mNames;
-    private final String mDefaultName;
-    private final long mFactor;
+    private final String      mDefaultName;
+    private final int         mNrOfDecimals;
+    private final long        mFactor;
     
     public CurrencyImpl (String name, int nrOfDecimals) {
         checkName (name);
-        mNames       = new HashSet<String> ();
-        mDefaultName = name;
-        mFactor      = powerOf10 (nrOfDecimals);
+        mNames        = new HashSet<String> ();
+        mDefaultName  = name;
+        mNrOfDecimals = nrOfDecimals;
+        mFactor       = powerOf10 (nrOfDecimals);
         mNames.add (name);
     }
 
@@ -41,20 +44,43 @@ final class CurrencyImpl implements Currency {
     public CurrencyImpl addName (String name) {
         checkName (name);
         if (!mNames.add (name)) {
-            throw new ExecutionException ("known currency name " + name);
+            throw new ExecutionException ("known currency name '%s'", name);
         }
         return this;
     }
     
     private void checkName (String name) {
         if ("".equals (name)) {
-            throw new ExecutionException ("invalid currency name: " + name);
+            throw new ExecutionException ("invalid currency name '%s'", name);
         }
     }
 
+    // TODO: use comma or period
+    @Override
+    public long parseAmount (String amountText) {
+        int positionOfComma = amountText.indexOf (',');
+        int nrOfDecimals    = positionOfComma < 0 ? 0 : amountText.length () - positionOfComma - 1;
+        if (nrOfDecimals > mNrOfDecimals) {
+            throw new ExecutionException ("precision of %s is too high", amountText);
+        }
+        
+        double amount = PowerToolsParser.parseDouble (amountText) * mFactor;
+        return (long) amount;
+    }
+    
+    @Override
+    public String getName () {
+        return mDefaultName;
+    }
+    
     @Override
     public Set<String> getNames () {
         return mNames;
+    }
+    
+    @Override
+    public int getNrOfDecimals () {
+        return mNrOfDecimals;
     }
     
     @Override
@@ -80,5 +106,10 @@ final class CurrencyImpl implements Currency {
         } else {
             return 10 * powerOf10 (power - 1);
         }
+    }
+    
+    @Override
+    public String toString () {
+        return mDefaultName;
     }
 }

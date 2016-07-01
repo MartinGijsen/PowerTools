@@ -26,53 +26,37 @@ import org.powertools.engine.ExecutionException;
 import org.powertools.engine.TestLine;
 
 
-final class MapMethodExecutor implements Executor {
-    private final Object mObject;
-    private final Method mMethod;
+final class MapMethodExecutor extends BaseMethodExecutor {
     private final Map<String, String> mArguments;
 
 
     MapMethodExecutor (Object object, Method method) {
-        mObject    = object;
-        mMethod    = method;
+        super (object, method);
         mArguments = new HashMap<String, String> ();
     }
 
     @Override
-    public final boolean execute (TestLine testLine) {
+    Object getArguments () {
         mArguments.clear ();
-        int nrOfArgs = testLine.getNrOfParts () - 1;
+        int nrOfArgs = mTestLine.getNrOfParts () - 1;
         for (int argNr = 0; argNr < nrOfArgs; argNr += 2) {
-            mArguments.put (testLine.getPart (argNr + 1), testLine.getPart (argNr + 2));
+            mArguments.put (mTestLine.getPart (argNr + 1), mTestLine.getPart (argNr + 2));
         }
-        return invokeMethodAndHandleExceptions ();
+        return mArguments;
     }
 
-
-    private boolean invokeMethodAndHandleExceptions () {
-        try {
-            return invokeMethod ();
-        } catch (IllegalAccessException iae) {
-            throw new ExecutionException ("illegal access exception: " + iae.getCause ().toString ());
-        } catch (InvocationTargetException ite) {
-            Throwable cause = ite.getCause ();
-            if (cause instanceof ExecutionException) {
-                throw (ExecutionException) cause;
-            } else {
-                throw new ExecutionException ("instruction exception: " + cause.toString (), cause.getStackTrace ());
-            }
-        }
-    }
-
-    private boolean invokeMethod () throws IllegalAccessException, InvocationTargetException {
+    // TODO: why not use mArguments field?
+    @Override
+    boolean invokeMethod () throws IllegalAccessException, InvocationTargetException {
         Class<?> returnType = mMethod.getReturnType ();
+        Object arguments = getArguments ();
         if (returnType == boolean.class) {
-            return (Boolean) mMethod.invoke (mObject, mArguments);
+            return (Boolean) mMethod.invoke (mObject, arguments);
         } else if (returnType == void.class) {
-            mMethod.invoke (mObject, mArguments);
+            mMethod.invoke (mObject, arguments);
             return true;
         } else {
-            mMethod.invoke (mObject, mArguments);
+            mMethod.invoke (mObject, arguments);
             throw new ExecutionException ("method has invalid return type (must be boolean or void)");
         }
     }

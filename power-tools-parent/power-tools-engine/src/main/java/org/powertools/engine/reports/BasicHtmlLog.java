@@ -18,12 +18,13 @@
 
 package org.powertools.engine.reports;
 
-import org.powertools.engine.TestLineSubscriber;
 import org.powertools.engine.TestResultSubscriber;
+import org.powertools.engine.TestLineSubscriber;
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+
 import org.powertools.engine.TestLine;
 
 
@@ -87,19 +88,19 @@ public abstract class BasicHtmlLog implements TestLineSubscriber, TestResultSubs
     @Override
     public void processError (String message) {
         writeTableRowStartWithTimestamp (mWriter);
-        mWriter.format ("<TD colspan=\"10\" style=\"background-color:#FFAAAA\">%s</TD></TR>", message).println ();
+        mWriter.format ("<TD colspan=\"10\" style=\"background-color:#FFAAAA\">%s</TD></TR>", formatMessage (message)).println ();
     }
 
     @Override
     public void processWarning (String message) {
         writeTableRowStartWithTimestamp (mWriter);
-        mWriter.format ("<TD colspan=\"10\" style=\"background-color:#FFFFAA\">%s</TD></TR>", message).println ();
+        mWriter.format ("<TD colspan=\"10\" style=\"background-color:#FFFFAA\">%s</TD></TR>", formatMessage (message)).println ();
     }
 
     @Override
     public void processInfo (String message) {
         writeTableRowStartWithTimestamp (mWriter);
-        mWriter.format ("<TD colspan=\"10\">%s</TD></TR>", text2HTML (message)).println ();
+        mWriter.format ("<TD colspan=\"10\">%s</TD></TR>", formatMessage (message)).println ();
     }
 
     @Override
@@ -122,10 +123,10 @@ public abstract class BasicHtmlLog implements TestLineSubscriber, TestResultSubs
 
     protected void writeTableRowStartWithTimestamp (PrintWriter writer) {
         Calendar c = Calendar.getInstance ();
-        writer.format("<TR><TD>%1$tT</TD>", c);
+        writer.format("<TR><TD width='50'>%1$tT</TD>", c);
     }
     
-    private static String text2HTML (String text) {
-        return text.replaceAll ("\n", "\n<BR/>");
+    private String formatMessage (String message) {
+        return message.replaceAll ("\n", "<BR/>\n");
     }
 }

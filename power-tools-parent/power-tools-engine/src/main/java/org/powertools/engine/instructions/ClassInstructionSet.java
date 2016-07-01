@@ -80,12 +80,12 @@ final class ClassInstructionSet implements InstructionSet {
     }
 
     private String getMethodName (String instructionName) {
-        String[] parts   = instructionName.split (" ");
+        String[] parts   = instructionName.split (" +");
         StringBuilder sb = new StringBuilder ();
         for (String part : parts) {
             addWord (part, sb);
         }
-        return sb.toString();
+        return sb.toString ();
     }
 
     private void addWord (String word, StringBuilder sb) {
@@ -96,8 +96,9 @@ final class ClassInstructionSet implements InstructionSet {
     }
 
     private Method getMethod (String methodName) {
+        String methodName2 = Character.toLowerCase (methodName.charAt (0)) + methodName.substring (1);
         for (Method method : mObject.getClass ().getMethods ()) {
-            if (method.getName ().equals (methodName)) {
+            if (method.getName ().equals (methodName) || method.getName ().equals (methodName2)) {
                 return method;
             }
         }
@@ -136,11 +137,11 @@ final class ClassInstructionSet implements InstructionSet {
         } catch (NoSuchMethodException nsme) {
             // ignore
         } catch (SecurityException se) {
-            throw new ExecutionException ("security exception invoking method " + name);
+            throw new ExecutionException ("security exception invoking method '%s'", name);
         } catch (IllegalAccessException iae) {
-            throw new ExecutionException ("instruction class method " + name + " is not public");
+            throw new ExecutionException ("instruction class method '%s' is not public", name);
         } catch (IllegalArgumentException iae) {
-            throw new ExecutionException ("illegal argument to method " + name);
+            throw new ExecutionException ("illegal argument to method '%s'", name);
         } catch (InvocationTargetException ite) {
             Throwable cause = ite.getCause ();
             throw new ExecutionException (cause.getMessage () +  " invoking method " + name, cause.getStackTrace ());

@@ -21,19 +21,21 @@ package org.powertools.engine;
 
 public abstract class Function {
     private final String mName;
-    private final int mNrOfParams;
+    private final int    mNrOfParams;
 
     protected static RunTime mRunTime;
+
+    
+    public Function (String name, int nrOfParameters) {
+        mName       = name;
+        mNrOfParams = nrOfParameters;
+    }
 
     
     public static void setRunTime (RunTime runTime) {
         mRunTime = runTime;
     }
     
-    public Function (String name, int nrOfParameters) {
-        mName       = name;
-        mNrOfParams = nrOfParameters;
-    }
 
     public final String getName () {
         return mName;
@@ -45,7 +47,7 @@ public abstract class Function {
 
     public final String checkNrOfArgsAndExecute (String[] args) {
         if (args.length != mNrOfParams) {
-            throw new ExecutionException (String.format ("function '%s' needs %d arguments, got %d", getName (), mNrOfParams, args.length));
+            throw new ExecutionException ("function '%s' needs %d arguments, got %d", getName (), mNrOfParams, args.length);
         }
         return execute (args);
     }

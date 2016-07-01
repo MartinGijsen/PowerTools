@@ -21,11 +21,11 @@ package org.powertools.engine.sources;
 import org.powertools.engine.ExecutionException;
 import org.powertools.engine.TestLine;
 import org.powertools.engine.RunTime;
+import org.powertools.engine.Scope;
 import org.powertools.engine.TestRunResultPublisher;
-import org.powertools.engine.instructions.ProcedureRunner;
+import org.powertools.engine.ProcedureRunner;
 import org.powertools.engine.sources.ExcelTestSource.Names;
 import org.powertools.engine.sources.model.MainModel;
-import org.powertools.engine.symbol.Scope;
 
 
 public final class TestSourceFactory {

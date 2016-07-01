@@ -18,6 +18,8 @@
 
 package org.powertools.engine.symbol;
 
+import org.powertools.engine.Scope;
+
 
 final class SimpleVariable extends SimpleSymbol {
     SimpleVariable (String name, Scope scope, String value) {

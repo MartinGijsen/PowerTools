@@ -1,4 +1,4 @@
-/* Copyright 2012-2014 by Martin Gijsen (www.DeAnalist.nl)
+/* Copyright 2012-2016 by Martin Gijsen (www.DeAnalist.nl)
  *
  * This file is part of the PowerTools engine.
  *
@@ -23,6 +23,7 @@ import java.lang.reflect.InvocationTargetException;
 import org.powertools.engine.BusinessDayChecker;
 import org.powertools.engine.ExecutionException;
 import org.powertools.engine.Function;
+import org.powertools.engine.Instruction;
 import org.powertools.engine.InstructionSet;
 import org.powertools.engine.KeywordName;
 import org.powertools.engine.ParameterOrder;
@@ -32,6 +33,7 @@ import org.powertools.engine.instructions.InstructionSetFactory;
 import org.powertools.engine.reports.ModelCoverageGraph;
 import org.powertools.engine.sources.TestSourceFactory;
 import org.powertools.engine.symbol.BaseSequence;
+import org.powertools.engine.util.PowerToolsParser;
 
 
 /**
@@ -45,15 +47,19 @@ public final class BuiltinInstructions implements InstructionSet {
     private static final int MILLIS_PER_SECOND     = 1000;
     private static final int SECONDS_PER_MINUTE    = 60;
 
-    private final RunTimeImpl mRunTime;
-    private final Instructions mInstructions;
-    private final String[] mFieldNames;
+    private final RunTimeImpl           mRunTime;
+    private final Instructions          mInstructions;
+    private final String[]              mFieldNames;
+    private final InstructionSetFactory mInstructionSetFactory;
+    private final InstructionPublisher  mInstructionPublisher;
 
 
     private BuiltinInstructions (RunTimeImpl runTime, Instructions instructions) {
-        mRunTime      = runTime;
-        mInstructions = instructions;
-
+        mRunTime               = runTime;
+        mInstructions          = instructions;
+        mInstructionSetFactory = new InstructionSetFactory (runTime.getParameterConvertors ());
+        mInstructionPublisher  = new InstructionPublisher (runTime.getContext ().getResultsDirectory ());
+        
         mFieldNames = new String[MAX_NR_OF_FIELD_NAMES];
         for (int fieldNameNr = 0; fieldNameNr < MAX_NR_OF_FIELD_NAMES; ++fieldNameNr) {
             mFieldNames[fieldNameNr] = "";
@@ -84,6 +90,10 @@ public final class BuiltinInstructions implements InstructionSet {
 
 
     // instruction sets
+    @Instruction (
+        description = "registers a class as an instruction set, making its instructions available",
+        parameters  = { "full class name of the instruction set class" }
+    )
     public void UseInstructionSet_ (String className) {
         String name           = className;
         Object instructionSet = instantiateInstructionSet (className);
@@ -93,6 +103,11 @@ public final class BuiltinInstructions implements InstructionSet {
         register (name, instructionSet);
     }
 
+    @Instruction (
+        description = "registers a class as an instruction set, making its instructions available",
+        parameters  = { "full class name of the instruction set class",
+                        "instruction set name for the test" }
+    )
     @KeywordName ("UseInstructionSet")
     @ParameterOrder ({ 2, 1 })
     public void UseInstructionSet_As_ (String className, String name) {
@@ -100,7 +115,8 @@ public final class BuiltinInstructions implements InstructionSet {
     }
 
     void register (String name, Object object) {
-        mInstructions.addInstructionSet (new InstructionSetFactory (mRunTime.getCurrencies (), mRunTime).createClassInstructionSet (name, object));
+        mInstructions.addInstructionSet (mInstructionSetFactory.createClassInstructionSet (name, object));
+        mInstructionPublisher.publishInstructions (name, object.getClass ());
     }
 
     private Object instantiateInstructionSet (String className) {
@@ -145,8 +161,12 @@ public final class BuiltinInstructions implements InstructionSet {
         try {
             return Class.forName (className);
         } catch (ClassNotFoundException cnfe) {
-            throw new ExecutionException (String.format ("class '%s' not found on the class path", className));
+            throw new ExecutionException ("class '%s' not found on the class path", className);
         }
+    }
+
+    public void RemoveInstructionSet_ (String name) {
+        mInstructions.removeInstructionSet (name);
     }
 
     // test cases
@@ -185,7 +205,7 @@ public final class BuiltinInstructions implements InstructionSet {
         if (symbol instanceof BaseSequence) {
             symbol.setValue (value);
         } else {
-            throw new ExecutionException (String.format ("symbol '%s' is not a string sequence", name));
+            throw new ExecutionException ("symbol '%s' is not a string sequence", name);
         }
     }
 
@@ -288,14 +308,16 @@ public final class BuiltinInstructions implements InstructionSet {
         Class<?> aClass = getClass (className);
         if (Function.class.isAssignableFrom (aClass)) {
             try {
-                mRunTime.getFunctions ().add ((Function) aClass.newInstance ());
+                Function function = (Function) aClass.newInstance ();
+                mRunTime.getFunctions ().add (function);
+                mRunTime.reportInfo ("");
             } catch (InstantiationException ie) {
-                throw new ExecutionException (String.format ("could not create object for function class '%s'", className));
+                throw new ExecutionException ("could not create object for function class '%s'", className);
             } catch (IllegalAccessException ex) {
-                throw new ExecutionException (String.format ("could not create object for function class '%s'", className));
+                throw new ExecutionException ("could not create object for function class '%s'", className);
             }
         } else {
-            throw new ExecutionException (String.format ("class '%s' does not extend class Function", className));
+            throw new ExecutionException ("class '%s' does not extend class Function", className);
         }
     }
 
@@ -304,18 +326,23 @@ public final class BuiltinInstructions implements InstructionSet {
         mRunTime.getFunctions ().remove (name);
     }
 
+    //TODO: @KeywordName ("UnregisterFunction")
+    public void UnregisterFunction_With_Parameters (String name, int nrOfParameters) {
+        mRunTime.getFunctions ().remove (name, nrOfParameters);
+    }
 
+    
     @KeywordName ("SetBusinessDayChecker")
     public void SetBusinessDayCheckerTo_ (String className) {
         try {
             Object instance = Class.forName (className).newInstance ();
             mRunTime.setBusinessDayChecker ((BusinessDayChecker) instance);
         } catch (ClassNotFoundException cnfe) {
-            throw new ExecutionException ("unknown class: " + className);
+            throw new ExecutionException ("unknown class '%s'", className);
         } catch (IllegalAccessException iae) {
-            throw new ExecutionException ("no access to class " + className);
+            throw new ExecutionException ("no access to class '%s'", className);
         } catch (InstantiationException ie) {
-            throw new ExecutionException ("failed to create instance of class " + className);
+            throw new ExecutionException ("failed to create instance of class '%s'", className);
         }
     }
 
@@ -325,13 +352,40 @@ public final class BuiltinInstructions implements InstructionSet {
     }
     
     //@KeywordName ("")
-    public boolean CheckThat_ (boolean value) {
-        return value;
+    public void CheckThat_ (boolean value) {
+        checkValue (value, "");
+    }
+
+    //@KeywordName ("")
+    public void CheckThat_And_ (boolean value1, boolean value2) {
+        checkValue (value1, "first ");
+        checkValue (value2, "second ");
+    }
+
+    //@KeywordName ("")
+    public void CheckThat_And_And_ (boolean value1, boolean value2, boolean value3) {
+        checkValue (value1, "first ");
+        checkValue (value2, "second ");
+        checkValue (value3, "third ");
+    }
+
+    //@KeywordName ("")
+    public void CheckThat_And_And_And_ (boolean value1, boolean value2, boolean value3, boolean value4) {
+        checkValue (value1, "first ");
+        checkValue (value2, "second ");
+        checkValue (value3, "third ");
+        checkValue (value4, "fourth ");
+    }
+    
+    private void checkValue (boolean value, String position) {
+        if (value == false) {
+            mRunTime.reportError (position + "expression evaluates to 'false'");
+        }
     }
 
     //@KeywordName ("")
     public boolean CheckThat_Contains_ (String value1, String value2) {
-        return value1.indexOf (value2) >= 0;
+        return value1.contains (value2);
     }
 
     //@KeywordName ("")
@@ -341,9 +395,9 @@ public final class BuiltinInstructions implements InstructionSet {
 
     //@KeywordName ("")
     public boolean CheckThat_IsWithin_Of_ (String value1String, String marginString, String value2String) {
-        double value1 = Double.parseDouble (value1String);
-        double margin = Double.parseDouble (marginString);
-        double value2 = Double.parseDouble (value2String);
+        double value1 = PowerToolsParser.parseDouble (value1String);
+        double margin = PowerToolsParser.parseDouble (marginString);
+        double value2 = PowerToolsParser.parseDouble (value2String);
         return value1 >= value2 - margin && value1 <= value2 + margin;
     }
 
@@ -354,9 +408,9 @@ public final class BuiltinInstructions implements InstructionSet {
 
     //@KeywordName ("")
     public boolean CheckThat_IsBetween_And_ (String valueString, String lowerBoundString, String upperBoundString) {
-        double value      = Double.parseDouble (valueString);
-        double lowerBound = Double.parseDouble (lowerBoundString);
-        double upperBound = Double.parseDouble (upperBoundString);
+        double value      = PowerToolsParser.parseDouble (valueString);
+        double lowerBound = PowerToolsParser.parseDouble (lowerBoundString);
+        double upperBound = PowerToolsParser.parseDouble (upperBoundString);
         return value >= lowerBound && value <= upperBound;
     }
 
@@ -434,5 +488,17 @@ public final class BuiltinInstructions implements InstructionSet {
         } else if (value != null && !value.isEmpty ()) {
             throw new ExecutionException ("value specified without a field name");
         }
+    }
+
+    public void SetDefaultDateFormatTo_ (String format) {
+        mRunTime.setDefaultDateFormat (format);
+    }
+    
+    public void RegisterConvertor_For_ (String convertorClassName, String parameterClassName) {
+        mRunTime.getParameterConvertors ().add (parameterClassName, convertorClassName);
+    }
+    
+    public void AbortTestCase () {
+        mRunTime.abortTestCase ();
     }
 }

@@ -18,6 +18,8 @@
 
 package org.powertools.engine.symbol;
 
+import org.powertools.engine.Scope;
+
 
 abstract class StructuredSymbol extends SymbolImpl {
     protected SequenceItem mRootItem;

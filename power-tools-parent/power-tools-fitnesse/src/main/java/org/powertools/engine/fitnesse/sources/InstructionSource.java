@@ -23,11 +23,11 @@ import fit.Parse;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import org.powertools.engine.ExecutionException;
+import org.powertools.engine.Scope;
 import org.powertools.engine.TestRunResultPublisher;
-import org.powertools.engine.fitnesse.Reference;
 import org.powertools.engine.sources.Procedure;
 import org.powertools.engine.sources.TestLineImpl;
-import org.powertools.engine.symbol.Scope;
 
 
 public final class InstructionSource extends FitNesseTestSource {
@@ -49,13 +49,29 @@ public final class InstructionSource extends FitNesseTestSource {
 
     @Override
     public void initialize () {
-        processFixtureLine ();
-        processHeaderLine ();
+        Parse nextCell = processFixture ();
+        if (nextCell == null) {
+            processHeaderLine ();
+        } else {
+            processHeaderLine (nextCell);
+        }
     }
 
+    public Parse processFixture () {
+        copyRow (mRow);
+        linkToLogFile (mRow.parts);
+        mPublisher.publishTestLine (mTestLine);
+        if (mTestLine.getNrOfParts () == 1) {
+            mPublisher.publishEndOfTestLine ();
+            mRow = mRow.more;
+            return null;
+        } else {
+            return mRow.parts.more;
+        }
+    }
+    
     private void processHeaderLine () {
         mProcedure = null;
-        mRow       = mRow.more;
         if (mRow != null) {
             Parse currentCell      = mRow.parts;
             String instructionName = currentCell.text ();
@@ -64,8 +80,40 @@ public final class InstructionSource extends FitNesseTestSource {
             while ((currentCell = currentCell.more) != null) {
                 final String text = currentCell.text();
                 if (text.isEmpty ()) {
-                    mTestLine.setParts (readSentence (mRow.parts));
+                    copyRow (mRow);
+                    linkToLogFile (mRow.parts);
                     mPublisher.publishTestLine (mTestLine);
+                    mPublisher.publishError ("empty cells not allowed");
+                    mPublisher.publishEndOfTestLine ();
+                    return;
+                } else if (++position % 2 != 0) {
+                    mParameterNames.add (text);
+                    instructionName += " _";
+                } else {
+                    instructionName += " " + text;
+                }
+            }
+
+            copyRow (mRow);
+            linkToLogFile (mRow.parts);
+            mPublisher.publishTestLine (mTestLine);
+
+            mProcedure = new Procedure (instructionName);
+            addParameters ();
+            mPublisher.publishEndOfTestLine ();
+        }
+    }
+
+    private void processHeaderLine (Parse nextCell) {
+        mProcedure = null;
+        if (mRow != null) {
+            Parse currentCell      = nextCell;
+            String instructionName = currentCell.text ();
+
+            int position = 0;
+            while ((currentCell = currentCell.more) != null) {
+                final String text = currentCell.text();
+                if (text.isEmpty ()) {
                     mPublisher.publishError ("empty cells not allowed");
                     mPublisher.publishEndOfTestLine ();
                     break;
@@ -77,16 +125,20 @@ public final class InstructionSource extends FitNesseTestSource {
                 }
             }
 
-            linkToLogFile (mRow.parts);
-            mTestLine.setParts (readSentence (mRow.parts));
-            mPublisher.publishTestLine (mTestLine);
-
             mProcedure = new Procedure (instructionName);
+            addParameters ();
+            mPublisher.publishEndOfTestLine ();
+        }
+    }
 
-            for (String parameterName : mParameterNames) {
-                boolean isOutput         = (parameterName.startsWith (OUTPUT_PARAMETER_PREFIX));
-                String realParameterName = (isOutput ? parameterName.substring (OUTPUT_PARAMETER_PREFIX.length ()).trim () : parameterName);
+    private void addParameters () {
+        for (String parameterName : mParameterNames) {
+            try {
+                boolean isOutput         = parameterName.startsWith (OUTPUT_PARAMETER_PREFIX);
+                String realParameterName = isOutput ? parameterName.substring (OUTPUT_PARAMETER_PREFIX.length ()).trim () : parameterName;
                 mProcedure.addParameter (realParameterName, isOutput);
+            } catch (ExecutionException ee) {
+                mPublisher.publishError (ee.getMessage ());
             }
         }
     }
@@ -104,7 +156,7 @@ public final class InstructionSource extends FitNesseTestSource {
     // TODO: move bulk of code to ScenarioSource
     public boolean addScenario (Parse table) {
         String tableType = table.parts.parts.text ().toLowerCase ();
-        if (tableType.equals ("scenario")) {
+        if ("scenario".equals (tableType) || "steps".equals (tableType)) {
             mRow = table.parts;
             processFixtureLine ();
         }
@@ -121,7 +173,7 @@ public final class InstructionSource extends FitNesseTestSource {
         if (mProcedure != null) {
             mProcedure.addTable (instructions);
         }
-        if (!tableType.equals ("instruction")) {
+        if (!"instruction".equals (tableType)) {
             mPublisher.publishEndOfSection ();
         }
         
@@ -220,7 +272,7 @@ public final class InstructionSource extends FitNesseTestSource {
             while ((mRow = mRow.more) != null) {
                 List<String> instruction = readData2 (instructionName, columnNames);
                 instructions.add (instruction);
-                processData2 (instruction);
+                processData (instruction);
             }
         }
 
@@ -244,7 +296,7 @@ public final class InstructionSource extends FitNesseTestSource {
         mRow = mRow.more;
         List<String> columnNames = new ArrayList<String> ();
         if (mRow != null) {
-            fillDataToTestLine ();
+            fillDataTestLine ();
             linkToLogFile (mRow.parts);
             mPublisher.publishTestLine (mTestLine);
 
@@ -267,44 +319,6 @@ public final class InstructionSource extends FitNesseTestSource {
         return columnNames;
     }
 
-    private String getDataToInstructionName () {
-        mRow = mRow.more;
-        if (mRow != null) {
-            fillDataToTestLine ();
-            mPublisher.publishTestLine (mTestLine);
-
-            int nrOfParts                   = mTestLine.getNrOfParts ();
-            StringBuilder instructionNameSb = new StringBuilder ();
-            for (int partNr = 1; partNr < nrOfParts; ++partNr) {
-                String part = mTestLine.getPart (partNr);
-                if (part.isEmpty ()) {
-                    mPublisher.publishError ("empty column name(s)");
-                    break;
-                } else {
-                    for (String word : part.split (" +")) {
-                        instructionNameSb.append (word).append (" ");
-                    }
-                    instructionNameSb.append ("_ ");
-                }
-            }
-            mPublisher.publishEndOfTestLine ();
-
-            return instructionNameSb.toString ().trim ();
-        }
-        return null;
-    }
-
-    private void fillDataToTestLine () {
-        List<String> parts = new ArrayList<String> ();
-        parts.add ("");
-        Parse currentCell = mRow.parts;
-        do {
-            parts.add (currentCell.text ());
-            currentCell = currentCell.more;
-        } while (currentCell != null);
-        mTestLine.setParts (parts);
-    }
-
     private List<String> readData2 (String instructionName, List<String> columnNames) {
         List<String> parts = new ArrayList<String> ();
         parts.add (instructionName);
@@ -315,13 +329,5 @@ public final class InstructionSource extends FitNesseTestSource {
         }
         mTestLine.setParts (parts);
         return parts;
-    }
-
-    private void processData2 (List<String> parts) {
-        if (!parts.isEmpty ()) {
-            linkToLogFile (mRow.parts);
-            mTestLine.setParts (parts);
-            mPublisher.publishTestLine (mTestLine);
-        }
     }
 }

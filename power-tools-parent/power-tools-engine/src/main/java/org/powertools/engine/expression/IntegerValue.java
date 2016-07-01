@@ -19,6 +19,10 @@
 package org.powertools.engine.expression;
 
 
+/*
+ * The string value is converted to an int when needed
+ * so that using it as a string does not lose leading zeros.
+ */
 final class IntegerValue extends Value {
     private final String mValue;
 
@@ -142,7 +146,7 @@ final class IntegerValue extends Value {
 
     @Override
     RealValue toRealValue () {
-        return new RealValue (new Double (mValue).doubleValue ());
+        return new RealValue (mValue);
     }
 
     @Override

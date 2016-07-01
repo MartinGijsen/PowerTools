@@ -35,7 +35,7 @@ import java.util.regex.Pattern;
 
 import org.powertools.engine.Function;
 import org.powertools.engine.Functions;
-import org.powertools.engine.symbol.Scope;
+import org.powertools.engine.Scope;
 }
 
 @members {
@@ -70,7 +70,7 @@ import org.powertools.engine.symbol.Scope;
     }
 
     private Value invokeFunction (String name, String[] params) {
-        Function function = mFunctions.get (name);
+        Function function = mFunctions.get (name, params.length);
         return createValue (function.checkNrOfArgsAndExecute (params));
     }
 

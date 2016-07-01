@@ -22,76 +22,85 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.powertools.engine.ExecutionException;
+import org.powertools.engine.Scope;
 import org.powertools.engine.Symbol;
 
 
-public final class Scope {
+public final class ScopeImpl implements Scope {
+    private static final ScopeImpl mGlobalScope = new ScopeImpl (null);
+
     private final Map<String, Symbol> mSymbols;
-    private final Scope mParent;
+    private final Scope               mParent;  // TODO: remove?
 
 
-    public Scope (Scope parent) {
+    public ScopeImpl (Scope parent) {
         mSymbols = new HashMap<String, Symbol> ();
         mParent  = parent;
     }
 
+    public static Scope getGlobalScope () {
+        return mGlobalScope;
+    }
 
+    @Override
     public Scope getParent () {
         return mParent;
     }
 
+    @Override
     public Symbol get (String name) {
         Symbol symbol = mSymbols.get (name);
-        if (symbol != null) {
-            return symbol;
-        } else if (mParent == null) {
-            throw new ExecutionException (String.format ("symbol '%s' not found", name));
-        } else {
-            return mParent.get (name);
+        if (symbol == null && this != mGlobalScope) {
+            symbol = mGlobalScope.mSymbols.get (name);
+            if (symbol == null) {
+                throw new ExecutionException (String.format ("symbol '%s' not found", name));
+            }
         }
+        return symbol;
     }
 
-    public Symbol getLocal (String name) {
-        return mSymbols.get (name);
-    }
-
+    @Override
     public Symbol getSymbol (String name) {
-        int index = name.indexOf ('.');
-        if (index < 0) {
-            return get (name);
-        } else {
-            return get (name.substring (0, index));
-        }
+        int index         = name.indexOf ('.');
+        String symbolName = index < 0 ? name : name.substring (0, index);
+        return get (symbolName);
     }
 
+    @Override
     public Symbol createConstant (String name, String value) {
-        return add (new Constant (name, new Scope (this), value));
+        return add (new Constant (name, new ScopeImpl (this), value));
     }
 
+    @Override
     public Symbol createParameter (String name, String value) {
-        return add (new Parameter (name, new Scope (this), value));
+        return add (new Parameter (name, new ScopeImpl (this), value));
     }
 
+    @Override
     public Symbol createVariable (String name, String value) {
-        return add (new SimpleVariable (name, new Scope (this), value));
+        return add (new SimpleVariable (name, new ScopeImpl (this), value));
     }
 
+    @Override
     public Symbol createStructure (String name) {
-        return add (new Structure (name, new Scope (this)));
+        return add (new Structure (name, new ScopeImpl (this)));
     }
 
+    @Override
     public Symbol createNumberSequence (String name, int value) {
-        return add (new NumberSequence (name, new Scope (this), value));
+        return add (new NumberSequence (name, new ScopeImpl (this), value));
     }
 
+    @Override
     public StringSequence createStringSequence (String name) {
-        StringSequence sequence = new StringSequence (name, new Scope (this));
+        StringSequence sequence = new StringSequence (name, new ScopeImpl (this));
         add (sequence);
         return sequence;
     }
 
+    @Override
     public RepeatingStringSequence createRepeatingStringSequence (String name) {
-        RepeatingStringSequence sequence = new RepeatingStringSequence (name, new Scope (this));
+        RepeatingStringSequence sequence = new RepeatingStringSequence (name, new ScopeImpl (this));
         add (sequence);
         return sequence;
     }
@@ -100,7 +109,7 @@ public final class Scope {
     private Symbol add (Symbol symbol) {
         String name = symbol.getName ();
         if (mSymbols.get (name) != null) {
-            throw new ExecutionException (String.format ("a symbol '%s' already exists", name));
+            throw new ExecutionException ("a symbol '%s' already exists", name);
         } else {
             mSymbols.put (symbol.getName (), symbol);
             return symbol;

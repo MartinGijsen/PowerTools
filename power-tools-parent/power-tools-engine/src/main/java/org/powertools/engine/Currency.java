@@ -23,8 +23,11 @@ import java.util.Set;
 
 public interface Currency {
     Currency addName (String name);
+    long parseAmount (String amount);
     String format (long amount);
     String format (double amount, String name);
+    int getNrOfDecimals ();
     long getFactor ();
+    String getName ();
     Set<String> getNames ();
 }

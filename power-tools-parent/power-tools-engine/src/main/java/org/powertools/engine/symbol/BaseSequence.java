@@ -23,6 +23,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.powertools.engine.ExecutionException;
+import org.powertools.engine.Scope;
 
 
 public abstract class BaseSequence extends SimpleSymbol {

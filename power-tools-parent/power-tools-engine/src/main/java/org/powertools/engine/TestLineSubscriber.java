@@ -18,11 +18,8 @@
 
 package org.powertools.engine;
 
-import org.powertools.engine.TestLine;
-
 
 public interface TestLineSubscriber extends TestSubscriber {
-//  void processBeginSection ();
     void processTestLine (TestLine testLine);
     void processCommentLine (String testLine);
     void processCommentLine (TestLine testLine);

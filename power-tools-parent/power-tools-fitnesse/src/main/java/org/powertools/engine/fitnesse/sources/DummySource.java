@@ -22,7 +22,6 @@ import org.powertools.engine.TestRunResultPublisher;
 import org.powertools.engine.sources.TestLineImpl;
 
 import fit.Parse;
-import org.powertools.engine.fitnesse.Reference;
 
 
 final class DummySource extends FitNesseTestSource {

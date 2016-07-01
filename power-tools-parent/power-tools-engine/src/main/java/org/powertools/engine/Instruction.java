@@ -15,17 +15,17 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with the PowerTools engine. If not, see <http://www.gnu.org/licenses/>.
  */
+package org.powertools.engine;
 
-package org.powertools.engine.instructions;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-import org.junit.Test;
-import static org.junit.Assert.*;
 
-
-public class InstructionSetFactoryTest {
-    @Test
-    public void testCreateClassInstructionSet () {
-        InstructionSetFactory factory = new InstructionSetFactory (null);
-        assertNotNull (factory.createClassInstructionSet ("", null));
-    }
+@Retention (RetentionPolicy.RUNTIME)
+@Target ({ElementType.METHOD})
+public @interface Instruction {
+    String description ();
+    String[] parameters ();
 }

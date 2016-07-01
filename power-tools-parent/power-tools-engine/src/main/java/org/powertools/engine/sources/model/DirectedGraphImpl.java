@@ -59,9 +59,9 @@ final class DirectedGraphImpl implements DirectedGraph {
         } catch (SAXException se) {
             throw new ExecutionException ("SAX exception");
         } catch (FileNotFoundException fnfe) {
-            throw new ExecutionException ("file not found: " + mName);
+            throw new ExecutionException ("file '%s' not found", mName);
         } catch (IOException ioe) {
-            throw new ExecutionException ("error reading file: " + mName);
+            throw new ExecutionException ("error reading file '%s'", mName);
         }
     }
 
@@ -71,7 +71,7 @@ final class DirectedGraphImpl implements DirectedGraph {
     
     public State addState (String name) {
         if (mStates.containsKey (name)) {
-            throw new ExecutionException (String.format ("state name '%s' not unique", name));
+            throw new ExecutionException ("state name '%s' not unique", name);
         } else {
             State state = new State (name, this);
             mStates.put (name, state);

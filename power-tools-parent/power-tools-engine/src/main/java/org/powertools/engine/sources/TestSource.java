@@ -19,8 +19,8 @@
 package org.powertools.engine.sources;
 
 import org.powertools.engine.ExecutionException;
+import org.powertools.engine.Scope;
 import org.powertools.engine.TestRunResultPublisher;
-import org.powertools.engine.symbol.Scope;
 
 
 /*

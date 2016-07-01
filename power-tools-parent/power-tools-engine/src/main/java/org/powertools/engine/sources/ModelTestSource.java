@@ -21,7 +21,7 @@ package org.powertools.engine.sources;
 import java.util.LinkedList;
 import java.util.List;
 import org.powertools.engine.RunTime;
-import org.powertools.engine.instructions.ProcedureRunner;
+import org.powertools.engine.ProcedureRunner;
 import org.powertools.engine.sources.model.Model;
 import org.powertools.engine.sources.model.Submodel;
 

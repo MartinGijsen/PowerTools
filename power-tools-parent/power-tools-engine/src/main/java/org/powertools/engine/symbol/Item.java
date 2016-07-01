@@ -24,6 +24,11 @@ abstract class Item {
     protected final Item mParent;
 
 
+    protected Item (String name, Item parent) {
+        mName   = name;
+        mParent = parent;
+    }
+
     final String getName () {
         return mName;
     }
@@ -32,9 +37,4 @@ abstract class Item {
     abstract String getValue ();
     abstract void clear ();
     abstract LeafItem createLeaf (String[] names, int position);
-
-    protected Item (String name, Item parent) {
-        mName   = name;
-        mParent = parent;
-    }
 }

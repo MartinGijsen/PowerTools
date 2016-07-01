@@ -32,15 +32,6 @@ import org.powertools.engine.sources.TestSourceFactory;
  * instruction sets using 'use instruction set'.
  */
 public class ExcelEngine extends Engine {
-    public static void main (String[] args) {
-        if (args.length != 2) {
-            reportError ("Please specify a directory and a file");
-        } else {
-            new ExcelEngine (args[0]).run (args[1]);
-        }
-    }
-
-
     public ExcelEngine (String resultsDirectory) {
         this (new RunTimeImpl (new Context (resultsDirectory)));
     }
@@ -56,8 +47,18 @@ public class ExcelEngine extends Engine {
             reportError ("could not open test case report");
         }
 
-        registerBuiltinInstructions ();
+        registerBuiltins ();
     }
+
+
+    public static void main (String[] args) {
+        if (args.length != 2) {
+            reportError ("Please specify a directory and a file");
+        } else {
+            new ExcelEngine (args[0]).run (args[1]);
+        }
+    }
+
 
     @Override
     public final void run (String sourceName) {

@@ -37,7 +37,7 @@ final class CurrenciesImpl implements Currencies {
             }
         }
         if (!duplicateNames.isEmpty ()) {
-            throw new ExecutionException ("registration of known currency name(s) " + duplicateNames.toString ());
+            throw new ExecutionException ("registering known currency name(s) '%s'", duplicateNames.toString ());
         }
     }
     
@@ -50,7 +50,7 @@ final class CurrenciesImpl implements Currencies {
     public Currency get (String name) {
         Currency currency = mCurrencyMap.get (name);
         if (currency == null) {
-            throw new ExecutionException ("unknown currency " + name);
+            throw new ExecutionException ("unknown currency '%s'", name);
         } else {
             return currency;
         }
@@ -59,14 +59,14 @@ final class CurrenciesImpl implements Currencies {
     @Override
     public void remove (String name) {
         if (mCurrencyMap.remove (name) == null) {
-            throw new ExecutionException ("unknown currency " + name);
+            throw new ExecutionException ("unknown currency '%s'", name);
         }
     }
     
     @Override
     public void addAlias (String alias, String name) {
         if (isKnownCurrency (alias)) {
-            throw new ExecutionException ("known currency " + alias);
+            throw new ExecutionException ("known currency '%s'", alias);
         } else {
             mCurrencyMap.put (alias, get (name));
         }

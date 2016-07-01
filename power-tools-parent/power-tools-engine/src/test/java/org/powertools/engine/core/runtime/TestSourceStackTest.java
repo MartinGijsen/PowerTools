@@ -21,121 +21,122 @@ package org.powertools.engine.core.runtime;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.powertools.engine.ExecutionException;
+import org.powertools.engine.Scope;
 import org.powertools.engine.sources.TestLineImpl;
 import org.powertools.engine.sources.TestSource;
-import org.powertools.engine.symbol.Scope;
+import org.powertools.engine.symbol.ScopeImpl;
 
 
 public class TestSourceStackTest {
-	@Test
-	public void testGetCurrentTestSource () {
-		TestSourceStack stack = new TestSourceStackImpl ();
-		TestSource testSource = new TestSourceImpl (stack.getCurrentScope ());
-		stack.initAndPush (testSource);
-		assertEquals (testSource, stack.getCurrentTestSource ());
-	}
+    @Test
+    public void testGetCurrentTestSource () {
+        TestSourceStack stack = new TestSourceStackImpl ();
+        TestSource testSource = new TestSourceImpl (stack.getCurrentScope ());
+        stack.initAndPush (testSource);
+        assertEquals (testSource, stack.getCurrentTestSource ());
+    }
 
-	@Test
-	public void testGetGlobalScopeGetCurrentScope () {
-		TestSourceStack stack = new TestSourceStackImpl ();
-		Scope globalScope     = stack.getGlobalScope ();
-		assertNotNull (globalScope);
-		Scope localScope      = new Scope (globalScope);
-		stack.initAndPush (new TestSourceImpl (localScope));
-		assertEquals (localScope, stack.getCurrentScope ());
-	}
+    @Test
+    public void testGetGlobalScopeGetCurrentScope () {
+        TestSourceStack stack = new TestSourceStackImpl ();
+        Scope globalScope     = stack.getGlobalScope ();
+        assertNotNull (globalScope);
+        Scope localScope = new ScopeImpl (globalScope);
+        stack.initAndPush (new TestSourceImpl (localScope));
+        assertEquals (localScope, stack.getCurrentScope ());
+    }
 
-	@Test
-	public void testRun () {
+    @Test
+    public void testRun () {
         TestSourceStack stack = new TestSourceStackImpl ();
         TestSourceImpl source = new TestSourceImpl (stack.getCurrentScope ());
         stack.initAndPush (source);
-		assertFalse (source.isCreateCalled ());
+        assertFalse (source.isCreateCalled ());
         stack.run ("some filename");
-		assertTrue (source.isCreateCalled ());
-	}
+        assertTrue (source.isCreateCalled ());
+    }
 
-	@Test
-	public void testGetTestLine () {
-		TestSourceStack stack = new TestSourceStackImpl ();
-		stack.initAndPush (new TestSourceImpl (stack.getCurrentScope ()));
-		stack.initAndPush (new TestSourceImpl (stack.getCurrentScope ()));
-		assertNotNull (stack.getTestLine ());
-		assertNotNull (stack.getTestLine ());
-		assertNull (stack.getTestLine ());
-	}
+    @Test
+    public void testGetTestLine () {
+        TestSourceStack stack = new TestSourceStackImpl ();
+        stack.initAndPush (new TestSourceImpl (stack.getCurrentScope ()));
+        stack.initAndPush (new TestSourceImpl (stack.getCurrentScope ()));
+        assertNotNull (stack.getTestLine ());
+        assertNotNull (stack.getTestLine ());
+        assertNull (stack.getTestLine ());
+    }
 
-	@Test
-	public void testCreateAndPushTestCase () {
-		TestSourceStack stack = new TestSourceStackImpl ();
-		stack.initAndPush (new TestSourceImpl (stack.getCurrentScope ()));
-		assertTrue (stack.createAndPushTestCase ("test case name 1", "test case description 1"));
-		assertTrue (stack.inATestCase ());
-		assertTrue (stack.createAndPushTestCase ("test case name 2", "test case description 2"));
-		assertTrue (stack.inATestCase ());
-		stack.popTestCase ();
-		assertFalse (stack.inATestCase ());
-	}
+    @Test
+    public void testCreateAndPushTestCase () {
+        TestSourceStack stack = new TestSourceStackImpl ();
+        stack.initAndPush (new TestSourceImpl (stack.getCurrentScope ()));
+        assertTrue (stack.createAndPushTestCase ("test case name 1", "test case description 1"));
+        assertTrue (stack.inATestCase ());
+        assertTrue (stack.createAndPushTestCase ("test case name 2", "test case description 2"));
+        assertTrue (stack.inATestCase ());
+        stack.popTestCase ();
+        assertFalse (stack.inATestCase ());
+    }
 
-	@Test
-	public void pushTestCaseNestedAndNotInTestCase () {
-		TestSourceStack stack = new TestSourceStackImpl ();
-		stack.initAndPush (new TestSourceImpl (stack.getCurrentScope ()));
-		assertTrue (stack.createAndPushTestCase ("test case name 1", "test case description 1"));
-		stack.initAndPush (new TestSourceImpl (stack.getCurrentScope ()));
-		assertFalse (stack.createAndPushTestCase ("test case name 1", "test case description 1"));
-	}
+    @Test
+    public void pushTestCaseNestedAndNotInTestCase () {
+        TestSourceStack stack = new TestSourceStackImpl ();
+        stack.initAndPush (new TestSourceImpl (stack.getCurrentScope ()));
+        assertTrue (stack.createAndPushTestCase ("test case name 1", "test case description 1"));
+        stack.initAndPush (new TestSourceImpl (stack.getCurrentScope ()));
+        assertFalse (stack.createAndPushTestCase ("test case name 1", "test case description 1"));
+    }
 
-	@Test
-	public void testPopTestCase_EmptyStack () {
-		try {
-			TestSourceStack stack = new TestSourceStackImpl ();
-			stack.popTestCase ();
-			fail ("no exception");
-		} catch (ExecutionException ee) {
-			assertTrue (ee.getMessage ().contains ("no current test source"));
-		}
-	}
+    @Test
+    public void testPopTestCase_EmptyStack () {
+        try {
+            TestSourceStack stack = new TestSourceStackImpl ();
+            stack.popTestCase ();
+            fail ("no exception");
+        } catch (ExecutionException ee) {
+            assertTrue (ee.getMessage ().contains ("no current test source"));
+        }
+    }
 
-	@Test
-	public void testPopTestCase_NoTestCase () {
-		try {
-			TestSourceStack stack = new TestSourceStackImpl ();
-    		stack.initAndPush (new TestSourceImpl (stack.getCurrentScope ()));
-			stack.popTestCase ();
-			fail ("no exception");
-		} catch (ExecutionException ee) {
-			assertTrue (ee.getMessage ().contains ("not in a test case"));
-		}
-	}
+    @Test
+    public void testPopTestCase_NoTestCase () {
+        try {
+            TestSourceStack stack = new TestSourceStackImpl ();
+            stack.initAndPush (new TestSourceImpl (stack.getCurrentScope ()));
+            stack.popTestCase ();
+            fail ("no exception");
+        } catch (ExecutionException ee) {
+            assertTrue (ee.getMessage ().contains ("not in a test case"));
+        }
+    }
 
 
-	private class TestSourceImpl extends TestSource {
-		private boolean mFirstTime = true;
+    private class TestSourceImpl extends TestSource {
+        private boolean mFirstTime    = true;
         private boolean mCreateCalled = false;
-		
-		TestSourceImpl (Scope scope) {
-			super (scope, null);
-		}
 
-		@Override
-		public TestLineImpl getTestLine () {
-			if (mFirstTime) {
-				mFirstTime = false;
-				return new TestLineImpl (new String[] { "" });
-			} else {
-				return null;
-			}
-		}
-        
+        TestSourceImpl (Scope scope) {
+            super (scope, null);
+        }
+
+        @Override
+        public TestLineImpl getTestLine () {
+            if (mFirstTime) {
+                mFirstTime = false;
+                return new TestLineImpl (new String[] { "" });
+            } else {
+                return null;
+            }
+        }
+
         @Override
         public TestSource create (String fileName) {
             mCreateCalled = true;
             return new TestSourceImpl (null);
         }
-        
+
         boolean isCreateCalled () {
             return mCreateCalled;
         }
-	}
+    }
 }

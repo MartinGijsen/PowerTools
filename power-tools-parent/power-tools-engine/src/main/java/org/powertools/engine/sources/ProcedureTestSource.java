@@ -21,9 +21,10 @@ package org.powertools.engine.sources;
 import java.util.Iterator;
 import java.util.List;
 import org.powertools.engine.ExecutionException;
+import org.powertools.engine.Scope;
 import org.powertools.engine.TestLine;
 import org.powertools.engine.TestRunResultPublisher;
-import org.powertools.engine.symbol.Scope;
+import org.powertools.engine.symbol.ScopeImpl;
 
 
 final class ProcedureTestSource extends TestSource {
@@ -32,7 +33,7 @@ final class ProcedureTestSource extends TestSource {
 
 
     ProcedureTestSource (Procedure procedure, Scope parentScope, TestLine testLine, TestRunResultPublisher publisher) {
-        super (new Scope (parentScope), publisher);
+        super (new ScopeImpl (parentScope), publisher);
         mProcedure = procedure;
         createParameters (testLine);
         mInstructionIter = procedure.instructionIterator ();
@@ -46,7 +47,7 @@ final class ProcedureTestSource extends TestSource {
 
     private void checkNrOfArguments (int nrOfArguments, int nrOfParameters) {
         if (nrOfArguments != nrOfParameters) {
-            throw new ExecutionException (String.format ("procedure %s expects %d arguments but receives %d", mProcedure.getName (), nrOfParameters, nrOfArguments));
+            throw new ExecutionException ("procedure %s expects %d arguments but receives %d", mProcedure.getName (), nrOfParameters, nrOfArguments);
         }
     }
 
@@ -82,8 +83,12 @@ final class ProcedureTestSource extends TestSource {
     public void cleanup () {
         for (ProcedureParameter parameter : mProcedure.getParameters ()) {
             if (parameter.isOutput ()) {
-                String name = parameter.getName ();
-                mPublisher.publishValue (name, mScope.getLocal (name).getValue ());
+                try {
+                    String name = parameter.getName ();
+                    mPublisher.publishValue (name, mScope.get (name).getValue ());
+                } catch (ExecutionException ee) {
+                    // is a structure, just ignore
+                }
             }
         }
 

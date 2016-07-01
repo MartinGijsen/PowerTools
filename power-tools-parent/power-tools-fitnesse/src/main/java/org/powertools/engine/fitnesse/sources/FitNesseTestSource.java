@@ -22,11 +22,10 @@ import fit.Fixture;
 import fit.Parse;
 import java.util.ArrayList;
 import java.util.List;
+import org.powertools.engine.Scope;
 import org.powertools.engine.TestRunResultPublisher;
 import org.powertools.engine.fitnesse.FitNesse;
-import org.powertools.engine.fitnesse.Reference;
 import org.powertools.engine.sources.TestSource;
-import org.powertools.engine.symbol.Scope;
 
 
 public abstract class FitNesseTestSource extends TestSource {

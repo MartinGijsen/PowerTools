@@ -39,10 +39,6 @@ public class KeywordsHtmlLog extends BasicHtmlLog {
             mWriter.format ("<TD>%s</TD>", getCell (testLine, argNr));
         }
         mWriter.append ("<TD colspan=\"10\">");
-//        if (mLevel == 0) {
-//            mWriter.format ("<A id=\"id%d\">", ++mLastId);
-////            mWriter.format ("<A id=\"id%d\">", mReference.advance ());
-//        }
         mWriter.append (getCell (testLine, nrOfParts - 1)).println ("</TD></TR>");
     }
 

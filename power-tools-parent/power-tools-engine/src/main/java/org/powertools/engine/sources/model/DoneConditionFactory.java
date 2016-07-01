@@ -35,7 +35,7 @@ final class DoneConditionFactory {
         } else if ("end state".equals (conditionName)) {
             condition = new DoneWhenInEndState ();
         } else {
-            throw new ExecutionException (String.format ("unknown condition: %s", conditionName));
+            throw new ExecutionException ("unknown condition: %s", conditionName);
         }
         publisher.subscribeToModel (condition);
         return condition;

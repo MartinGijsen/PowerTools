@@ -18,7 +18,7 @@
 
 package org.powertools.engine;
 
-import org.powertools.engine.symbol.Scope;
+import org.powertools.engine.util.PowerToolsParser;
 
 
 /**
@@ -170,6 +170,11 @@ public interface RunTime {
      */
     void leaveTestCase ();
 
+    /**
+     * Aborts the test case, exiting any procedures it has called.
+     */
+    void abortTestCase ();
+
 
     /**
      * Makes an object available to other instruction sets
@@ -199,4 +204,6 @@ public interface RunTime {
      * @return  the object containing the known currencies
      */
     Currencies getCurrencies ();
+    
+    PowerToolsParser getPowerToolsParser ();
 }

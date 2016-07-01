@@ -18,18 +18,13 @@
 
 package org.powertools.engine.instructions;
 
-import org.powertools.engine.Currencies;
-import org.powertools.engine.RunTime;
-
 
 public final class InstructionSetFactory {
     private final ParameterConvertors mParameterConvertors;
     
-    
-    public InstructionSetFactory (Currencies currencies, RunTime runTime) {
-        mParameterConvertors = new ParameterConvertors (currencies, runTime);
+    public InstructionSetFactory (ParameterConvertors parameterConvertors) {
+        mParameterConvertors = parameterConvertors;
     }
-
 
     public InstructionSet createClassInstructionSet (String name, Object object) {
         return new ClassInstructionSet (name, object, mParameterConvertors);

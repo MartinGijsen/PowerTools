@@ -45,14 +45,13 @@ public final class Procedure {
 
 
     public void addParameter (String name, boolean isOutput) {
-        String realName = name;
         for (ProcedureParameter parameter : mParameters) {
-            if (parameter.getName ().equalsIgnoreCase (realName)) {
-                throw new ExecutionException (String.format ("duplicate parameter name '%s'", parameter.getName ()));
+            if (parameter.getName ().equalsIgnoreCase (name)) {
+                throw new ExecutionException ("duplicate parameter name '%s'", parameter.getName ());
             }
         }
 
-        mParameters.add (new ProcedureParameter (realName, isOutput));
+        mParameters.add (new ProcedureParameter (name, isOutput));
     }
 
     public void addTable (List<List<String>> table) {

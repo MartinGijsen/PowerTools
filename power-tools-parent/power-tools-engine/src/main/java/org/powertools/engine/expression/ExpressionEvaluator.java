@@ -26,7 +26,7 @@ import org.antlr.runtime.tree.CommonTreeNodeStream;
 import org.powertools.engine.BusinessDayChecker;
 import org.powertools.engine.ExecutionException;
 import org.powertools.engine.Functions;
-import org.powertools.engine.symbol.Scope;
+import org.powertools.engine.Scope;
 
 
 /**
@@ -61,7 +61,7 @@ public final class ExpressionEvaluator {
             mWalker.setTreeNodeStream (new CommonTreeNodeStream (tree));
             return mWalker.main (scope).toString ();
         } catch (RecognitionException re) {
-            throw new ExecutionException ("invalid expression: " + expression);
+            throw new ExecutionException ("invalid expression '%s'", expression);
         }
     }
 }

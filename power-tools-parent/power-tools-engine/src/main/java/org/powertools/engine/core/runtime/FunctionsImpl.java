@@ -19,6 +19,9 @@
 package org.powertools.engine.core.runtime;
 
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import org.powertools.engine.ExecutionException;
 import org.powertools.engine.Function;
@@ -26,51 +29,85 @@ import org.powertools.engine.Functions;
 
 
 public class FunctionsImpl implements Functions {
-    private final Map<String, Function> mFunctions;
+    private final Map<String, List<Function>> mFunctions;
     
     public FunctionsImpl () {
-        mFunctions = new HashMap<String, Function> ();
-        
-        addBuiltins ();
+        mFunctions = new HashMap<String, List<Function>> ();
     }
 
-    private void addBuiltins () {
-        add (new Function ("abs", 1) {
-            public String execute (String[] args) {
-                return Integer.toString (Math.abs (Integer.parseInt (args[0])));
-            }
-        });
-        add (new Function ("random", 1) {
-            public String execute (String[] args) {
-                checkNrOfArgsAndExecute (args);
-                return Double.toString (Math.floor (Math.random () * Integer.parseInt (args[0])));
-            }
-        });
-    }
-    
     @Override
     public void add (Function function) {
-        String name = function.getName ();
-        if (mFunctions.containsKey (name)) {
-            throw new ExecutionException (String.format ("function '%s' already exists (unregister it first?)", name));
+        String name         = function.getName ();
+        int nrOfParameters  = function.getNrOfParameters ();
+        List<Function> list = getList (name);
+        if (newNrOfParameters (list, nrOfParameters)) {
+            list.add (function);
         } else {
-            mFunctions.put (name, function);
+            throw new ExecutionException ("function '%s' with %d parameters already defined (unregister it first?)", name, nrOfParameters);
         }
     }
 
     @Override
-    public Function get (String name) {
-        if (!mFunctions.containsKey (name)) {
-            throw new ExecutionException (String.format ("function '%s' is unknown", name));
-        } else {
-            return mFunctions.get (name);
-        }
+    public Function get (String name, int nrOfParameters) {
+        checkExists (name);
+        return getFunction (name, nrOfParameters);
     }
 
     @Override
     public void remove (String name) {
-        if (mFunctions.remove (name) == null) {
-            throw new ExecutionException (String.format ("function '%s' is unknown", name));
+        checkExists (name);
+        if (mFunctions.get (name).size () == 1) {
+            mFunctions.remove (name);
+        } else {
+            throw new ExecutionException ("function '%s' is unknown", name);
         }
+    }
+
+    @Override
+    public void remove (String name, int nrOfParameters) {
+        checkExists (name);
+        List<Function> list = mFunctions.get (name);
+        Iterator<Function> iter = list.iterator ();
+        while (iter.hasNext ()) {
+            Function currentFunction = iter.next ();
+            if (currentFunction.getNrOfParameters () == nrOfParameters) {
+                iter.remove ();
+                return;
+            }
+        }
+        throw new ExecutionException ("function '%s' with %d parameters is unknown", name, nrOfParameters);
+    }
+
+    private void checkExists (String name) {
+        if (!mFunctions.containsKey (name)) {
+            throw new ExecutionException ("function '%s' is unknown", name);
+        }
+    }
+    
+    private List<Function> getList (String name) {
+        List<Function> list = mFunctions.get (name);
+        if (list == null) {
+            list = new LinkedList<Function> ();
+            mFunctions.put (name, list);
+        }
+        return list;
+    }
+    
+    private boolean newNrOfParameters (List<Function> list, int nrOfParameters) {
+        for (Function currentFunction : list) {
+            if (currentFunction.getNrOfParameters () == nrOfParameters) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private Function getFunction (String name, int nrOfParameters) {
+        for (Function currentFunction : mFunctions.get (name)) {
+            if (currentFunction.getNrOfParameters () == nrOfParameters) {
+                return currentFunction;
+            }
+        }
+        throw new ExecutionException ("function '%s' with %d parameters is unknown", name, nrOfParameters);
     }
 }

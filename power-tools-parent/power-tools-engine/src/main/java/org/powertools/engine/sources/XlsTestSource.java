@@ -25,8 +25,8 @@ import java.io.IOException;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.powertools.engine.ExecutionException;
+import org.powertools.engine.Scope;
 import org.powertools.engine.TestRunResultPublisher;
-import org.powertools.engine.symbol.Scope;
 
 
 final class XlsTestSource extends ExcelTestSource {
@@ -50,7 +50,7 @@ final class XlsTestSource extends ExcelTestSource {
         try {
             return new HSSFWorkbook (new FileInputStream (fileName));
         } catch (FileNotFoundException fnfe) {
-            throw new ExecutionException ("file '" + fileName + "' not found");
+            throw new ExecutionException ("file '%s' not found", fileName);
         } catch (IOException ioe) {
             throw new ExecutionException ("IO exception");
         }

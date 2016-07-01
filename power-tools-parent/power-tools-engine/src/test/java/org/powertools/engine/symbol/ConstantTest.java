@@ -24,60 +24,60 @@ import static org.junit.Assert.assertFalse;
 import org.junit.Before;
 import org.junit.Test;
 import org.powertools.engine.ExecutionException;
+import org.powertools.engine.Scope;
 import org.powertools.engine.Symbol;
 
 
 public class ConstantTest {
-	@Before
-	public void setUp () throws Exception {
-		mScope		= new Scope (null);
-		mConstant	= new Constant (NAME, mScope, VALUE);
-	}
+    private static final String NAME         = "name";
+    private static final String INVALID_NAME = "name.something";
+    private static final String VALUE        = "value";
 
-	
-	@Test
-	public void testConstant () {
-		assertFalse (mConstant == null);
-	}
-
-	
-	@Test
-	public void testGetValue () {
-		assertEquals (VALUE, mConstant.getValue (NAME));
-	}
-
-	@Test (expected=ExecutionException.class)
-	public void testGetValueWithInvalidName () {
-		assertEquals (VALUE, mConstant.getValue (INVALID_NAME));
-	}
-
-	@Test (expected=ExecutionException.class)
-	public void testSetValueStringString () {
-		mConstant.setValue (NAME, "new value");
-	}
-
-	@Test (expected=ExecutionException.class)
-	public void testSetValueString () {
-		mConstant.setValue ("new value");
-	}
-
-	@Test (expected=ExecutionException.class)
-	public void testClear () {
-		mConstant.clear ("a.b".split (Symbol.PERIOD));
-	}
+    private Scope mScope;
+    private Constant mConstant;
 
 
-	@Test
-	public void testGetName () {
-		assertEquals (NAME, mConstant.getName ());
-	}
+    @Before
+    public void setUp () throws Exception {
+        mScope    = new ScopeImpl (null);
+        mConstant = new Constant (NAME, mScope, VALUE);
+    }
 
-	
-	// private members
-	private static final String NAME			= "name";
-	private static final String INVALID_NAME	= "name.something";
-	private static final String VALUE			= "value";
-	
-	private Scope mScope;
-	private Constant mConstant;
+
+    @Test
+    public void testConstant () {
+        assertFalse (mConstant == null);
+    }
+
+
+    @Test
+    public void testGetValue () {
+        assertEquals (VALUE, mConstant.getValue (NAME));
+    }
+
+    @Test (expected=ExecutionException.class)
+    public void testGetValueWithInvalidName () {
+        assertEquals (VALUE, mConstant.getValue (INVALID_NAME));
+    }
+
+    @Test (expected=ExecutionException.class)
+    public void testSetValueStringString () {
+        mConstant.setValue (NAME, "new value");
+    }
+
+    @Test (expected=ExecutionException.class)
+    public void testSetValueString () {
+        mConstant.setValue ("new value");
+    }
+
+    @Test (expected=ExecutionException.class)
+    public void testClear () {
+        mConstant.clear ("a.b".split (Symbol.PERIOD));
+    }
+
+
+    @Test
+    public void testGetName () {
+        assertEquals (NAME, mConstant.getName ());
+    }
 }

@@ -19,6 +19,7 @@
 package org.powertools.engine.symbol;
 
 import org.powertools.engine.ExecutionException;
+import org.powertools.engine.Scope;
 
 
 final class Constant extends SimpleSymbol {
@@ -29,6 +30,6 @@ final class Constant extends SimpleSymbol {
 
     @Override
     public void setValue (String name, String value) {
-        throw new ExecutionException (String.format ("constant '%s' cannot be set", name));
+        throw new ExecutionException ("constant '%s' cannot be set", name);
     }
 }

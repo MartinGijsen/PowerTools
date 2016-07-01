@@ -22,9 +22,10 @@ import java.util.EmptyStackException;
 import java.util.Stack;
 
 import org.powertools.engine.ExecutionException;
+import org.powertools.engine.Scope;
 import org.powertools.engine.sources.TestLineImpl;
 import org.powertools.engine.sources.TestSource;
-import org.powertools.engine.symbol.Scope;
+import org.powertools.engine.symbol.ScopeImpl;
 
 
 /**
@@ -34,14 +35,14 @@ import org.powertools.engine.symbol.Scope;
  */
 final class TestSourceStackImpl implements TestSourceStack {
     private final Stack<TestSource> mSourceStack;
-    private final Scope mGlobalScope;
+    private final Scope             mGlobalScope;
     
     private boolean mAborting;
 
 
     TestSourceStackImpl () {
         mSourceStack = new Stack<TestSource> ();
-        mGlobalScope = new Scope (null);
+        mGlobalScope = ScopeImpl.getGlobalScope ();
         mAborting    = false;
     }
 
@@ -123,6 +124,13 @@ final class TestSourceStackImpl implements TestSourceStack {
             }
         }
         return false;
+    }
+
+    @Override
+    public void abortTestCase () {
+        while (inATestCase ()) {
+            popTestSource ();
+        }
     }
 
     @Override

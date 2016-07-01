@@ -18,28 +18,19 @@
 
 package org.powertools.engine.instructions;
 
-import java.lang.reflect.Method;
-import org.powertools.engine.Arguments;
-import org.powertools.engine.ExecutionException;
-import org.powertools.engine.TestLine;
+import org.powertools.engine.Currencies;
+import org.powertools.engine.ParameterConvertor;
 
 
-final class ArgumentsMethodExecutor extends BasicMethodExecutor {
-    ArgumentsMethodExecutor (Object object, Method method) {
-        super (object, method);
+public class CurrencyConvertor implements ParameterConvertor {
+    private final Currencies mCurrencies;
+
+    public CurrencyConvertor (Currencies currencies) {
+        mCurrencies = currencies;
     }
-
+    
     @Override
-    public Object getArguments (TestLine testLine) {
-        if ((testLine.getNrOfParts () % 2) == 0) {
-            throw new ExecutionException ("using Arguments class with odd number of arguments");
-        } else {
-            Arguments args = new Arguments ();
-            int nrOfArgs   = testLine.getNrOfParts () - 1;
-            for (int argNr = 0; argNr < nrOfArgs; argNr += 2) {
-                args.add (testLine.getPart (argNr + 1), testLine.getPart (argNr + 2));
-            }
-            return args;
-        }
+    public Object toObject (String text) {
+        return mCurrencies.get (text);
     }
 }

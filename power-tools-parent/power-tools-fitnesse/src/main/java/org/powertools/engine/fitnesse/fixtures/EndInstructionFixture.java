@@ -31,6 +31,6 @@ public final class EndInstructionFixture extends Fixture {
 
     @Override
     public void doTable (Parse table) {
-        FitNesseEngine.getInstance ().run (this, table);
+        FitNesseEngine.getInstance ().runEndInstructionFixture (this, table);
     }
 }

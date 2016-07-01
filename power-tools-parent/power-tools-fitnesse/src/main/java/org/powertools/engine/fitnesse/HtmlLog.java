@@ -18,6 +18,7 @@
 
 package org.powertools.engine.fitnesse;
 
+import org.powertools.engine.fitnesse.sources.Reference;
 import java.io.PrintWriter;
 import java.util.Date;
 

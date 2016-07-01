@@ -49,7 +49,7 @@ final class SequenceItem extends Item {
 
     @Override
     String getValue () {
-        throw new ExecutionException ("structure field has no value");
+        throw new ExecutionException ("symbol '%s' is a structure and has no value", mName);
     }
 
     @Override
@@ -81,7 +81,7 @@ final class SequenceItem extends Item {
     private void add (String name, Item newItem) {
         Item oldItem = mChildren.get (name);
         if (oldItem != null) {
-            throw new ExecutionException ("structure field " + name + " already exists in " + mName);
+            throw new ExecutionException ("structure field '%s' already exists in '%s'", name, mName);
         } else {
             Boolean isNumber = Character.isDigit (name.charAt (0));
             if (mNumbersOnly == null) {

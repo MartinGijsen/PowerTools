@@ -30,6 +30,6 @@ public final class TestCaseFixture extends Fixture {
 
     @Override
     public void doTable (Parse table) {
-        FitNesseEngine.getInstance ().run (this, table);
+        FitNesseEngine.getInstance ().runTestCaseFixture (this, table);
     }
 }

@@ -29,7 +29,7 @@ final class EdgeSelectionStrategyFactory {
         } else if (WeightedTransitionSelector.NAME.equals (selector)) {
             return new WeightedTransitionSelector ();
         } else {
-            throw new ExecutionException (String.format ("unknown edge selection strategy: %s", selector));
+            throw new ExecutionException ("unknown edge selection strategy: %s", selector);
         }
     }
 }

@@ -20,8 +20,7 @@ package org.powertools.engine.sources;
 
 import java.util.LinkedList;
 import java.util.List;
-
-import org.powertools.engine.symbol.Scope;
+import org.powertools.engine.symbol.ScopeImpl;
 
 
 /**
@@ -34,7 +33,7 @@ public class TestCaseTestSource extends TestSource {
 
 
     TestCaseTestSource (TestSource parent) {
-        super (new Scope (parent.mScope), parent.mPublisher);
+        super (new ScopeImpl (parent.mScope), parent.mPublisher);
         mParent = parent;
     }
 

@@ -90,31 +90,23 @@ abstract class Value {
     abstract StringValue toStringValue ();
 
     RealValue toRealValue () {
-        throw newConversionException (getType (), "real number");
+        throw new ExecutionException (INVALID_CONVERSION_MESSAGE, getType (), "real number");
     }
 
     IntegerValue toIntegerValue () {
-        throw newConversionException (getType (), "integer number");
+        throw new ExecutionException (INVALID_CONVERSION_MESSAGE, getType (), "integer number");
     }
 
     BooleanValue toBooleanValue () {
-        throw newConversionException (getType (), "boolean");
+        throw new ExecutionException (INVALID_CONVERSION_MESSAGE, getType (), "boolean");
     }
 
     DateValue toDateValue () {
-        throw newConversionException (getType (), "date");
+        throw new ExecutionException (INVALID_CONVERSION_MESSAGE, getType (), "date");
     }
 
-
-    ExecutionException newException (String message) {
-        return new ExecutionException (message);
-    }
 
     ExecutionException newOperandException (String operator) {
-        return newException (String.format (INVALID_OPERAND_MESSAGE, operator));
-    }
-
-    ExecutionException newConversionException (String sourceType, String targetType) {
-        return new ExecutionException (String.format (INVALID_CONVERSION_MESSAGE, sourceType, targetType));
+        return new ExecutionException (INVALID_OPERAND_MESSAGE, operator);
     }
 }

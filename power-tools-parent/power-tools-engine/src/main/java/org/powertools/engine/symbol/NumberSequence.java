@@ -19,6 +19,7 @@
 package org.powertools.engine.symbol;
 
 import org.powertools.engine.ExecutionException;
+import org.powertools.engine.Scope;
 
 
 final class NumberSequence extends SimpleSymbol {

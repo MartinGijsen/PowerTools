@@ -24,20 +24,21 @@ import static org.junit.Assert.assertNotNull;
 import org.junit.Before;
 import org.junit.Test;
 import org.powertools.engine.ExecutionException;
+import org.powertools.engine.Scope;
 
 
-public class CyclicSequenceTest {
+public class RepeatingSequenceTest {
 	private static final String NAME	= "name";
 	private static final String VALUE1	= "something";
 	private static final String VALUE2	= "something else";
 	
-	private Scope mScope;
+	private Scope                   mScope;
 	private RepeatingStringSequence mSequence;
 
 	
 	@Before
 	public void setUp () throws Exception {
-		mScope		= new Scope (null);
+		mScope		= new ScopeImpl (null);
 		mSequence	= new RepeatingStringSequence (NAME, mScope);
 	}
 

@@ -20,7 +20,6 @@ package org.powertools.engine.core;
 
 import java.io.File;
 
-import org.powertools.engine.runners.ModelRunner;
 import org.powertools.engine.Context;
 import org.powertools.engine.ExecutionException;
 import org.powertools.engine.reports.ReportFactory;
@@ -33,11 +32,25 @@ import org.powertools.graph.GraphException;
  * It reports to an HTML log.
  */
 public class ModelBasedEngine extends Engine {
+    public ModelBasedEngine (String resultsDirectory) {
+        this (new RunTimeImpl (Context.create (resultsDirectory)));
+    }
+
+
+    protected ModelBasedEngine (RunTimeImpl runTime) {
+        super (runTime);
+
+        ReportFactory factory = new ReportFactory (mPublisher);
+        if (!factory.createKeywordsHtmlLog (runTime.getContext ())) {
+            mPublisher.publishError ("could not open HTML log");
+        }
+        factory.createModelCoverageGraph (mRunTime.getContext ().getResultsDirectory ());
+
+        registerBuiltins ();
+    }
+
     public static void main (String[] args) {
         switch (args.length) {
-        case 0:
-            ModelRunner.run ();
-            break;
         case 2:
             new ModelBasedEngine (args[0]).run (args[1]);
             break;
@@ -52,22 +65,6 @@ public class ModelBasedEngine extends Engine {
         }
     }
 
-
-    public ModelBasedEngine (String resultsDirectory) {
-        this (new RunTimeImpl (Context.create (resultsDirectory)));
-    }
-
-    protected ModelBasedEngine (RunTimeImpl runTime) {
-        super (runTime);
-
-        ReportFactory factory = new ReportFactory (mPublisher);
-        if (!factory.createKeywordsHtmlLog (runTime.getContext ())) {
-            mPublisher.publishError ("could not open HTML log");
-        }
-        factory.createModelCoverageGraph (mRunTime.getContext ().getResultsDirectory ());
-
-        registerBuiltinInstructions ();
-    }
 
     @Override
     public final void run (String fileName) {

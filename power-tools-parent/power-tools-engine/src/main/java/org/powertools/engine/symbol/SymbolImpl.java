@@ -21,13 +21,14 @@ package org.powertools.engine.symbol;
 import java.util.regex.Pattern;
 
 import org.powertools.engine.ExecutionException;
+import org.powertools.engine.Scope;
 import org.powertools.engine.Symbol;
 
 
 // A Symbol is a named item, containing either a single value or any number of values.
 abstract class SymbolImpl implements Symbol {
     protected String mName;
-    protected Scope mScope;
+    protected Scope  mScope;
 
     private static final Pattern mNamePattern = Pattern.compile("[a-zA-Z][a-zA-Z0-9]*");
 
@@ -36,7 +37,7 @@ abstract class SymbolImpl implements Symbol {
         if (name.isEmpty ()) {
             throw new ExecutionException ("empty name");
         } else if (!mNamePattern.matcher (name).matches ()) {
-            throw new ExecutionException ("invalid name: " + name);
+            throw new ExecutionException ("invalid name '%s'", name);
         } else {
             mName  = name;
             mScope = scope;

@@ -1,4 +1,4 @@
-/* Copyright 2012 by Martin Gijsen (www.DeAnalist.nl)
+/* Copyright 2016 by Martin Gijsen (www.DeAnalist.nl)
  *
  * This file is part of the PowerTools engine.
  *
@@ -16,13 +16,20 @@
  * along with the PowerTools engine. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.powertools.engine.instructions;
-
-import org.powertools.engine.sources.TestSource;
-import org.powertools.engine.symbol.Scope;
+package org.powertools.engine;
 
 
-public interface ProcedureRunner {
-    void invokeSource (TestSource source);
-    Scope getCurrentScope ();
+public interface Scope {
+    Scope getParent ();
+
+    Symbol get (String name);
+    Symbol getSymbol (String name);
+
+    Symbol createConstant (String name, String value);
+    Symbol createParameter (String name, String value);
+    Symbol createVariable (String name, String value);
+    Symbol createStructure (String name);
+    Symbol createNumberSequence (String name, int value);
+    Symbol createStringSequence (String name);
+    Symbol createRepeatingStringSequence (String name);
 }

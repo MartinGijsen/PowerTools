@@ -24,55 +24,55 @@ import static org.junit.Assert.assertNotNull;
 import org.junit.Before;
 import org.junit.Test;
 import org.powertools.engine.ExecutionException;
+import org.powertools.engine.Scope;
 import org.powertools.engine.Symbol;
 
 
 public class SimpleVariableTest {
-	@Before
-	public void setUp () throws Exception {
-		mScope		= new Scope (null);
-		mVariable	= new SimpleVariable (NAME, mScope, VALUE1);
-	}
+    private static final String NAME			= "name";
+    private static final String VALUE1			= "value1";
+    private static final String VALUE2			= "value2";
 
-	
-	@Test
-	public void testSimpleVariable () {
-		assertNotNull (mVariable);
-	}
+    private Scope          mScope;
+    private SimpleVariable mVariable;
 
-	@Test
-	public void testGetValue () {
-		assertEquals (VALUE1, mVariable.getValue (NAME));
-	}
 
-	@Test
-	public void testSetValueStringString () {
-		mVariable.setValue (NAME, VALUE2);
-		assertEquals (VALUE2, mVariable.getValue (NAME));
-	}
+    @Before
+    public void setUp () throws Exception {
+        mScope    = new ScopeImpl (null);
+        mVariable = new SimpleVariable (NAME, mScope, VALUE1);
+    }
 
-	@Test
-	public void testSetValueString () {
-		mVariable.setValue (VALUE2);
-		assertEquals (VALUE2, mVariable.getValue (NAME));
-	}
 
-	@Test (expected=ExecutionException.class)
-	public void testClear () {
-		mVariable.clear ("a.b".split (Symbol.PERIOD));
-	}
+    @Test
+    public void testSimpleVariable () {
+        assertNotNull (mVariable);
+    }
 
-	@Test
-	public void testGetName () {
-		assertEquals (NAME, mVariable.getName ());
-	}
-	
-	
-	// private members
-	private static final String NAME			= "name";
-	private static final String VALUE1			= "value1";
-	private static final String VALUE2			= "value2";
+    @Test
+    public void testGetValue () {
+        assertEquals (VALUE1, mVariable.getValue (NAME));
+    }
 
-	private Scope mScope;
-	private SimpleVariable mVariable;
+    @Test
+    public void testSetValueStringString () {
+        mVariable.setValue (NAME, VALUE2);
+        assertEquals (VALUE2, mVariable.getValue (NAME));
+    }
+
+    @Test
+    public void testSetValueString () {
+        mVariable.setValue (VALUE2);
+        assertEquals (VALUE2, mVariable.getValue (NAME));
+    }
+
+    @Test (expected=ExecutionException.class)
+    public void testClear () {
+        mVariable.clear ("a.b".split (Symbol.PERIOD));
+    }
+
+    @Test
+    public void testGetName () {
+        assertEquals (NAME, mVariable.getName ());
+    }
 }

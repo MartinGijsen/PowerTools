@@ -24,28 +24,27 @@ import org.powertools.engine.ExecutionException;
 
 
 public class RealValueTest {
-	private final Value mPositiveValue	= new RealValue (123.0);
+	private final Value mPositiveValue	= new RealValue (1.23);
 	private final Value mOneValue		= new RealValue (1.0);
 	private final Value mZeroValue		= new RealValue (0.0);
 	private final Value mMinusOneValue	= new RealValue (-1.0);
-	private final Value mNegativeValue	= new RealValue (-123.0);
+	private final Value mNegativeValue	= new RealValue (-1.23);
 
 	
 	@Test
 	public void testRealValue () {
-		new RealValue (123.0);
+		new RealValue (12.3);
 		new RealValue (0.0);
-		new RealValue (-123.0);
-		new RealValue ("123.0");
+		new RealValue (-12.3);
+		new RealValue ("123");
 		new RealValue ("0.0");
 		new RealValue ("-123.0");
-		new RealValue ("123");
-		try {
-			new RealValue ("1,23");
-			fail ("no exception");
-		} catch (ExecutionException ee) {
-			// ok
-		}
+//		try {
+//			new RealValue ("1,23");
+//			fail ("no exception");
+//		} catch (ExecutionException ee) {
+//			// ok
+//		}
 	}
 
 	@Test
@@ -97,32 +96,32 @@ public class RealValueTest {
 
 	@Test
 	public void testAdd () {
-		assertEquals ("0.0", mPositiveValue.add (mNegativeValue).toString ());
-		assertEquals ("123.0", mPositiveValue.add (mZeroValue).toString ());
-		assertEquals ("-123.0", mZeroValue.add (mNegativeValue).toString ());
+		assertEquals ("0", mPositiveValue.add (mNegativeValue).toString ());
+		assertEquals ("1,23", mPositiveValue.add (mZeroValue).toString ());
+		assertEquals ("-1,23", mZeroValue.add (mNegativeValue).toString ());
 	}
 
 	@Test
 	public void testSubtract () {
-		assertEquals ("0.0", mPositiveValue.subtract (mPositiveValue).toString ());
-		assertEquals ("123.0", mZeroValue.subtract (mNegativeValue).toString ());
-		assertEquals ("-123.0", mZeroValue.subtract (mPositiveValue).toString ());
+		assertEquals ("0", mPositiveValue.subtract (mPositiveValue).toString ());
+		assertEquals ("1,23", mZeroValue.subtract (mNegativeValue).toString ());
+		assertEquals ("-1,23", mZeroValue.subtract (mPositiveValue).toString ());
 	}
 
 	@Test
 	public void testMultiply () {
-		assertEquals ("0.0", mZeroValue.multiply (mPositiveValue).toString ());
-		assertEquals ("123.0", mOneValue.multiply (mPositiveValue).toString ());
-		assertEquals ("-123.0", mMinusOneValue.multiply (mPositiveValue).toString ());
-		assertEquals ("123.0", mMinusOneValue.multiply (mNegativeValue).toString ());
+		assertEquals ("0", mZeroValue.multiply (mPositiveValue).toString ());
+		assertEquals ("1,23", mOneValue.multiply (mPositiveValue).toString ());
+		assertEquals ("-1,23", mMinusOneValue.multiply (mPositiveValue).toString ());
+		assertEquals ("1,23", mMinusOneValue.multiply (mNegativeValue).toString ());
 	}
 
 	@Test
 	public void testDivide () {
-		assertEquals ("0.25", divide (1, 4));
-		assertEquals ("-0.25", divide (1, -4));
-		assertEquals ("-0.25", divide (-1, 4));
-		assertEquals ("0.25", divide (-1, -4));
+		assertEquals ("0,25", divide (1, 4));
+		assertEquals ("-0,25", divide (1, -4));
+		assertEquals ("-0,25", divide (-1, 4));
+		assertEquals ("0,25", divide (-1, -4));
 	}
 
 	private String divide (int value1, int value2) {
@@ -131,22 +130,22 @@ public class RealValueTest {
 	
 	@Test
 	public void testNegate () {
-		assertEquals ("-0.0", mZeroValue.negate ().toString ());
-		assertEquals ("-123.0", mPositiveValue.negate ().toString ());
-		assertEquals ("123.0", mNegativeValue.negate ().toString ());
+		assertEquals ("-0", mZeroValue.negate ().toString ());
+		assertEquals ("-1,23", mPositiveValue.negate ().toString ());
+		assertEquals ("1,23", mNegativeValue.negate ().toString ());
 	}
 
 	@Test
 	public void testToStringValue () {
-		assertEquals ("-123.0", mNegativeValue.toStringValue ().toString ());
-		assertEquals ("0.0", mZeroValue.toStringValue ().toString ());
-		assertEquals ("123.0", mPositiveValue.toStringValue ().toString ());
+		assertEquals ("-1,23", mNegativeValue.toStringValue ().toString ());
+		assertEquals ("0", mZeroValue.toStringValue ().toString ());
+		assertEquals ("1,23", mPositiveValue.toStringValue ().toString ());
 	}
 
 	@Test
 	public void testToRealValue () {
-		assertEquals ("-123.0", mNegativeValue.toRealValue ().toString ());
-		assertEquals ("0.0", mZeroValue.toRealValue ().toString ());
-		assertEquals ("123.0", mPositiveValue.toRealValue ().toString ());
+		assertEquals ("-1,23", mNegativeValue.toRealValue ().toString ());
+		assertEquals ("0", mZeroValue.toRealValue ().toString ());
+		assertEquals ("1,23", mPositiveValue.toRealValue ().toString ());
 	}
 }

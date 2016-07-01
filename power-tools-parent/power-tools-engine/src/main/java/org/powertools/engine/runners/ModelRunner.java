@@ -36,7 +36,6 @@ import javax.swing.WindowConstants;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
-import org.powertools.engine.core.Engine;
 import org.powertools.engine.core.ModelBasedEngine;
 
 
@@ -62,18 +61,6 @@ public final class ModelRunner extends javax.swing.JFrame implements ActionListe
     private ModelBasedEngine mEngine;
 
 
-    public static void main (String[] args) {
-        run ();
-    }
-
-    public static void run () {
-        java.awt.EventQueue.invokeLater (new Runnable () {
-            public void run () {
-                new ModelRunner ().setVisible (true);
-            }
-        });
-    }
-
     private ModelRunner () {
         setTitle ("PowerTools model runner");
         setDefaultCloseOperation (WindowConstants.EXIT_ON_CLOSE);
@@ -84,6 +71,19 @@ public final class ModelRunner extends javax.swing.JFrame implements ActionListe
 
         mEndStateRadioButton.doClick ();
         mRandomRadioButton.doClick ();
+    }
+
+
+    public static void main (String[] args) {
+        run ();
+    }
+
+    public static void run () {
+        java.awt.EventQueue.invokeLater (new Runnable () {
+            public void run () {
+                new ModelRunner ().setVisible (true);
+            }
+        });
     }
 
     private void createSharedComponents () {
@@ -190,6 +190,7 @@ public final class ModelRunner extends javax.swing.JFrame implements ActionListe
         layout.linkSize (SwingConstants.HORIZONTAL, new Component[] { mBrowseButton, mGoAbortButton });
     }
 
+    @Override
     public void actionPerformed (ActionEvent e) {
         mErrorMessageLabel.setText ("");
         Object source = e.getSource ();
@@ -230,14 +231,17 @@ public final class ModelRunner extends javax.swing.JFrame implements ActionListe
         }
     }
 
+    @Override
     public void insertUpdate (DocumentEvent e) {
         enableGoButton ();
     }
 
+    @Override
     public void removeUpdate (DocumentEvent e) {
         enableGoButton ();
     }
 
+    @Override
     public void changedUpdate (DocumentEvent e) {
         enableGoButton ();
     }
@@ -272,10 +276,6 @@ public final class ModelRunner extends javax.swing.JFrame implements ActionListe
             mEngine = new ModelBasedEngine (mFile.getParent ());
         }
 
-        Engine getEngine () {
-            return mEngine;
-        }
-        
         @Override
         public void run () {
             mGoAbortButton.setText ("Abort");

@@ -18,6 +18,7 @@
 
 package org.powertools.engine.instructions;
 
+import org.powertools.engine.ProcedureRunner;
 import java.util.HashMap;
 import java.util.Map;
 import org.powertools.engine.TestRunResultPublisher;

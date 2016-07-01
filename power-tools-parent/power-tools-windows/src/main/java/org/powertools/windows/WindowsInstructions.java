@@ -46,7 +46,7 @@ public final class WindowsInstructions {
     @KeywordName ("DeclareApplication")
     public boolean DeclareApplication_As_Title_Text_ (String name, String command, String windowName) {
         if (mApplications.containsKey (name)) {
-            throw new ExecutionException (String.format ("application '%s' has already been defined", name));
+            throw new ExecutionException ("application '%s' has already been defined", name);
         } else {
             mApplications.put (name, new Application (name, command, windowName));
             return true;
@@ -55,7 +55,7 @@ public final class WindowsInstructions {
 
     public boolean DeclareWindow (String name, String windowTitle, String windowText) {
         if (mWindows.containsKey (name)) {
-            throw new ExecutionException (String.format ("window '%s' has already been defined", name));
+            throw new ExecutionException ("window '%s' has already been defined", name);
         } else {
             mWindows.put (name, new Window (name, windowTitle, windowText));
             return true;
@@ -67,7 +67,7 @@ public final class WindowsInstructions {
         final Application application = getApplication (name);
         final Window window           = getWindow (application.mWindowName);
         if (!mWinApi.run (application.mCommand, "", Windows.NORMAL)) {
-            throw new ExecutionException (String.format ("could not start '%s'", application.mCommand));
+            throw new ExecutionException ("could not start '%s'", application.mCommand);
         } else if (!mWinApi.waitForWindowActive (window.mTitle, window.mText, timeout)) {
             throw new ExecutionException ("window was not active in time");
         } else {
@@ -78,7 +78,7 @@ public final class WindowsInstructions {
     public boolean CloseWindow (String name, int timeout) {
         final Window window = getWindow (name);
         if (!mWinApi.closeWindow (window.mTitle, window.mText)) {
-            throw new ExecutionException (String.format ("could not close '%s'", window.mName));
+            throw new ExecutionException ("could not close '%s'", window.mName);
         } else if (!mWinApi.waitForWindowToClose (window.mTitle, window.mText, timeout)) {
             throw new ExecutionException ("window did not close in time");
         } else {
@@ -88,9 +88,9 @@ public final class WindowsInstructions {
 
     public boolean DeclareControl (String name, String windowName, int id) {
         if (mControls.containsKey (name)) {
-            throw new ExecutionException (String.format ("control '%s' has already been defined", name));
+            throw new ExecutionException ("control '%s' has already been defined", name);
         } else if (!mWindows.containsKey (windowName)) {
-            throw new ExecutionException (String.format ("window '%s' is unknown", windowName));
+            throw new ExecutionException ("window '%s' is unknown", windowName);
         } else {
             mControls.put (name, new Control (name, mWindows.get (windowName), id));
             return true;
@@ -126,7 +126,7 @@ public final class WindowsInstructions {
         if (mApplications.containsKey (name)) {
             return mApplications.get (name);
         } else {
-            throw new ExecutionException (String.format ("application '%s' is unknown", name));
+            throw new ExecutionException ("application '%s' is unknown", name);
         }
     }
 
@@ -134,7 +134,7 @@ public final class WindowsInstructions {
         if (mWindows.containsKey (name)) {
             return mWindows.get (name);
         } else {
-            throw new ExecutionException (String.format ("window '%s' is unknown", name));
+            throw new ExecutionException ("window '%s' is unknown", name);
         }
     }
 
@@ -142,7 +142,7 @@ public final class WindowsInstructions {
         if (mControls.containsKey (name)) {
             return mControls.get (name);
         } else {
-            throw new ExecutionException (String.format ("control '%s' is unknown", name));
+            throw new ExecutionException ("control '%s' is unknown", name);
         }
     }
 }

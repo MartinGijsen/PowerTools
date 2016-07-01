@@ -118,7 +118,7 @@ final class DateValue extends Value {
     }
 
     private void addBusinessDays (int number) {
-        int step = (number < 0 ? -1 : 1);
+        int step = number < 0 ? -1 : 1;
         for (int counter = 0; counter != number; counter += step) {
             do {
                 mDate.add (Calendar.DAY_OF_MONTH, step);

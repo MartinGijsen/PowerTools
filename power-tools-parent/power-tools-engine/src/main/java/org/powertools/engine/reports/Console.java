@@ -18,8 +18,8 @@
 
 package org.powertools.engine.reports;
 
-import org.powertools.engine.TestLineSubscriber;
 import org.powertools.engine.TestResultSubscriber;
+import org.powertools.engine.TestLineSubscriber;
 import java.io.PrintStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;

@@ -26,17 +26,19 @@ import org.powertools.engine.Currencies;
 import org.powertools.engine.Functions;
 import org.powertools.engine.Roles;
 import org.powertools.engine.RunTime;
+import org.powertools.engine.Scope;
 import org.powertools.engine.Symbol;
 import org.powertools.engine.TestRunResultPublisher;
 import org.powertools.engine.core.runtime.Factory;
 import org.powertools.engine.core.runtime.TestSourceStack;
 import org.powertools.engine.expression.ExpressionEvaluator;
-import org.powertools.engine.instructions.ProcedureRunner;
+import org.powertools.engine.ProcedureRunner;
+import org.powertools.engine.instructions.ParameterConvertors;
 import org.powertools.engine.reports.TestRunResultPublisherImpl;
 import org.powertools.engine.sources.TestLineImpl;
 import org.powertools.engine.sources.TestSource;
-import org.powertools.engine.symbol.Scope;
 import org.powertools.engine.symbol.Util;
+import org.powertools.engine.util.PowerToolsParser;
 
 
 /**
@@ -61,17 +63,21 @@ public final class RunTimeImpl implements RunTime, ProcedureRunner {
     private final Roles mRoles;
     private final Currencies mCurrencies;
     private final Functions mFunctions;
+    private final PowerToolsParser mPowerToolsParser;
+    private final ParameterConvertors mParameterConvertors;
 
 
     public RunTimeImpl (Context context) {
-        mContext       = context;
-        mSourceStack   = Factory.createTestSourceStack ();
-        mPublisher     = new TestRunResultPublisherImpl ();
-        mSharedObjects = new HashMap<String, Object> ();
-        mRoles         = Factory.createRoles (this);
-        mCurrencies    = Factory.createCurrencies ();
-        mFunctions     = Factory.createFunctions ();
-        mEvaluator     = new ExpressionEvaluator (mFunctions);
+        mContext             = context;
+        mSourceStack         = Factory.createTestSourceStack ();
+        mPublisher           = new TestRunResultPublisherImpl ();
+        mSharedObjects       = new HashMap<String, Object> ();
+        mRoles               = Factory.createRoles (this);
+        mCurrencies          = Factory.createCurrencies ();
+        mFunctions           = Factory.createFunctions ();
+        mEvaluator           = new ExpressionEvaluator (mFunctions);
+        mPowerToolsParser    = new PowerToolsParser ();
+        mParameterConvertors = new ParameterConvertors (this);
     }
 
 
@@ -91,6 +97,11 @@ public final class RunTimeImpl implements RunTime, ProcedureRunner {
     public void leaveTestCase () {
         mSourceStack.popTestCase ();
         mPublisher.publishTestCaseEnd ();
+    }
+
+    @Override
+    public void abortTestCase () {
+        mSourceStack.abortTestCase ();
     }
 
 
@@ -227,5 +238,18 @@ public final class RunTimeImpl implements RunTime, ProcedureRunner {
     @Override
     public Currencies getCurrencies () {
         return mCurrencies;
+    }
+
+    @Override
+    public PowerToolsParser getPowerToolsParser() {
+        return mPowerToolsParser;
+    }
+    
+    public void setDefaultDateFormat (String format) {
+        mPowerToolsParser.setDefaultDateFormat (format);
+    }
+    
+    public ParameterConvertors getParameterConvertors () {
+        return mParameterConvertors;
     }
 }

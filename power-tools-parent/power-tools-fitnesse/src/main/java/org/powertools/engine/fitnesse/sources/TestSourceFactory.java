@@ -20,13 +20,8 @@ package org.powertools.engine.fitnesse.sources;
 
 import fit.Fixture;
 import fit.Parse;
+import org.powertools.engine.Scope;
 import org.powertools.engine.TestRunResultPublisher;
-import org.powertools.engine.fitnesse.Reference;
-import org.powertools.engine.fitnesse.fixtures.DataFixture;
-import org.powertools.engine.fitnesse.fixtures.DataToFixture;
-import org.powertools.engine.fitnesse.fixtures.EndInstructionFixture;
-import org.powertools.engine.fitnesse.fixtures.InstructionFixture;
-import org.powertools.engine.symbol.Scope;
 
 
 public class TestSourceFactory {
@@ -46,7 +41,7 @@ public class TestSourceFactory {
         return new TestCaseSource (table, scope, logFilePath, publisher, reference, inRightPlace);
     }
 
-    public FitNesseTestSource createDataSource (DataFixture fixture, Parse table, Scope scope, String logFilePath, TestRunResultPublisher publisher, Reference reference) {
+    public FitNesseTestSource createDataSource (Fixture fixture, Parse table, Scope scope, String logFilePath, TestRunResultPublisher publisher, Reference reference) {
         return new DataSource (fixture, table, scope, logFilePath, publisher, reference);
     }
 
@@ -54,7 +49,7 @@ public class TestSourceFactory {
         return new DataSource (table, scope, logFilePath, publisher, reference);
     }
 
-    public FitNesseTestSource createDataToSource (DataToFixture fixture, Parse table, Scope scope, String logFilePath, TestRunResultPublisher publisher, Reference reference) {
+    public FitNesseTestSource createDataToSource (Fixture fixture, Parse table, Scope scope, String logFilePath, TestRunResultPublisher publisher, Reference reference) {
         return new DataToSource (fixture, table, scope, logFilePath, publisher, reference);
     }
 
@@ -63,7 +58,7 @@ public class TestSourceFactory {
     }
 
     
-    public InstructionSource createInstructionSource (InstructionFixture fixture, Parse table, Scope scope, String logFilePath, TestRunResultPublisher publisher, Reference reference) {
+    public InstructionSource createInstructionSource (Fixture fixture, Parse table, Scope scope, String logFilePath, TestRunResultPublisher publisher, Reference reference) {
         return new InstructionSource (fixture, table, scope, logFilePath, publisher, reference);
     }
 
@@ -71,7 +66,7 @@ public class TestSourceFactory {
         return new InstructionSource (table, scope, logFilePath, publisher, reference);
     }
 
-    public EndInstructionSource createEndInstructionSource (EndInstructionFixture fixture, Parse table, Scope scope, String logFilePath, TestRunResultPublisher publisher, Reference reference, boolean inRightPlace) {
+    public EndInstructionSource createEndInstructionSource (Fixture fixture, Parse table, Scope scope, String logFilePath, TestRunResultPublisher publisher, Reference reference, boolean inRightPlace) {
         return new EndInstructionSource (fixture, table, scope, logFilePath, publisher, reference, inRightPlace);
     }
 }
