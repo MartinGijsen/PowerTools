@@ -22,11 +22,14 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.regex.Pattern;
 import org.powertools.engine.ExecutionException;
 
 
 // A Procedure is a scripted instruction.
 public final class Procedure {
+    private static final Pattern PARAMETER_NAME_PATTERN = Pattern.compile ("\\w+");
+    
     private final String mName;
     private final List<ProcedureParameter> mParameters;
     private final List<List<List<String>>> mInstructionTables;
@@ -44,10 +47,13 @@ public final class Procedure {
     }
 
 
-    public void addParameter (String name, boolean isOutput) {
+    public void addParameter (String name, boolean isOutput) throws ParameterNameException {
+        if (!PARAMETER_NAME_PATTERN.matcher (name).matches ()) {
+            throw new ParameterNameException ("invalid parameter name '%s'", name);
+        }
         for (ProcedureParameter parameter : mParameters) {
             if (parameter.getName ().equalsIgnoreCase (name)) {
-                throw new ExecutionException ("duplicate parameter name '%s'", parameter.getName ());
+                throw new ParameterNameException ("duplicate parameter name '%s'", name);
             }
         }
 

@@ -116,13 +116,20 @@ abstract class ExcelTestSource extends TestSource {
         } else {
             Procedure procedure = new Procedure (mTestLine.getPart (1));
             for (int partNr = 2; partNr < nrOfParts; ++partNr) {
-                String parameterName = mTestLine.getPart (partNr);
-                boolean isOutput = parameterName.startsWith (OUTPUT_PARAMETER_PREFIX);
-                String realParameterName = isOutput ? parameterName.substring (OUTPUT_PARAMETER_PREFIX.length ()).trim () : parameterName;
-                procedure.addParameter (realParameterName, isOutput);
+                addParameter (procedure, mTestLine.getPart (partNr));
             }
             mPublisher.publishEndOfTestLine ();
             return procedure;
+        }
+    }
+    
+    private void addParameter (Procedure procedure, String parameterName) {
+        try {
+            boolean isOutput = parameterName.startsWith (OUTPUT_PARAMETER_PREFIX);
+            String realParameterName = isOutput ? parameterName.substring (OUTPUT_PARAMETER_PREFIX.length ()).trim () : parameterName;
+            procedure.addParameter (realParameterName, isOutput);
+        } catch (ParameterNameException pne) {
+            mPublisher.publishError (pne.getMessage ());
         }
     }
 

@@ -23,57 +23,78 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 import org.junit.Before;
 import org.junit.Test;
-import org.powertools.engine.ExecutionException;
 
 
 public class ProcedureTest {
-	private final String PROCEDURE_NAME = "procedure name";
-	private final String PARAMETER_NAME = "parameterName";
+    private final String PROCEDURE_NAME = "procedure name";
+    private final String PARAMETER_NAME = "parameterName";
 
-	private Procedure mProcedure;
-	
-	
-	@Before
-	public void setUp() {
-		mProcedure = new Procedure (PROCEDURE_NAME);
-	}
-	
-	@Test
-	public void testGetName () {
-		assertEquals (PROCEDURE_NAME, mProcedure.getName ());
-	}
+    private Procedure mProcedure;
 
-	@Test
-	public void testAddParameterDuplicate () {
-		mProcedure.addParameter ("x", false);
-		mProcedure.addParameter ("y", false);
-		try {
-			mProcedure.addParameter ("y", false);
-			fail ("no exception");
-		} catch (ExecutionException ee) {
-			// ok
-		}
-	}
 
-	@Test
-	public void testAddParameterIn () {
-		mProcedure.addParameter (PARAMETER_NAME, false);
-		List<ProcedureParameter> parameters = mProcedure.getParameters ();
-		assertEquals (1, parameters.size ());
-        ProcedureParameter parameter = mProcedure.getParameters ().get (0);
-		assertEquals (PARAMETER_NAME, parameter.getName ());
-		assertEquals (false, parameter.isOutput ());
-	}
+    @Before
+    public void setUp() {
+            mProcedure = new Procedure (PROCEDURE_NAME);
+    }
 
-	@Test
-	public void testAddParameterOut () {
-		mProcedure.addParameter (PARAMETER_NAME, true);
-		List<ProcedureParameter> parameters = mProcedure.getParameters ();
-		assertEquals (1, parameters.size ());
-        ProcedureParameter parameter = mProcedure.getParameters ().get (0);
-		assertEquals (PARAMETER_NAME, parameter.getName ());
-		assertEquals (true, parameter.isOutput ());
-	}
+    @Test
+    public void testGetName () {
+        assertEquals (PROCEDURE_NAME, mProcedure.getName ());
+    }
+
+    @Test
+    public void testAddParameterInvalid () {
+        try {
+            mProcedure.addParameter ("a a", false);
+            fail ("no exception");
+        } catch (ParameterNameException pne) {
+            // ok
+        }
+    }
+
+    @Test
+    public void testAddParameterDuplicate () {
+        try {
+            mProcedure.addParameter ("x", false);
+            mProcedure.addParameter ("y", false);
+        } catch (ParameterNameException pne) {
+            fail ("exception: " + pne.getMessage ());
+        }
+        try {
+            mProcedure.addParameter ("y", false);
+            fail ("no exception");
+        } catch (ParameterNameException pne) {
+            // ok
+        }
+    }
+
+    @Test
+    public void testAddParameterIn () {
+        try {
+            mProcedure.addParameter (PARAMETER_NAME, false);
+            List<ProcedureParameter> parameters = mProcedure.getParameters ();
+            assertEquals (1, parameters.size ());
+            ProcedureParameter parameter = mProcedure.getParameters ().get (0);
+            assertEquals (PARAMETER_NAME, parameter.getName ());
+            assertEquals (false, parameter.isOutput ());
+        } catch (ParameterNameException pne) {
+            fail ("exception: " + pne.getMessage ());
+        }
+    }
+
+    @Test
+    public void testAddParameterOut () {
+        try {
+            mProcedure.addParameter (PARAMETER_NAME, true);
+            List<ProcedureParameter> parameters = mProcedure.getParameters ();
+            assertEquals (1, parameters.size ());
+            ProcedureParameter parameter = mProcedure.getParameters ().get (0);
+            assertEquals (PARAMETER_NAME, parameter.getName ());
+            assertEquals (true, parameter.isOutput ());
+        } catch (ParameterNameException pne) {
+            fail ("exception: " + pne.getMessage ());
+        }
+    }
 
 //	@Test
 //	public void testAddInstruction () {

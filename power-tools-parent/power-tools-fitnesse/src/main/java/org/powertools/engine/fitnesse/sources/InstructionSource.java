@@ -26,6 +26,7 @@ import java.util.List;
 import org.powertools.engine.ExecutionException;
 import org.powertools.engine.Scope;
 import org.powertools.engine.TestRunResultPublisher;
+import org.powertools.engine.sources.ParameterNameException;
 import org.powertools.engine.sources.Procedure;
 import org.powertools.engine.sources.TestLineImpl;
 
@@ -137,8 +138,8 @@ public final class InstructionSource extends FitNesseTestSource {
                 boolean isOutput         = parameterName.startsWith (OUTPUT_PARAMETER_PREFIX);
                 String realParameterName = isOutput ? parameterName.substring (OUTPUT_PARAMETER_PREFIX.length ()).trim () : parameterName;
                 mProcedure.addParameter (realParameterName, isOutput);
-            } catch (ExecutionException ee) {
-                mPublisher.publishError (ee.getMessage ());
+            } catch (ParameterNameException pne) {
+                mPublisher.publishError (pne.getMessage ());
             }
         }
     }
