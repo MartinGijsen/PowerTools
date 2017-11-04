@@ -18,6 +18,8 @@
 
 package org.powertools.engine;
 
+import java.util.Map;
+
 
 /**
  * The test line represents a line of data from a test source.
@@ -28,6 +30,7 @@ package org.powertools.engine;
 public interface TestLine {
     int getNrOfParts ();
     String getOriginalPart (int partNr);
+    Map<String, String> getSymbolValues (int partNr);
     String getPart (int partNr);
     boolean isEmpty ();
 }

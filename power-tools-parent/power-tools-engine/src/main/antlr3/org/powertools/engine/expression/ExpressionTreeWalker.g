@@ -31,6 +31,8 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 import java.util.regex.Pattern;
 
 import org.powertools.engine.Function;
@@ -46,6 +48,7 @@ import org.powertools.engine.Scope;
 
     private Functions mFunctions;
     private Scope mScope;
+    private Map<String, String> mSymbolValues;
 
 
     ExpressionTreeWalker (Functions functions, TreeNodeStream stream) {
@@ -66,7 +69,12 @@ import org.powertools.engine.Scope;
     }
 
     private Value getSymbol (String name) {
-        return createValue (mScope.getSymbol (name).getValue (name));
+        if (mSymbolValues == null) {
+            mSymbolValues = new HashMap<String, String> ();
+        }
+        String value = mScope.getSymbol (name).getValue (name);
+        mSymbolValues.put (name, value);
+        return createValue (value);
     }
 
     private Value invokeFunction (String name, String[] params) {
@@ -81,9 +89,14 @@ import org.powertools.engine.Scope;
     }
 }
 
-main [Scope scope] returns [Value v]
-    :   { mScope = scope; }
-        e=expr { v = $e.v; }
+main [Scope scope] returns [EvaluatedExpression result]
+    :   {
+            mScope        = scope;
+            mSymbolValues = null;
+        }
+        e=expr {
+            result = new EvaluatedExpression ($e.v, mSymbolValues);
+        }
     ;
 
 expr returns [Value v]
@@ -111,7 +124,7 @@ expr returns [Value v]
     |   i=IdentifierPlus         { v = getSymbol ($i.getText ()); }
     |   i=Identifier             { v = getSymbol ($i.getText ()); }
     |   'yesterday'              { v = getDay (-1); }
-    |   'today'                  { v = new DateValue (GregorianCalendar.getInstance ()); }
+    |   'today'                  { v = getDay (0); }
     |   'tomorrow'               { v = getDay (1); }
     |   ^('(' i=Identifier parameters) {
             v = invokeFunction ($i.getText (), $parameters.values.toArray (new String[0]));

@@ -30,6 +30,7 @@ import org.powertools.engine.TestRunResultPublisher;
 import org.powertools.engine.Currencies;
 import org.powertools.engine.Functions;
 import org.powertools.engine.Scope;
+import org.powertools.engine.expression.EvaluatedExpression;
 import org.powertools.engine.util.PowerToolsParser;
 
 
@@ -133,10 +134,10 @@ public class RandomTransitionSelectorTest {
     }
     
     private class RunTimeImpl implements RunTime {
-        private final String mExpressionValue;
+        private EvaluatedExpression mEvaluatedExpression;
         
         RunTimeImpl (String expressionValue) {
-            mExpressionValue = expressionValue;
+            mEvaluatedExpression = new EvaluatedExpression (expressionValue);
         }
         
         public Context getContext() {
@@ -171,8 +172,8 @@ public class RandomTransitionSelectorTest {
             throw new UnsupportedOperationException("Not supported yet.");
         }
 
-        public String evaluateExpression(String expression) {
-            return mExpressionValue;
+        public EvaluatedExpression evaluateExpression(String expression) {
+            return mEvaluatedExpression;
         }
 
         public Scope getGlobalScope() {

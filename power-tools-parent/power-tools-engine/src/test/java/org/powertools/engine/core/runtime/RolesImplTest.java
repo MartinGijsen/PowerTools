@@ -31,6 +31,7 @@ import org.powertools.engine.TestRunResultPublisher;
 import org.powertools.engine.Currencies;
 import org.powertools.engine.Functions;
 import org.powertools.engine.Scope;
+import org.powertools.engine.expression.EvaluatedExpression;
 import org.powertools.engine.symbol.ScopeImpl;
 import org.powertools.engine.util.PowerToolsParser;
 
@@ -173,7 +174,7 @@ public class RolesImplTest {
             throw new UnsupportedOperationException ("Not supported yet.");
         }
 
-        public String evaluateExpression(String expression) {
+        public EvaluatedExpression evaluateExpression(String expression) {
             throw new UnsupportedOperationException ("Not supported yet.");
         }
 

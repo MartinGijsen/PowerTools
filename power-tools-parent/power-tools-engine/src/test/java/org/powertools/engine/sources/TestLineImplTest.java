@@ -66,7 +66,7 @@ public class TestLineImplTest {
 		TestLineImpl testLine = new TestLineImpl ();
 		testLine.createParts (1);
 		testLine.setPart (0, "something");
-		testLine.setEvaluatedPart (0, "something else");
+		testLine.setEvaluatedPart (0, null, "something else");
 		assertEquals ("something", testLine.getOriginalPart (0));
 		assertEquals ("something else", testLine.getPart (0));
 	}

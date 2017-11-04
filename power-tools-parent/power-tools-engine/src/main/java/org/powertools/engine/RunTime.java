@@ -18,6 +18,7 @@
 
 package org.powertools.engine;
 
+import org.powertools.engine.expression.EvaluatedExpression;
 import org.powertools.engine.util.PowerToolsParser;
 
 
@@ -97,9 +98,9 @@ public interface RunTime {
     /**
      * Evaluates a PowerTools expression
      * @param   expression  the expression to evaluate
-     * @return  the value of the expression
+     * @return  the evaluation result
      */
-    String evaluateExpression (String expression);
+    EvaluatedExpression evaluateExpression (String expression);
 
 
     /**

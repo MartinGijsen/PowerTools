@@ -80,7 +80,7 @@ final class RandomTransitionSelector implements TransitionSelectionStrategy {
         if ("".equals (transition.mCondition)) {
             return true;
         } else {
-            String value = mRunTime.evaluateExpression (transition.mCondition);
+            String value = mRunTime.evaluateExpression (transition.mCondition).getValue ();
             mRunTime.reportInfo (String.format ("condition '%s' is %s", transition.mCondition, value));
             return "true".equals (value);
         }

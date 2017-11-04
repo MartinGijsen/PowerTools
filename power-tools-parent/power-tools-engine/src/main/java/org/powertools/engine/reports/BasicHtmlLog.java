@@ -24,6 +24,7 @@ import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Map;
 
 import org.powertools.engine.TestLine;
 
@@ -42,8 +43,10 @@ public abstract class BasicHtmlLog implements TestLineSubscriber, TestResultSubs
         mWriter = writer;
         mWriter.format ("<HTML><HEAD><TITLE>%s</TITLE>\n", title);
         mWriter.println ("<STYLE type=\"text/css\">");
-        mWriter.println ("table { border:1px solid black; border-collapse:collapse; }");
-        mWriter.println ("td { border:1px solid black; padding:3px; }");
+        mWriter.println ("table { border-collapse:collapse; }");
+        mWriter.println ("td { border:1px solid black; padding:0 3px; }");
+        mWriter.println ("div td { border-style:none; }");
+        mWriter.println ("hr { margin:0; }");
         mWriter.println ("</STYLE>");
         mWriter.println ("</HEAD>");
         mWriter.println ("<BODY>");
@@ -68,10 +71,27 @@ public abstract class BasicHtmlLog implements TestLineSubscriber, TestResultSubs
 
     protected final String getCell (TestLine testLine, int partNr) {
         String originalPart = testLine.getOriginalPart (partNr);
-        String firstHalf    = (originalPart == null ? "" : originalPart + "<HR/>");
-        return firstHalf + testLine.getPart (partNr);
+        if (originalPart == null) {
+            return testLine.getPart (partNr);
+        } else {
+            StringBuilder sb = new StringBuilder ();
+            sb.append (originalPart).append ("<HR/>");
+            renderSymbolValues (sb, testLine.getSymbolValues (partNr));
+            sb.append (testLine.getPart (partNr));
+            return sb.toString ();
+        }
     }
 
+    private static void renderSymbolValues (StringBuilder sb, Map<String, String> symbolValues) {
+        if (symbolValues != null) {
+            sb.append("<DIV><TABLE>\n");
+            for (String symbolName : symbolValues.keySet ()) {
+                sb.append ("<TR><TD>").append (symbolName).append ("</TD><TD>= ")
+                  .append (symbolValues.get (symbolName)).append ("</TD></TR>\n");
+            }
+            sb.append ("</TABLE></DIV><HR/>\n");
+        }
+    }
 
     // the results
     @Override

@@ -151,7 +151,7 @@ Spaces:                      (' ')+ { skip(); };
 IdentifierPlus:              IdentifierFragment ('.' (Digits | IdentifierFragment) )+;
 Identifier:                  IdentifierFragment;
 fragment IdentifierFragment: Alpha (Alpha | Digit | '_')*;
-fragment Alpha:              'a'..'z'|'A'..'Z';
+fragment Alpha:              'a'..'z' | 'A'..'Z';
 DateLiteral:                 Digit Digit '-' Digit Digit '-' Digit Digit Digit Digit;
 NumberLiteral:               Digits ('.' Digits)?;
 fragment Digits:             Digit+;

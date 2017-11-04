@@ -19,14 +19,25 @@
 package org.powertools.engine.sources;
 
 import java.util.List;
+import java.util.Map;
 
 import org.powertools.engine.TestLine;
 
 
 public final class TestLineImpl implements TestLine {
-    private int mNrOfParts;
-    private String[] mParts;
-    private String[] mOriginalParts;
+    private static class Part {
+        String              mOriginalValue;
+        Map<String, String> mSymbolValues;
+        String              mValue;
+        
+        Part (String value) {
+            mOriginalValue = null;
+            mValue         = value;
+        }
+    }
+    
+    private int    mNrOfParts;
+    private Part[] mParts;
 
 
     public TestLineImpl () {
@@ -34,41 +45,43 @@ public final class TestLineImpl implements TestLine {
     }
 
     public TestLineImpl (String[] parts) {
-        mParts         = parts.clone ();
-        mOriginalParts = parts.clone ();
         mNrOfParts     = parts.length;
+        mParts = new Part[mNrOfParts];
+        for (int partNr = 0; partNr < mNrOfParts; ++partNr) {
+            mParts[partNr] = new Part (parts[partNr]);
+        }
     }
 
 
     public void setParts (List<String> list) {
         mNrOfParts = list.size ();
         if (mNrOfParts != 0) {
-            mParts         = new String[mNrOfParts];
-            mOriginalParts = new String[mNrOfParts];
-
+            mParts = new Part[mNrOfParts];
             int partNr = 0;
             for (String part : list) {
-                setPart (partNr++, part);
+                mParts[partNr++] = new Part (part);
             }
         }
     }
 
     public void createParts (int nrOfParts) {
-        mNrOfParts     = nrOfParts;
-        mParts         = new String[nrOfParts];
-        mOriginalParts = new String[nrOfParts];
+        mNrOfParts = nrOfParts;
+        mParts     = new Part[nrOfParts];
         for (int partNr = 0; partNr < nrOfParts; ++partNr) {
-            mParts[partNr] = "";
+            mParts[partNr] = new Part ("");
         }
     }
 
     public void setPart (int partNr, String value) {
-        mParts[partNr] = value;
+        mParts[partNr].mOriginalValue = null;
+        mParts[partNr].mValue         = value;
     }
 
-    public void setEvaluatedPart (int partNr, String value) {
-        mOriginalParts[partNr] = mParts[partNr];
-        mParts[partNr]         = value;
+    public void setEvaluatedPart (int partNr, Map<String, String> symbolValues, String value) {
+        Part part           = mParts[partNr];
+        part.mOriginalValue = part.mValue;
+        part.mSymbolValues  = symbolValues;
+        part.mValue         = value;
     }
 
     @Override
@@ -77,19 +90,24 @@ public final class TestLineImpl implements TestLine {
     }
 
     @Override
-    public String getPart (int partNr) {
-        return (partNr >= mNrOfParts) ? "" : mParts[partNr];
+    public String getOriginalPart (int partNr) {
+        return (partNr >= mNrOfParts) ? null : mParts[partNr].mOriginalValue;
     }
 
     @Override
-    public String getOriginalPart (int partNr) {
-        return (partNr >= mNrOfParts) ? null : mOriginalParts[partNr];
+    public Map<String, String> getSymbolValues (int partNr) {
+        return (partNr >= mNrOfParts) ? null : mParts[partNr].mSymbolValues;
+    }
+
+    @Override
+    public String getPart (int partNr) {
+        return (partNr >= mNrOfParts) ? "" : mParts[partNr].mValue;
     }
 
     @Override
     public boolean isEmpty () {
         for (int partNr = 0; partNr < mNrOfParts; ++partNr) {
-            if (!mParts[partNr].isEmpty ()) {
+            if (!mParts[partNr].mValue.isEmpty ()) {
                 return false;
             }
         }

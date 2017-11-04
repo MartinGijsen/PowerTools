@@ -33,6 +33,7 @@ import org.powertools.engine.core.runtime.Factory;
 import org.powertools.engine.core.runtime.TestSourceStack;
 import org.powertools.engine.expression.ExpressionEvaluator;
 import org.powertools.engine.ProcedureRunner;
+import org.powertools.engine.expression.EvaluatedExpression;
 import org.powertools.engine.instructions.ParameterConvertors;
 import org.powertools.engine.reports.TestRunResultPublisherImpl;
 import org.powertools.engine.sources.TestLineImpl;
@@ -204,7 +205,7 @@ public final class RunTimeImpl implements RunTime, ProcedureRunner {
     }
 
     @Override
-    public String evaluateExpression (String expression) {
+    public EvaluatedExpression evaluateExpression (String expression) {
         return mEvaluator.evaluate (expression, getCurrentScope ());
     }
      
@@ -214,7 +215,8 @@ public final class RunTimeImpl implements RunTime, ProcedureRunner {
         for (int partNr = 0; partNr < nrOfParts; ++partNr) {
             final String part = testLine.getPart (partNr);
             if (part.startsWith ("?")) {
-                testLine.setEvaluatedPart (partNr, mEvaluator.evaluate (part, scope));
+                EvaluatedExpression result = mEvaluator.evaluate (part, scope);
+                testLine.setEvaluatedPart (partNr, result.getSymbolValues (), result.getValue ());
             }
         }
     }

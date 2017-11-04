@@ -53,13 +53,13 @@ public final class ExpressionEvaluator {
         return DateValue.mBusinessDayChecker;
     }
 
-    public String evaluate (String expression, Scope scope) {
+    public EvaluatedExpression evaluate (String expression, Scope scope) {
         try {
             mLexer.setCharStream (new ANTLRStringStream (expression));
             mParser.setTokenStream (new CommonTokenStream (mLexer));
             CommonTree tree = (CommonTree) mParser.root ().getTree ();
             mWalker.setTreeNodeStream (new CommonTreeNodeStream (tree));
-            return mWalker.main (scope).toString ();
+            return mWalker.main (scope);
         } catch (RecognitionException re) {
             throw new ExecutionException ("invalid expression '%s'", expression);
         }

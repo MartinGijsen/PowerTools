@@ -52,84 +52,84 @@ public class ExpressionEvaluatorDateTest {
 
     @Test
     public void testToday () {
-        String result = mEvaluator.evaluate ("? today", mScope);
+        EvaluatedExpression result = mEvaluator.evaluate ("? today", mScope);
         String expectation = getDateWithOffsetForToday (0);
-        Assert.assertEquals (expectation, result);
+        Assert.assertEquals (expectation, result.mValue.toString ());
     }
 
     @Test
     public void testYesterday () {
-        String result = mEvaluator.evaluate ("? yesterday", mScope);
+        EvaluatedExpression result = mEvaluator.evaluate ("? yesterday", mScope);
         String expectation = getDateWithOffsetForToday (-1);
-        Assert.assertEquals (expectation, result);
+        Assert.assertEquals (expectation, result.mValue.toString ());
     }
 
     @Test
     public void testTomorrow () {
-        String result = mEvaluator.evaluate ("? tomorrow", mScope);
+        EvaluatedExpression result = mEvaluator.evaluate ("? tomorrow", mScope);
         String expectation = getDateWithOffsetForToday (1);
-        Assert.assertEquals (expectation, result);
+        Assert.assertEquals (expectation, result.mValue.toString ());
     }
 
     @Test
     public void testNrOfDaysAsLiteral () {
-        String result = mEvaluator.evaluate ("? today + 12 days", mScope);
+        EvaluatedExpression result = mEvaluator.evaluate ("? today + 12 days", mScope);
         String expectation = getDateWithOffsetForToday (12);
-        Assert.assertEquals (expectation, result);
+        Assert.assertEquals (expectation, result.mValue.toString ());
     }
 
     @Test
     public void testSubtractionNrOfDaysAsLiteral () {
-        String result = mEvaluator.evaluate ("? today - 12 days", mScope);
+        EvaluatedExpression result = mEvaluator.evaluate ("? today - 12 days", mScope);
         String expectation = getDateWithOffsetForToday (-12);
-        Assert.assertEquals (expectation, result);
+        Assert.assertEquals (expectation, result.mValue.toString ());
     }
 
     @Test
     public void testNrOfDaysAsSymbol () {
         mScope.createVariable ("nrOfDays", "12");
-        String result = mEvaluator.evaluate ("? today + nrOfDays days", mScope);
+        EvaluatedExpression result = mEvaluator.evaluate ("? today + nrOfDays days", mScope);
         String expectation = getDateWithOffsetForToday (12);
-        Assert.assertEquals (expectation, result);
+        Assert.assertEquals (expectation, result.mValue.toString ());
     }
 
     @Test
     public void testSubtractionNrOfDaysAsSymbol () {
         mScope.createVariable ("nrOfDays", "12");
-        String result = mEvaluator.evaluate ("? today - nrOfDays days", mScope);
+        EvaluatedExpression result = mEvaluator.evaluate ("? today - nrOfDays days", mScope);
         String expectation = getDateWithOffsetForToday (-12);
-        Assert.assertEquals (expectation, result);
+        Assert.assertEquals (expectation, result.mValue.toString ());
     }
 
     @Test
     public void testSubtractionNrOfDaysNegativeAsSymbol () {
         mScope.createVariable ("nrOfDays", "-12");
-        String result = mEvaluator.evaluate ("? today - nrOfDays days", mScope);
+        EvaluatedExpression result = mEvaluator.evaluate ("? today - nrOfDays days", mScope);
         String expectation = getDateWithOffsetForToday (12);
-        Assert.assertEquals (expectation, result);
+        Assert.assertEquals (expectation, result.mValue.toString ());
     }
 
     @Test
     public void testNrOfDaysNegativeAsSymbol () {
         mScope.createVariable ("nrOfDays", "-12");
-        String result = mEvaluator.evaluate ("? today + nrOfDays days", mScope);
+        EvaluatedExpression result = mEvaluator.evaluate ("? today + nrOfDays days", mScope);
         String expectation = getDateWithOffsetForToday (-12);
-        Assert.assertEquals (expectation, result);
+        Assert.assertEquals (expectation, result.mValue.toString ());
     }
 
     @Test
     public void testDataAsSymbolNrOfDaysAsLiteral () {
         mScope.createVariable ("aDate", "12-01-2013");
-        String result = mEvaluator.evaluate ("? aDate + 12 days", mScope);
-        Assert.assertEquals ("24-01-2013", result);
+        EvaluatedExpression result = mEvaluator.evaluate ("? aDate + 12 days", mScope);
+        Assert.assertEquals ("24-01-2013", result.mValue.toString ());
     }
 
     @Test
     public void testSubtractionDataAsSymbolNrOfDaysNegativeAsSymbol () {
         mScope.createVariable ("aDate", "12-01-2013");
         mScope.createVariable ("nrOfDays", "-12");
-        String result = mEvaluator.evaluate ("? aDate - nrOfDays days", mScope);
-        Assert.assertEquals ("24-01-2013", result);
+        EvaluatedExpression result = mEvaluator.evaluate ("? aDate - nrOfDays days", mScope);
+        Assert.assertEquals ("24-01-2013", result.mValue.toString ());
     }
 
     @Test
@@ -137,22 +137,22 @@ public class ExpressionEvaluatorDateTest {
         mScope.createVariable ("aDate", "31-01-2013");
         mScope.createVariable ("nrOfDays", "-28");
         mScope.createVariable ("nrOfWeeks", "-2");
-        String result = mEvaluator.evaluate ("? aDate - nrOfDays days + (2 * nrOfWeeks) weeks", mScope);
-        Assert.assertEquals ("31-01-2013", result);
+        EvaluatedExpression result = mEvaluator.evaluate ("? aDate - nrOfDays days + (2 * nrOfWeeks) weeks", mScope);
+        Assert.assertEquals ("31-01-2013", result.mValue.toString ());
     }
 
     @Test
     public void testExpressionAddDefaultBusinessDays () {
         mScope.createVariable ("aDate", "01-01-2013");
-        String result = mEvaluator.evaluate ("? aDate + 2 business days", mScope);
-        Assert.assertEquals ("03-01-2013", result);
+        EvaluatedExpression result = mEvaluator.evaluate ("? aDate + 2 business days", mScope);
+        Assert.assertEquals ("03-01-2013", result.mValue.toString ());
     }
 
     @Test
     public void testExpressionAddDefaultBusinessDaysOverWeekend () {
         mScope.createVariable ("aDate", "03-01-2013");
-        String result = mEvaluator.evaluate ("? aDate + 2 business days", mScope);
-        Assert.assertEquals ("07-01-2013", result);
+        EvaluatedExpression result = mEvaluator.evaluate ("? aDate + 2 business days", mScope);
+        Assert.assertEquals ("07-01-2013", result.mValue.toString ());
     }
 
     @Test
@@ -164,15 +164,15 @@ public class ExpressionEvaluatorDateTest {
                     return date.get (Calendar.DAY_OF_WEEK) == Calendar.MONDAY;
             }
         });
-        String result = mEvaluator.evaluate ("? aDate + 2 business days", mScope);
-        Assert.assertEquals ("14-01-2013", result);
+        EvaluatedExpression result = mEvaluator.evaluate ("? aDate + 2 business days", mScope);
+        Assert.assertEquals ("14-01-2013", result.mValue.toString ());
     }
 
     @Test
     public void testExpressionSubtractDefaultBusinessDays () {
         mScope.createVariable ("aDate", "03-01-2013");
-        String result = mEvaluator.evaluate ("? aDate - 2 business days", mScope);
-        Assert.assertEquals ("01-01-2013", result);
+        EvaluatedExpression result = mEvaluator.evaluate ("? aDate - 2 business days", mScope);
+        Assert.assertEquals ("01-01-2013", result.mValue.toString ());
     }
 
     @Test
@@ -184,22 +184,22 @@ public class ExpressionEvaluatorDateTest {
                     return date.get (Calendar.DAY_OF_WEEK) == Calendar.MONDAY;
             }
         });
-        String result = mEvaluator.evaluate ("? aDate - 2 business days", mScope);
-        Assert.assertEquals ("31-12-2012", result);
+        EvaluatedExpression result = mEvaluator.evaluate ("? aDate - 2 business days", mScope);
+        Assert.assertEquals ("31-12-2012", result.mValue.toString ());
     }
 
     @Test
     public void testExpressionLiteralDate () {
-        String result = mEvaluator.evaluate ("? 01-01-2013 + 2 days", mScope);
-        Assert.assertEquals ("03-01-2013", result);
+        EvaluatedExpression result = mEvaluator.evaluate ("? 01-01-2013 + 2 days", mScope);
+        Assert.assertEquals ("03-01-2013", result.mValue.toString ());
     }
 
     @Test
     public void testConcateDateExpressionToString () {
         mScope.createVariable ("aDate", "03-01-2013");
-        String result = mEvaluator.evaluate ("? 'aStringLiteral' ++ (aDate + 1 days)", mScope);
+        EvaluatedExpression result = mEvaluator.evaluate ("? 'aStringLiteral' ++ (aDate + 1 days)", mScope);
         String expectation = "aStringLiteral04-01-2013";
-        Assert.assertEquals (expectation, result);
+        Assert.assertEquals (expectation, result.mValue.toString ());
     }	
 
     private String getDateWithOffsetForToday (int nrOfDays)	{

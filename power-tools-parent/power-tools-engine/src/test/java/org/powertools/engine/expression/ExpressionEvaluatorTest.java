@@ -45,7 +45,7 @@ public class ExpressionEvaluatorTest {
 
     @Test
     public void testEvaluate () {
-        assertEquals ("1", mEvaluator.evaluate ("? 1", new ScopeImpl (null)));
+        assertEquals ("1", mEvaluator.evaluate ("? 1", new ScopeImpl (null)).mValue.toString ());
     }
 
     @Test
