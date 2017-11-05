@@ -130,21 +130,16 @@ class WebDriverBrowser implements IBrowser {
     }
 
     private DesiredCapabilities getBrowserCapabilities (BrowserType type) {
-        DesiredCapabilities capabilities;
         switch (type) {
         case cInternetExplorer:
-            capabilities = DesiredCapabilities.internetExplorer ();
-            break;
+            return DesiredCapabilities.internetExplorer ();
         case cChrome:
-            capabilities = DesiredCapabilities.chrome ();
-            break;
+            return DesiredCapabilities.chrome ();
         case cFirefox:
-            capabilities = DesiredCapabilities.firefox ();
-            break;
+            return DesiredCapabilities.firefox ();
         default:
             throw new ExecutionException ("unknown browser code: " + type);
         }
-        return capabilities;
     }
 
     @Override
