@@ -25,60 +25,89 @@ import java.util.Date;
 import org.powertools.engine.ExecutionException;
 
 
-// TODO: the parser is used both static and normal. make up your mind?
 public final class PowerToolsParser {
     private static final String DEFAULT_DEFAULT_DATE_FORMAT = "yyyyMMdd";
 
     public static String mDefaultDateFormat = DEFAULT_DEFAULT_DATE_FORMAT;
 
-
+    
     public static boolean parseBoolean (String text) {
-        if ("true".equalsIgnoreCase (text)) {
+        switch (text.toLowerCase ()) {
+        case "true":
+        case "yes":
             return true;
-        } else if ("false".equalsIgnoreCase (text)) {
+        case "false":
+        case "no":
             return false;
-        } else {
+        default:
             throw new ExecutionException ("invalid boolean '%s'", text);
         }
     }
 
-    
-    public static float parseFloat (String text) {
-        try {
-            ParsePosition position = new ParsePosition (0);
-            float result = NumberFormat.getInstance ().parse (text, position).floatValue ();
-            if (position.getIndex () == text.length ()) {
-                return result;
-            }
-        } catch (NullPointerException npe) {
-            // continue
+    public static char parseChar (String text) {
+        if (text.length () == 1) {
+            return text.charAt (0);
+        } else if ("space".equalsIgnoreCase (text)) {
+            return ' ';
+        } else if ("tab".equalsIgnoreCase (text)) {
+            return '\t';
+        } else {
+            throw new ExecutionException ("invalid char '%s'", text);
         }
-        throw new ExecutionException ("invalid float number '%s'", text);
+    }
+  
+    public static byte parseByte (String text) {
+        try {
+            return new Byte (text);
+        } catch (NumberFormatException nfe) {
+            throw new ExecutionException ("invalid byte number '%s'", text);
+        }
+    }
+
+    public static short parseShort (String text) {
+        try {
+            return new Short (text);
+        } catch (NumberFormatException nfe) {
+            throw new ExecutionException ("invalid short number '%s'", text);
+        }
+    }
+
+    public static int parseInt (String text) {
+        try {
+            return new Integer (text);
+        } catch (NumberFormatException nfe) {
+            throw new ExecutionException ("invalid integer number '%s'", text);
+        }
+    }
+
+    public static long parseLong (String text) {
+        try {
+            return new Long (text);
+        } catch (NumberFormatException nfe) {
+            throw new ExecutionException ("invalid long number '%s'", text);
+        }
+    }
+
+    public static float parseFloat (String text) {
+        return parseReal (text, "float").floatValue ();
     }
 
     public static double parseDouble (String text) {
+        return parseReal (text, "double").doubleValue ();
+    }
+
+    public static Number parseReal (String text, String type) {
         try {
             ParsePosition position = new ParsePosition (0);
-            double result = NumberFormat.getInstance ().parse (text, position).doubleValue ();
+            Number number = NumberFormat.getInstance ().parse (text, position);
             if (position.getIndex () == text.length ()) {
-                return result;
+                return number;
             }
         } catch (NullPointerException npe) {
             // continue
         }
-        throw new ExecutionException ("invalid double number '%s'", text);
+        throw new ExecutionException ("invalid %s number '%s'", type, text);
     }
-
-//    public static double parseReal (String text) {
-//        NumberFormat nf        = NumberFormat.getNumberInstance ();
-//        ParsePosition position = new ParsePosition (0);
-//        Number number          = nf.parse (text, position);
-//        if (position.getIndex () == text.length ()) {
-//            return number.doubleValue ();
-//        } else {
-//            throw new ExecutionException ("invalid real number '%s'", text);
-//        }
-//    }
 
     public static String formatReal (double number) {
         return NumberFormat.getNumberInstance ().format (number);
@@ -93,21 +122,11 @@ public final class PowerToolsParser {
     }
 
 
-    public String parseDate (String dateString) {
+    public static String parseDate (String dateString) {
         return parseDate (dateString, mDefaultDateFormat);
     }
 
-    public String parseDate (String dateString, String format) {
-//        Date date;
-//        try {
-//            ParsePosition position = new ParsePosition (0);
-//            date                   = new SimpleDateFormat (format).parse (dateString, position);
-//            if (position.getIndex () != dateString.length ()) {
-//                throw new ExecutionException ("date '%s' does not have format '%s'", dateString, format);
-//            }
-//        } catch (IllegalArgumentException iae) {
-//            throw new ExecutionException ("invalid date format '%s'", format);
-//        }
+    public static String parseDate (String dateString, String format) {
         Date date = parseDateToDate (dateString, format);
         return new SimpleDateFormat ("yyyyMMdd").format (date);
     }
@@ -130,11 +149,11 @@ public final class PowerToolsParser {
         }
     }
 
-    public String formatDate (String dateString) {
+    public static String formatDate (String dateString) {
         return formatDate (dateString, mDefaultDateFormat);
     }
     
-    public String formatDate (String dateString, String format) {
+    public static String formatDate (String dateString, String format) {
         Date date;
         try {
             date = new SimpleDateFormat ("yyyyMMdd").parse (dateString);

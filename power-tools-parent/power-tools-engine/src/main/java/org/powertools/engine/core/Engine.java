@@ -67,7 +67,7 @@ public abstract class Engine {
 
     protected final void registerBuiltins () {
         BuiltinInstructions.register (mRunTime, mInstructions);
-        new BuiltinFunctions (mRunTime.getFunctions (), mRunTime.getPowerToolsParser ());
+        new BuiltinFunctions (mRunTime.getFunctions ());
     }
 
 

@@ -242,11 +242,6 @@ public final class RunTimeImpl implements RunTime, ProcedureRunner {
         return mCurrencies;
     }
 
-    @Override
-    public PowerToolsParser getPowerToolsParser() {
-        return mPowerToolsParser;
-    }
-    
     public void setDefaultDateFormat (String format) {
         mPowerToolsParser.setDefaultDateFormat (format);
     }

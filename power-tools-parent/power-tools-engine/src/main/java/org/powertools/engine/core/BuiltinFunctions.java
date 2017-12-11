@@ -24,13 +24,10 @@ import org.powertools.engine.util.PowerToolsParser;
 
 
 public class BuiltinFunctions {
-    private final PowerToolsParser mParser;
-    
     private static final String PARSE_DATE  = "parseDate";
     private static final String FORMAT_DATE = "formatDate";
 
-    BuiltinFunctions (Functions functions, PowerToolsParser parser) {
-        mParser = parser;
+    BuiltinFunctions (Functions functions) {
         addAbsFunction (functions);
         addRandomFunction (functions);
         addParseDate1 (functions);
@@ -63,7 +60,7 @@ public class BuiltinFunctions {
         functions.add (new Function (PARSE_DATE, 1) {
             public String execute (String[] args) {
                 String dateString = args[0];
-                return mParser.parseDate (dateString);
+                return PowerToolsParser.parseDate (dateString);
             }
         });
     }
@@ -73,7 +70,7 @@ public class BuiltinFunctions {
             public String execute (String[] args) {
                 String dateString = args[0];
                 String format     = args[1];
-                return mParser.parseDate (dateString, format);
+                return PowerToolsParser.parseDate (dateString, format);
             }
         });
     }
@@ -82,7 +79,7 @@ public class BuiltinFunctions {
         functions.add (new Function (FORMAT_DATE, 1) {
             public String execute (String[] args) {
                 String dateString = args[0];
-                return mParser.formatDate (dateString);
+                return PowerToolsParser.formatDate (dateString);
             }
         });
     }
@@ -92,7 +89,7 @@ public class BuiltinFunctions {
             public String execute (String[] args) {
                 String dateString = args[0];
                 String format     = args[1];
-                return mParser.formatDate (dateString, format);
+                return PowerToolsParser.formatDate (dateString, format);
             }
         });
     }
@@ -103,8 +100,8 @@ public class BuiltinFunctions {
                 String dateString   = args[0];
                 String inputFormat  = args[1];
                 String outputFormat = args[2];
-                String intermediateDate = mParser.parseDate (dateString, inputFormat);
-                return mParser.formatDate (intermediateDate, outputFormat);
+                String intermediateDate = PowerToolsParser.parseDate (dateString, inputFormat);
+                return PowerToolsParser.formatDate (intermediateDate, outputFormat);
             }
         });
     }

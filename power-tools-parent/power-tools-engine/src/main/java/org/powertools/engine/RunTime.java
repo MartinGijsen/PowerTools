@@ -205,6 +205,4 @@ public interface RunTime {
      * @return  the object containing the known currencies
      */
     Currencies getCurrencies ();
-    
-    PowerToolsParser getPowerToolsParser ();
 }
