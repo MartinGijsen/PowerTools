@@ -44,22 +44,22 @@ import org.powertools.engine.sources.Procedure;
  */
 final class Instructions {
     private final Map<String, InstructionSet> mInstructionSets;
-    private final Map<String, Executor> mExecutorCache;
-    private final Procedures mProcedures;
+    private final Map<String, Executor>       mExecutorCache;
+    private final Procedures                  mProcedures;
 
 
     Instructions (ProcedureRunner runner, TestRunResultPublisher publisher) {
-        mInstructionSets = new HashMap<String, InstructionSet> ();
-        mExecutorCache   = new HashMap<String, Executor> ();
+        mInstructionSets = new HashMap<> ();
+        mExecutorCache   = new HashMap<> ();
         mProcedures      = new Procedures (runner, publisher);
         addInstructionSet (mProcedures);
     }
 
-    void addInstructionSet (InstructionSet set) {
-        String name = set.getName ();
+    void addInstructionSet (InstructionSet instructionSet) {
+        String name = instructionSet.getName ();
         if (!mInstructionSets.containsKey (name)) {
-            mInstructionSets.put (name, set);
-            set.setup ();
+            mInstructionSets.put (name, instructionSet);
+            instructionSet.setup ();
             mExecutorCache.clear ();
         } else {
             throw new ExecutionException ("an instruction set '%s' is already registered", name);
@@ -67,10 +67,12 @@ final class Instructions {
     }
 
     void removeInstructionSet (String name) {
-        if (mInstructionSets.remove (name) != null) {
-            mExecutorCache.clear ();
-        } else {
+        InstructionSet instructionSet = mInstructionSets.remove (name);
+        if (instructionSet == null) {
             throw new ExecutionException ("no instruction set '%s' is registered", name);
+        } else {
+            instructionSet.cleanup ();
+            mExecutorCache.clear ();
         }
     }
 
@@ -105,8 +107,8 @@ final class Instructions {
 
     private Executor findMethodAndCreateExecutor (String instructionName) {
         Executor executor = null;
-        for (InstructionSet set : mInstructionSets.values ()) {
-            Executor newExecutor = set.getExecutor (instructionName);
+        for (InstructionSet instructionSet : mInstructionSets.values ()) {
+            Executor newExecutor = instructionSet.getExecutor (instructionName);
             if (executor == null) {
                 executor = newExecutor;
             } else if (newExecutor != null) {
