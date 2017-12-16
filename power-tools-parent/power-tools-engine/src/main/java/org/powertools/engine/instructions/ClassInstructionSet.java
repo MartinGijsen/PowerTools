@@ -118,7 +118,7 @@ final class ClassInstructionSet implements InstructionSet {
 
     private boolean isAnnotatedWithKeyword (Method method, String methodName) {
         Annotation annotation = method.getAnnotation (KeywordName.class);
-        return annotation == null ? false : ((KeywordName) annotation).value ().equals (methodName);
+        return annotation != null && ((KeywordName) annotation).value ().equals (methodName);
     }
 
     @Override
