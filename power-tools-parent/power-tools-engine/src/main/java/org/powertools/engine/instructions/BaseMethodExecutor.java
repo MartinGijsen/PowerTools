@@ -41,7 +41,6 @@ abstract class BaseMethodExecutor implements Executor {
         return invokeMethodAndHandleExceptions ();
     }
 
-    // TODO: why abstract here if not used here?
     abstract Object getArguments ();
 
     protected final void checkNrOfArguments (TestLine testLine, int maxNrOfArgs) {
