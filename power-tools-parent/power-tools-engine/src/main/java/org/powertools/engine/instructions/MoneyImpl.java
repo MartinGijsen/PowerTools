@@ -47,78 +47,8 @@ public final class MoneyImpl implements Money {
     }
 
     
-//    @Override
-//    Value add (Value value) {
-//        return new MoneyImpl (mCurrency, mAmount + asMoney (value).mAmount);
-//    }
-//
-//    @Override
-//    Value subtract (Value value) {
-//        return new MoneyImpl (mCurrency, mAmount - asMoney (value).mAmount);
-//    }
-//
-//    @Override
-//    Value multiply (Value value) {
-//        return null;
-//        //return new Money (mCurrency, mAmount * asMoney (value).mAmount);
-//    }
-//
-//    @Override
-//    Value divide (Value value) {
-//        return null;
-//        //return new Money (mCurrency, mAmount / asMoney (value).mAmount);
-//    }
-//
-//    
-//    @Override
-//    Value equal (Value value) {
-//        return new BooleanValue (mAmount == asMoney (value).mAmount);
-//    }
-//
-//    @Override
-//    Value unequal (Value value) {
-//        return new BooleanValue (mAmount != asMoney (value).mAmount);
-//    }
-//
-//    @Override
-//    Value smaller (Value value) {
-//        return new BooleanValue (mAmount < asMoney (value).mAmount);
-//    }
-//
-//    @Override
-//    Value smallerOrEqual (Value value) {
-//        return new BooleanValue (mAmount <= asMoney (value).mAmount);
-//    }
-//
-//    @Override
-//    Value greater (Value value) {
-//        return new BooleanValue (mAmount > asMoney (value).mAmount);
-//    }
-//
-//    @Override
-//    Value greaterOrEqual (Value value) {
-//        return new BooleanValue (mAmount >= asMoney (value).mAmount);
-//    }
-//
-//    
-//    @Override
-//    MoneyImpl toMoney () {
-//        return this;
-//    }
-    
-    
     @Override
     public String toString () {
         return mCurrency.format (mAmount);
     }
-
-    
-//    private MoneyImpl asMoney (Value value) {
-//        MoneyImpl moneyValue = value.toMoney ();
-//        if (mCurrency != moneyValue.mCurrency) {
-//            throw new ExecutionException ("currencies differ");
-//        } else {
-//            return moneyValue;
-//        }
-//    }
 }
