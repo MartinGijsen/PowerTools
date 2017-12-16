@@ -32,7 +32,7 @@ final class MapMethodExecutor extends BaseMethodExecutor {
 
     MapMethodExecutor (Object object, Method method) {
         super (object, method);
-        mArguments = new HashMap<String, String> ();
+        mArguments = new HashMap<> ();
     }
 
     @Override
