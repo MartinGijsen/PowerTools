@@ -19,13 +19,12 @@
 package org.powertools.database;
 
 import org.powertools.database.util.MyList;
-import org.powertools.database.expression.Value;
 
 
 public class InsertQuery extends Query {
-    private final TableName          _tableName;
-    private final MyList<ColumnName> _columnNames;
-    private final MyList<Value>      _values;
+    private final TableName      _tableName;
+    private final MyList<String> _columnNames;
+    private final MyList<String> _values;
     
     
     public InsertQuery (String tableName) {
@@ -39,31 +38,32 @@ public class InsertQuery extends Query {
         _values      = new MyList<> ();
     }
 
-    public InsertQuery forColumn (String columnName) {
-        return forColumn (new ColumnName (columnName));
-    }
-
-    public InsertQuery forColumn (ColumnName columnName) {
+    public InsertQuery column (String columnName) {
         _columnNames.add (columnName);
         return this;
     }
 
-    public InsertQuery forColumns (String... columnNames) {
+    public InsertQuery column (Column column) {
+        _columnNames.add (column._name);
+        return this;
+    }
+
+    public InsertQuery columns (String... columnNames) {
         for (String columnName : columnNames) {
-            _columnNames.add (new ColumnName (columnName));
+            _columnNames.add (columnName);
         }
         return this;
     }
 
     // TODO: rename to 'value'?
     public InsertQuery withValue (String value) {
-        _values.add (new Value (value));
+        _values.add (value);
         return this;
     }
     
     public InsertQuery values (String... values) {
         for (String value : values) {
-            _values.add (new Value (value));
+            _values.add (value);
         }
         return this;
     }

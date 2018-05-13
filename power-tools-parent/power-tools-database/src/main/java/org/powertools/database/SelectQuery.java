@@ -30,11 +30,6 @@ public final class SelectQuery extends Query {
     private GroupByClause            _groupByClause;
     
 
-    public SelectQuery (String columnName) {
-        this ();
-        select (columnName);
-    }
-
 //    // TODO: enable while avoiding clash between static and non-static select
 //    public static SelectQuery select (Column column) {
 //        return new SelectQuery (column);
@@ -58,10 +53,6 @@ public final class SelectQuery extends Query {
         _groupByClause = null;
     }
 
-
-    public SelectQuery select (String columnName) {
-        return select (new ColumnName (columnName));
-    }
 
     public SelectQuery select (Selectable selectable) {
         _selection.add (selectable);
@@ -87,15 +78,11 @@ public final class SelectQuery extends Query {
         return this;
     }
 
-    public SelectQuery groupBy (String columnName) {
-        return groupBy (new ColumnName (columnName));
-    }
-
-    public SelectQuery groupBy (ColumnName columnName) {
+    public SelectQuery groupBy (Column column) {
         if (_groupByClause == null) {
-            _groupByClause = new GroupByClause (columnName);
+            _groupByClause = new GroupByClause (column);
         } else {
-            _groupByClause.add (columnName);
+            _groupByClause.add (column);
         }
         return this;
     }

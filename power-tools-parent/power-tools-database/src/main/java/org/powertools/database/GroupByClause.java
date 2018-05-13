@@ -22,15 +22,15 @@ import org.powertools.database.util.MyList;
 
 
 final class GroupByClause {
-    private final MyList<ColumnName> _columnNames;
+    private final MyList<String> _columnNames;
     
-    GroupByClause (ColumnName columnName) {
+    GroupByClause (Column column) {
         _columnNames = new MyList<> ();
-        add (columnName);
+        add (column);
     }
     
-    void add (ColumnName columnName) {
-        _columnNames.add (columnName);
+    void add (Column column) {
+        _columnNames.add (column._name);
     }
     
     @Override
