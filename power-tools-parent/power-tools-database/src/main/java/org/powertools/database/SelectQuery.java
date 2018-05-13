@@ -18,14 +18,16 @@
 
 package org.powertools.database;
 
-import java.util.List;
+import org.powertools.database.util.MyList;
+import org.powertools.database.expression.Condition;
 
 
-public class SelectQuery extends Query {
-    private final MyList        mColumnNames;
-    private final MyList        mTableNames;
-    private final WhereClause   mWhereClause;
-    private final GroupByClause mGroupByClause;
+public final class SelectQuery extends Query {
+    private boolean                  _distinct;
+    private final MyList<Selectable> _selection;
+    private final MyList<Table>      _tableNames;
+    private WhereClause              _whereClause;
+    private GroupByClause            _groupByClause;
     
 
     public SelectQuery (String columnName) {
@@ -33,65 +35,77 @@ public class SelectQuery extends Query {
         select (columnName);
     }
 
+//    // TODO: enable while avoiding clash between static and non-static select
+//    public static SelectQuery select (Column column) {
+//        return new SelectQuery (column);
+//    }
+    
+    public static SelectQuery select () {
+        return new SelectQuery ();
+    }
+    
+    public SelectQuery (Column column) {
+        this ();
+        select (column);
+    }
+
     public SelectQuery () {
         super ();
-        mColumnNames   = new MyList ("column names");
-        mTableNames    = new MyList ("table names");
-        mWhereClause   = new WhereClause ();
-        mGroupByClause = new GroupByClause ();
+        _distinct      = false;
+        _selection     = new MyList<> ();
+        _tableNames    = new MyList<> ();
+        _whereClause   = null;
+        _groupByClause = null;
     }
 
 
-    // select
     public SelectQuery select (String columnName) {
         return select (new ColumnName (columnName));
     }
 
-    public SelectQuery select (ColumnName columnName) {
-        mColumnNames.add (columnName);
+    public SelectQuery select (Selectable selectable) {
+        _selection.add (selectable);
         return this;
     }
 
-    public SelectQuery select (Alias alias) {
-        mColumnNames.add (alias);
+    public SelectQuery distinct () {
+        _distinct = true;
+        return this;
+    }
+    
+    public SelectQuery from (Table table) {
+        _tableNames.add (table);
         return this;
     }
 
-    public SelectQuery select (List<String> columnNames) {
-        for (String columnName : columnNames) {
-            mColumnNames.add (new ColumnName (columnName));
+    public SelectQuery where (Condition condition) {
+        if (_whereClause == null) {
+            _whereClause = new WhereClause (condition);
+        } else {
+            _whereClause.add (condition);
         }
         return this;
     }
 
-    // from
-    public SelectQuery from (String tableName) {
-        return from (new TableName (tableName));
-    }
-
-    public SelectQuery from (TableName tableName) {
-        mTableNames.add (tableName);
-        return this;
-    }
-
-    // where
-    public SelectQuery where (BooleanExpression condition) {
-        mWhereClause.add (condition);
-        return this;
-    }
-
-    // group by
     public SelectQuery groupBy (String columnName) {
         return groupBy (new ColumnName (columnName));
     }
 
     public SelectQuery groupBy (ColumnName columnName) {
-        mGroupByClause.add (columnName);
+        if (_groupByClause == null) {
+            _groupByClause = new GroupByClause (columnName);
+        } else {
+            _groupByClause.add (columnName);
+        }
         return this;
     }
 
     @Override
     public String toString () {
-        return String.format ("SELECT %s FROM %s%s%s", mColumnNames.toString (), mTableNames.toString (), mWhereClause.toString (), mGroupByClause.toString ());
+        String distinct      = _distinct ? " DISTINCT" : "";
+        String whereClause   = _whereClause == null ? "" : _whereClause.toString ();
+        String groupByClause = _groupByClause == null ? "" : _groupByClause.toString ();
+        return String.format ("SELECT%s %s FROM %s%s%s",
+                distinct, _selection.toString (), _tableNames.toString (), whereClause, groupByClause);
     }
 }

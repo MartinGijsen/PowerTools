@@ -18,17 +18,14 @@
 
 package org.powertools.database;
 
+import org.powertools.database.expression.Value;
+
 
 public abstract class Query {
-    public static TableName table (String name) {
-        return new TableName (name);
-    }
-
-    public static ColumnName column (String name) {
-        return new ColumnName (name);
-    }
-    
     public static Value value (String value) {
         return new Value (value);
     }
+    
+    @Override
+    public abstract String toString();
 }

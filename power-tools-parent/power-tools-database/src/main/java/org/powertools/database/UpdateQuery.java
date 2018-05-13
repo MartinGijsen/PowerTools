@@ -20,13 +20,14 @@ package org.powertools.database;
 
 import java.util.HashMap;
 import java.util.Map;
+import org.powertools.database.expression.Condition;
 import org.powertools.engine.ExecutionException;
 
 
 public class UpdateQuery extends Query {
-    private final TableName mTableName;
-    private final Map<String, String> mValues;
-    private final WhereClause mWhereClause;
+    private final TableName           _tableName;
+    private final Map<String, String> _values;
+    private WhereClause               _whereClause;
 
 
     public UpdateQuery (String tableName) {
@@ -35,40 +36,45 @@ public class UpdateQuery extends Query {
     
     public UpdateQuery (TableName tableName) {
         super ();
-        mTableName   = tableName;
-        mValues      = new HashMap<String, String> ();
-        mWhereClause = new WhereClause ();
+        _tableName   = tableName;
+        _values      = new HashMap<> ();
+        _whereClause = null;
     }
 
     public UpdateQuery value (String columnName, String value) {
-        mValues.put (columnName, value);
+        _values.put (columnName, value);
         return this;
     }
 
-    public UpdateQuery where (BooleanExpression condition) {
-        mWhereClause.add (condition);
+    public UpdateQuery where (Condition condition) {
+        if (_whereClause == null) {
+            _whereClause = new WhereClause (condition);
+        } else {
+            _whereClause.add (condition);
+        }
         return this;
     }
     
     @Override
     public String toString () {
-        return String.format ("UPDATE %s SET %s%s", mTableName, getValues (), mWhereClause.toString ());
+        String whereClause = _whereClause == null ? "" : _whereClause.toString ();
+        return String.format ("UPDATE %s SET %s%s", _tableName, getValues (), whereClause);
     }
     
     private String getValues () {
-        if (mValues.isEmpty ()) {
+        if (_values.isEmpty ()) {
             throw new ExecutionException ("update query contains no values");
         }
 
         StringBuilder sb = new StringBuilder ();
         boolean isFirst  = true;
-        for (String columnName : mValues.keySet ()) {
+        for (String columnName : _values.keySet ()) {
             if (isFirst) {
                 isFirst = false;
             } else {
                 sb.append (", ");
             }
-            sb.append (columnName).append ("=").append (mValues.get (columnName));
+            sb.append (columnName).append ("=").append (_values.get (columnName));
         }
         return sb.toString ();
     }

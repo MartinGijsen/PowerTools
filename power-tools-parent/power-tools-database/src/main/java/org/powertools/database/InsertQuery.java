@@ -18,13 +18,14 @@
 
 package org.powertools.database;
 
-import java.util.List;
+import org.powertools.database.util.MyList;
+import org.powertools.database.expression.Value;
 
 
 public class InsertQuery extends Query {
-    private final TableName mTableName;
-    private final MyList mColumnNames;
-    private final MyList mValues;
+    private final TableName          _tableName;
+    private final MyList<ColumnName> _columnNames;
+    private final MyList<Value>      _values;
     
     
     public InsertQuery (String tableName) {
@@ -33,9 +34,9 @@ public class InsertQuery extends Query {
     
     public InsertQuery (TableName tableName) {
         super ();
-        mTableName   = tableName;
-        mColumnNames = new MyList ("column names");
-        mValues      = new MyList ("values");
+        _tableName   = tableName;
+        _columnNames = new MyList<> ();
+        _values      = new MyList<> ();
     }
 
     public InsertQuery forColumn (String columnName) {
@@ -43,31 +44,32 @@ public class InsertQuery extends Query {
     }
 
     public InsertQuery forColumn (ColumnName columnName) {
-        mColumnNames.add (columnName);
+        _columnNames.add (columnName);
         return this;
     }
 
-    public InsertQuery forColumns (List<String> columnNames) {
+    public InsertQuery forColumns (String... columnNames) {
         for (String columnName : columnNames) {
-            mColumnNames.add (new ColumnName (columnName));
+            _columnNames.add (new ColumnName (columnName));
         }
         return this;
     }
 
+    // TODO: rename to 'value'?
     public InsertQuery withValue (String value) {
-        mValues.add (new Value (value));
+        _values.add (new Value (value));
         return this;
     }
     
-    public InsertQuery withValues (List<String> values) {
+    public InsertQuery values (String... values) {
         for (String value : values) {
-            mValues.add (new Value (value));
+            _values.add (new Value (value));
         }
         return this;
     }
     
     @Override
     public String toString () {
-        return String.format ("INSERT INTO %s (%s) VALUES (%s)", mTableName, mColumnNames.toString (), mValues.toString ());
+        return String.format ("INSERT INTO %s (%s) VALUES (%s)", _tableName, _columnNames.toString (), _values.toString ());
     }
 }

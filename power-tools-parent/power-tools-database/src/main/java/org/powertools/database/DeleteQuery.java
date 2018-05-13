@@ -18,10 +18,12 @@
 
 package org.powertools.database;
 
+import org.powertools.database.expression.Condition;
+
 
 public class DeleteQuery {
-    private final TableName mTableName;
-    private final WhereClause mWhereClause;
+    private final TableName _tableName;
+    private WhereClause     _whereClause;
     
     public DeleteQuery (String tableName) {
         this (new TableName (tableName));
@@ -29,17 +31,22 @@ public class DeleteQuery {
 
     public DeleteQuery (TableName tableName) {
         super ();
-        mTableName   = tableName;
-        mWhereClause = new WhereClause ();
+        _tableName   = tableName;
+        _whereClause = null;
     }
 
-    public DeleteQuery where (BooleanExpression condition) {
-        mWhereClause.add (condition);
+    public DeleteQuery where (Condition condition) {
+        if (_whereClause == null) {
+            _whereClause = new WhereClause (condition);
+        } else {
+            _whereClause.add (condition);
+        }
         return this;
     }
 
     @Override
     public String toString () {
-        return String.format ("DELETE FROM %s%s", mTableName, mWhereClause.toString ());
+        String whereClause = _whereClause == null ? "" : _whereClause.toString ();
+        return String.format ("DELETE FROM %s%s", _tableName, whereClause);
     }
 }

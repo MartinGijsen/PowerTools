@@ -16,18 +16,40 @@
  * along with the PowerTools engine. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.powertools.database;
+package org.powertools.database.util;
+
+import java.util.LinkedList;
+import java.util.List;
+import org.powertools.engine.ExecutionException;
 
 
-final class Value implements Expression {
-    private final String mValue;
+public final class MyList<T> {
+    private final List<T> _items;
     
-    Value (String value) {
-        mValue = value;
+    public MyList () {
+        _items = new LinkedList<> ();
+    }
+    
+    public void add (T item) {
+        _items.add (item);
     }
     
     @Override
     public String toString () {
-        return "'" + mValue + "'";
+        if (_items.isEmpty ()) {
+            throw new ExecutionException ("<empty>");
+        }
+
+        StringBuilder sb = new StringBuilder ();
+        boolean isFirst  = true;
+        for (T item : _items) {
+            if (isFirst) {
+                sb.append (item.toString ());
+                isFirst = false;
+            } else {
+                sb.append (", ").append (item.toString());
+            }
+        }
+        return sb.toString ();
     }
 }

@@ -16,42 +16,18 @@
  * along with the PowerTools engine. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.powertools.database;
-
-import java.util.LinkedList;
-import java.util.List;
-import org.powertools.engine.ExecutionException;
+package org.powertools.database.expression;
 
 
-final class MyList {
-    private final String mName;
-    private final List<ListItem> mItems;
+public final class Value extends Term {
+    private final String _value;
     
-    MyList (String name) {
-        mName  = name;
-        mItems = new LinkedList<ListItem> ();
+    public Value (String value) {
+        _value = value;
     }
-    
-    void add (ListItem item) {
-        mItems.add (item);
-    }
-    
+
     @Override
     public String toString () {
-        if (mItems.isEmpty ()) {
-            throw new ExecutionException ("<empty>");
-        }
-
-        StringBuilder sb = new StringBuilder ();
-        boolean isFirst  = true;
-        for (ListItem item : mItems) {
-            if (isFirst) {
-                sb.append (item.toString ());
-                isFirst = false;
-            } else {
-                sb.append (", ").append (item.toString());
-            }
-        }
-        return sb.toString ();
+        return "'" + _value + "'";
     }
 }

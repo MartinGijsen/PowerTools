@@ -18,20 +18,22 @@
 
 package org.powertools.database;
 
+import org.powertools.database.expression.Condition;
+
 
 final class WhereClause {
-    private BooleanExpression mCondition;
+    private Condition _condition;
 
-    WhereClause () {
-        mCondition = null;
+    WhereClause (Condition condition) {
+        _condition = condition;
     }
     
-    void add (BooleanExpression condition) {
-        mCondition = (mCondition == null ? condition : new AndExpression (mCondition, condition));
+    void add (Condition condition) {
+        _condition = _condition.and (condition);
     }
 
     @Override
     public String toString () {
-        return mCondition == null ? "" : " WHERE " + mCondition.toString ();
+        return " WHERE " + _condition.toString ();
     }
 }

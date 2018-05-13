@@ -18,23 +18,23 @@
 
 package org.powertools.database;
 
+import org.powertools.database.util.MyList;
+
 
 final class GroupByClause {
-    private MyList mColumnNames;
+    private final MyList<ColumnName> _columnNames;
     
-    GroupByClause () {
-        mColumnNames = null;
+    GroupByClause (ColumnName columnName) {
+        _columnNames = new MyList<> ();
+        add (columnName);
     }
     
     void add (ColumnName columnName) {
-        if (mColumnNames == null) {
-            mColumnNames = new MyList ("group by names");
-        }
-        mColumnNames.add (columnName);
+        _columnNames.add (columnName);
     }
     
     @Override
     public String toString () {
-        return mColumnNames == null ? "" : " GROUP BY " + mColumnNames.toString ();
+        return " GROUP BY " + _columnNames.toString ();
     }
 }

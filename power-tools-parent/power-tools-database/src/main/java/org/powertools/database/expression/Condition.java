@@ -16,20 +16,19 @@
  * along with the PowerTools engine. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.powertools.database;
+package org.powertools.database.expression;
 
 
-public class AndExpression implements BooleanExpression {
-    private final BooleanExpression mCondition1;
-    private final BooleanExpression mCondition2;
-    
-    AndExpression (BooleanExpression condition1, BooleanExpression condition2) {
-        mCondition1 = condition1;
-        mCondition2 = condition2;
+public abstract class Condition implements Expression {
+    public Condition and (Condition condition) {
+        return new BinaryOperatorExpression (this, "AND", condition);
     }
     
-    @Override
-    public String toString () {
-        return mCondition1.toString () + " AND " + mCondition2.toString ();
+    public Condition or (Condition condition) {
+        return new BinaryOperatorExpression (this, "OR", condition);
+    }
+    
+    public static Condition not (Condition condition) {
+        return new UnaryOperatorExpression ("NOT", true, condition);
     }
 }

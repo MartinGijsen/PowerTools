@@ -18,12 +18,14 @@
 
 package org.powertools.database;
 
+import org.powertools.database.expression.Term;
 
-public final class ColumnName implements ListItem, Expression {
-    private final TableName mTableName;
-    private final String mName;
 
-    private static boolean mAddQuotes = false;
+public final class ColumnName extends Term implements Selectable {
+    private final TableName _tableName;
+    private final String    _name;
+
+    private static boolean _addQuotes = false;
     
 
     ColumnName (String name) {
@@ -31,54 +33,24 @@ public final class ColumnName implements ListItem, Expression {
     }
     
     ColumnName (TableName tableName, String name) {
-        mTableName = tableName;
-        mName      = name;
+        _tableName = tableName;
+        _name      = name;
     }
 
     public static void setAddQuotes (boolean addQuotes) {
-        mAddQuotes = addQuotes;
+        _addQuotes = addQuotes;
     }
-    
 
-    public Alias as (String name) {
-        return new Alias (this, name);
-    }
-    
     public TableName getTableName () {
-        return mTableName;
+        return _tableName;
     }
-    
-    public BooleanExpression equal (Expression expression) {
-        return CompareExpression.equal (this, expression);
-    }
-    
-    public BooleanExpression unequal (Expression expression) {
-        return CompareExpression.unequal (this, expression);
-    }
-    
-    public BooleanExpression greaterThan (Expression expression) {
-        return CompareExpression.greaterThan (this, expression);
-    }
-    
-    public BooleanExpression greaterThanOrEqual (Expression expression) {
-        return CompareExpression.greaterThanOrEqual (this, expression);
-    }
-    
-    public BooleanExpression lessThan (Expression expression) {
-        return CompareExpression.lessThan (this, expression);
-    }
-    
-    public BooleanExpression lessThanOrEqual (Expression expression) {
-        return CompareExpression.lessThanOrEqual (this, expression);
-    }
-
     
     @Override
     public String toString () {
-        if (mTableName == null) {
-            return mAddQuotes ? ("'" + mName + "'") : mName;
+        if (_tableName == null) {
+            return _addQuotes ? ("'" + _name + "'") : _name;
         } else {
-            return String.format (mAddQuotes ? "%s.'%s'" : "%s.%s", mTableName.toString (), mName);
+            return String.format (_addQuotes ? "%s.'%s'" : "%s.%s", _tableName.toString (), _name);
         }
     }
 }

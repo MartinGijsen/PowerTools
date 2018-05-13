@@ -19,23 +19,23 @@
 package org.powertools.database;
 
 
-public final class TableName implements ListItem {
-    private final String mName;
+public final class TableName {
+    private final String _name;
     
     public TableName (String name) {
-        mName = name;
+        _name = name;
     }
     
-    String getName () {
-        return mName;
+    public String getName () {
+        return _name;
     }
     
-    public ColumnName column (String name) {
-        return new ColumnName (this, name);
-    }
+//    public ColumnName column (String name) {
+//        return new ColumnName (this, name);
+//    }
     
     @Override
     public String toString () {
-        return mName;
+        return _name;
     }
 }
