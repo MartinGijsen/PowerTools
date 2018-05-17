@@ -21,11 +21,11 @@ package org.powertools.database.expression;
 
 public abstract class Condition implements Expression {
     public Condition and (Condition condition) {
-        return new BinaryOperatorExpression (this, "AND", condition);
+        return new BinaryOperatorExpression (this, "\nAND", condition);
     }
     
     public Condition or (Condition condition) {
-        return new BinaryOperatorExpression (this, "OR", condition);
+        return new BinaryOperatorExpression (this, "\nOR", condition);
     }
     
     public static Condition not (Condition condition) {

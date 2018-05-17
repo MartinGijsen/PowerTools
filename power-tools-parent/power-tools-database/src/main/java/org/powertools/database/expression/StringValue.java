@@ -16,26 +16,18 @@
  * along with the PowerTools engine. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.powertools.database;
+package org.powertools.database.expression;
 
 
-public final class TableName {
-    private final String _name;
+public final class StringValue extends Term {
+    private final String _value;
     
-    public TableName (String name) {
-        _name = name;
+    public StringValue (String value) {
+        _value = value;
     }
-    
-    public String getName () {
-        return _name;
-    }
-    
-//    public ColumnName column (String name) {
-//        return new ColumnName (this, name);
-//    }
-    
+
     @Override
     public String toString () {
-        return _name;
+        return "'" + _value + "'";
     }
 }

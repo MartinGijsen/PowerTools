@@ -1,7 +1,7 @@
 package org.powertools.database.expression;
 
 
-public class UnaryOperatorExpression extends SimpleCondition {
+final class UnaryOperatorExpression extends Condition {
     private final String     _operator;
     private final boolean    _isPrefix;
     private final Expression _expression;

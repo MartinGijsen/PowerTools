@@ -22,14 +22,10 @@ import org.powertools.database.expression.Condition;
 
 
 public class DeleteQuery {
-    private final TableName _tableName;
-    private WhereClause     _whereClause;
+    private final String _tableName;
+    private WhereClause  _whereClause;
     
     public DeleteQuery (String tableName) {
-        this (new TableName (tableName));
-    }
-
-    public DeleteQuery (TableName tableName) {
         super ();
         _tableName   = tableName;
         _whereClause = null;

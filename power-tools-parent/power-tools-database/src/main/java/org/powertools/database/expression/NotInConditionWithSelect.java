@@ -3,7 +3,7 @@ package org.powertools.database.expression;
 import org.powertools.database.SelectQuery;
 
 
-public class NotInConditionWithSelect extends Condition {
+final class NotInConditionWithSelect extends Condition {
     private final Term        _term;
     private final SelectQuery _query;
     
@@ -14,6 +14,6 @@ public class NotInConditionWithSelect extends Condition {
     
     @Override
     public String toString () {
-        return String.format ("%s NOT IN (%s)", _term.toString (), _query.toString ());
+        return String.format ("%s NOT IN\n(\n%s\n)", _term.toString (), _query.toString ());
     }
 }

@@ -1,7 +1,7 @@
 package org.powertools.database.expression;
 
 
-public class BinaryOperatorExpression extends SimpleCondition {
+final class BinaryOperatorExpression extends Condition {
     private final Expression _expression1;
     private final String     _operator;
     private final Expression _expression2;

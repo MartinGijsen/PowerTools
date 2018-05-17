@@ -18,13 +18,11 @@
 
 package org.powertools.database;
 
-import org.powertools.database.expression.Value;
-
 
 public abstract class Query {
-    public static Value value (String value) {
-        return new Value (value);
-    }
+//    public static Value value (String value) {
+//        return new StringValue (value);
+//    }
     
     @Override
     public abstract String toString();

@@ -25,16 +25,12 @@ import org.powertools.engine.ExecutionException;
 
 
 public class UpdateQuery extends Query {
-    private final TableName           _tableName;
+    private final String              _tableName;
     private final Map<String, String> _values;
     private WhereClause               _whereClause;
 
 
     public UpdateQuery (String tableName) {
-        this (new TableName (tableName));
-    }
-    
-    public UpdateQuery (TableName tableName) {
         super ();
         _tableName   = tableName;
         _values      = new HashMap<> ();

@@ -20,7 +20,6 @@ package org.powertools.database.util;
 
 import java.util.LinkedList;
 import java.util.List;
-import org.powertools.engine.ExecutionException;
 
 
 public final class MyList<T> {
@@ -33,11 +32,11 @@ public final class MyList<T> {
     public void add (T item) {
         _items.add (item);
     }
-    
+
     @Override
     public String toString () {
         if (_items.isEmpty ()) {
-            throw new ExecutionException ("<empty>");
+            throw new RuntimeException ("list is empty");
         }
 
         StringBuilder sb = new StringBuilder ();

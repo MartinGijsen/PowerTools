@@ -34,6 +34,6 @@ final class WhereClause {
 
     @Override
     public String toString () {
-        return " WHERE " + _condition.toString ();
+        return "\nWHERE " + _condition.toString ();
     }
 }

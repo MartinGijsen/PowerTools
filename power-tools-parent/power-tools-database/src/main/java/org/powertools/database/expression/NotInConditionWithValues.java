@@ -1,7 +1,7 @@
 package org.powertools.database.expression;
 
 
-public class NotInConditionWithValues extends Condition {
+final class NotInConditionWithValues extends Condition {
     private final Term     _term;
     private final String[] _values;
     

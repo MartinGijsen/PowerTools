@@ -19,15 +19,15 @@
 package org.powertools.database.expression;
 
 
-public final class Value extends Term {
-    private final String _value;
+final class NumericValue extends Term {
+    private final int _value;
     
-    public Value (String value) {
+    public NumericValue (int value) {
         _value = value;
     }
 
     @Override
     public String toString () {
-        return "'" + _value + "'";
+        return Integer.toString (_value);
     }
 }

@@ -12,6 +12,6 @@ public class ColumnAlias implements Selectable {
     
     @Override
     public String toString () {
-        return _column._name + " AS " + _alias;
+        return _column.toString () + " AS " + _alias;
     }
 }

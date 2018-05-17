@@ -4,8 +4,16 @@ import org.powertools.database.SelectQuery;
 
 
 public abstract class Term implements Expression {
+    public static Term rowNum () {
+        return new RowNum ();
+    }
+    
     public final Condition equal (String value) {
-        return equal (new Value (value));
+        return equal (new StringValue (value));
+    }
+
+    public final Condition equal (int value) {
+        return equal (new NumericValue (value));
     }
 
     public final Condition equal (Term term) {
@@ -13,7 +21,11 @@ public abstract class Term implements Expression {
     }
 
     public final Condition unequal (String value) {
-        return unequal (new Value (value));
+        return unequal (new StringValue (value));
+    }
+
+    public final Condition unequal (int value) {
+        return unequal (new NumericValue (value));
     }
 
     public final Condition unequal (Term term) {
@@ -21,7 +33,11 @@ public abstract class Term implements Expression {
     }
 
     public final Condition greaterThan (String value) {
-        return greaterThan (new Value (value));
+        return greaterThan (new StringValue (value));
+    }
+
+    public final Condition greaterThan (int value) {
+        return greaterThan (new NumericValue (value));
     }
 
     public final Condition greaterThan (Term term) {
@@ -29,7 +45,11 @@ public abstract class Term implements Expression {
     }
 
     public final Condition greaterThanOrEqual (String value) {
-        return greaterThanOrEqual (new Value (value));
+        return greaterThanOrEqual (new StringValue (value));
+    }
+
+    public final Condition greaterThanOrEqual (int value) {
+        return greaterThanOrEqual (new NumericValue (value));
     }
 
     public final Condition greaterThanOrEqual (Term term) {
@@ -37,7 +57,11 @@ public abstract class Term implements Expression {
     }
 
     public final Condition lessThan (String value) {
-        return lessThan (new Value (value));
+        return lessThan (new StringValue (value));
+    }
+
+    public final Condition lessThan (int value) {
+        return lessThan (new NumericValue (value));
     }
 
     public final Condition lessThan (Term term) {
@@ -45,27 +69,23 @@ public abstract class Term implements Expression {
     }
 
     public final Condition lessThanOrEqual (String value) {
-        return lessThanOrEqual (new Value (value));
+        return lessThanOrEqual (new StringValue (value));
+    }
+    
+    public final Condition lessThanOrEqual (int value) {
+        return lessThanOrEqual (new NumericValue (value));
     }
     
     public final Condition lessThanOrEqual (Term term) {
         return new BinaryOperatorExpression (this, "<=", term);
     }
     
-    public final Condition isNull () {
-        return new UnaryOperatorExpression ("IS NULL", false, this);
-    }
-
-    public final Condition isNotNull () {
-        return new UnaryOperatorExpression ("IS NOT NULL", false, this);
-    }
-
     public final Condition like (String value) {
-        return new BinaryOperatorExpression (this, "LIKE", new Value (value));
+        return new BinaryOperatorExpression (this, "LIKE", new StringValue (value));
     }
 
     public final Condition notLike (String value) {
-        return new BinaryOperatorExpression (this, "NOT LIKE", new Value (value));
+        return new BinaryOperatorExpression (this, "NOT LIKE", new StringValue (value));
     }
 
     public final Condition in (SelectQuery query) {
@@ -83,4 +103,17 @@ public abstract class Term implements Expression {
     public final Condition notIn (String... values) {
         return new NotInConditionWithValues (this, values);
     }
+
+    public final Condition between (String value1, String value2) {
+        return new BetweenCondition (this, value1, value2);
+    }
+    
+    public final Condition isNull () {
+        return new UnaryOperatorExpression ("IS NULL", false, this);
+    }
+
+    public final Condition isNotNull () {
+        return new UnaryOperatorExpression ("IS NOT NULL", false, this);
+    }
+
 }

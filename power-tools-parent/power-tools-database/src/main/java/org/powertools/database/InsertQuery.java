@@ -22,16 +22,12 @@ import org.powertools.database.util.MyList;
 
 
 public class InsertQuery extends Query {
-    private final TableName      _tableName;
+    private final String         _tableName;
     private final MyList<String> _columnNames;
     private final MyList<String> _values;
     
     
     public InsertQuery (String tableName) {
-        this (new TableName (tableName));
-    }
-    
-    public InsertQuery (TableName tableName) {
         super ();
         _tableName   = tableName;
         _columnNames = new MyList<> ();

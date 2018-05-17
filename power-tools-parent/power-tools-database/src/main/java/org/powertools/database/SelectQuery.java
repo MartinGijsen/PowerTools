@@ -18,6 +18,8 @@
 
 package org.powertools.database;
 
+import java.util.LinkedList;
+import java.util.List;
 import org.powertools.database.util.MyList;
 import org.powertools.database.expression.Condition;
 
@@ -25,20 +27,11 @@ import org.powertools.database.expression.Condition;
 public final class SelectQuery extends Query {
     private boolean                  _distinct;
     private final MyList<Selectable> _selection;
-    private final MyList<Table>      _tableNames;
+    private final List<Source>       _sources;
     private WhereClause              _whereClause;
     private GroupByClause            _groupByClause;
     
 
-//    // TODO: enable while avoiding clash between static and non-static select
-//    public static SelectQuery select (Column column) {
-//        return new SelectQuery (column);
-//    }
-    
-    public static SelectQuery select () {
-        return new SelectQuery ();
-    }
-    
     public SelectQuery (Column column) {
         this ();
         select (column);
@@ -48,7 +41,7 @@ public final class SelectQuery extends Query {
         super ();
         _distinct      = false;
         _selection     = new MyList<> ();
-        _tableNames    = new MyList<> ();
+        _sources       = new LinkedList<> ();
         _whereClause   = null;
         _groupByClause = null;
     }
@@ -64,8 +57,18 @@ public final class SelectQuery extends Query {
         return this;
     }
     
-    public SelectQuery from (Table table) {
-        _tableNames.add (table);
+    public SelectQuery from (Table newTable) {
+        for (Source source : _sources) {
+            if (source instanceof Table && newTable._instanceName.equals (((Table) source)._instanceName)) {
+                throw new RuntimeException ("duplicate table name: " + ((Table) source)._instanceName);
+            }
+        }
+        _sources.add (newTable);
+        return this;
+    }
+
+    public SelectQuery from (JoinedTable joinedTable) {
+        _sources.add (joinedTable);
         return this;
     }
 
@@ -92,7 +95,22 @@ public final class SelectQuery extends Query {
         String distinct      = _distinct ? " DISTINCT" : "";
         String whereClause   = _whereClause == null ? "" : _whereClause.toString ();
         String groupByClause = _groupByClause == null ? "" : _groupByClause.toString ();
-        return String.format ("SELECT%s %s FROM %s%s%s",
-                distinct, _selection.toString (), _tableNames.toString (), whereClause, groupByClause);
+        return String.format ("SELECT%s %s\n%s%s%s",
+                distinct, _selection.toString (), getFromClause (), whereClause, groupByClause);
+    }
+    
+    private String getFromClause () {
+        StringBuilder sb = new StringBuilder ();
+        sb.append ("FROM ");
+        boolean isFirst = true;
+        for (Source source : _sources) {
+            if (isFirst) {
+                isFirst = false;
+            } else {
+                sb.append (",\n");
+            }
+            sb.append (source.getFullName ());
+        }
+        return sb.toString ();
     }
 }
