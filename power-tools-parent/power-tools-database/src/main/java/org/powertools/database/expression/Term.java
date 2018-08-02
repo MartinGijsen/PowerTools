@@ -4,8 +4,42 @@ import org.powertools.database.SelectQuery;
 
 
 public abstract class Term implements Expression {
+    private static final class RowNum extends Term {
+        @Override
+        public String toString () {
+            return "ROWNUM";
+        }
+    }
+    
+    private static final class ToDate extends Term {
+        private final String _date;
+        private final String _format;
+        
+        ToDate(String date, String format) {
+            _date   = date;
+            _format = format;
+        }
+        
+        @Override
+        public String toString () {
+            if (_format == null) {
+                return String.format("TO_DATE(%s)", _date);
+            } else {
+                return String.format("TO_DATE(%s,%s)", _date, _format);
+            }
+        }
+    }
+    
     public static Term rowNum () {
         return new RowNum ();
+    }
+    
+    public static Term toDate(String value) {
+        return new ToDate(value, null);
+    }
+    
+    public static Term toDate(String value, String format) {
+        return new ToDate(value, format);
     }
     
     public final Condition equal (String value) {
@@ -115,5 +149,4 @@ public abstract class Term implements Expression {
     public final Condition isNotNull () {
         return new UnaryOperatorExpression ("IS NOT NULL", false, this);
     }
-
 }
