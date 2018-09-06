@@ -19,6 +19,7 @@
 package org.powertools.database;
 
 
+// TODO: make interface?
 public abstract class Query {
 //    public static Value value (String value) {
 //        return new StringValue (value);

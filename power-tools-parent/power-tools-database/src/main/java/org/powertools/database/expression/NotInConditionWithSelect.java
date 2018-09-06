@@ -3,7 +3,7 @@ package org.powertools.database.expression;
 import org.powertools.database.SelectQuery;
 
 
-final class NotInConditionWithSelect extends Condition {
+final class NotInConditionWithSelect implements BooleanExpression {
     private final Term        _term;
     private final SelectQuery _query;
     

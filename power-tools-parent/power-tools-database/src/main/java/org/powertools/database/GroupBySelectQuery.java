@@ -1,4 +1,4 @@
-/* Copyright 2014 by Martin Gijsen (www.DeAnalist.nl)
+/* Copyright 2014-2018 by Martin Gijsen (www.DeAnalist.nl)
  *
  * This file is part of the PowerTools engine.
  *
@@ -16,19 +16,24 @@
  * along with the PowerTools engine. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.powertools.database.expression;
+package org.powertools.database;
+
+import org.powertools.database.expression.BooleanExpression;
 
 
-public abstract class Condition implements Expression {
-    public Condition and (Condition condition) {
-        return new BinaryOperatorExpression (this, "\nAND", condition);
+public final class GroupBySelectQuery extends SelectQuery {
+    GroupBySelectQuery (SelectQueryData data, BooleanExpression condition) {
+        super (data);
+        _data.where (condition);
     }
-    
-    public Condition or (Condition condition) {
-        return new BinaryOperatorExpression (this, "\nOR", condition);
+
+    GroupBySelectQuery (SelectQueryData data, Column... columns) {
+        super (data);
+        _data.groupBy (columns);
     }
-    
-    public static Condition not (Condition condition) {
-        return new UnaryOperatorExpression ("NOT", true, condition);
+
+    public GroupBySelectQuery groupBy (Column... columns) {
+        _data.groupBy (columns);
+        return this;
     }
 }

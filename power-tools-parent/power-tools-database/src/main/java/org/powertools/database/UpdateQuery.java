@@ -20,7 +20,7 @@ package org.powertools.database;
 
 import java.util.HashMap;
 import java.util.Map;
-import org.powertools.database.expression.Condition;
+import org.powertools.database.expression.BooleanExpression;
 import org.powertools.engine.ExecutionException;
 
 
@@ -42,12 +42,8 @@ public class UpdateQuery extends Query {
         return this;
     }
 
-    public UpdateQuery where (Condition condition) {
-        if (_whereClause == null) {
-            _whereClause = new WhereClause (condition);
-        } else {
-            _whereClause.add (condition);
-        }
+    public UpdateQuery where (BooleanExpression condition) {
+        _whereClause = new WhereClause (condition);
         return this;
     }
     

@@ -1,4 +1,4 @@
-/* Copyright 2014 by Martin Gijsen (www.DeAnalist.nl)
+/* Copyright 2014-2018 by Martin Gijsen (www.DeAnalist.nl)
  *
  * This file is part of the PowerTools engine.
  *
@@ -21,15 +21,33 @@ package org.powertools.database;
 import org.powertools.database.expression.BooleanExpression;
 
 
-final class WhereClause {
-    private final BooleanExpression _condition;
-
-    WhereClause (BooleanExpression condition) {
-        _condition = condition;
+public final class FromSelectQuery extends SelectQuery {
+    FromSelectQuery (SelectQueryData data, Table... tables) {
+        super(data);
+        _data.from (tables);
     }
+
+    FromSelectQuery (SelectQueryData data, JoinedTable table) {
+        super(data);
+        _data.from (table);
+    }
+
     
-    @Override
-    public String toString () {
-        return "\nWHERE " + _condition.toString ();
+    public FromSelectQuery from (Table... tables) {
+        _data.from (tables);
+        return this;
+    }
+
+    public FromSelectQuery from (JoinedTable table) {
+        _data.from (table);
+        return this;
+    }
+
+    public GroupBySelectQuery where (BooleanExpression condition) {
+        return new GroupBySelectQuery (_data, condition);
+    }
+
+    public GroupBySelectQuery groupBy (Column... columns) {
+        return new GroupBySelectQuery (_data, columns);
     }
 }

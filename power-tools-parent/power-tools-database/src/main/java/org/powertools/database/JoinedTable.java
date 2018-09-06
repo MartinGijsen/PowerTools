@@ -18,6 +18,16 @@ public class JoinedTable extends Source {
     }
     
     @Override
+    boolean hasName(String name) {
+        return false;
+    }
+    
+    @Override
+    String getName() {
+        throw new RuntimeException ("join has no name");
+    }
+    
+    @Override
     public String getFullName () {
         return String.format ("%s %s %s ON %s = %s",
                 _source1.getFullName (), _type, _table2.getFullName (), _column1.toString (), _column2.toString ());

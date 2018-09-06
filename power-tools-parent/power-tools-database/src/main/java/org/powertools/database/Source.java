@@ -2,8 +2,11 @@ package org.powertools.database;
 
 
 public abstract class Source {
-    public abstract String getFullName ();
+    abstract boolean hasName(String name);
+    abstract String getName();
     
+    public abstract String getFullName ();
+
     public TablesForJoin join (Table table) {
         return new TablesForJoin ("JOIN", this, table);
     }

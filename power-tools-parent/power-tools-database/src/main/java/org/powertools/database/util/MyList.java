@@ -24,9 +24,16 @@ import java.util.List;
 
 public final class MyList<T> {
     private final List<T> _items;
+    private final String  _separator;
     
     public MyList () {
-        _items = new LinkedList<> ();
+        _items     = new LinkedList<> ();
+        _separator = ", ";
+    }
+    
+    public MyList (String separator) {
+        _items     = new LinkedList<> ();
+        _separator = separator;
     }
     
     public void add (T item) {
@@ -43,11 +50,11 @@ public final class MyList<T> {
         boolean isFirst  = true;
         for (T item : _items) {
             if (isFirst) {
-                sb.append (item.toString ());
                 isFirst = false;
             } else {
-                sb.append (", ").append (item.toString());
+                sb.append (_separator);
             }
+            sb.append (item.toString ());
         }
         return sb.toString ();
     }

@@ -6,7 +6,7 @@ public abstract class Table extends Source {
     // TODO: use reflection to determine name?
     public final String _instanceName;
     
-    public Column all = createColumn("*");
+    public final Column all = createColumn("*");
     
     public Table(String tableName, String instanceName) {
         this._tableName    = tableName;
@@ -18,6 +18,16 @@ public abstract class Table extends Source {
         return new Column (this, name);
     }
 
+    @Override
+    boolean hasName(String name) {
+        return _instanceName.equals (name);
+    }
+    
+    @Override
+    String getName() {
+        return _instanceName;
+    }
+    
     @Override
     public String getFullName () {
         if (hasDefaultName ()) {

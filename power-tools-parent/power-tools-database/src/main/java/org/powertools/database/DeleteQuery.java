@@ -18,7 +18,7 @@
 
 package org.powertools.database;
 
-import org.powertools.database.expression.Condition;
+import org.powertools.database.expression.BooleanExpression;
 
 
 public class DeleteQuery {
@@ -31,12 +31,8 @@ public class DeleteQuery {
         _whereClause = null;
     }
 
-    public DeleteQuery where (Condition condition) {
-        if (_whereClause == null) {
-            _whereClause = new WhereClause (condition);
-        } else {
-            _whereClause.add (condition);
-        }
+    public DeleteQuery where (BooleanExpression condition) {
+        _whereClause = new WhereClause (condition);
         return this;
     }
 

@@ -1,7 +1,7 @@
 package org.powertools.database.expression;
 
 
-final class InConditionWithValues extends Condition {
+final class InConditionWithValues implements BooleanExpression {
     private final Term     _term;
     private final String[] _values;
     
