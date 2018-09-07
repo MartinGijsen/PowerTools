@@ -21,7 +21,7 @@ package org.powertools.database;
 import org.powertools.database.util.MyList;
 
 
-public class InsertQuery extends Query {
+public class InsertQuery {
     private final String         _tableName;
     private final MyList<String> _columnNames;
     private final MyList<String> _values;

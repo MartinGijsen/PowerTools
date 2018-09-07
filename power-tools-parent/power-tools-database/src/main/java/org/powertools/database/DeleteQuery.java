@@ -22,8 +22,8 @@ import org.powertools.database.expression.BooleanExpression;
 
 
 public class DeleteQuery {
-    private final String _tableName;
-    private WhereClause  _whereClause;
+    private final String      _tableName;
+    private BooleanExpression _whereClause;
     
     public DeleteQuery (String tableName) {
         super ();
@@ -32,13 +32,13 @@ public class DeleteQuery {
     }
 
     public DeleteQuery where (BooleanExpression condition) {
-        _whereClause = new WhereClause (condition);
+        _whereClause = condition;
         return this;
     }
 
     @Override
     public String toString () {
-        String whereClause = _whereClause == null ? "" : _whereClause.toString ();
+        String whereClause = _whereClause == null ? "" : "\nWHERE " + _whereClause.toString ();
         return String.format ("DELETE FROM %s%s", _tableName, whereClause);
     }
 }

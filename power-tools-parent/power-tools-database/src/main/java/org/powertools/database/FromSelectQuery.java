@@ -22,24 +22,13 @@ import org.powertools.database.expression.BooleanExpression;
 
 
 public final class FromSelectQuery extends SelectQuery {
-    FromSelectQuery (SelectQueryData data, Table... tables) {
+    FromSelectQuery (SelectQueryData data, Source... sources) {
         super(data);
-        _data.from (tables);
+        _data.from (sources);
     }
-
-    FromSelectQuery (SelectQueryData data, JoinedTable table) {
-        super(data);
-        _data.from (table);
-    }
-
     
-    public FromSelectQuery from (Table... tables) {
-        _data.from (tables);
-        return this;
-    }
-
-    public FromSelectQuery from (JoinedTable table) {
-        _data.from (table);
+    public FromSelectQuery from (Source... sources) {
+        _data.from (sources);
         return this;
     }
 

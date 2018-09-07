@@ -19,7 +19,6 @@
 package org.powertools.database;
 
 
-// TODO: merge with SelectQueryData?
 public class SelectQuery {
     final SelectQueryData _data;
     

@@ -24,10 +24,10 @@ import org.powertools.database.expression.BooleanExpression;
 import org.powertools.engine.ExecutionException;
 
 
-public class UpdateQuery extends Query {
+public class UpdateQuery {
     private final String              _tableName;
     private final Map<String, String> _values;
-    private WhereClause               _whereClause;
+    private BooleanExpression         _whereClause;
 
 
     public UpdateQuery (String tableName) {
@@ -43,13 +43,13 @@ public class UpdateQuery extends Query {
     }
 
     public UpdateQuery where (BooleanExpression condition) {
-        _whereClause = new WhereClause (condition);
+        _whereClause = condition;
         return this;
     }
     
     @Override
     public String toString () {
-        String whereClause = _whereClause == null ? "" : _whereClause.toString ();
+        String whereClause = _whereClause == null ? "" : "\nWHERE " + _whereClause.toString ();
         return String.format ("UPDATE %s SET %s%s", _tableName, getValues (), whereClause);
     }
     

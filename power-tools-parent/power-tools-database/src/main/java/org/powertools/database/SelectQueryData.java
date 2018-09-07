@@ -26,8 +26,8 @@ final class SelectQueryData {
     private final boolean            _distinct;
     private final MyList<Selectable> _selection;
     private final MyList<Source>     _sources;
-    private WhereClause              _whereClause;
-    private GroupByClause            _groupByClause;
+    private BooleanExpression        _whereClause;
+    private final MyList<String>     _groupByClause;
     
 
     SelectQueryData (boolean distinct) {
@@ -35,7 +35,7 @@ final class SelectQueryData {
         _selection     = new MyList<> ();
         _sources       = new MyList<> (",\n");
         _whereClause   = null;
-        _groupByClause = null;
+        _groupByClause = new MyList<> ();
     }
 
 
@@ -45,42 +45,30 @@ final class SelectQueryData {
 
     void from (Source... sources) {
         for (Source newSource : sources) {
-//            for (Source oldSource : _sources) {
-//                if (newSource.hasName (oldSource.getName ())) {
-//                    throw new RuntimeException ("duplicate table name: " + newSource.getName ());
-//                }
-//            }
             _sources.add (newSource);
         }
     }
 
-    void from (JoinedTable joinedTable) {
-        _sources.add (joinedTable);
-    }
-
     void where (BooleanExpression condition) {
         if (_whereClause == null) {
-            _whereClause = new WhereClause (condition);
+            _whereClause = condition;
         } else {
-            throw new RuntimeException ("multiple");
+            // TODO: make impossible and remove
+            throw new RuntimeException ("multiple where clauses");
         }
     }
 
     void groupBy (Column... columns) {
         for (Column column : columns) {
-            if (_groupByClause == null) {
-                _groupByClause = new GroupByClause (column);
-            } else {
-                _groupByClause.add (column);
-            }
+            _groupByClause.add (column.toString ());
         }
     }
 
     @Override
     public String toString () {
         String distinct      = _distinct ? " DISTINCT" : "";
-        String whereClause   = _whereClause == null ? "" : _whereClause.toString ();
-        String groupByClause = _groupByClause == null ? "" : _groupByClause.toString ();
+        String whereClause   = _whereClause == null ? "" : "\nWHERE " + _whereClause.toString ();
+        String groupByClause = _groupByClause == null ? "" : " GROUP BY " + _groupByClause.toString ();
         return String.format ("SELECT%s %s\nFROM %s%s%s",
                 distinct, _selection.toString (), _sources.toString (), whereClause, groupByClause);
     }
