@@ -1,7 +1,7 @@
 package org.powertools.database;
 
 
-public class ColumnAlias implements Selectable {
+final class ColumnAlias implements Selectable {
     private final Column _column;
     private final String _alias;
     

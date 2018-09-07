@@ -4,7 +4,7 @@ package org.powertools.database;
 public class SelectSelectQuery {
     private final SelectQueryData _data;
 
-    public SelectSelectQuery (boolean distinct, Selectable... selectables) {
+    SelectSelectQuery (boolean distinct, Selectable... selectables) {
         _data = new SelectQueryData (distinct);
         for (Selectable selectable : selectables) {
             _data.select (selectable);

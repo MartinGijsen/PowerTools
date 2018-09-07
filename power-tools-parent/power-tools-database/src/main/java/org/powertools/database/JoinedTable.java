@@ -1,7 +1,7 @@
 package org.powertools.database;
 
 
-public class JoinedTable extends Source {
+public final class JoinedTable extends Source {
     private final String _type;
     private final Source _source1;
     private final Table  _table2;

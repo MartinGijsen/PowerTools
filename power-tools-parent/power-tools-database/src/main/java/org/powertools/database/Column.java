@@ -3,7 +3,7 @@ package org.powertools.database;
 import org.powertools.database.expression.Term;
 
 
-public class Column extends Term implements Selectable {
+public final class Column extends Term implements Selectable {
     public final String _name;
     
     protected final Table _table;
@@ -13,7 +13,7 @@ public class Column extends Term implements Selectable {
         _name  = name;
     }
 
-    public ColumnAlias as (String aliasName) {
+    public Selectable as (String aliasName) {
         return new ColumnAlias (this, aliasName);
     }
     
