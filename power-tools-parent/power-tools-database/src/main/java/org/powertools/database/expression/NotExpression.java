@@ -1,7 +1,7 @@
 package org.powertools.database.expression;
 
 
-public final class NotExpression implements BooleanExpression {
+public final class NotExpression extends BooleanExpression {
     private final Expression _expression;
     
     NotExpression (ComparisonExpression expression) {

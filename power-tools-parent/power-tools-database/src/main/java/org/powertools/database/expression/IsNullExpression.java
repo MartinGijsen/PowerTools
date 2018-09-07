@@ -1,7 +1,7 @@
 package org.powertools.database.expression;
 
 
-public final class IsNullExpression implements BooleanExpression {
+public final class IsNullExpression extends BooleanExpression {
     private final Expression _expression;
     
     IsNullExpression (Expression expression) {

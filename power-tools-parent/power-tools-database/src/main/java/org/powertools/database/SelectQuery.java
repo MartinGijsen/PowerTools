@@ -26,43 +26,7 @@ public class SelectQuery {
     SelectQuery (SelectQueryData data) {
         _data = data;
     }
-//    private final SelectQueryData _data;
 
-//    public SelectQuery (Column column) {
-//        this ();
-//        _data.select (column);
-//    }
-//
-//    public SelectQuery () {
-//        _data = new SelectQueryData ();
-//    }
-
-
-//    public SelectQuery select (Selectable... selectables) {
-//        for (Selectable selectable : selectables) {
-//            _data.select (selectable);
-//        }
-//        return this;
-//    }
-//
-//    public SelectQuery distinct () {
-//        _data.distinct ();
-//        return this;
-//    }
-    
-//    public FromSelectQuery selectFrom (Source... sources) {
-//        _data.select (table.all);
-//        return new FromSelectQuery (_data, table);
-//    }
-
-//    public FromSelectQuery from (Table... tables) {
-//        return new FromSelectQuery (_data, tables);
-//    }
-//
-//    public FromSelectQuery from (JoinedTable table) {
-//        return new FromSelectQuery (_data, table);
-//    }
-    
     @Override
     public final String toString () {
         return _data.toString ();

@@ -1,7 +1,7 @@
 package org.powertools.database.expression;
 
 
-public final class AndExpression implements BooleanExpression {
+public final class AndExpression extends CompositeBooleanExpression {
     private final Expression _expression1;
     private final Expression _expression2;
 
@@ -10,53 +10,9 @@ public final class AndExpression implements BooleanExpression {
         _expression2 = expression2;
     }
     
-    public AndExpression and(ComparisonExpression expression) {
-        return new AndExpression(this, expression);
-    }
-    
-    public AndExpression and(AndExpression expression) {
-        return new AndExpression(this, new BracketedExpression (expression));
-    }
-    
-    public AndExpression and(OrExpression expression) {
-        return new AndExpression(this, new BracketedExpression (expression));
-    }
-
-    public AndExpression and(NotExpression expression) {
-        return new AndExpression(this, expression);
-    }
-
-    public AndExpression and(BetweenCondition expression) {
-        return new AndExpression(this, expression);
-    }
-
-    public AndExpression and(IsNullExpression expression) {
-        return new AndExpression(this, expression);
-    }
-
-    public AndExpression and(IsNotNullExpression expression) {
-        return new AndExpression(this, expression);
-    }
-
-    public AndExpression and(InConditionWithSelect expression) {
-        return new AndExpression(this, expression);
-    }
-
-    public AndExpression and(InConditionWithValues expression) {
-        return new AndExpression(this, expression);
-    }
-
-    public AndExpression and(NotInConditionWithSelect expression) {
-        return new AndExpression(this, expression);
-    }
-
-    public AndExpression and(NotInConditionWithValues expression) {
-        return new AndExpression(this, expression);
-    }
-
     @Override
     public String toString () {
-        return String.format("%s AND %s",
+        return String.format("%s\nAND %s",
                              _expression1.toString (),
                              _expression2.toString ());
     }

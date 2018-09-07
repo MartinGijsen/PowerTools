@@ -32,4 +32,9 @@ public class JoinedTable extends Source {
         return String.format ("%s %s %s ON %s = %s",
                 _source1.getFullName (), _type, _table2.getFullName (), _column1.toString (), _column2.toString ());
     }
+    
+    @Override
+    public String toString () {
+        return getFullName ();
+    }
 }

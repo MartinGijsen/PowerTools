@@ -2,18 +2,10 @@ package org.powertools.database.expression;
 
 
 public final class BracketedExpression implements Expression {
-    private final Expression _expression;
+    private final CompositeBooleanExpression _expression;
     
-    BracketedExpression (Expression expression) {
+    BracketedExpression (CompositeBooleanExpression expression) {
         _expression = expression;
-    }
-    
-    public BracketedExpression and(Expression expression) {
-        return new BracketedExpression(expression);
-    }
-    
-    public BracketedExpression or(Expression expression) {
-        return new BracketedExpression(expression);
     }
     
     @Override

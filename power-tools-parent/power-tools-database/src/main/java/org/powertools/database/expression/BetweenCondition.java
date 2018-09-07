@@ -1,7 +1,7 @@
 package org.powertools.database.expression;
 
 
-public final class BetweenCondition implements BooleanExpression {
+public final class BetweenCondition extends BooleanExpression {
     private final Term   _term;
     private final String _value1;
     private final String _value2;
