@@ -1,7 +1,7 @@
 package org.powertools.database;
 
 
-public final class Queries {
+public final class Query {
     public static SelectSelectQuery select (Selectable... selectables) {
         return new SelectSelectQuery (false, selectables);
     }

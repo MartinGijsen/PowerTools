@@ -40,6 +40,10 @@ public final class MyList<T> {
         _items.add (item);
     }
 
+    public boolean isEmpty() {
+        return _items.isEmpty ();
+    }
+    
     @Override
     public String toString () {
         if (_items.isEmpty ()) {

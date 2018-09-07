@@ -22,7 +22,7 @@ package org.powertools.database.expression;
 final class NumericValue extends Term {
     private final int _value;
     
-    public NumericValue (int value) {
+    NumericValue (int value) {
         _value = value;
     }
 

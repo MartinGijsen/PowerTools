@@ -1,10 +1,10 @@
 package org.powertools.database.expression;
 
 
-public final class BracketedExpression implements Expression {
-    private final CompositeBooleanExpression _expression;
+final class BracketedExpression extends BooleanExpression {
+    private final BooleanExpression _expression;
     
-    BracketedExpression (CompositeBooleanExpression expression) {
+    BracketedExpression (BooleanExpression expression) {
         _expression = expression;
     }
     

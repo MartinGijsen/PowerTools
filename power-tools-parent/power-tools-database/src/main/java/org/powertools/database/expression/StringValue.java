@@ -19,10 +19,10 @@
 package org.powertools.database.expression;
 
 
-public final class StringValue extends Term {
+final class StringValue extends Term {
     private final String _value;
     
-    public StringValue (String value) {
+    StringValue (String value) {
         _value = value;
     }
 

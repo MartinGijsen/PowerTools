@@ -3,7 +3,7 @@ package org.powertools.database.expression;
 import org.powertools.database.SelectQuery;
 
 
-public abstract class Term implements Expression {
+public abstract class Term {
     private static final class RowNum extends Term {
         @Override
         public String toString () {
@@ -53,111 +53,111 @@ public abstract class Term implements Expression {
         return new ToDate(value, format);
     }
     
-    public final ComparisonExpression equal (String value) {
+    public final BooleanExpression equal (String value) {
         return equal (new StringValue (value));
     }
 
-    public final ComparisonExpression equal (int value) {
+    public final BooleanExpression equal (int value) {
         return equal (new NumericValue (value));
     }
 
-    public final ComparisonExpression equal (Term term) {
-        return new ComparisonExpression (this, "=", term);
+    public final BooleanExpression equal (Term term) {
+        return new BinaryOperatorExpression (this, " = ", term);
     }
 
-    public final ComparisonExpression unequal (String value) {
+    public final BooleanExpression unequal (String value) {
         return unequal (new StringValue (value));
     }
 
-    public final ComparisonExpression unequal (int value) {
+    public final BooleanExpression unequal (int value) {
         return unequal (new NumericValue (value));
     }
 
-    public final ComparisonExpression unequal (Term term) {
-        return new ComparisonExpression (this, "<>", term);
+    public final BooleanExpression unequal (Term term) {
+        return new BinaryOperatorExpression (this, " <> ", term);
     }
 
-    public final ComparisonExpression greaterThan (String value) {
+    public final BooleanExpression greaterThan (String value) {
         return greaterThan (new StringValue (value));
     }
 
-    public final ComparisonExpression greaterThan (int value) {
+    public final BooleanExpression greaterThan (int value) {
         return greaterThan (new NumericValue (value));
     }
 
-    public final ComparisonExpression greaterThan (Term term) {
-        return new ComparisonExpression (this, ">", term);
+    public final BooleanExpression greaterThan (Term term) {
+        return new BinaryOperatorExpression (this, " > ", term);
     }
 
-    public final ComparisonExpression greaterThanOrEqual (String value) {
+    public final BooleanExpression greaterThanOrEqual (String value) {
         return greaterThanOrEqual (new StringValue (value));
     }
 
-    public final ComparisonExpression greaterThanOrEqual (int value) {
+    public final BooleanExpression greaterThanOrEqual (int value) {
         return greaterThanOrEqual (new NumericValue (value));
     }
 
-    public final ComparisonExpression greaterThanOrEqual (Term term) {
-        return new ComparisonExpression (this, ">=", term);
+    public final BooleanExpression greaterThanOrEqual (Term term) {
+        return new BinaryOperatorExpression (this, " >= ", term);
     }
 
-    public final ComparisonExpression lessThan (String value) {
+    public final BooleanExpression lessThan (String value) {
         return lessThan (new StringValue (value));
     }
 
-    public final ComparisonExpression lessThan (int value) {
+    public final BooleanExpression lessThan (int value) {
         return lessThan (new NumericValue (value));
     }
 
-    public final ComparisonExpression lessThan (Term term) {
-        return new ComparisonExpression (this, "<", term);
+    public final BooleanExpression lessThan (Term term) {
+        return new BinaryOperatorExpression (this, " < ", term);
     }
 
-    public final ComparisonExpression lessThanOrEqual (String value) {
+    public final BooleanExpression lessThanOrEqual (String value) {
         return lessThanOrEqual (new StringValue (value));
     }
     
-    public final ComparisonExpression lessThanOrEqual (int value) {
+    public final BooleanExpression lessThanOrEqual (int value) {
         return lessThanOrEqual (new NumericValue (value));
     }
     
-    public final ComparisonExpression lessThanOrEqual (Term term) {
-        return new ComparisonExpression (this, "<=", term);
+    public final BooleanExpression lessThanOrEqual (Term term) {
+        return new BinaryOperatorExpression (this, " <= ", term);
     }
     
-    public final ComparisonExpression like (String value) {
-        return new ComparisonExpression (this, "LIKE", new StringValue (value));
+    public final BooleanExpression like (String value) {
+        return new BinaryOperatorExpression (this, " LIKE ", new StringValue (value));
     }
 
-    public final ComparisonExpression notLike (String value) {
-        return new ComparisonExpression (this, "NOT LIKE", new StringValue (value));
+    public final BooleanExpression notLike (String value) {
+        return new BinaryOperatorExpression (this, " NOT LIKE ", new StringValue (value));
     }
 
-    public final InConditionWithSelect in (SelectQuery query) {
-        return new InConditionWithSelect (this, query);
+    public final BooleanExpression in (SelectQuery query) {
+        return ExpressionFactory.in(this, query);
     }
 
-    public final InConditionWithValues in (String... values) {
-        return new InConditionWithValues (this, values);
+    public final BooleanExpression in (String... values) {
+        return ExpressionFactory.in(this, values);
     }
 
-    public final NotInConditionWithSelect notIn (SelectQuery query) {
-        return new NotInConditionWithSelect (this, query);
+    public final BooleanExpression notIn (SelectQuery query) {
+        return ExpressionFactory.notIn(this, query);
     }
 
-    public final NotInConditionWithValues notIn (String... values) {
-        return new NotInConditionWithValues (this, values);
+    public final BooleanExpression notIn (String... values) {
+        return ExpressionFactory.notIn(this, values);
     }
 
-    public final BetweenCondition between (String value1, String value2) {
+    public final BooleanExpression between (String value1, String value2) {
         return new BetweenCondition (this, value1, value2);
     }
     
-    public final IsNullExpression isNull () {
+    public final BooleanExpression isNull () {
         return new IsNullExpression (this);
     }
 
-    public final IsNotNullExpression isNotNull () {
+    public final BooleanExpression isNotNull () {
         return new IsNotNullExpression (this);
     }
 }

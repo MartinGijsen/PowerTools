@@ -1,16 +1,16 @@
 package org.powertools.database.expression;
 
 
-public final class IsNotNullExpression extends BooleanExpression {
-    private final Expression _expression;
+final class IsNotNullExpression extends BooleanExpression {
+    private final Term _term;
     
-    IsNotNullExpression (Expression expression) {
+    IsNotNullExpression (Term term) {
         super ();
-        _expression = expression;
+        _term = term;
     }
     
     @Override
     public String toString () {
-        return String.format ("%s IS NOT NULL", _expression.toString ());
+        return String.format ("%s IS NOT NULL", _term.toString ());
     }
 }

@@ -1,39 +1,11 @@
 package org.powertools.database.expression;
 
 
-public final class NotExpression extends BooleanExpression {
-    private final Expression _expression;
+final class NotExpression extends BooleanExpression {
+    private final BooleanExpression _expression;
     
-    NotExpression (ComparisonExpression expression) {
+    NotExpression (BooleanExpression expression) {
         _expression = expression;
-    }
-    
-    NotExpression (AndExpression expression) {
-        _expression = new BracketedExpression (expression);
-    }
-    
-    NotExpression (OrExpression expression) {
-        _expression = new BracketedExpression (expression);
-    }
-    
-    NotExpression (NotExpression expression) {
-        _expression = expression;
-    }
-    
-    public static NotExpression not(ComparisonExpression expression) {
-        return new NotExpression(expression);
-    }
-    
-    public static NotExpression not(AndExpression expression) {
-        return new NotExpression(expression);
-    }
-    
-    public static NotExpression not(OrExpression expression) {
-        return new NotExpression(expression);
-    }
-    
-    public static NotExpression not(NotExpression expression) {
-        return new NotExpression(expression);
     }
     
     @Override

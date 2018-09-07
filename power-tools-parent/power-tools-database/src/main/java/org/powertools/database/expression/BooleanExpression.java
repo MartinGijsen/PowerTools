@@ -1,20 +1,28 @@
 package org.powertools.database.expression;
 
 
-public abstract class BooleanExpression implements Expression {
-    public final AndExpression and (BooleanExpression expression) {
+public abstract class BooleanExpression {
+    public static BooleanExpression not(BooleanExpression expression) {
+        return new NotExpression(expression);
+    }
+    
+    public final BooleanExpression and (BooleanExpression expression) {
         return expression.beAndedWith (this);
     }
 
-    public final OrExpression or (BooleanExpression expression) {
+    public final BooleanExpression or (BooleanExpression expression) {
         return expression.beOredWith (this);
     }
-    
-    AndExpression beAndedWith (BooleanExpression expression) {
-        return new AndExpression (expression, this);
+
+    BooleanExpression not () {
+        return new NotExpression(this);
     }
     
-    OrExpression beOredWith (BooleanExpression expression) {
-        return new OrExpression (expression, this);
+    BooleanExpression beAndedWith (BooleanExpression expression) {
+        return ExpressionFactory.and(expression, this);
+    }
+    
+    BooleanExpression beOredWith (BooleanExpression expression) {
+        return ExpressionFactory.or(expression, this);
     }
 }

@@ -68,7 +68,7 @@ final class SelectQueryData {
     public String toString () {
         String distinct      = _distinct ? " DISTINCT" : "";
         String whereClause   = _whereClause == null ? "" : "\nWHERE " + _whereClause.toString ();
-        String groupByClause = _groupByClause == null ? "" : " GROUP BY " + _groupByClause.toString ();
+        String groupByClause = _groupByClause.isEmpty() ? "" : " GROUP BY " + _groupByClause.toString ();
         return String.format ("SELECT%s %s\nFROM %s%s%s",
                 distinct, _selection.toString (), _sources.toString (), whereClause, groupByClause);
     }
