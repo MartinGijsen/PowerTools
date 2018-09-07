@@ -18,54 +18,26 @@
 
 package org.powertools.database;
 
-import org.powertools.database.util.MyList;
 
-
-public class InsertQuery {
-    private final String         _tableName;
-    private final MyList<String> _columnNames;
-    private final MyList<String> _values;
+public final class InsertQuery {
+    private final InsertQueryData _data;
     
-    
-    public InsertQuery (String tableName) {
-        super ();
-        _tableName   = tableName;
-        _columnNames = new MyList<> ();
-        _values      = new MyList<> ();
+    InsertQuery (InsertQueryData data, String... values) {
+        _data = data;
+        _data.values(values);
     }
 
-    public InsertQuery column (String columnName) {
-        _columnNames.add (columnName);
-        return this;
+    public InsertQuery value(String... values) {
+        return values(values);
     }
 
-    public InsertQuery column (Column column) {
-        _columnNames.add (column._name);
+    public InsertQuery values(String... values) {
+        _data.values(values);
         return this;
     }
 
-    public InsertQuery columns (String... columnNames) {
-        for (String columnName : columnNames) {
-            _columnNames.add (columnName);
-        }
-        return this;
-    }
-
-    // TODO: rename to 'value'?
-    public InsertQuery withValue (String value) {
-        _values.add (value);
-        return this;
-    }
-    
-    public InsertQuery values (String... values) {
-        for (String value : values) {
-            _values.add (value);
-        }
-        return this;
-    }
-    
     @Override
     public String toString () {
-        return String.format ("INSERT INTO %s (%s) VALUES (%s)", _tableName, _columnNames.toString (), _values.toString ());
+        return _data.toString ();
     }
 }

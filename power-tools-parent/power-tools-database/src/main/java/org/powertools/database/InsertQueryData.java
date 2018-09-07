@@ -15,18 +15,38 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with the PowerTools engine. If not, see <http://www.gnu.org/licenses/>.
  */
+
 package org.powertools.database;
 
+import org.powertools.database.util.MyList;
 
-public final class DeleteQuery {
-    private final DeleteQueryData _data;
+
+final class InsertQueryData {
+    private final Table          _table;
+    private final MyList<String> _columnNames;
+    private final MyList<String> _values;
     
-    DeleteQuery (DeleteQueryData data) {
-        _data = data;
+    
+    InsertQueryData (Table table) {
+        _table       = table;
+        _columnNames = new MyList<> ();
+        _values      = new MyList<> ();
+    }
+
+    void columns(Column... columns) {
+        for (Column column : columns) {
+            _columnNames.add (column._name);
+        }
+    }
+
+    void values(String... values) {
+        for (String value : values) {
+            _values.add (value);
+        }
     }
 
     @Override
     public String toString () {
-        return _data.toString ();
+        return String.format ("INSERT INTO %s (%s) VALUES (%s)", _table.getName (), _columnNames.toString (), _values.toString ());
     }
 }

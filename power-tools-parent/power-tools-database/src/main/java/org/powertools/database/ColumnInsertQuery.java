@@ -1,4 +1,4 @@
-/* Copyright 2014 by Martin Gijsen (www.DeAnalist.nl)
+/* Copyright 2014-2018 by Martin Gijsen (www.DeAnalist.nl)
  *
  * This file is part of the PowerTools engine.
  *
@@ -18,15 +18,33 @@
 package org.powertools.database;
 
 
-public final class DeleteQuery {
-    private final DeleteQueryData _data;
+public final class ColumnInsertQuery {
+    private final InsertQueryData _data;
     
-    DeleteQuery (DeleteQueryData data) {
-        _data = data;
+    ColumnInsertQuery(Table table) {
+        _data = new InsertQueryData(table);
+    }
+    
+    public ColumnInsertQuery column(Column... columns) {
+        return columns(columns);
     }
 
-    @Override
-    public String toString () {
-        return _data.toString ();
+    public ColumnInsertQuery columns(Column... columns) {
+        _data.columns(columns);
+        return this;
+    }
+
+    public ColumnInsertQuery columnValue(Column column, String value) {
+        _data.columns(column);
+        _data.values(value);
+        return this;
+    }
+
+    public InsertQuery value(String... values) {
+        return values(values);
+    }
+
+    public InsertQuery values(String... values) {
+        return new InsertQuery(_data, values);
     }
 }

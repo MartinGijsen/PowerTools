@@ -11,6 +11,11 @@ public class SelectSelectQuery {
         }
     }
 
+    public SelectSelectQuery select () {
+        _data.select (Asterisk.getInstance ());
+        return this;
+    }
+    
     public SelectSelectQuery select (Selectable... selectables) {
         for (Selectable selectable : selectables) {
             _data.select (selectable);

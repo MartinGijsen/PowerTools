@@ -18,56 +18,19 @@
 
 package org.powertools.database;
 
-import java.util.HashMap;
-import java.util.Map;
 import org.powertools.database.expression.BooleanExpression;
-import org.powertools.engine.ExecutionException;
 
 
-public class UpdateQuery {
-    private final String              _tableName;
-    private final Map<String, String> _values;
-    private BooleanExpression         _whereClause;
+public final class UpdateQuery {
+    private final UpdateQueryData _data;
 
-
-    public UpdateQuery (String tableName) {
-        super ();
-        _tableName   = tableName;
-        _values      = new HashMap<> ();
-        _whereClause = null;
+    UpdateQuery (UpdateQueryData data, BooleanExpression condition) {
+        _data = data;
+        _data.where (condition);
     }
 
-    public UpdateQuery value (String columnName, String value) {
-        _values.put (columnName, value);
-        return this;
-    }
-
-    public UpdateQuery where (BooleanExpression condition) {
-        _whereClause = condition;
-        return this;
-    }
-    
     @Override
     public String toString () {
-        String whereClause = _whereClause == null ? "" : "\nWHERE " + _whereClause.toString ();
-        return String.format ("UPDATE %s SET %s%s", _tableName, getValues (), whereClause);
-    }
-    
-    private String getValues () {
-        if (_values.isEmpty ()) {
-            throw new ExecutionException ("update query contains no values");
-        }
-
-        StringBuilder sb = new StringBuilder ();
-        boolean isFirst  = true;
-        for (String columnName : _values.keySet ()) {
-            if (isFirst) {
-                isFirst = false;
-            } else {
-                sb.append (", ");
-            }
-            sb.append (columnName).append ("=").append (_values.get (columnName));
-        }
-        return sb.toString ();
+        return _data.toString ();
     }
 }

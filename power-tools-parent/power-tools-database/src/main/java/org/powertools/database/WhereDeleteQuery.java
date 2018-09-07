@@ -1,4 +1,4 @@
-/* Copyright 2014 by Martin Gijsen (www.DeAnalist.nl)
+/* Copyright 2014-2018 by Martin Gijsen (www.DeAnalist.nl)
  *
  * This file is part of the PowerTools engine.
  *
@@ -17,16 +17,18 @@
  */
 package org.powertools.database;
 
+import org.powertools.database.expression.BooleanExpression;
 
-public final class DeleteQuery {
-    private final DeleteQueryData _data;
+
+public class WhereDeleteQuery {
+    final DeleteQueryData _data;
     
-    DeleteQuery (DeleteQueryData data) {
-        _data = data;
+    WhereDeleteQuery (Table table) {
+        _data = new DeleteQueryData (table);
     }
 
-    @Override
-    public String toString () {
-        return _data.toString ();
+    public DeleteQuery where (BooleanExpression condition) {
+        _data.where(condition);
+        return new DeleteQuery(_data);
     }
 }

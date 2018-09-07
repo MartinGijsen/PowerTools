@@ -1,4 +1,4 @@
-/* Copyright 2014 by Martin Gijsen (www.DeAnalist.nl)
+/* Copyright 2014-2018 by Martin Gijsen (www.DeAnalist.nl)
  *
  * This file is part of the PowerTools engine.
  *
@@ -15,18 +15,25 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with the PowerTools engine. If not, see <http://www.gnu.org/licenses/>.
  */
+
 package org.powertools.database;
 
+import org.powertools.database.expression.BooleanExpression;
 
-public final class DeleteQuery {
-    private final DeleteQueryData _data;
+
+public final class ValueUpdateQuery {
+    private final UpdateQueryData _data;
     
-    DeleteQuery (DeleteQueryData data) {
-        _data = data;
+    ValueUpdateQuery (Table table) {
+        _data = new UpdateQueryData (table);
+    }
+    
+    public ValueUpdateQuery value (Column column, String value) {
+        _data.value (column, value);
+        return this;
     }
 
-    @Override
-    public String toString () {
-        return _data.toString ();
+    public UpdateQuery where (BooleanExpression condition) {
+        return new UpdateQuery (_data, condition);
     }
 }
