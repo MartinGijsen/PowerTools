@@ -4,13 +4,6 @@ import org.powertools.database.SelectQuery;
 
 
 public abstract class Term {
-    private static final class RowNum extends Term {
-        @Override
-        public String toString () {
-            return "ROWNUM";
-        }
-    }
-    
     private static final class ToDate extends Term {
         private final String _date;
         private final String _format;
@@ -30,27 +23,30 @@ public abstract class Term {
         }
     }
     
-    private static final class Count extends Term {
-        @Override
-        public String toString () {
-            return "COUNT(*)";
-        }
-    }
-    
-    public static Term rowNum () {
-        return new RowNum ();
-    }
-    
     public static Term toDate(String value) {
         return new ToDate(value, null);
     }
     
-    public static Term count() {
-        return new Count ();
-    }
-    
     public static Term toDate(String value, String format) {
         return new ToDate(value, format);
+    }
+    
+    public static Term rowNum () {
+        return new Term() {
+            @Override
+            public String toString () {
+                return "ROWNUM";
+            }
+        };
+    }
+    
+    public static Term count() {
+        return new Term() {
+            @Override
+            public String toString () {
+                return "COUNT(*)";
+            }
+        };
     }
     
     public final BooleanExpression equal (String value) {
@@ -62,7 +58,7 @@ public abstract class Term {
     }
 
     public final BooleanExpression equal (Term term) {
-        return new BinaryOperatorExpression (this, " = ", term);
+        return ExpressionFactory.equal (this, term);
     }
 
     public final BooleanExpression unequal (String value) {
@@ -74,7 +70,7 @@ public abstract class Term {
     }
 
     public final BooleanExpression unequal (Term term) {
-        return new BinaryOperatorExpression (this, " <> ", term);
+        return ExpressionFactory.unequal(this, term);
     }
 
     public final BooleanExpression greaterThan (String value) {
@@ -86,7 +82,7 @@ public abstract class Term {
     }
 
     public final BooleanExpression greaterThan (Term term) {
-        return new BinaryOperatorExpression (this, " > ", term);
+        return ExpressionFactory.greaterThan(this, term);
     }
 
     public final BooleanExpression greaterThanOrEqual (String value) {
@@ -98,7 +94,7 @@ public abstract class Term {
     }
 
     public final BooleanExpression greaterThanOrEqual (Term term) {
-        return new BinaryOperatorExpression (this, " >= ", term);
+        return ExpressionFactory.greaterThanOrEqual(this, term);
     }
 
     public final BooleanExpression lessThan (String value) {
@@ -110,7 +106,7 @@ public abstract class Term {
     }
 
     public final BooleanExpression lessThan (Term term) {
-        return new BinaryOperatorExpression (this, " < ", term);
+        return ExpressionFactory.lessThan(this, term);
     }
 
     public final BooleanExpression lessThanOrEqual (String value) {
@@ -122,15 +118,15 @@ public abstract class Term {
     }
     
     public final BooleanExpression lessThanOrEqual (Term term) {
-        return new BinaryOperatorExpression (this, " <= ", term);
+        return ExpressionFactory.lessThanOrEqual (this, term);
     }
     
     public final BooleanExpression like (String value) {
-        return new BinaryOperatorExpression (this, " LIKE ", new StringValue (value));
+        return ExpressionFactory.like(this, new StringValue (value));
     }
 
     public final BooleanExpression notLike (String value) {
-        return new BinaryOperatorExpression (this, " NOT LIKE ", new StringValue (value));
+        return ExpressionFactory.notLike (this, new StringValue (value));
     }
 
     public final BooleanExpression in (SelectQuery query) {
@@ -150,14 +146,14 @@ public abstract class Term {
     }
 
     public final BooleanExpression between (String value1, String value2) {
-        return new BetweenCondition (this, value1, value2);
+        return ExpressionFactory.between(this, value1, value2);
     }
     
     public final BooleanExpression isNull () {
-        return new IsNullExpression (this);
+        return ExpressionFactory.isNull(this);
     }
 
     public final BooleanExpression isNotNull () {
-        return new IsNotNullExpression (this);
+        return ExpressionFactory.isNotNull (this);
     }
 }
