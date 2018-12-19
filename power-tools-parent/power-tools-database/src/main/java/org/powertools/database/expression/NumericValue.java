@@ -20,14 +20,14 @@ package org.powertools.database.expression;
 
 
 final class NumericValue extends Term {
-    private final int _value;
+    private final String _value;
     
-    NumericValue (int value) {
+    NumericValue (String value) {
         _value = value;
     }
 
     @Override
     public String toString () {
-        return Integer.toString (_value);
+        return _value;
     }
 }

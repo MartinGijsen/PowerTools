@@ -1,9 +1,20 @@
 package org.powertools.database.expression;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import org.powertools.database.SelectQuery;
 
 
 public abstract class Term {
+    private static final DecimalFormat FLOAT_FORMAT;
+
+    static {
+        DecimalFormatSymbols symbols = new DecimalFormatSymbols ();
+        symbols.setDecimalSeparator ('.');
+        FLOAT_FORMAT = new DecimalFormat("#0.0#", symbols);
+        FLOAT_FORMAT.setGroupingUsed (false);
+    }
+
     private static final class ToDate extends Term {
         private final String _date;
         private final String _format;
@@ -54,7 +65,19 @@ public abstract class Term {
     }
 
     public final BooleanExpression equal (int value) {
-        return equal (new NumericValue (value));
+        return equal (new NumericValue ("" + value));
+    }
+
+    public final BooleanExpression equal (long value) {
+        return equal (new NumericValue ("" + value));
+    }
+
+    public final BooleanExpression equal (float value) {
+        return equal (new NumericValue (FLOAT_FORMAT.format (value)));
+    }
+
+    public final BooleanExpression equal (double value) {
+        return equal (new NumericValue (FLOAT_FORMAT.format (value)));
     }
 
     public final BooleanExpression equal (Term term) {
@@ -66,7 +89,19 @@ public abstract class Term {
     }
 
     public final BooleanExpression unequal (int value) {
-        return unequal (new NumericValue (value));
+        return unequal (new NumericValue ("" + value));
+    }
+
+    public final BooleanExpression unequal (long value) {
+        return unequal (new NumericValue ("" + value));
+    }
+
+    public final BooleanExpression unequal (float value) {
+        return unequal (new NumericValue (FLOAT_FORMAT.format (value)));
+    }
+
+    public final BooleanExpression unequal (double value) {
+        return unequal (new NumericValue (FLOAT_FORMAT.format (value)));
     }
 
     public final BooleanExpression unequal (Term term) {
@@ -78,7 +113,19 @@ public abstract class Term {
     }
 
     public final BooleanExpression greaterThan (int value) {
-        return greaterThan (new NumericValue (value));
+        return greaterThan (new NumericValue ("" + value));
+    }
+
+    public final BooleanExpression greaterThan (long value) {
+        return greaterThan (new NumericValue ("" + value));
+    }
+
+    public final BooleanExpression greaterThan (float value) {
+        return greaterThan (new NumericValue (FLOAT_FORMAT.format (value)));
+    }
+
+    public final BooleanExpression greaterThan (double value) {
+        return greaterThan (new NumericValue (FLOAT_FORMAT.format (value)));
     }
 
     public final BooleanExpression greaterThan (Term term) {
@@ -90,7 +137,19 @@ public abstract class Term {
     }
 
     public final BooleanExpression greaterThanOrEqual (int value) {
-        return greaterThanOrEqual (new NumericValue (value));
+        return greaterThanOrEqual (new NumericValue ("" + value));
+    }
+
+    public final BooleanExpression greaterThanOrEqual (long value) {
+        return greaterThanOrEqual (new NumericValue ("" + value));
+    }
+
+    public final BooleanExpression greaterThanOrEqual (float value) {
+        return greaterThanOrEqual (new NumericValue (FLOAT_FORMAT.format (value)));
+    }
+
+    public final BooleanExpression greaterThanOrEqual (double value) {
+        return greaterThanOrEqual (new NumericValue (FLOAT_FORMAT.format (value)));
     }
 
     public final BooleanExpression greaterThanOrEqual (Term term) {
@@ -102,7 +161,19 @@ public abstract class Term {
     }
 
     public final BooleanExpression lessThan (int value) {
-        return lessThan (new NumericValue (value));
+        return lessThan (new NumericValue ("" + value));
+    }
+
+    public final BooleanExpression lessThan (long value) {
+        return lessThan (new NumericValue ("" + value));
+    }
+
+    public final BooleanExpression lessThan (float value) {
+        return lessThan (new NumericValue (FLOAT_FORMAT.format (value)));
+    }
+
+    public final BooleanExpression lessThan (double value) {
+        return lessThan (new NumericValue (FLOAT_FORMAT.format (value)));
     }
 
     public final BooleanExpression lessThan (Term term) {
@@ -114,7 +185,19 @@ public abstract class Term {
     }
     
     public final BooleanExpression lessThanOrEqual (int value) {
-        return lessThanOrEqual (new NumericValue (value));
+        return lessThanOrEqual (new NumericValue ("" + value));
+    }
+    
+    public final BooleanExpression lessThanOrEqual (long value) {
+        return lessThanOrEqual (new NumericValue ("" + value));
+    }
+    
+    public final BooleanExpression lessThanOrEqual (float value) {
+        return lessThanOrEqual (new NumericValue (FLOAT_FORMAT.format (value)));
+    }
+    
+    public final BooleanExpression lessThanOrEqual (double value) {
+        return lessThanOrEqual (new NumericValue (FLOAT_FORMAT.format (value)));
     }
     
     public final BooleanExpression lessThanOrEqual (Term term) {

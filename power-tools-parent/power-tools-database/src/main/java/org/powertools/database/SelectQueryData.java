@@ -18,6 +18,7 @@
 
 package org.powertools.database;
 
+import static org.powertools.database.Query.asterisk;
 import org.powertools.database.expression.BooleanExpression;
 import org.powertools.database.util.MyList;
 
@@ -66,6 +67,9 @@ final class SelectQueryData {
 
     @Override
     public String toString () {
+        if (_selection.isEmpty ()) {
+            _selection.add (asterisk());
+        }
         String distinct      = _distinct ? " DISTINCT" : "";
         String whereClause   = _whereClause == null ? "" : "\nWHERE " + _whereClause.toString ();
         String groupByClause = _groupByClause.isEmpty() ? "" : " GROUP BY " + _groupByClause.toString ();
